@@ -1,3 +1,6 @@
 rootProject.name = 'server'
 include 'user'
-
+include 'domain'
+include 'posts'
+include 'dm'
+include 'video'
