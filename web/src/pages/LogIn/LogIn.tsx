@@ -86,7 +86,7 @@ const LogInButton = styled.button`
 interface Props {}
 
 const LogIn: React.FC<Props> = () => {
-  const [email, setEmail] = useState<string>("");
+  const [nickname, setnickName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [token, setToken] = useState<string>("");
 
@@ -94,7 +94,7 @@ const LogIn: React.FC<Props> = () => {
     event.preventDefault();
 
     const formData = {
-      email: email,
+      nickname: nickname,
       password: password,
     };
 
@@ -128,9 +128,9 @@ const LogIn: React.FC<Props> = () => {
           <InputField>
             <input
               type="text"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="이메일 주소를 입력하세요"
+              value={nickname}
+              onChange={(e) => setnickName(e.target.value)}
+              placeholder="아이디(닉네임)를 입력하세요"
             />
           </InputField>
           <InputField>
