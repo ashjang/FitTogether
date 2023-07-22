@@ -11,24 +11,19 @@ repositories {
     mavenCentral()
 }
 
-sourceSets {
-    main {
-        java {
-            srcDirs 'src/main/java', 'user/src/main/java', 'posts/src/main/java', 'dm/src/main/java', 'video/src/main/java', 'domain/src/main/java'
-        }
-        resources {
-            srcDirs 'src/main/resources', 'user/src/main/resources', 'posts/src/main/resources', 'dm/src/main/resources', 'video/src/main/resources'
-        }
-    }
-}
-
-
 dependencies {
+    implementation project(':user')
+    implementation project(':posts')
+    implementation project(':dm')
+    implementation project(':video')
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'mysql:mysql-connector-java'
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
 }
 
 test {
