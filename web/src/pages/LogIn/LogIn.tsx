@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import KakaoTalk_logo from "./KakaoTalk_logo.png";
@@ -7,8 +8,8 @@ const Page = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  // min-height: calc(100vh - 300px);
   min-height: 100vh;
+  // min-height는 삭제 예정
 `;
 
 const Container = styled.div`
@@ -25,7 +26,7 @@ const KakaoTalkLogIn = styled.button`
   justify-content: center;
   align-items: center;
   position: relative;
-  width: 318px;
+  width: 300px;
   height: 50px;
   font-size: 16px;
   font-weight: bold;
@@ -66,8 +67,8 @@ const InputField = styled.div`
   }
 `;
 
-const LoginButton = styled.button`
-  width: 318px;
+const LogInButton = styled.button`
+  width: 300px;
   padding: 5px 10px;
   background-color: #007bff;
   color: white;
@@ -85,6 +86,36 @@ const LoginButton = styled.button`
 interface Props {}
 
 const LogIn: React.FC<Props> = () => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [token, setToken] = useState<string>("");
+
+  const handleLogIn = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const formData = {
+      email: email,
+      password: password,
+    };
+
+    try {
+      const response = await axios.post<{ token: string }>(
+        "/users/signin",
+        formData
+      );
+
+      if (response.status === 200) {
+        setToken(response.data.token);
+        localStorage.setItem("token", token);
+        // 로그인 성공 처리
+      } else {
+        // 로그인 실패 처리
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <Page>
       <Container>
@@ -93,24 +124,24 @@ const LogIn: React.FC<Props> = () => {
           카카오톡 로그인
         </KakaoTalkLogIn>
         <Divider>또는</Divider>
-        <FormContainer>
+        <FormContainer onSubmit={handleLogIn}>
           <InputField>
             <input
               type="text"
-              id="username"
-              name="username"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="이메일 주소를 입력하세요"
             />
           </InputField>
           <InputField>
             <input
               type="password"
-              id="password"
-              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호를 입력하세요"
             />
           </InputField>
-          <LoginButton type="submit">로그인</LoginButton>
+          <LogInButton type="submit">로그인</LogInButton>
         </FormContainer>
       </Container>
     </Page>
