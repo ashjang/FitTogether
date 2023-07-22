@@ -10,10 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@types/jest": "^29.5.3",
     "@types/node": "^20.4.2",
+=======
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+>>>>>>> web/develop
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.14.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
