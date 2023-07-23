@@ -1,9 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Link } from 'react-router-dom';
+
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+
 import LogoImg from "./../../assets/logo.png";
+
 // headerMainBar
 function Header() {
     const [isPopupOpen, setPopupOpen] = useState(false);
@@ -64,16 +67,16 @@ function Header() {
                         </span>
                     </MenuBtn>
                     <ul className="menu" css={Menu}>
-                        <li>
+                        <li css={menuLi}>
                             <Link to="/"><span>운동 정보</span></Link>
                         </li>
-                        <li>
+                        <li css={menuLi}>
                             <Link to="/"><span>운동 메이트 찾기</span></Link>
                         </li>
-                        <li>
+                        <li css={menuLi}>
                             <Link to="/"><span>커뮤니티</span></Link>
                         </li>
-                        <li>
+                        <li css={menuLi}>
                             <Link to="/"><span>마이 페이지</span></Link>
                         </li>
                     </ul>
@@ -82,6 +85,7 @@ function Header() {
         </div>
     );
 }
+
 // headerInn
 const headerInn = css`
     position: relative;
@@ -118,6 +122,7 @@ const LikeBtn = styled(Link)`
 
 `;
 
+
 const loginSection = css`
     display: flex;
     justify-content: space-between;
@@ -147,6 +152,12 @@ const headerMainBar = css`
 const Menu = css`
     display: flex;
     align-items: center;
+`;
+const menuLi = css`
+    padding: 0 20px
+    &:first-child {
+        padding: 0 30px;
+    }
 `;
 const MenuBtn = styled.button`
     // display: none;
