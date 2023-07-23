@@ -21,7 +21,7 @@ const Container = styled.div`
   height: 300px;
 `;
 
-const KakaoTalkLogIn = styled.button`
+const KakaoTalkSignIn = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -67,7 +67,7 @@ const InputField = styled.div`
   }
 `;
 
-const LogInButton = styled.button`
+const SignInButton = styled.button`
   width: 300px;
   padding: 5px 10px;
   background-color: #007bff;
@@ -90,7 +90,7 @@ const LogIn: React.FC<Props> = () => {
   const [password, setPassword] = useState<string>("");
   const [token, setToken] = useState<string>("");
 
-  const handleLogIn = async (event: React.FormEvent) => {
+  const handleSignIn = async (event: React.FormEvent) => {
     event.preventDefault();
 
     const formData = {
@@ -119,12 +119,12 @@ const LogIn: React.FC<Props> = () => {
   return (
     <Page>
       <Container>
-        <KakaoTalkLogIn>
+        <KakaoTalkSignIn>
           <img src={KakaoTalk_logo} alt="KakaoTalk Logo" />
           카카오톡 로그인
-        </KakaoTalkLogIn>
+        </KakaoTalkSignIn>
         <Divider>또는</Divider>
-        <FormContainer onSubmit={handleLogIn}>
+        <FormContainer onSubmit={handleSignIn}>
           <InputField>
             <input
               type="text"
@@ -141,7 +141,7 @@ const LogIn: React.FC<Props> = () => {
               placeholder="비밀번호를 입력하세요"
             />
           </InputField>
-          <LogInButton type="submit">로그인</LogInButton>
+          <SignInButton type="submit">로그인</SignInButton>
         </FormContainer>
       </Container>
     </Page>

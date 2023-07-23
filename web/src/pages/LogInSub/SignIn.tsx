@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 
 const Page = styled.div`
@@ -12,13 +13,13 @@ const Page = styled.div`
 `;
 
 const Title = styled.h1`
-  width: 500px;
+  width: 510px;
   margin-bottom: 50px;
 `;
 
 const Form = styled.form`
   position: relative;
-  width: 500px;
+  width: 510px;
   height: 450px;
 `;
 
@@ -63,28 +64,34 @@ const InputRadioDiv = styled.div`
 
 const RadioContainer = styled.div`
   position: absolute;
-  left: 145px;
+  left: 160px;
 `;
 
 const InputRadio = styled.input`
   margin: 0px 30px 0px 5px;
 `;
 
-const SignInButton = styled.button`
+const SignUpButton = styled.button`
   position: absolute;
   right: 0px;
   bottom: 0px;
+  width: 170px;
   border: 0;
   border-radius: 5px;
   outline: none;
-  padding: 3px 20px 0px;
+  padding: 5px 20px;
   background-color: #007bff;
   color: white;
+  ${css`
+    &:hover {
+      background-color: #0056b3;
+    }
+  `}
 `;
 
 const BackButton = styled.a`
   position: relative;
-  left: -165px;
+  left: -172.5px;
   top: -24px;
 `;
 
@@ -264,7 +271,7 @@ const SignIn: React.FC<Props> = () => {
         </InputRadioDiv>
 
         <div>
-          <SignInButton type="submit">회원 가입</SignInButton>
+          <SignUpButton type="submit">회원 가입</SignUpButton>
         </div>
       </Form>
       <BackButton href="">
