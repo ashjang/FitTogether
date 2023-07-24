@@ -1,0 +1,11 @@
+### 회원가입
+POST http://localhost:8080/users/signup
+Content-Type: application/json
+
+{
+  "email": "email@example.com",
+  "gender": true,
+  "nickname": "nickname",
+  "password": "12345",
+  "public_info": true
+}
