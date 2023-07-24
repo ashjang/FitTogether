@@ -16,6 +16,7 @@ public class UserExceptionAdvice {
                 .status(exception.getStatus())
                 .body(
                         UserCustomException.CustomExceptionResponse.builder()
+                                .status(exception.getStatus())
                                 .code(exception.getErrorCode().name())
                                 .message(exception.getMessage())
                                 .build()
