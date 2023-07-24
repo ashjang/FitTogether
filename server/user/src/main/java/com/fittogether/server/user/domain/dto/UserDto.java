@@ -11,12 +11,12 @@ import lombok.*;
 public class UserDto {
     private Long userId;
     private String email;
-    private String profile_picture;
+    private String profilePicture;
     private String nickname;
     private String password;
     private boolean gender;
-    private String exercise_choice;
-    private boolean public_info;
+    private String exerciseChoice;
+    private boolean publicInfo;
     private String introduction;
     private Double latitude;
     private Double longitude;
@@ -25,11 +25,11 @@ public class UserDto {
         return UserDto.builder()
                 .userId(user.getUserId())
                 .email(user.getEmail())
-                .profile_picture(user.getProfile_picture())
+                .profilePicture(user.getProfilePicture())
                 .nickname(user.getNickname())
                 .gender(user.isGender())
-                .exercise_choice(user.getExercise_choice())
-                .public_info(user.isPublic_info())
+                .exerciseChoice(user.getExerciseChoice())
+                .publicInfo(user.isPublicInfo())
                 .introduction(user.getIntroduction())
                 .latitude(user.getLatitude())
                 .longitude(user.getLongitude())

@@ -14,5 +14,5 @@ public class SignUpForm {
     private String password;
     private String email;
     private boolean gender;
-    private boolean public_info;
+    private boolean publicInfo;
 }

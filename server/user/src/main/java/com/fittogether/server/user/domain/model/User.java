@@ -20,7 +20,7 @@ public class User extends BaseEntity {
 
     @Column(unique = true)
     private String email;
-    private String profile_picture;
+    private String profilePicture;
 
     @Column(unique = true)
     private String nickname;
@@ -28,8 +28,8 @@ public class User extends BaseEntity {
     private String password;
     private boolean gender;
     @Column(columnDefinition = "TEXT")
-    private String exercise_choice;
-    private boolean public_info;
+    private String exerciseChoice;
+    private boolean publicInfo;
     private String introduction;
     private Double latitude;
     private Double longitude;
@@ -40,7 +40,7 @@ public class User extends BaseEntity {
                 .password(form.getPassword())
                 .email(form.getEmail())
                 .gender(form.isGender())
-                .public_info(form.isPublic_info())
+                .publicInfo(form.isPublicInfo())
                 .build();
     }
 }
