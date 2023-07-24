@@ -71,10 +71,10 @@ function Header() {
                     </MenuBtn>
                     <ul className="menu" css={Menu}>
                         <li css={menuLi}>
-                            <Link to="/Map"><span>운동 정보</span></Link>
+                            <Link to="/"><span>운동 정보</span></Link>
                         </li>
                         <li css={menuLi}>
-                            <Link to="/"><span>운동 메이트 찾기</span></Link>
+                            <Link to="/Map"><span>운동 메이트 찾기</span></Link>
                         </li>
                         <li css={menuLi}>
                             <Link to="/"><span>커뮤니티</span></Link>
@@ -108,9 +108,9 @@ const topBar = css`
 const Logo = styled.h1`
     flex:3;
 `;
-const imgLogo = css`
-    width: 300px;
-`;
+// const imgLogo = css`
+//     width: 300px;
+// `;
 const iconList = css`
     display: flex;
     justify-content: space-between;

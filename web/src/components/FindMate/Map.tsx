@@ -4,13 +4,24 @@ import styled from '@emotion/styled';
 
 import { useState } from 'react';
 // import { Link } from 'react-router-dom';
+// import  from '';
+
 
 // import LogoImg from "./../../assets/logo.png";
 
 type BtnTabProps = {
     isActive: boolean;
 };
-
+// type ProfileProps = {
+//     profile: {
+//         // photo: string;
+//         nickname: string;
+//         gender: string;
+//         intro: string;
+//         favoriteSport: string;
+//     };
+//     onClose: () => void;
+// }
 function Map() {
     const [activeTab, setActiveTab] = useState('러닝');
     return (
@@ -45,6 +56,16 @@ function Map() {
                     )}
                 </MateCategory>
             </MapSection>
+            {/* <PopupContainer>
+                <CloseButton onClick={onClose}>X</CloseButton>
+                <ProfileImage src={profile.photo} alt="Profile" />
+                <Nickname>{profile.nickname}</Nickname>
+                <Gender>{profile.gender === 'M' ? '남자' : '여자'}</Gender>
+                <Intro>{profile.intro}</Intro>
+                <FavoriteSport>{profile.favoriteSport}</FavoriteSport>
+                <BtnFriend>친구 신청</BtnFriend>
+            </PopupContainer> */}
+
         </MapInn>
     );
 }
@@ -121,4 +142,31 @@ const BtnTab = styled.button<BtnTabProps>`
     background-color: ${props => (props.isActive ? '#000' : '#fff')};
     color: ${props => (props.isActive ? '#fff' : '#000')};
 `;
+
+
+
+//profile
+// const PopupContainer = styled.div`
+// `;
+
+// const CloseButton = styled.button`
+// `;
+
+// const ProfileImage = styled.img`
+// `;
+
+// const Nickname = styled.h2`
+// `;
+
+// const Gender = styled.p`
+// `;
+
+// const Intro = styled.p`
+// `;
+
+// const FavoriteSport = styled.p`
+// `;
+
+// const BtnFriend = styled.button`
+// `;
 export default Map;
