@@ -1,7 +1,12 @@
-import "./App.css";
+import './App.css';
+import Bookmark from './pages/Bookmark/Bookmark';
 
 function App() {
-  return <></>;
+  return (
+    <>
+      <Bookmark />
+    </>
+  );
 }
 
 export default App;
