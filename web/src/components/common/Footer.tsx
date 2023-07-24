@@ -1,21 +1,21 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-// import styled from '@emotion/styled';
+import styled from '@emotion/styled';
 
 // import { useState } from 'react';
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-// import LogoImg from "./../../assets/logo-footer.png";
+import FooterLogoImg from "./../../assets/logo-footer.png";
 
 function Footer() {
     return (
-        <div className="footer-inn">
+        <div className="footer-inn" css={footerInn}>
             <div className="footer-main-bar">
-                <h1 className="logo">
-                    <a href="../index.html"><img src="../assets/image/logo_footer.png" alt="logo_footer" /></a>
-                </h1>
-                <div className="footer-info">
-                    <div className="company-info-left">
+                <FooterLogo className="logo">
+                    <Link to="/"><img src={FooterLogoImg} alt="logo" css={imgFooterLogo}/></Link>
+                </FooterLogo>
+                <FooterInfo className="footer-info">
+                    <FooterInfoLeft className="company-info-left">
                         <ul>
                             <li className="address">
                                 <i className="fa-solid fa-location-dot"></i>
@@ -27,15 +27,15 @@ function Footer() {
                                         <i className="fa-solid fa-phone-volume"></i>
                                         <p className="txt">031-000-0000</p>
                                     </li>
-                                    <li>
-                                        <span className="bar">|</span>
+                                    <li className="bar">
+                                        <span>|</span>
                                     </li>
                                     <li className="fax">
                                         <i className="fa-solid fa-fax"></i>
                                         <p className="txt">031-000-0000</p>
                                     </li>
-                                    <li>
-                                        <span className="bar">|</span>
+                                    <li className="bar">
+                                        <span>|</span>
                                     </li>
                                     <li className="service">
                                         <i className="fa-solid fa-headset"></i>
@@ -44,8 +44,8 @@ function Footer() {
                                 </ul>
                             </li>
                         </ul>
-                    </div>
-                    <div className="company-info-right">
+                    </FooterInfoLeft>
+                    <FooterInfoRight className="company-info-right">
                         <ul>
                             <li>
                                 <p className="txt">등록번호 : 000-00-00000</p>
@@ -56,8 +56,8 @@ function Footer() {
                                         <i className="fa-regular fa-copyright"></i>
                                         <p className="txt">Copyright 2023</p>
                                     </li>
-                                    <li>
-                                        <span className="bar">|</span>
+                                    <li className="bar">
+                                        <span >|</span>
                                     </li>
                                     <li>
                                         <p className="txt">Mong All rights reserved.</p>
@@ -65,28 +65,57 @@ function Footer() {
                                 </ul>
                             </li>
                         </ul>
-                    </div>
-                </div>
+                    </FooterInfoRight>
+                </FooterInfo>
             </div>
         </div>
     );
 }
 
-// headerInn
-const headerInn = css`
+// footerInn
+const footerInn = css`
     position: relative;
     max-width: 1440px;
     height: 100px;
     margin: 0 auto;
     padding: 10px 60px;
 `;
-
-const imgLogoFooter = css`
+const FooterLogo = styled.h1`
+    margin-bottom: 10px;
+`;
+const imgFooterLogo = css`
     width: 261px;
 `;
 
+const FooterInfo = styled.div`
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+`;
+const FooterInfoLeft =styled.div`
+    margin-right: 150px;
+    
+    ul li.tel ul {
+        display: flex;
+        align-items: center;  
+    }
+    ul li.tel ul li.bar span {
+        display: inline-block;
+        margin: 0 10px
+    }
+`;
 
+const FooterInfoRight = styled.div`
+    ul li.copyright ul {
+        display: flex;
+        align-items: center;        
+    }    
+    ul li.copyright ul li.bar span {
+        display: inline-block;
+        margin: 0 10px
+    }
 
+`;
 
 
 
