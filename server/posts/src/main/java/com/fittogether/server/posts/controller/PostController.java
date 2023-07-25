@@ -19,7 +19,7 @@ public class PostController {
 
   @PostMapping("/posts")
   public ResponseEntity<PostDto> createPost(/*@RequestHeader String token,*/
-                                            @RequestBody @Valid AddPostForm addPostForm) {
+                                            @RequestBody AddPostForm addPostForm) {
 
     return ResponseEntity.ok(PostDto.from(
         postService.createPost(/*token,*/ addPostForm)));
