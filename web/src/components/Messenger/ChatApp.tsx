@@ -4,6 +4,18 @@ import ChatInput from "./ChatInput";
 
 interface Props {}
 
+const ChatApp: React.FC<Props> = () => {
+  return (
+    <ChatAppContainer>
+      <ChatRoom>
+        <ChatRoomName></ChatRoomName>
+        <ChatRoomContent></ChatRoomContent>
+      </ChatRoom>
+      <ChatInput />
+    </ChatAppContainer>
+  );
+};
+
 const ChatAppContainer = styled.div`
   position: relative;
   width: 900px;
@@ -23,17 +35,5 @@ const ChatRoomName = styled.div`
 const ChatRoomContent = styled.div`
   background-color: #d3d3d3;
 `;
-
-const ChatApp: React.FC<Props> = () => {
-  return (
-    <ChatAppContainer>
-      <ChatRoom>
-        <ChatRoomName></ChatRoomName>
-        <ChatRoomContent></ChatRoomContent>
-      </ChatRoom>
-      <ChatInput />
-    </ChatAppContainer>
-  );
-};
 
 export default ChatApp;

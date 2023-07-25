@@ -3,6 +3,15 @@ import styled from "@emotion/styled";
 
 interface Props {}
 
+const ChatInput: React.FC<Props> = () => {
+  return (
+    <InputBar>
+      <InputField />
+      <button>전송</button>
+    </InputBar>
+  );
+};
+
 const InputBar = styled.div`
   display: flex;
   justify-content: space-around;
@@ -16,14 +25,5 @@ const InputBar = styled.div`
 const InputField = styled.input`
   width: 860px;
 `;
-
-const ChatInput: React.FC<Props> = () => {
-  return (
-    <InputBar>
-      <InputField />
-      <button>전송</button>
-    </InputBar>
-  );
-};
 
 export default ChatInput;

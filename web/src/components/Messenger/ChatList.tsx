@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React from "react";
 import ChatListItem from "./ChatListItem";
-import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 import default_user_image from "./default_user_image.png";
 
 const imageSrc: string = default_user_image;
@@ -89,43 +89,44 @@ const data: ChatData = {
 const ChatList: React.FC<Props> = () => {
   return (
     <div>
-      <div
-        css={css({
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "290px",
-          height: "80px",
-          fontSize: "18px",
-          fontWeight: "bold",
-          backgroundColor: "#cccccc",
-        })}
-      >
-        운동 메이트 리스트
-      </div>
-      <div
-        css={css({
-          width: "290px",
-          height: "420px",
-          overflowY: "auto",
-        })}
-      >
+      <ShowMateList>운동 메이트 리스트</ShowMateList>
+      <ChatListItems>
         {Object.entries(data).map(([key, message]) => (
           <ChatListItem key={key} {...message} />
         ))}
-      </div>
+      </ChatListItems>
     </div>
   );
 };
 
+const ShowMateList = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 290px;
+  height: 80px;
+  font-size: 18px;
+  font-weight: bold;
+  background-color: #cccccc;
+`;
+
+const ChatListItems = styled.div`
+  width: 290px;
+  height: 420px;
+  overflow-y: auto;
+`;
+
 export default ChatList;
 
+// 나중에 참고!
+//
 // const [senderProfileImage, setSenderProfileImage] = useState<string>("");
 // const [senderNickname, setSenderNickname] = useState<string>("");
 // const [lastMessageDate, setLastMessageDate] = useState<string>("");
 // const [lastMessageContent, setLastMessageContent] = useState<string>("");
 // const [newMessageCount, setNewMessageCount] = useState<number>(1);
-
+//
+// // 컴포넌트가 마운트될 때
 // useEffect(() => {
 //   const fetchData = async () => {
 //     try {
@@ -137,7 +138,7 @@ export default ChatList;
 //         lastMessageContent,
 //         newMessageCount,
 //       } = response.data;
-
+//
 //       setSenderProfileImage(senderProfileImage);
 //       setSenderNickname(senderNickname);
 //       setLastMessageDate(lastMessageDate);
@@ -149,7 +150,8 @@ export default ChatList;
 //   };
 //   fetchData();
 // }, []);
-
+//
+// //소켓이 업데이트될 때
 // useEffect(() => {
 //   // 웹 소켓으로 새로운 메시지를 받아옴
 //   socket.on("newMessage", (newMessage) => {

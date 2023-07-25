@@ -4,19 +4,6 @@ import ChatList from "../../components/Messenger/ChatList";
 // import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 
-const Page = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-`;
-
-const Component = styled.div`
-  display: flex;
-  width: 1190 px;
-  border: 1px solid rgba(0, 0, 0, 10%);
-`;
-
 interface Props {}
 
 const Messenger: React.FC<Props> = () => {
@@ -29,5 +16,18 @@ const Messenger: React.FC<Props> = () => {
     </Page>
   );
 };
+
+const Page = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+`;
+
+const Component = styled.div`
+  display: flex;
+  width: 1190 px;
+  border: 1px solid rgba(0, 0, 0, 10%);
+`;
 
 export default Messenger;

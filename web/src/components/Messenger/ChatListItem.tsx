@@ -1,6 +1,39 @@
-/** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
+
+interface Props {
+  senderProfileImage: string;
+  senderNickname: string;
+  lastMessageDate: string;
+  lastMessageContent: string;
+  newMessageCount: number;
+}
+
+const ChatListItem: React.FC<Props> = ({
+  senderProfileImage,
+  senderNickname,
+  lastMessageDate,
+  lastMessageContent,
+  newMessageCount,
+}) => {
+  return (
+    <ProfileListItem>
+      <ProfileImageContainer>
+        <ProfileImage src={senderProfileImage} />
+      </ProfileImageContainer>
+
+      <ColTop>
+        <SenderNickname>{senderNickname}</SenderNickname>
+        <LastMessageContent>{lastMessageContent}</LastMessageContent>
+      </ColTop>
+      <ColBottom>
+        <LastMessageDate>{lastMessageDate}</LastMessageDate>
+        {newMessageCount > 0 && (
+          <NewMessageCount>{newMessageCount}</NewMessageCount>
+        )}
+      </ColBottom>
+    </ProfileListItem>
+  );
+};
 
 const ProfileListItem = styled.li`
   display: flex;
@@ -29,81 +62,47 @@ const ProfileImage = styled.img`
   height: 35px;
 `;
 
-const ColDiv = styled.div`
+const ColTop = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 150px;
 `;
 
-interface Props {
-  senderProfileImage: string;
-  senderNickname: string;
-  lastMessageDate: string;
-  lastMessageContent: string;
-  newMessageCount: number;
-}
+const SenderNickname = styled.p`
+  font-size: 16px;
+  font-weight: bold;
+`;
 
-const ChatListItem: React.FC<Props> = ({
-  senderProfileImage,
-  senderNickname,
-  lastMessageDate,
-  lastMessageContent,
-  newMessageCount,
-}) => {
-  return (
-    <ProfileListItem>
-      <ProfileImageContainer>
-        <ProfileImage src={senderProfileImage} />
-      </ProfileImageContainer>
+const LastMessageContent = styled.p`
+  font-size: 14px;
+`;
+const ColBottom = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 60px;
+  height: 44px;
+`;
 
-      <ColDiv
-        css={css({
-          width: "150px",
-        })}
-      >
-        <p css={css({ fontSize: "16px", fontWeight: "bold" })}>
-          {senderNickname}
-        </p>
-        <p css={css({ fontSize: "14px" })}>{lastMessageContent}</p>
-      </ColDiv>
-      <ColDiv
-        css={css({
-          alignItems: "flex-end",
-          width: "60px",
-          height: "44px",
-        })}
-      >
-        <p
-          css={css({
-            fontSize: "12px",
-            color: "gray",
-            marginRight: "5px",
-            // whiteSpace는 추후 삭제
-            whiteSpace: "nowrap",
-          })}
-        >
-          {lastMessageDate}
-        </p>
-        {newMessageCount > 0 && (
-          <p
-            css={css({
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "20px",
-              height: "20px",
-              marginRight: "5px",
-              backgroundColor: "red",
-              color: "white",
-              borderRadius: "50%",
-            })}
-          >
-            {newMessageCount}
-          </p>
-        )}
-      </ColDiv>
-    </ProfileListItem>
-  );
-};
+const LastMessageDate = styled.p`
+  font-size: 12px;
+  color: gray;
+  margin-right: 5px;
+  white-space: nowrap;
+`;
+
+const NewMessageCount = styled.p`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+`;
 
 export default ChatListItem;
