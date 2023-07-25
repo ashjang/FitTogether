@@ -1,0 +1,15 @@
+### create post
+POST http://localhost:8080/posts
+Content-Type: application/json
+
+{
+  "title": "제목",
+  "description": "내용",
+  "image": "",
+  "category": "CLIMBING",
+  "accessLevel": true,
+  "hashtag": [
+    {"keyword": "오운완"},
+    {"keyword": "등산"}
+  ]
+}
