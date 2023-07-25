@@ -18,7 +18,6 @@ import lombok.Setter;
 public class AddPostForm {
 
   @NotBlank(message = "제목은 필수 입력 사항입니다.")
-  @Size(max = 30, message = "제목의 길이가 너무 깁니다.")
   private String title;
   @NotBlank(message = "내용은 필수 입력 사항입니다.")
   private String description;
