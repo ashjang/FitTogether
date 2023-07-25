@@ -3,103 +3,6 @@ import axios from "axios";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 
-const Page = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  // min-height는 삭제 예정
-`;
-
-const Title = styled.h1`
-  width: 510px;
-  margin-bottom: 50px;
-`;
-
-const Form = styled.form`
-  position: relative;
-  width: 510px;
-  height: 450px;
-`;
-
-const InputTextDiv = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-  margin-bottom: 30px;
-`;
-
-const DuplicateCheckButton = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  right: 0px;
-  padding: 3px 10px 0px;
-  border: 0;
-  border-radius: 5px;
-  margin-right: 3px;
-  outline: none;
-  background-color: #c7c7c7;
-  font-size: 14px;
-`;
-
-const InputText = styled.input`
-  width: 350px;
-  height: 40px;
-  border: 0;
-  border-radius: 10px;
-  outline: none;
-  padding-left: 10px;
-  background-color: rgb(222, 222, 222);
-`;
-
-const InputRadioDiv = styled.div`
-  display: flex;
-  position: relative;
-  margin-bottom: 30px;
-`;
-
-const RadioContainer = styled.div`
-  position: absolute;
-  left: 160px;
-`;
-
-const InputRadio = styled.input`
-  margin: 0px 30px 0px 5px;
-`;
-
-const SignUpButton = styled.button`
-  position: absolute;
-  right: 0px;
-  bottom: 0px;
-  width: 170px;
-  border: 0;
-  border-radius: 5px;
-  outline: none;
-  padding: 5px 20px;
-  background-color: #007bff;
-  color: white;
-  ${css`
-    &:hover {
-      background-color: #0056b3;
-    }
-  `}
-`;
-
-const BackButton = styled.a`
-  position: relative;
-  left: -172.5px;
-  top: -24px;
-`;
-
-const BackButtonText = styled.p`
-  font-size: 14px;
-  border-bottom: 1px solid black;
-`;
-
 interface Props {}
 
 const SignIn: React.FC<Props> = () => {
@@ -269,10 +172,7 @@ const SignIn: React.FC<Props> = () => {
             </label>
           </RadioContainer>
         </InputRadioDiv>
-
-        <div>
-          <SignUpButton type="submit">회원 가입</SignUpButton>
-        </div>
+        <SignUpButton type="submit">회원 가입</SignUpButton>
       </Form>
       <BackButton href="">
         <BackButtonText>로그인 화면으로 돌아가기</BackButtonText>
@@ -280,5 +180,102 @@ const SignIn: React.FC<Props> = () => {
     </Page>
   );
 };
+
+const Page = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  // min-height는 삭제 예정
+`;
+
+const Title = styled.h1`
+  width: 510px;
+  margin-bottom: 50px;
+`;
+
+const Form = styled.form`
+  position: relative;
+  width: 510px;
+  height: 450px;
+`;
+
+const InputTextDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  margin-bottom: 30px;
+`;
+
+const DuplicateCheckButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 0px;
+  padding: 3px 10px 0px;
+  border: 0;
+  border-radius: 5px;
+  margin-right: 3px;
+  outline: none;
+  background-color: #c7c7c7;
+  font-size: 14px;
+`;
+
+const InputText = styled.input`
+  width: 350px;
+  height: 40px;
+  border: 0;
+  border-radius: 10px;
+  outline: none;
+  padding-left: 10px;
+  background-color: rgb(222, 222, 222);
+`;
+
+const InputRadioDiv = styled.div`
+  display: flex;
+  position: relative;
+  margin-bottom: 30px;
+`;
+
+const RadioContainer = styled.div`
+  position: absolute;
+  left: 160px;
+`;
+
+const InputRadio = styled.input`
+  margin: 0px 30px 0px 5px;
+`;
+
+const SignUpButton = styled.button`
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  width: 170px;
+  border: 0;
+  border-radius: 5px;
+  outline: none;
+  padding: 5px 20px;
+  background-color: #007bff;
+  color: white;
+  ${css`
+    &:hover {
+      background-color: #0056b3;
+    }
+  `}
+`;
+
+const BackButton = styled.a`
+  position: relative;
+  left: -172.5px;
+  top: -24px;
+`;
+
+const BackButtonText = styled.p`
+  font-size: 14px;
+  border-bottom: 1px solid black;
+`;
 
 export default SignIn;

@@ -4,6 +4,71 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import KakaoTalk_logo from "./KakaoTalk_logo.png";
 
+interface Props {}
+
+const LogIn: React.FC<Props> = () => {
+  const [nickname, setnickName] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [token, setToken] = useState<string>("");
+
+  const handleSignIn = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const formData = {
+      nickname: nickname,
+      password: password,
+    };
+
+    try {
+      const response = await axios.post<{ token: string }>(
+        "/users/signin",
+        formData
+      );
+
+      if (response.status === 200) {
+        setToken(response.data.token);
+        localStorage.setItem("token", token);
+        // 로그인 성공 처리
+      } else {
+        // 로그인 실패 처리
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  return (
+    <Page>
+      <Container>
+        <KakaoTalkSignIn>
+          <img src={KakaoTalk_logo} alt="KakaoTalk Logo" />
+          카카오톡 로그인
+        </KakaoTalkSignIn>
+        <Divider>또는</Divider>
+        <FormContainer onSubmit={handleSignIn}>
+          <InputField>
+            <input
+              type="text"
+              value={nickname}
+              onChange={(e) => setnickName(e.target.value)}
+              placeholder="아이디(닉네임)를 입력하세요"
+            />
+          </InputField>
+          <InputField>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="비밀번호를 입력하세요"
+            />
+          </InputField>
+          <SignInButton type="submit">로그인</SignInButton>
+        </FormContainer>
+      </Container>
+    </Page>
+  );
+};
+
 const Page = styled.div`
   display: flex;
   justify-content: center;
@@ -82,70 +147,5 @@ const SignInButton = styled.button`
     }
   `}
 `;
-
-interface Props {}
-
-const LogIn: React.FC<Props> = () => {
-  const [nickname, setnickName] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [token, setToken] = useState<string>("");
-
-  const handleSignIn = async (event: React.FormEvent) => {
-    event.preventDefault();
-
-    const formData = {
-      nickname: nickname,
-      password: password,
-    };
-
-    try {
-      const response = await axios.post<{ token: string }>(
-        "/users/signin",
-        formData
-      );
-
-      if (response.status === 200) {
-        setToken(response.data.token);
-        localStorage.setItem("token", token);
-        // 로그인 성공 처리
-      } else {
-        // 로그인 실패 처리
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  return (
-    <Page>
-      <Container>
-        <KakaoTalkSignIn>
-          <img src={KakaoTalk_logo} alt="KakaoTalk Logo" />
-          카카오톡 로그인
-        </KakaoTalkSignIn>
-        <Divider>또는</Divider>
-        <FormContainer onSubmit={handleSignIn}>
-          <InputField>
-            <input
-              type="text"
-              value={nickname}
-              onChange={(e) => setnickName(e.target.value)}
-              placeholder="아이디(닉네임)를 입력하세요"
-            />
-          </InputField>
-          <InputField>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="비밀번호를 입력하세요"
-            />
-          </InputField>
-          <SignInButton type="submit">로그인</SignInButton>
-        </FormContainer>
-      </Container>
-    </Page>
-  );
-};
 
 export default LogIn;
