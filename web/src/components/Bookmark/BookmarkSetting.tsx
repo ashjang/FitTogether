@@ -3,7 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { css } from '@emotion/react';
 
-const BookmarkSetting: React.FC = () => {
+interface BookmarkSettingProps {
+  addFolder: (folderName: string) => void; // 새 리스트 추가 함수 타입 정의
+}
+
+const BookmarkSetting: React.FC<BookmarkSettingProps> = ({ addFolder }) => {
   const [listName, setListName] = useState<string>('');
   const [lists, setLists] = useState<string[]>(() => {
     const savedLists = localStorage.getItem('bookmarkLists');
@@ -22,6 +26,7 @@ const BookmarkSetting: React.FC = () => {
   const addList = () => {
     if (listName.trim() !== '') {
       setLists((prevLists) => [...prevLists, listName]);
+      addFolder(listName); // 새 폴더 추가
       setListName(''); // 입력 필드 비우기
     }
   };

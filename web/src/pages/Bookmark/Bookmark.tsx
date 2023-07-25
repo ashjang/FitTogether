@@ -11,9 +11,14 @@ import BookmarkSetting from '../../components/Bookmark/BookmarkSetting';
 
 const Bookmark: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
+  const [folders, setFolders] = useState<string[]>([]);
 
   const togglePopup = () => {
     setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
+  };
+
+  const addFolder = (folderName: string) => {
+    setFolders((prevFolders) => [...prevFolders, folderName]);
   };
 
   return (
@@ -24,7 +29,7 @@ const Bookmark: React.FC = () => {
           <p css={centeredTextStyle}>즐겨찾기</p>
           {isPopupOpen ? (
             <>
-              <BookmarkSetting />
+              <BookmarkSetting addFolder={addFolder} />
               <FaMinus css={rightAlignedStyle} onClick={togglePopup} />
             </>
           ) : (
@@ -33,7 +38,7 @@ const Bookmark: React.FC = () => {
         </TitleArea>
       </div>
       <div css={Container}>
-        <BookmarkFolder />
+        <BookmarkFolder folders={folders} />
       </div>
       <footer>푸터</footer>
     </div>
