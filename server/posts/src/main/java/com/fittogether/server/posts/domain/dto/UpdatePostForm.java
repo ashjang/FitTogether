@@ -14,8 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AddPostForm {
-
+public class UpdatePostForm {
   private String title;
   private String description;
   private String image;

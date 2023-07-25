@@ -19,6 +19,7 @@ public class PostDto {
   private String description;
   private String image;
   private String category;
+  private boolean accessLevel;
   private LocalDateTime createdAt;
 
   public static PostDto from(Post post) {
@@ -28,6 +29,7 @@ public class PostDto {
         .description(post.getDescription())
         .image(post.getImage())
         .category(post.getCategory())
+        .accessLevel(post.isAccessLevel())
         .createdAt(LocalDateTime.now())
         .build();
   }
