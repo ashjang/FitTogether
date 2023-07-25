@@ -1,7 +1,12 @@
 import "./App.css";
+import Community from "./pages/Community/Community";
 
 function App() {
-  return <></>;
+  return (
+    <>
+      <Community />
+    </>
+  );
 }
 
 export default App;
