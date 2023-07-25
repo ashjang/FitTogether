@@ -1,4 +1,5 @@
 import React from "react";
+import ChatApp from "../../components/Messenger/ChatApp";
 import ChatList from "../../components/Messenger/ChatList";
 // import { css } from "@emotion/react";
 import styled from "@emotion/styled";
@@ -10,12 +11,21 @@ const Page = styled.div`
   min-height: 100vh;
 `;
 
+const Component = styled.div`
+  display: flex;
+  width: 1190 px;
+  border: 1px solid rgba(0, 0, 0, 10%);
+`;
+
 interface Props {}
 
 const Messenger: React.FC<Props> = () => {
   return (
     <Page>
-      <ChatList />
+      <Component>
+        <ChatList />
+        <ChatApp />
+      </Component>
     </Page>
   );
 };

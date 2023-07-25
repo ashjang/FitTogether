@@ -70,6 +70,20 @@ const data: ChatData = {
     lastMessageContent: "ㅅㄱ하세요",
     newMessageCount: 0,
   },
+  message8: {
+    senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
+    senderNickname: "정길동",
+    lastMessageDate: "어제",
+    lastMessageContent: "ㅅㄱ하세요",
+    newMessageCount: 0,
+  },
+  message9: {
+    senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
+    senderNickname: "강길동",
+    lastMessageDate: "어제",
+    lastMessageContent: "ㅅㄱ하세요",
+    newMessageCount: 0,
+  },
 };
 
 const ChatList: React.FC<Props> = () => {
@@ -81,7 +95,7 @@ const ChatList: React.FC<Props> = () => {
           justifyContent: "center",
           alignItems: "center",
           width: "290px",
-          height: "100px",
+          height: "80px",
           fontSize: "18px",
           fontWeight: "bold",
           backgroundColor: "#cccccc",
@@ -92,7 +106,7 @@ const ChatList: React.FC<Props> = () => {
       <div
         css={css({
           width: "290px",
-          height: "360px",
+          height: "420px",
           overflowY: "auto",
         })}
       >
