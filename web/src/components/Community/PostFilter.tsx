@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
+import styled from "@emotion/styled";
 
 interface Props {}
 
-const ComponentName: React.FC<Props> = () => {
+const PostFilter: React.FC<Props> = () => {
   const [category, setCategory] = useState("");
   const [keyword, setKeyword] = useState("");
   const [hashtag, setHashtag] = useState("");
@@ -59,7 +60,7 @@ const ComponentName: React.FC<Props> = () => {
   };
 
   return (
-    <div>
+    <PostFilterComponent>
       <div>
         <div>
           <button onClick={() => handleCategoryClick("러닝")}>러닝</button>
@@ -67,17 +68,35 @@ const ComponentName: React.FC<Props> = () => {
           <button onClick={() => handleCategoryClick("헬스")}>헬스</button>
         </div>
         <div>
-          <input type="text" value={keyword} onChange={handleKeywordChange} />
+          <input
+            type="text"
+            value={keyword}
+            onChange={handleKeywordChange}
+            placeholder="검색어를 입력하세요"
+          />
           <button onClick={handleKeywordSubmit}>검색</button>
         </div>
         <div>
-          <input type="text" value={hashtag} onChange={handleHashtagChange} />
+          <input
+            type="text"
+            value={hashtag}
+            onChange={handleHashtagChange}
+            placeholder="태그로 검색해보세요!"
+          />
           <button onClick={handleHashtagSubmit}>검색</button>
         </div>
       </div>
-      <div>인기 해시태그</div>
-    </div>
+      <PopularHashtag>인기 해시태그</PopularHashtag>
+    </PostFilterComponent>
   );
 };
 
-export default ComponentName;
+const PostFilterComponent = styled.div`
+  display: flex;
+`;
+
+const PopularHashtag = styled.div`
+  background-color: #d7d7d7;
+`;
+
+export default PostFilter;

@@ -6,6 +6,7 @@ interface Props {}
 const CreatePost: React.FC<Props> = () => {
   return (
     <Page>
+      <Title placeholder="Title" />
       <EditorField>게시판 에디터</EditorField>
       <SettingField>
         <SettingItem>
@@ -40,6 +41,10 @@ const Page = styled.div`
   align-items: center;
   // min-height는 추후 삭제
   min-height: 100vh;
+`;
+
+const Title = styled.input`
+  width: 1000px;
 `;
 
 const EditorField = styled.div`

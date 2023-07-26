@@ -10,7 +10,6 @@ const Community: React.FC<Props> = () => {
   return (
     <div>
       <PostFilter />
-      //추후 삭제
       <CreatePost />
       <Post />
     </div>
