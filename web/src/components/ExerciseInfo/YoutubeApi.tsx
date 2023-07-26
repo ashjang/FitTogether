@@ -1,35 +1,54 @@
-// YoutubeApi.tsx
 type Video = {
     id: string;
     thumbnail: string;
     title: string;
 };
 
-const DUMMY_VIDEOS: { [key: string]: Video[] } = {
-    러닝: [
-        { id: 'running1', thumbnail: 'https://via.placeholder.com/150x200', title: 'Running Video 1' },
-        { id: 'running2', thumbnail: 'https://via.placeholder.com/150x200', title: 'Running Video 2' },
-    ],
-    등산: [
-        { id: 'hiking1', thumbnail: 'https://via.placeholder.com/150x200', title: 'Hiking Video 1' },
-        { id: 'hiking2', thumbnail: 'https://via.placeholder.com/150x200', title: 'Hiking Video 2' },
-    ],
-    헬스: [
-        { id: 'fitness1', thumbnail: 'https://via.placeholder.com/150x200', title: 'Fitness Video 1' },
-        { id: 'fitness2', thumbnail: 'https://via.placeholder.com/150x200', title: 'Fitness Video 2' },
-    ],
+interface Item {
+    id: {
+        videoId: string;
+    };
+    snippet: {
+        thumbnails: {
+            default: {
+                url: string;
+            };
+        };
+        title: string;
+    };
+}
+
+const API_KEY = 'AIzaSyD26946NOfQsR5aSkR4cfZnx5sUq-B-dTg';
+
+export const fetchVideosFromYoutubeAPI = async (
+    activeTab: string,
+    page: number,
+    maxResults: number
+): Promise<Video[]> => {
+    try {
+        const response = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&q=${encodeURIComponent(activeTab)}&type=video&part=snippet&maxResults=${maxResults}&pageToken=${page}`
+        );
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch videos from YouTube API');
+        }
+
+        const data = await response.json() as { items: Item[] };
+
+        if (!data.items) {
+            throw new Error('Invalid response data from YouTube API');
+        }
+
+        const videos: Video[] = data.items.map((item: Item) => ({
+            id: item.id.videoId,
+            thumbnail: item.snippet.thumbnails.default.url,
+            title: item.snippet.title,
+        }));
+
+        return videos;
+    } catch (error) {
+        console.error('Error fetching videos from YouTube API:', error);
+        return [];
+    }
 };
-
-
-
-export const fetchVideosFromYoutubeAPI = async (activeTab: string, page: number, maxResults: number): Promise<Video[]> => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const startIndex = (page - 1) * maxResults;
-            const endIndex = startIndex + maxResults;
-            const videos = DUMMY_VIDEOS[activeTab].slice(startIndex, endIndex) || [];
-            resolve(videos);
-        }, 1000);
-    });
-};
-

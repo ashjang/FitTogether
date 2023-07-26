@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import styled from '@emotion/styled';
 
 import VideoPopup from './VideoPopup';
-import { fetchVideosFromYoutubeAPI } from './YoutubeApi';
+// import { fetchVideosFromYoutubeAPI } from './YoutubeApi';
 
 type BtnTabProps = {
     isActive: boolean;
@@ -16,7 +16,6 @@ type Video = {
 function VideoList() {
     const [activeTab, setActiveTab] = useState('러닝');
     const [videoList, setVideoList] = useState<Video[]>([]);
-
     const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState(1);
@@ -25,8 +24,8 @@ function VideoList() {
         setIsLoading(true);
         try {
             const newVideos = await fetchVideosFromYoutubeAPI(activeTab, page, 4);
-            setVideoList(prevVideos => [...prevVideos, ...newVideos]);
-            setPage(prevPage => prevPage + 1);
+            setVideoList((prevVideos) => [...prevVideos, ...newVideos]);
+            setPage((prevPage) => prevPage + 1);
         } catch (error) {
             console.error(error);
         } finally {
@@ -35,93 +34,131 @@ function VideoList() {
     }, [activeTab, page]);
 
 
-    // 비디오 재생 함수
-    // const playVideo = (video: Video) => {
-    //     setCurrentVideo(video);
-    // };
-
-    // 탭 변경시 비디오 목록 초기화 및 새로운 비디오 로드
-    useEffect(() => {
+    const handleTabClick = (tab: string) => {
+        setActiveTab(tab);
         setVideoList([]);
         setPage(1);
-        void loadVideos();
-    }, [activeTab, loadVideos]);
+    };
 
     // 스크롤 이벤트 (Intersection Observer)
-    const bottomRef = useRef(null);
-    useEffect(() => {
-        const bottomRefCurrent = bottomRef.current;
-        const scrollObserver = new IntersectionObserver((entries) => {
+    const bottomRef = useRef<HTMLDivElement>(null);
+    const scrollObserver = useRef(
+        new IntersectionObserver((entries) => {
             if (!isLoading && entries[0].isIntersecting) {
                 void loadVideos();
             }
-        }, {});
+        }, {})
+    );
 
+
+    useEffect(() => {
+        const bottomRefCurrent = bottomRef.current;
+        const observer = scrollObserver.current;
+    
         if (bottomRefCurrent) {
-            scrollObserver.observe(bottomRefCurrent);
+            observer.observe(bottomRefCurrent);
         }
-
+    
         return () => {
             if (bottomRefCurrent) {
-                scrollObserver.unobserve(bottomRefCurrent);
+                observer.unobserve(bottomRefCurrent);
             }
         };
     }, [isLoading, loadVideos]);
-
+    
     return (
         <>
             <VideoInn>
                 <VideoSection className="video-section">
-                    <PageTitle>운동 정보</PageTitle>
-
-                    <VideoCategory className="video-category">
-                        <dt className="category01">
-                            <BtnTab type="button" className="btn btn-menu" isActive={activeTab === '러닝'} onClick={() => setActiveTab('러닝')}>러닝</BtnTab>
-                        </dt>
-                        {activeTab === '러닝' && (
-                            <ContentList>
-                                {videoList.map((video) => (
-                                    <ContentListItem key={video.id}>
-                                        <img src={video.thumbnail} alt={video.title} onError={(e) => { e.currentTarget.src = "default_image_url"; }}/>
-                                        <div>{video.title}</div>
-                                    </ContentListItem>
-                                ))}
-                            </ContentList>
-                        )}
-                        <dt className="category02">
-                            <BtnTab type="button" className="btn btn-menu" isActive={activeTab === '등산'} onClick={() => setActiveTab('등산')}>등산</BtnTab>
-                        </dt>
-                        {activeTab === '등산' && (
-                            <ContentList>
-                                {videoList.map((video) => (
-                                    <ContentListItem key={video.id}>
-                                        <img src={video.thumbnail} alt={video.title} onError={(e) => { e.currentTarget.src = "default_image_url"; }}/>
-                                        <div>{video.title}</div>
-                                    </ContentListItem>
-                                ))}
-                            </ContentList>
-                        )}
-                        <dt className="category03">
-                            <BtnTab type="button" className="btn btn-menu" isActive={activeTab === '헬스'} onClick={() => setActiveTab('헬스')}>헬스</BtnTab>
-                        </dt>
-                        {activeTab === '헬스' && (
-                            <ContentList>
-                                {videoList.map((video) => (
-                                    <ContentListItem key={video.id}>
-                                        <img src={video.thumbnail} alt={video.title} onError={(e) => { e.currentTarget.src = "default_image_url"; }}/>
-                                        <div>{video.title}</div>
-                                    </ContentListItem>
-                                ))}
-                            </ContentList>
-                        )}
-                    </VideoCategory>
+                <PageTitle>운동 정보</PageTitle>
+        
+                <VideoCategory className="video-category">
+                    <dt className="category01">
+                    <BtnTab
+                        type="button"
+                        className="btn btn-menu"
+                        isActive={activeTab === '러닝'}
+                        onClick={() => handleTabClick('러닝')}
+                    >
+                        러닝
+                    </BtnTab>
+                    </dt>
+                    {activeTab === '러닝' && (
+                    <ContentList>
+                        {videoList.map((video) => (
+                            <ContentListItem key={video.id}>
+                                <img
+                                src={video.thumbnail}
+                                alt={video.title}
+                                onError={(e) => {
+                                    e.currentTarget.src = 'default_image_url';
+                                }}
+                                />
+                                <div>{video.title}</div>
+                            </ContentListItem>
+                        ))}
+                    </ContentList>
+                    )}
+                    <dt className="category02">
+                    <BtnTab
+                        type="button"
+                        className="btn btn-menu"
+                        isActive={activeTab === '등산'}
+                        onClick={() => handleTabClick('등산')}
+                    >
+                        등산
+                    </BtnTab>
+                    </dt>
+                    {activeTab === '등산' && (
+                    <ContentList>
+                        {videoList.map((video) => (
+                            <ContentListItem key={video.id}>
+                                <img
+                                src={video.thumbnail}
+                                alt={video.title}
+                                onError={(e) => {
+                                    e.currentTarget.src = 'default_image_url';
+                                }}
+                                />
+                                <div>{video.title}</div>
+                            </ContentListItem>
+                        ))}
+                    </ContentList>
+                    )}
+                    <dt className="category03">
+                    <BtnTab
+                        type="button"
+                        className="btn btn-menu"
+                        isActive={activeTab === '헬스'}
+                        onClick={() => handleTabClick('헬스')}
+                    >
+                        헬스
+                    </BtnTab>
+                    </dt>
+                    {activeTab === '헬스' && (
+                    <ContentList>
+                        {videoList.map((video) => (
+                            <ContentListItem key={video.id}>
+                                <img
+                                src={video.thumbnail}
+                                alt={video.title}
+                                onError={(e) => {
+                                    e.currentTarget.src = 'default_image_url';
+                                }}
+                                />
+                                <div>{video.title}</div>
+                            </ContentListItem>
+                        ))}
+                    </ContentList>
+                    )}
+                </VideoCategory>
                 </VideoSection>
             </VideoInn>
             {currentVideo && <VideoPopup video={currentVideo} onClose={() => setCurrentVideo(null)} />}
+            <div ref={bottomRef} />
         </>
-
     );
-}
+    }
 
 const VideoInn = styled.div`
     position: relative;
@@ -186,6 +223,14 @@ const ContentList = styled.dd`
 //비디오 목록
 const ContentListItem = styled.div`
     width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    img {
+        width: 100%;
+        height: auto;
+    }
 `;
 
 const BtnTab = styled.button<BtnTabProps>`
