@@ -77,6 +77,7 @@ const SenderNickname = styled.p`
 const LastMessageContent = styled.p`
   font-size: 14px;
 `;
+
 const ColBottom = styled.div`
   display: flex;
   flex-direction: column;

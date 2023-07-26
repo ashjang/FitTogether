@@ -1,7 +1,6 @@
 import React from "react";
 import ChatApp from "../../components/Messenger/ChatApp";
 import ChatList from "../../components/Messenger/ChatList";
-// import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 
 interface Props {}

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import React from "react";
 import ChatListItem from "./ChatListItem";
 import styled from "@emotion/styled";
