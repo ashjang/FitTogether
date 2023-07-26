@@ -9,3 +9,12 @@ Content-Type: application/json
   "password": "12345",
   "public_info": true
 }
+
+### 일반 로그인
+POST http://localhost:8080/users/signin
+Content-Type: application/json
+
+{
+  "nickname": "nickname",
+  "password": "12345"
+}

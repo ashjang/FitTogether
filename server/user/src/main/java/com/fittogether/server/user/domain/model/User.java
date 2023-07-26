@@ -1,6 +1,7 @@
 package com.fittogether.server.user.domain.model;
 
 import com.fittogether.server.user.domain.dto.SignUpForm;
+import com.fittogether.server.user.domain.dto.UserType;
 import lombok.*;
 import org.hibernate.envers.AuditOverride;
 
@@ -33,6 +34,7 @@ public class User extends BaseEntity {
     private String introduction;
     private Double latitude;
     private Double longitude;
+    private UserType userType;
 
     public static User from(SignUpForm form) {
         return User.builder()
@@ -41,6 +43,7 @@ public class User extends BaseEntity {
                 .email(form.getEmail())
                 .gender(form.isGender())
                 .publicInfo(form.isPublicInfo())
+                .userType(UserType.FITTOGETHER)
                 .build();
     }
 }
