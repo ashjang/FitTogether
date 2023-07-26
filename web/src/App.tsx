@@ -16,7 +16,6 @@ function App() {
                     <Route path='/signin' element={<Signin />} /> */}
       </Routes>
       {/* <Footer /> */}
-      <Bookmark />
     </BrowserRouter>
   );
 }
