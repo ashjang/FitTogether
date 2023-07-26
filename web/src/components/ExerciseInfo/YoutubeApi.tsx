@@ -18,7 +18,7 @@ interface Item {
     };
 }
 
-const API_KEY = 'AIzaSyD26946NOfQsR5aSkR4cfZnx5sUq-B-dTg';
+const API_KEY = 'AIzaSyCfmtIFijnjp9e--1hTc5FICf3mippF2kY';
 
 export const fetchVideosFromYoutubeAPI = async (
     activeTab: string,
@@ -52,3 +52,4 @@ export const fetchVideosFromYoutubeAPI = async (
         return [];
     }
 };
+
