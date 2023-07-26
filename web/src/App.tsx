@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import Header from './components/common/Header.tsx';
-import Comments from './components/Community_Post/Comments.tsx';
+import Header from './components/common/Header';
 // import Footer from './components/common/Footer';
 
 function App() {
@@ -16,7 +15,6 @@ function App() {
                     <Route path='/signin' element={<Signin />} /> */}
       </Routes>
       {/* <Footer /> */}
-      <Comments />
     </BrowserRouter>
   );
 }
