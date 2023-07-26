@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import Header from './components/common/Header';
+import Bookmark from './pages/Bookmark/Bookmark';
 // import Footer from './components/common/Footer';
 
 function App() {
