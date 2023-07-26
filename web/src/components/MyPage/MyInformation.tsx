@@ -1,5 +1,7 @@
 /** @jsxImportSource @emotion/react */
+
 import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import React, { useState } from 'react';
 
 const MyInformation: React.FC = () => {
@@ -29,8 +31,8 @@ const MyInformation: React.FC = () => {
 
   return (
     <div>
-      <div>
-        <label css={labelFontStyle}>아이디(닉네임)</label>
+      <InputContainer>
+        <label css={labelStyle}>아이디(닉네임)</label>
         <input
           type="text"
           name="username"
@@ -42,32 +44,47 @@ const MyInformation: React.FC = () => {
         <button onClick={duplicationCheck} css={inputButton}>
           중복검사
         </button>
-      </div>
-      <div>
-        <label css={labelFontStyle}>비밀번호</label>
+      </InputContainer>
+      <InputContainer>
+        <label css={labelStyle}>비밀번호</label>
         <input
           type="password"
           name="password"
           css={inputStyles}
           placeholder="영문 대소문자/숫자/특수문자 중 2가지 이상 조합, 8~16자"
         />
-        <br />
+      </InputContainer>
+      <InputContainer>
+        <label css={labelStyle}>비밀번호 확인</label>
         <input
           type="password"
           name="password"
           css={inputStyles}
           placeholder="다시 한번 입력하세요"
         />
-      </div>
-      <p css={labelFontStyle}>이메일</p>
-      <div>
-        <span css={labelFontStyle}>프로필 이미지</span>
-        <button type="button" onClick={uploadProfileImage} css={inputButton}>
-          설정
-        </button>
-      </div>
+      </InputContainer>
+      <InputContainer>
+        <label css={labelStyle}>이메일</label>
+        <input
+          type="email"
+          name="email"
+          css={inputStyles}
+          value={'qwerty1234@gmail.com'}
+          readOnly
+        />
+      </InputContainer>
+      <InputContainer>
+        <label css={labelStyle}>프로필 이미지</label>
+        <input
+          type="button"
+          name="image"
+          onClick={uploadProfileImage}
+          css={inputButton}
+          value="설정"
+        />
+      </InputContainer>
       <div css={containerStyles}>
-        <p css={[labelStyles, labelFontStyle]}>성별</p>
+        <p css={labelStyle}>성별</p>
         <label css={radioButtonStyles}>
           <input type="radio" name="gender" value="남성" />
           남성
@@ -78,7 +95,7 @@ const MyInformation: React.FC = () => {
         </label>
       </div>
       <div css={containerStyles}>
-        <p css={[labelStyles, labelFontStyle]}>주로 하는 운동</p>
+        <p css={labelStyle}>주로 하는 운동</p>
         <label css={radioButtonStyles}>
           <input type="checkbox" name="favorite" value="러닝" />
           러닝
@@ -92,12 +109,17 @@ const MyInformation: React.FC = () => {
           헬스
         </label>
       </div>
-      <div>
-        <p css={labelFontStyle}>자기소개</p>
-        <input type="text" css={inputStyles}></input>
-      </div>
+      <InputContainer>
+        <p css={labelStyle}>자기소개</p>
+        <input
+          type="text"
+          css={inputStyles}
+          placeholder="최대 100자까지 입력 가능"
+          maxLength={100}
+        />
+      </InputContainer>
       <div css={containerStyles}>
-        <p css={[labelStyles, labelFontStyle]}>공개 여부 </p>
+        <p css={labelStyle}>공개 여부 </p>
         <label css={radioButtonStyles}>
           <input type="radio" name="publicStatus" value="공개" />
           공개
@@ -108,16 +130,22 @@ const MyInformation: React.FC = () => {
         </label>
       </div>
       <div css={formArea}>
-        <button type="button" onClick={handleSaveClick} css={saveButton}>
-          저장
-        </button>
+        <input
+          type="button"
+          name="save"
+          onClick={handleSaveClick}
+          css={inputButton}
+          value="저장"
+        />
       </div>
     </div>
   );
 };
 
-const labelFontStyle = css`
+const labelStyle = css`
   font-weight: bold;
+  width: 108px;
+  margin-right: 10px;
 `;
 
 const inputStyles = css`
@@ -126,7 +154,7 @@ const inputStyles = css`
   border: none;
   border-bottom: 1px solid black;
   outline: none;
-  width: 300px;
+  width: 350px;
 `;
 
 const inputButton = css`
@@ -135,11 +163,13 @@ const inputButton = css`
   text-align: center;
   box-shadow: 4px 4px 4px rgba(0, 0, 0, 25%);
   cursor: pointer;
+  margin-left: 50px;
 `;
 
 const formArea = css`
   display: flex;
   flex-direction: row-reverse;
+  align-items: flex-start;
 `;
 
 const containerStyles = css`
@@ -148,20 +178,14 @@ const containerStyles = css`
   justify-content: space-between;
 `;
 
-const labelStyles = css`
-  margin-right: 10px;
+const InputContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 `;
 
 const radioButtonStyles = css`
   margin-right: 70px;
-`;
-
-const saveButton = css`
-  border: 1px solid black;
-  background-color: white;
-  text-align: center;
-  box-shadow: 4px 4px 4px rgba(0, 0, 0, 25%);
-  cursor: pointer;
 `;
 
 export default MyInformation;
