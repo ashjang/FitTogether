@@ -10,6 +10,22 @@ Content-Type: application/json
   "accessLevel": true,
   "hashtag": [
     {"keyword": "오운완"},
-    {"keyword": "등산"}
+    {"keyword": "운동"}
+  ]
+}
+
+### update post
+PUT http://localhost:8080/posts/8
+Content-Type: application/json
+
+{
+  "title": "제목2",
+  "description": "내용2",
+  "image": "",
+  "category": "RUNNING",
+  "accessLevel": true,
+  "hashtag": [
+    {"keyword": "운동" },
+    {"keyword": "클라이밍" }
   ]
 }
