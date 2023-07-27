@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import styled from "@emotion/styled";
 
 import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
@@ -31,13 +30,13 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/messenger" element={<Messenger />} />
         <Route path="/bookmark" element={<Bookmark />} />
-        <Route path="/exerciseInfo" element={<ExerciseInfo />} />
-        <Route path="/findMate" element={<FindMate />} />
+        <Route path="/exerciseinfo" element={<ExerciseInfo />} />
+        <Route path="/findmate" element={<FindMate />} />
         <Route path="/community" element={<Community />} />
         <Route path="/community/post" element={<Post />} />
         <Route path="/community/createpost" element={<CreatePost />} />
-        <Route path="/myPage" element={<MyPage />} />
-        <Route path="/myPage/myvideos" element={<MyVideos />} />
+        <Route path="/mypage" element={<MyPage />} />
+        <Route path="/mypage/myvideos" element={<MyVideos />} />
       </Routes>
       <Footer />
     </BrowserRouter>

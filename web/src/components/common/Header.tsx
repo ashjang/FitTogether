@@ -37,13 +37,13 @@ function Header() {
             </li>
             <li>
               <span className="blind">DM</span>
-              <DmBtn to="/" className="btn dm">
+              <DmBtn to="/messenger" className="btn dm">
                 <i className="fas fa-comment"></i>
               </DmBtn>
             </li>
             <li>
               <span className="blind">즐겨찾기</span>
-              <LikeBtn to="/" className="btn like-page">
+              <LikeBtn to="/bookmark" className="btn like-page">
                 <i className="fas fa-bookmark"></i>
               </LikeBtn>
             </li>
@@ -64,7 +64,7 @@ function Header() {
         </div>
         <div className="login-section" css={loginSection}>
           <LoginLink
-            to="/login"
+            to="/signin"
             id="header-btn-login"
             className="btn btn-login-link"
           >
@@ -72,7 +72,7 @@ function Header() {
           </LoginLink>
           <span>|</span>
           <SignInLink
-            to="/signin"
+            to="/signup"
             id="header-btn-signin"
             className="btn btn-signin-link"
           >
@@ -91,22 +91,22 @@ function Header() {
           </MenuBtn>
           <ul className="menu" css={Menu}>
             <li css={menuLi}>
-              <Link to="/">
+              <Link to="/exerciseinfo">
                 <span>운동 정보</span>
               </Link>
             </li>
             <li css={menuLi}>
-              <Link to="/">
+              <Link to="/findmate">
                 <span>운동 메이트 찾기</span>
               </Link>
             </li>
             <li css={menuLi}>
-              <Link to="/">
+              <Link to="/community">
                 <span>커뮤니티</span>
               </Link>
             </li>
             <li css={menuLi}>
-              <Link to="/">
+              <Link to="/mypage">
                 <span>마이 페이지</span>
               </Link>
             </li>
