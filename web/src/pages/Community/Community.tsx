@@ -1,15 +1,10 @@
-import React from 'react';
-import Comments from '../../components/Community_Post/Comments';
+import React from "react";
 
-const Community: React.FC = () => {
+interface Props {}
+
+const Community: React.FC<Props> = () => {
   return (
     <div>
-      <header>헤더</header>
-      <div>
-        Contents
-        <Comments />
-      </div>
-      <footer>푸터</footer>
     </div>
   );
 };

@@ -31,7 +31,6 @@ function App() {
 						<Route path='/signin' element={<Signin />} />
 						<Route path='/messenger' element={<Messenger />} />
 						<Route path='/bookmark' element={<Bookmark />} />
-
 						<Route path='/exerciseInfo' element={<ExerciseInfo />} />
 						<Route path='/findMate' element={<FindMate />} />
 						<Route path='/community' element={<Community />} />
