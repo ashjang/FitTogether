@@ -8,6 +8,7 @@ const PostFilter: React.FC<Props> = () => {
   const [category, setCategory] = useState("");
   const [keyword, setKeyword] = useState("");
   const [hashtag, setHashtag] = useState("");
+  const [align, setAlign] = useState("최신순");
 
   const handleKeywordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(event.target.value);
@@ -15,7 +16,7 @@ const PostFilter: React.FC<Props> = () => {
 
   const handleKeywordSubmit = async () => {
     // 서버에게 'keyword'로 필터링된 데이터 요청
-    await fetchData(category, keyword, hashtag);
+    await fetchData(category, keyword, hashtag, align);
   };
 
   const handleHashtagChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,37 +25,43 @@ const PostFilter: React.FC<Props> = () => {
 
   const handleHashtagSubmit = async () => {
     // 서버에게 'hashtag'로 필터링된 데이터 요청
-    await fetchData(category, keyword, hashtag);
+    await fetchData(category, keyword, hashtag, align);
   };
 
-  const handleCategoryClick = (newCategory: string) => {
+  const handleCategoryClick = async (newCategory: string) => {
     // 이전 선택과 다른 카테고리를 선택했을 때만 업데이트
     if (category !== newCategory) {
       setCategory(newCategory);
     } else {
-      // 이미 선택된 카테고리를 다시 클릭했을 때 초기 상태로 돌아오게 처리
+      // 이미 선택된 카테고리를 다시 클릭했을 때 초기 상태(모든 카테고리)로 돌아오게 처리
       setCategory("");
     }
+    await fetchData(category, keyword, hashtag, align);
+  };
+
+  const handleAlignClick = async (newAlign: string) => {
+    // 이전 선택과 다른 카테고리를 선택했을 때만 업데이트
+    setAlign(newAlign);
+    await fetchData(category, keyword, hashtag, align);
   };
 
   const fetchData = async (
-    selectedCategory: string,
+    categoryValue: string,
     keywordValue: string,
-    hashtagValue: string
+    hashtagValue: string,
+    alignValue: string
   ) => {
     try {
-      // 여기에서 서버에 데이터를 요청하고 응답을 처리합니다.
-      // axios를 사용하여 서버와 통신합니다.
-      // 예시로 요청 URL은 '/api/data'로 가정합니다.
+      // 서버에 데이터를 요청하고 응답을 처리, 경로는 수정해야함
       const response = await axios.get(
-        `/posts?category=${selectedCategory}&keyword=${keywordValue}&hashtag=${hashtagValue}`
+        `/posts?category=${categoryValue}&keyword=${keywordValue}&hashtag=${hashtagValue}}&align=${alignValue}`
       );
 
-      // 응답 데이터 처리
+      // 응답 데이터
       console.log("응답 데이터:", response.data);
-      // 서버로부터 받은 데이터를 처리하는 로직을 추가하세요.
+      // 서버로부터 받은 데이터를 처리하는 로직을 추가해야함
     } catch (error) {
-      // 에러 처리
+      // 에러
       console.error("데이터 요청 에러:", error);
     }
   };
@@ -84,6 +91,11 @@ const PostFilter: React.FC<Props> = () => {
             placeholder="태그로 검색해보세요!"
           />
           <button onClick={handleHashtagSubmit}>검색</button>
+        </div>
+        <div>
+          <button onClick={() => handleAlignClick("최신순")}>최신순</button>
+          <button onClick={() => handleAlignClick("조회수순")}>조회수순</button>
+          <button onClick={() => handleAlignClick("좋아요순")}>좋아요순</button>
         </div>
       </div>
       <PopularHashtag>인기 해시태그</PopularHashtag>
