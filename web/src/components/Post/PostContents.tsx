@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import imgSrc from "./default-user-image.png";
+import imgSrc from "../../assets/default-user-image.png";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";

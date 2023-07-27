@@ -1,13 +1,13 @@
 /** @jsxImportSource @emotion/react */
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import styled from '@emotion/styled';
-import { css } from '@emotion/react';
-import { FaPlus, FaMinus } from 'react-icons/fa';
+import styled from "@emotion/styled";
+import { css } from "@emotion/react";
+import { FaPlus, FaMinus } from "react-icons/fa";
 
-import BookmarkFolder from '../../components/Bookmark/BookmarkFolder';
-import BookmarkSetting from '../../components/Bookmark/BookmarkSetting';
+import BookmarkFolder from "../components/Bookmark/BookmarkFolder";
+import BookmarkSetting from "../components/Bookmark/BookmarkSetting";
 
 const Bookmark: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -16,15 +16,16 @@ const Bookmark: React.FC = () => {
     setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
   };
 
+  const addFolder = () => {};
+
   return (
     <div>
-      <header>헤더</header>
       <div css={Container}>
         <TitleArea>
           <p css={centeredTextStyle}>즐겨찾기</p>
           {isPopupOpen ? (
             <>
-              <BookmarkSetting />
+              <BookmarkSetting addFolder={addFolder} />
               <FaMinus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
             </>
           ) : (
@@ -35,7 +36,6 @@ const Bookmark: React.FC = () => {
       <div css={Container}>
         <BookmarkFolder />
       </div>
-      <footer>푸터</footer>
     </div>
   );
 };

@@ -1,44 +1,47 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import styled from "@emotion/styled";
 
-import Header from './components/common/Header';
-import Footer from './components/common/Footer';
+import Header from "./components/common/Header";
+import Footer from "./components/common/Footer";
 
 // 상단 우측 아이콘
-import Login from './pages/LogIn/LogIn';
-import Signin from './pages/LogInSub/SignIn';
-import Messenger from './pages/Messenger/Messenger';
-import Bookmark from './pages/Bookmark/Bookmark';
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+import Messenger from "./pages/Messenger";
+import Bookmark from "./pages/Bookmark";
 
 //하단 4개 카테고리 해당페이지
-import ExerciseInfo from './pages/ExerciseInfo/ExerciseInfo';
-import FindMate from './pages/FindMate/FindMate';
-import Community from './pages/Community/Community';
-import MyPage from './pages/MyPage/MyPage';
-
-
+import ExerciseInfo from "./pages/ExerciseInfo";
+import FindMate from "./pages/FindMate";
+import Community from "./pages/Community";
+import Post from "./pages/Post";
+import CreatePost from "./pages/CreatePost";
+import MyPage from "./pages/MyPage";
+import MyVideos from "./pages/MyVideos";
 
 import "./index.css";
 
 function App() {
-	return (
-		<BrowserRouter>
-			<Header />
-				<Routes>
-						<Route path='/' />
-						<Route path="/header" element={<Header />} />
-						<Route path='/footer' element={<Footer />} />
-						<Route path='/login' element={<Login />} />
-						<Route path='/signin' element={<Signin />} />
-						<Route path='/messenger' element={<Messenger />} />
-						<Route path='/bookmark' element={<Bookmark />} />
-						<Route path='/exerciseInfo' element={<ExerciseInfo />} />
-						<Route path='/findMate' element={<FindMate />} />
-						<Route path='/community' element={<Community />} />
-						<Route path='/myPage' element={<MyPage />} />
-				</Routes>
-			<Footer />
-		</BrowserRouter>
-	);
+  return (
+    <BrowserRouter>
+      <Header />
+      <Routes>
+        <Route path="/" />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/messenger" element={<Messenger />} />
+        <Route path="/bookmark" element={<Bookmark />} />
+        <Route path="/exerciseInfo" element={<ExerciseInfo />} />
+        <Route path="/findMate" element={<FindMate />} />
+        <Route path="/community" element={<Community />} />
+        <Route path="/community/post" element={<Post />} />
+        <Route path="/community/createpost" element={<CreatePost />} />
+        <Route path="/myPage" element={<MyPage />} />
+        <Route path="/myPage/myvideos" element={<MyVideos />} />
+      </Routes>
+      <Footer />
+    </BrowserRouter>
+  );
 }
 
 export default App;

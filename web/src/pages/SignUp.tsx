@@ -5,7 +5,7 @@ import styled from "@emotion/styled";
 
 interface Props {}
 
-const SignIn: React.FC<Props> = () => {
+const SignUp: React.FC<Props> = () => {
   const [nickname, setNickname] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -186,8 +186,8 @@ const Page = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   // min-height는 삭제 예정
+  min-height: calc(100vh - 300px);
 `;
 
 const Title = styled.h1`
@@ -278,4 +278,4 @@ const BackButtonText = styled.p`
   border-bottom: 1px solid black;
 `;
 
-export default SignIn;
+export default SignUp;

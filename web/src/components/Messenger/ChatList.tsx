@@ -1,7 +1,7 @@
 import React from "react";
 import ChatListItem from "./ChatListItem";
 import styled from "@emotion/styled";
-import default_user_image from "./default_user_image.png";
+import default_user_image from "../../assets/default-user-image.png";
 
 const imageSrc: string = default_user_image;
 

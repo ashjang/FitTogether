@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import axios from "axios";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import KakaoTalk_logo from "./KakaoTalk_logo.png";
+import KakaoTalk_logo from "../assets/KakaoTalk_logo.png";
 
 interface Props {}
 
-const LogIn: React.FC<Props> = () => {
+const SignIn: React.FC<Props> = () => {
   const [nickname, setnickName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [token, setToken] = useState<string>("");
@@ -73,8 +73,8 @@ const Page = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   // min-height는 삭제 예정
+  min-height: calc(100vh - 300px);
 `;
 
 const Container = styled.div`
@@ -148,4 +148,4 @@ const SignInButton = styled.button`
   `}
 `;
 
-export default LogIn;
+export default SignIn;

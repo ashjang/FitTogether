@@ -39,8 +39,8 @@ const Page = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  // min-height는 추후 삭제
-  min-height: 100vh;
+  // min-height는 삭제 예정
+  min-height: calc(100vh - 300px);
 `;
 
 const Title = styled.input`

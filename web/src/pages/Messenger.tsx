@@ -1,6 +1,6 @@
 import React from "react";
-import ChatApp from "../../components/Messenger/ChatApp";
-import ChatList from "../../components/Messenger/ChatList";
+import ChatApp from "../components/Messenger/ChatApp";
+import ChatList from "../components/Messenger/ChatList";
 import styled from "@emotion/styled";
 
 interface Props {}
@@ -20,7 +20,8 @@ const Page = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  // min-height는 삭제 예정
+  min-height: calc(100vh - 300px);
 `;
 
 const Component = styled.div`

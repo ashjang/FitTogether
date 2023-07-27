@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
-import styled from '@emotion/styled';
+import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
-import LogoImg from './../../assets/logo.png';
+import LogoImg from "./../../assets/logo.png";
 
 // headerMainBar
 function Header() {
@@ -180,7 +180,7 @@ const Menu = css`
 `;
 const menuLi = css`
     padding: 0 20px
-    &:first-child {
+    &:first-of-type {
         padding: 0 30px;
     }
 `;
