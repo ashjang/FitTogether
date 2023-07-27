@@ -1,14 +1,14 @@
 ### create post
 POST http://localhost:8080/posts
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzTTRPKzhMZTlwNHpncUlhbUhQekZnPT0iLCJqdGkiOiJjYTlYUzFwT1RRcHNubFJaYzNncHhnPT0iLCJpYXQiOjE2OTAzNzU2NjUsImV4cCI6MTY5MDQ2MjA2NX0.6Eghoho8nIb4msK_zVSc_9TprrB91NGJ0BsF-BZ1x2o
+X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzTTRPKzhMZTlwNHpncUlhbUhQekZnPT0iLCJqdGkiOiJjYTlYUzFwT1RRcHNubFJaYzNncHhnPT0iLCJpYXQiOjE2OTAzNzU2NjUsImV4cCI6MTY5MDQ2MjA2NX0.6Eghoho8nIb4msK_zVSc_9TprrB91NGJ0BsF-BZ1x2o
 
 {
   "title": "제목",
   "description": "내용",
   "image": "",
   "category": "CLIMBING",
-  "accessLevel": true,
+  "accessLevel": false,
   "hashtag": [
     {"keyword": "오운완"},
     {"keyword": "운동"}
@@ -18,7 +18,7 @@ Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzTTRPKzhMZTlwNHpncUlhbUhQekZnPT0i
 ### update post
 PUT http://localhost:8080/posts/9
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzTTRPKzhMZTlwNHpncUlhbUhQekZnPT0iLCJqdGkiOiJjYTlYUzFwT1RRcHNubFJaYzNncHhnPT0iLCJpYXQiOjE2OTAzNzU2NjUsImV4cCI6MTY5MDQ2MjA2NX0.6Eghoho8nIb4msK_zVSc_9TprrB91NGJ0BsF-BZ1x2o
+X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzTTRPKzhMZTlwNHpncUlhbUhQekZnPT0iLCJqdGkiOiJjYTlYUzFwT1RRcHNubFJaYzNncHhnPT0iLCJpYXQiOjE2OTAzNzU2NjUsImV4cCI6MTY5MDQ2MjA2NX0.6Eghoho8nIb4msK_zVSc_9TprrB91NGJ0BsF-BZ1x2o
 
 {
   "title": "제목2",
@@ -35,4 +35,18 @@ Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzTTRPKzhMZTlwNHpncUlhbUhQekZnPT0i
 ### delete post
 DELETE http://localhost:8080/posts/9
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzTTRPKzhMZTlwNHpncUlhbUhQekZnPT0iLCJqdGkiOiJjYTlYUzFwT1RRcHNubFJaYzNncHhnPT0iLCJpYXQiOjE2OTAzNzU2NjUsImV4cCI6MTY5MDQ2MjA2NX0.6Eghoho8nIb4msK_zVSc_9TprrB91NGJ0BsF-BZ1x2o
+X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzTTRPKzhMZTlwNHpncUlhbUhQekZnPT0iLCJqdGkiOiJjYTlYUzFwT1RRcHNubFJaYzNncHhnPT0iLCJpYXQiOjE2OTAzNzU2NjUsImV4cCI6MTY5MDQ2MjA2NX0.6Eghoho8nIb4msK_zVSc_9TprrB91NGJ0BsF-BZ1x2o
+
+### create reply
+POST http://localhost:8080/posts/10/comment
+Content-Type: application/json
+X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzTTRPKzhMZTlwNHpncUlhbUhQekZnPT0iLCJqdGkiOiJjYTlYUzFwT1RRcHNubFJaYzNncHhnPT0iLCJpYXQiOjE2OTAzNzU2NjUsImV4cCI6MTY5MDQ2MjA2NX0.6Eghoho8nIb4msK_zVSc_9TprrB91NGJ0BsF-BZ1x2o
+
+{
+  "comment": "반갑습니다."
+}
+
+### click post
+GET http://localhost:8080/posts/11
+Content-Type: application/json
+

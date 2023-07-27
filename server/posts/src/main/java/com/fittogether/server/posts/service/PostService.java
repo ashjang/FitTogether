@@ -3,12 +3,16 @@ package com.fittogether.server.posts.service;
 import com.fittogether.server.domain.token.JwtProvider;
 import com.fittogether.server.domain.token.UserVo;
 import com.fittogether.server.posts.domain.dto.PostForm;
+import com.fittogether.server.posts.domain.dto.PostInfo;
+import com.fittogether.server.posts.domain.dto.ReplyForm;
 import com.fittogether.server.posts.domain.model.Hashtag;
 import com.fittogether.server.posts.domain.model.Post;
 import com.fittogether.server.posts.domain.model.PostHashtag;
+import com.fittogether.server.posts.domain.model.Reply;
 import com.fittogether.server.posts.domain.repository.HashtagRepository;
 import com.fittogether.server.posts.domain.repository.PostHashtagRepository;
 import com.fittogether.server.posts.domain.repository.PostRepository;
+import com.fittogether.server.posts.domain.repository.ReplyRepository;
 import com.fittogether.server.posts.exception.ErrorCode;
 import com.fittogether.server.posts.exception.PostException;
 import com.fittogether.server.user.domain.model.User;
@@ -30,6 +34,7 @@ public class PostService {
   private final PostHashtagRepository postHashtagRepository;
   private final UserRepository userRepository;
   private final HashtagRepository hashtagRepository;
+  private final ReplyRepository replyRepository;
   private final JwtProvider provider;
 
   // 게시글 작성
@@ -141,5 +146,44 @@ public class PostService {
     postHashtagRepository.deleteAll(postIds);
 
     postRepository.delete(post);
+  }
+
+  @Transactional
+  public PostInfo getPostById(Long postId) {
+
+    Post post = postRepository.findById(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
+
+    if (!post.isAccessLevel()) {
+      throw new PostException(ErrorCode.NO_PERMISSION_TO_VIEW_POST);
+    }
+
+    List<Reply> replyList = replyRepository.findByPostId(postId);
+
+
+    return PostInfo.from(post, replyList);
+  }
+
+  @Transactional
+  public Reply createReply(String token, Long postId, ReplyForm replyForm) {
+
+    UserVo userVo = provider.getUserVo(token);
+
+    User user = userRepository.findById(userVo.getUserId())
+        .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+    Post post = postRepository.findById(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
+
+    Reply reply = Reply.builder()
+        .post(post)
+        .user(user)
+        .comment(replyForm.getComment())
+//        .likes()
+        .createdAt(LocalDateTime.now())
+        .build();
+
+
+    return replyRepository.save(reply);
   }
 }
