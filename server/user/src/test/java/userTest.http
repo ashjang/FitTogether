@@ -18,3 +18,8 @@ Content-Type: application/json
   "nickname": "nickname",
   "password": "12345"
 }
+
+### 나의 정보 가져오기
+GET http://localhost:8080/users/my
+Content-Type: application/json
+X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2SXV4aEEvUDVLWnNPbG5rQXNtYUFnPT0iLCJqdGkiOiJjYTlYUzFwT1RRcHNubFJaYzNncHhnPT0iLCJpYXQiOjE2OTA0MjUyNDMsImV4cCI6MTY5MDUxMTY0M30.wiMv5ezuEHzI56CBijasljrdAJXvL4vfHbsMNyhDNEM

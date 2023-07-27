@@ -20,6 +20,7 @@ public class UserDto {
     private String introduction;
     private Double latitude;
     private Double longitude;
+    private UserType userType;
 
     public static UserDto from(User user) {
         return UserDto.builder()
@@ -33,6 +34,7 @@ public class UserDto {
                 .introduction(user.getIntroduction())
                 .latitude(user.getLatitude())
                 .longitude(user.getLongitude())
+                .userType(user.getUserType())
                 .build();
     }
 }

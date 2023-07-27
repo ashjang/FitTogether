@@ -13,7 +13,9 @@ public enum UserErrorCode {
 
     // 로그인
     NOT_FOUND_USER(HttpStatus.BAD_REQUEST, "닉네임과 비밀번호를 다시 확인해주세요."),
-    NOT_FOR_FITTOGETHER(HttpStatus.BAD_REQUEST, "소셜 로그인으로 다시 로그인해주세요.");
+    NOT_FOR_FITTOGETHER(HttpStatus.BAD_REQUEST, "소셜 로그인으로 다시 로그인해주세요."),
+
+    NEED_TO_SIGNIN(HttpStatus.BAD_REQUEST, "로그인이 필요합니다.");
 
     private final HttpStatus httpStatus;
     private final String detail;
