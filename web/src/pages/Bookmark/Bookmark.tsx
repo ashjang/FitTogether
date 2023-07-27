@@ -60,6 +60,7 @@ const TitleArea = styled.div`
 const centeredTextStyle = css`
   flex: 25;
   text-align: center;
+  font-size: 3rem;
 `;
 
 const rightAlignedStyle = css`
