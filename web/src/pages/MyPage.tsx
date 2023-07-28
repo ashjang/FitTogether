@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import MyInformation from "../components/MyPage/MyInformation";
-import MyPostList from "../components/MyPage/MyPostList";
-import MateList from "../components/common/MateList";
-import styled from "@emotion/styled";
+import React, { useState } from 'react';
+import MyInformation from '../components/MyPage/MyInformation';
+import MyPostList from '../components/MyPage/MyPostList';
+import MateList from '../components/common/MateList';
+import styled from '@emotion/styled';
 
 const MyPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("MyInformation");
+  const [activeTab, setActiveTab] = useState('MyInformation');
 
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
@@ -14,18 +14,18 @@ const MyPage: React.FC = () => {
   return (
     <div>
       <Tab>
-        <Button onClick={() => handleTabClick("MyInformation")}>
+        <Button onClick={() => handleTabClick('MyInformation')}>
           나의 정보
         </Button>
-        <Button onClick={() => handleTabClick("MyPostList")}>
+        <Button onClick={() => handleTabClick('MyPostList')}>
           작성 게시글
         </Button>
-        <Button onClick={() => handleTabClick("MateList")}>운동 메이트</Button>
+        <Button onClick={() => handleTabClick('MateList')}>운동 메이트</Button>
       </Tab>
       <Content>
-        {activeTab === "MyInformation" && <MyInformation />}
-        {activeTab === "MyPostList" && <MyPostList />}
-        {activeTab === "MateList" && <MateList />}
+        {activeTab === 'MyInformation' && <MyInformation />}
+        {activeTab === 'MyPostList' && <MyPostList />}
+        {activeTab === 'MateList' && <MateList />}
       </Content>
     </div>
   );
@@ -42,6 +42,8 @@ const Button = styled.button`
   font-weight: bold;
   font-size: 22px;
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
 
   &:hover {
     background-color: #d9d9d9;
@@ -57,9 +59,12 @@ const Tab = styled.div`
 `;
 
 const Content = styled.div`
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 10px;
+  margin-bottom: 50px;
 `;
 
 export default MyPage;
