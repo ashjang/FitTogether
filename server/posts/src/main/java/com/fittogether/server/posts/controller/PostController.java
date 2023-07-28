@@ -5,6 +5,7 @@ import com.fittogether.server.posts.domain.dto.PostForm;
 import com.fittogether.server.posts.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -33,6 +34,13 @@ public class PostController {
       @RequestBody PostForm postForm) {
     return ResponseEntity.ok(PostDto.from(
         postService.updatePost(token, postId, postForm)));
+  }
+  
+  @DeleteMapping("/posts/{postId}")
+  public ResponseEntity<?> deletePost(@RequestHeader(name = "Authorization") String token,
+      @PathVariable Long postId) {
+    postService.deletePost(token, postId);
 
+    return ResponseEntity.ok().body("게시글 삭제 완료");
   }
 }

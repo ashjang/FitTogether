@@ -11,6 +11,8 @@ import com.fittogether.server.posts.domain.repository.PostHashtagRepository;
 import com.fittogether.server.posts.domain.repository.PostRepository;
 import com.fittogether.server.posts.exception.ErrorCode;
 import com.fittogether.server.posts.exception.PostException;
+import com.fittogether.server.user.domain.model.User;
+import com.fittogether.server.user.domain.repository.UserRepository;
 import com.fittogether.server.user.exception.UserCustomException;
 import com.fittogether.server.user.exception.UserErrorCode;
 import java.time.LocalDateTime;
@@ -26,6 +28,7 @@ public class PostService {
 
   private final PostRepository postRepository;
   private final PostHashtagRepository postHashtagRepository;
+  private final UserRepository userRepository;
   private final HashtagRepository hashtagRepository;
   private final JwtProvider provider;
 
@@ -38,15 +41,16 @@ public class PostService {
 
     UserVo userVo = provider.getUserVo(token);
 
+    User user = userRepository.findById(userVo.getUserId())
+        .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
 //    if (!addPostForm.isAccessLevel()) {
 //    }
 
-
     List<Hashtag> savedHashtag = addHashtag(postForm);
 
     Post post = Post.builder()
-        .id(userVo.getUserId())
+        .user(user)
         .title(postForm.getTitle())
         .description(postForm.getDescription())
         .image(postForm.getImage())
@@ -119,8 +123,23 @@ public class PostService {
 
     UserVo userVo = provider.getUserVo(token);
 
-    if (!post.getId().equals(userVo.getUserId())) {
+    if (!post.getUser().getUserId().equals(userVo.getUserId())) {
       throw new UserCustomException(UserErrorCode.NOT_FOUND_USER);
     }
+  }
+
+  @Transactional
+  public void deletePost(String token, Long postId) {
+
+    Post post = postRepository.findById(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
+
+    validate(token, post);
+
+    List<PostHashtag> postIds = postHashtagRepository.findByPostId(postId);
+
+    postHashtagRepository.deleteAll(postIds);
+
+    postRepository.delete(post);
   }
 }

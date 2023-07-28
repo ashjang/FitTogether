@@ -1,6 +1,7 @@
 ### create post
 POST http://localhost:8080/posts
 Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzTTRPKzhMZTlwNHpncUlhbUhQekZnPT0iLCJqdGkiOiJjYTlYUzFwT1RRcHNubFJaYzNncHhnPT0iLCJpYXQiOjE2OTAzNzU2NjUsImV4cCI6MTY5MDQ2MjA2NX0.6Eghoho8nIb4msK_zVSc_9TprrB91NGJ0BsF-BZ1x2o
 
 {
   "title": "제목",
@@ -15,8 +16,9 @@ Content-Type: application/json
 }
 
 ### update post
-PUT http://localhost:8080/posts/8
+PUT http://localhost:8080/posts/9
 Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzTTRPKzhMZTlwNHpncUlhbUhQekZnPT0iLCJqdGkiOiJjYTlYUzFwT1RRcHNubFJaYzNncHhnPT0iLCJpYXQiOjE2OTAzNzU2NjUsImV4cCI6MTY5MDQ2MjA2NX0.6Eghoho8nIb4msK_zVSc_9TprrB91NGJ0BsF-BZ1x2o
 
 {
   "title": "제목2",
@@ -25,7 +27,12 @@ Content-Type: application/json
   "category": "RUNNING",
   "accessLevel": true,
   "hashtag": [
-    {"keyword": "운동" },
-    {"keyword": "클라이밍" }
+    {"keyword": "러닝" },
+    {"keyword": "등산" }
   ]
 }
+
+### delete post
+DELETE http://localhost:8080/posts/9
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzTTRPKzhMZTlwNHpncUlhbUhQekZnPT0iLCJqdGkiOiJjYTlYUzFwT1RRcHNubFJaYzNncHhnPT0iLCJpYXQiOjE2OTAzNzU2NjUsImV4cCI6MTY5MDQ2MjA2NX0.6Eghoho8nIb4msK_zVSc_9TprrB91NGJ0BsF-BZ1x2o
