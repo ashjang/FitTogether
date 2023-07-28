@@ -1,17 +1,18 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
+import React, { useState } from 'react';
+import axios from 'axios';
+import { css } from '@emotion/react';
+import styled from '@emotion/styled';
+import { Link } from 'react-router-dom';
 
 interface Props {}
 
 const SignUp: React.FC<Props> = () => {
-  const [nickname, setNickname] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [gender, setGender] = useState<string>("");
+  const [nickname, setNickname] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [gender, setGender] = useState<string>('');
   const [isPublic, setIsPublic] = useState<boolean>(false);
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
 
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
@@ -36,7 +37,7 @@ const SignUp: React.FC<Props> = () => {
   };
 
   const handlePublicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsPublic(event.target.value === "public");
+    setIsPublic(event.target.value === 'public');
   };
 
   const handleSignUp = async (event: React.FormEvent) => {
@@ -44,7 +45,7 @@ const SignUp: React.FC<Props> = () => {
 
     // 폼 유효성 검사
     if (password !== confirmPassword) {
-      alert("비밀번호가 일치하지 않습니다.");
+      alert('비밀번호가 일치하지 않습니다.');
       return;
     }
 
@@ -58,11 +59,11 @@ const SignUp: React.FC<Props> = () => {
     };
 
     try {
-      const response = await axios.post("/users/signup", formData);
-      console.log("회원가입 성공:", response.data);
+      const response = await axios.post('/users/signup', formData);
+      console.log('회원가입 성공:', response.data);
       // 회원 가입 성공 처리 로직 추가
     } catch (error) {
-      console.error("회원가입 실패:", error);
+      console.error('회원가입 실패:', error);
       // 회원 가입 실패 처리 로직 추가
     }
   };
@@ -130,7 +131,7 @@ const SignUp: React.FC<Props> = () => {
                 type="radio"
                 name="gender"
                 value="male"
-                checked={gender === "male"}
+                checked={gender === 'male'}
                 onChange={handleGenderChange}
               />
             </label>
@@ -140,7 +141,7 @@ const SignUp: React.FC<Props> = () => {
                 type="radio"
                 name="gender"
                 value="female"
-                checked={gender === "female"}
+                checked={gender === 'female'}
                 onChange={handleGenderChange}
               />
             </label>
@@ -175,7 +176,9 @@ const SignUp: React.FC<Props> = () => {
         <SignUpButton type="submit">회원 가입</SignUpButton>
       </Form>
       <BackButton href="">
-        <BackButtonText>로그인 화면으로 돌아가기</BackButtonText>
+        <Link to="/signin">
+          <BackButtonText>로그인 화면으로 돌아가기</BackButtonText>
+        </Link>
       </BackButton>
     </Page>
   );
