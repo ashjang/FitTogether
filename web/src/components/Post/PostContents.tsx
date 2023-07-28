@@ -28,7 +28,7 @@ const PostContents: React.FC<Props> = () => {
           contentLabel="Example Modal"
           style={{
             overlay: {
-              backgroundColor: "rgba(0, 0, 0, 0.1)",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
             },
             content: {
               width: "max-content",
@@ -38,7 +38,8 @@ const PostContents: React.FC<Props> = () => {
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
-              backgroundColor: "white",
+              border: "none",
+              backgroundColor: "transparent",
             },
           }}
         >
