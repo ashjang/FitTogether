@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp } from "@fortawesome/free-regular-svg-icons";
@@ -24,39 +25,45 @@ const PostListItem: React.FC<Props> = ({
 }) => {
   return (
     <PostListItemComponent>
-      <PostInfo>
-        <PostCategory>{postCategory}</PostCategory>
-        <PostTitle>{postTitle}</PostTitle>
-        <PostFirstParagraph>{postFirstParagraph}</PostFirstParagraph>
-        <PostDetail>
-          <PostDetailItem>
-            <FaThumbsUp icon={faThumbsUp} />
-            <span>{likeCount}</span>
-          </PostDetailItem>
-          <PostDetailItem>
-            <FaComment icon={faComment} />
-            <span>{commentCount}</span>
-          </PostDetailItem>
-          <PostDetailItem>
-            <span>조회수: {hitsCount}</span>
-          </PostDetailItem>
-        </PostDetail>
-      </PostInfo>
-      <PostImageContainer>
-        <PostImage src={postFirstImage} />
-      </PostImageContainer>
+      <ShowPost to="/community/post">
+        <PostInfo>
+          <PostCategory>{postCategory}</PostCategory>
+          <PostTitle>{postTitle}</PostTitle>
+          <PostFirstParagraph>{postFirstParagraph}</PostFirstParagraph>
+          <PostDetail>
+            <PostDetailItem>
+              <FaThumbsUp icon={faThumbsUp} />
+              <span>{likeCount}</span>
+            </PostDetailItem>
+            <PostDetailItem>
+              <FaComment icon={faComment} />
+              <span>{commentCount}</span>
+            </PostDetailItem>
+            <PostDetailItem>
+              <span>조회수: {hitsCount}</span>
+            </PostDetailItem>
+          </PostDetail>
+        </PostInfo>
+        <PostImageContainer>
+          <PostImage src={postFirstImage} />
+        </PostImageContainer>
+      </ShowPost>
     </PostListItemComponent>
   );
 };
 
 const PostListItemComponent = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   width: 750px;
   height: 150px;
   margin: 25px 0;
 `;
+
+const ShowPost = styled(Link)`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 const PostInfo = styled.div`
   display: flex;
   flex-direction: column;

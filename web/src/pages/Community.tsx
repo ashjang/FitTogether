@@ -12,29 +12,33 @@ const Community: React.FC<Props> = () => {
       <Title>커뮤니티</Title>
       <PostFilter />
       <PostList />
-      <NewPost to="/community/createpost">게시글 작성</NewPost>
+      <Link to="/community/createpost">
+        <NewPost>게시글 작성</NewPost>
+      </Link>
     </Page>
   );
 };
-
-const Title = styled.h1`
-  width: 750px;
-`;
 
 const Page = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
   width: 750px;
   margin: 0 auto;
   // // min-height는 삭제 예정
   // min-height: calc(100vh - 300px);
 `;
 
-const NewPost = styled(Link)`
+const Title = styled.h1`
   width: 750px;
-  display: flex;
-  justify-content: flex-end;
 `;
+
+const NewPost = styled.button`
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+`;
+
 export default Community;
