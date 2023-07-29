@@ -18,6 +18,8 @@ import CreatePost from './pages/CreatePost';
 import MyPage from './pages/MyPage';
 import MyVideos from './pages/MyVideos';
 
+import MainPage from './pages//MainPage'; //메인페이지
+
 import './index.css';
 
 function App() {
@@ -25,7 +27,8 @@ function App() {
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="/" />
+        {/* <Route path="/" /> */}
+        <Route path='/' element={<MainPage />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/messenger" element={<Messenger />} />
@@ -37,6 +40,9 @@ function App() {
         <Route path="/community/createpost" element={<CreatePost />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/mypage/myvideos" element={<MyVideos />} />
+        
+        {/* 메인페이지 슬라이드에 따른 페이지 이동 */}
+        <Route path='/exerciseInfo/:slideNumber' element={<ExerciseInfo />} />
       </Routes>
       <Footer />
     </BrowserRouter>
