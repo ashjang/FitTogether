@@ -75,7 +75,7 @@ const PostFilter: React.FC<Props> = () => {
           <button onClick={() => handleCategoryClick("헬스")}>헬스</button>
         </div>
         <div>
-          <input
+          <PostFilterInput
             type="text"
             value={keyword}
             onChange={handleKeywordChange}
@@ -84,7 +84,7 @@ const PostFilter: React.FC<Props> = () => {
           <button onClick={handleKeywordSubmit}>검색</button>
         </div>
         <div>
-          <input
+          <PostFilterInput
             type="text"
             value={hashtag}
             onChange={handleHashtagChange}
@@ -105,9 +105,18 @@ const PostFilter: React.FC<Props> = () => {
 
 const PostFilterComponent = styled.div`
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 750px;
+`;
+
+const PostFilterInput = styled.input`
+  width: 400px;
 `;
 
 const PopularHashtag = styled.div`
+  width: 200px;
+  height: 120px;
   background-color: #d7d7d7;
 `;
 
