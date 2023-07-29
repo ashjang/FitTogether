@@ -1,12 +1,11 @@
 package com.fittogether.server.dm.mate.controller;
 
+import com.fittogether.server.dm.domain.dto.ChattingDto;
 import com.fittogether.server.dm.domain.dto.RequestDto;
 import com.fittogether.server.dm.domain.dto.RequestForm;
 import com.fittogether.server.dm.service.MateService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class mateController {
@@ -26,7 +25,13 @@ public class mateController {
           return ResponseEntity.ok(mateService.mateRequest(requestForm));
     }
 
-
+    @PutMapping("/matching/request")
+    public ResponseEntity<ChattingDto> mateAccept(
+            //@RequestHeader("token") String token
+            @RequestParam boolean is_matched
+    ){
+        return null;
+    }
 
 
 }
