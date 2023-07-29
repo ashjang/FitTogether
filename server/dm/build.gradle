@@ -18,7 +18,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    implementation 'javax.validation:validation-api:2.0.1.Final' // 사용하는 버전에 맞게 변경하세요
+    implementation 'javax.validation:validation-api:2.0.1.Final'
 
     //implementation project(':domain')
 

@@ -27,12 +27,10 @@ public class Request {
 
 
     public static Request from(RequestForm requestForm){
-
                Request request = Request.builder()
                 .senderId(requestForm.getSenderId())
                 .receiverId(requestForm.getReceiverId())
                 .build();
-
 
         return request;
 
