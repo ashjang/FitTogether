@@ -54,4 +54,27 @@ public class UserService {
 
         return UserDto.from(user);
     }
+
+    // 다른 회원 프로필 조회
+    public UserDto getUserInfo(String token, Long userId) {
+        if (!jwtProvider.validateToken(token)) {
+            throw new UserCustomException(UserErrorCode.NEED_TO_SIGNIN);
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+        if (!user.isPublicInfo()) {
+            throw new UserCustomException(UserErrorCode.PRIVATE_USER);
+        }
+
+        return UserDto.builder()
+                .userId(userId)
+                .nickname(user.getNickname())
+                .gender(user.isGender())
+                .introduction(user.getIntroduction())
+                .exerciseChoice(user.getExerciseChoice())
+                .build();
+    }
+
 }

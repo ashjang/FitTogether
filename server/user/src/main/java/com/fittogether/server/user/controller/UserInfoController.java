@@ -30,4 +30,14 @@ public class UserInfoController {
                 userService.updateMyInfo(token, form)
         );
     }
+
+    @ApiOperation(value = "유저 프로필 조회", response = UserDto.class)
+    @GetMapping()
+    public ResponseEntity<UserDto> getUserInfo(@RequestHeader(name = "X-AUTH-TOKEN") String token,
+                                               @RequestParam("id") Long userId) {
+        return ResponseEntity.ok(
+                userService.getUserInfo(token, userId)
+        );
+    }
+
 }
