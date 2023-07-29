@@ -1,11 +1,13 @@
 package com.fittogether.server.user.domain.model;
 
+import com.fittogether.server.user.domain.dto.ExerciseType;
 import com.fittogether.server.user.domain.dto.SignUpForm;
 import com.fittogether.server.user.domain.dto.UserType;
 import lombok.*;
 import org.hibernate.envers.AuditOverride;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,8 +30,11 @@ public class User extends BaseEntity {
 
     private String password;
     private boolean gender;
-    @Column(columnDefinition = "TEXT")
-    private String exerciseChoice;
+
+    @ElementCollection
+    @CollectionTable(name = "exercise", joinColumns = @JoinColumn(name = "user_id"))
+    private List<ExerciseType> exerciseChoice;
+
     private boolean publicInfo;
     private String introduction;
     private Double latitude;

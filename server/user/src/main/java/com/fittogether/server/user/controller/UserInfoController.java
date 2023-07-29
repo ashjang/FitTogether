@@ -1,14 +1,12 @@
 package com.fittogether.server.user.controller;
 
+import com.fittogether.server.user.domain.dto.UpdateUserForm;
 import com.fittogether.server.user.domain.dto.UserDto;
 import com.fittogether.server.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +19,15 @@ public class UserInfoController {
     public ResponseEntity<UserDto> getMyInfo(@RequestHeader(name = "X-AUTH-TOKEN") String token) {
         return ResponseEntity.ok(
                 userService.getMyInfo(token)
+        );
+    }
+
+    @ApiOperation(value = "회원정보 수정", response = UserDto.class)
+    @PutMapping("/my")
+    public ResponseEntity<UserDto> updateMyInfo(@RequestHeader(name = "X-AUTH-TOKEN") String token,
+                                                @RequestBody UpdateUserForm form) {
+        return ResponseEntity.ok(
+                userService.updateMyInfo(token, form)
         );
     }
 }

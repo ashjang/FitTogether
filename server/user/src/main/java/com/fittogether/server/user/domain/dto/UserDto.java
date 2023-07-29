@@ -3,6 +3,8 @@ package com.fittogether.server.user.domain.dto;
 import com.fittogether.server.user.domain.model.User;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -15,7 +17,7 @@ public class UserDto {
     private String nickname;
     private String password;
     private boolean gender;
-    private String exerciseChoice;
+    private List<ExerciseType> exerciseChoice;
     private boolean publicInfo;
     private String introduction;
     private Double latitude;

@@ -2,13 +2,16 @@ package com.fittogether.server.user.service;
 
 import com.fittogether.server.domain.token.JwtProvider;
 import com.fittogether.server.domain.token.UserVo;
+import com.fittogether.server.user.domain.dto.UpdateUserForm;
 import com.fittogether.server.user.domain.dto.UserDto;
+import com.fittogether.server.user.domain.dto.UserType;
 import com.fittogether.server.user.domain.model.User;
 import com.fittogether.server.user.domain.repository.UserRepository;
 import com.fittogether.server.user.exception.UserCustomException;
 import com.fittogether.server.user.exception.UserErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +26,31 @@ public class UserService {
         }
 
         UserVo userVo = jwtProvider.getUserVo(token);
-        User user = userRepository.findByUserId(userVo.getUserId())
+        User user = userRepository.findById(userVo.getUserId())
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+        return UserDto.from(user);
+    }
+
+    // 회원정보 수정
+    @Transactional
+    public UserDto updateMyInfo(String token, UpdateUserForm form) {
+        if (!jwtProvider.validateToken(token)) {
+            throw new UserCustomException(UserErrorCode.NEED_TO_SIGNIN);
+        }
+
+        UserVo userVo = jwtProvider.getUserVo(token);
+        User user = userRepository.findById(userVo.getUserId())
+                .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+        if (user.getUserType() == UserType.FITTOGETHER) {
+            user.setPassword(form.getPassword());
+        }
+        user.setProfilePicture(form.getProfilePicture());
+        user.setExerciseChoice(form.getExerciseChoice());
+        user.setGender(form.isGender());
+        user.setIntroduction(form.getIntroduction());
+        user.setPublicInfo(form.isPublicInfo());
 
         return UserDto.from(user);
     }
