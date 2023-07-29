@@ -18,8 +18,7 @@ public class UserSignInService {
 
     // 로그인
     public String signIn(SignInForm form) {
-        User user = userRepository.findByNickname(form.getNickname()).stream()
-                .filter(users -> users.getPassword().equals(form.getPassword())).findFirst()
+        User user = userRepository.findByNicknameAndPassword(form.getNickname(), form.getPassword())
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
         // 소셜 로그인일 경우

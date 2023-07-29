@@ -12,7 +12,6 @@ import com.fittogether.server.user.exception.UserErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +26,7 @@ public class UserService {
         }
 
         UserVo userVo = jwtProvider.getUserVo(token);
-        User user = userRepository.findByUserId(userVo.getUserId())
+        User user = userRepository.findById(userVo.getUserId())
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
         return UserDto.from(user);
@@ -41,15 +40,14 @@ public class UserService {
         }
 
         UserVo userVo = jwtProvider.getUserVo(token);
-        User user = userRepository.findByUserId(userVo.getUserId())
+        User user = userRepository.findById(userVo.getUserId())
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
         if (user.getUserType() == UserType.FITTOGETHER) {
             user.setPassword(form.getPassword());
         }
         user.setProfilePicture(form.getProfilePicture());
-        String exerciseChoice = StringUtils.collectionToCommaDelimitedString(form.getExerciseChoice());
-        user.setExerciseChoice(exerciseChoice);
+        user.setExerciseChoice(form.getExerciseChoice());
         user.setGender(form.isGender());
         user.setIntroduction(form.getIntroduction());
         user.setPublicInfo(form.isPublicInfo());
