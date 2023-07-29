@@ -31,7 +31,7 @@ public class mateController {
             @PathVariable Long senderId,
             @RequestParam boolean is_matched
     ){
-        return null;
+        return ResponseEntity.ok(mateService.mateAccept(senderId,is_matched));
     }
 
 
