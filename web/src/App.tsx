@@ -19,7 +19,7 @@ import MyPage from './pages/MyPage';
 import MyVideos from './pages/MyVideos';
 
 import MainPage from './pages//MainPage'; //메인페이지
-
+import ScrollTopButton from './components/common/ScrollTopButton'; //ScrollTopButton
 import './index.css';
 
 function App() {
@@ -44,6 +44,7 @@ function App() {
         {/* 메인페이지 슬라이드에 따른 페이지 이동 */}
         <Route path='/exerciseInfo/:slideNumber' element={<ExerciseInfo />} />
       </Routes>
+      <ScrollTopButton />
       <Footer />
     </BrowserRouter>
   );
