@@ -1,11 +1,13 @@
 package com.fittogether.server.dm.mate.controller;
 
-import com.fittogether.server.dm.domain.dto.ChattingDto;
 import com.fittogether.server.dm.domain.dto.RequestDto;
 import com.fittogether.server.dm.domain.dto.RequestForm;
 import com.fittogether.server.dm.service.MateService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class mateController {
@@ -26,13 +28,18 @@ public class mateController {
     }
 
     @PutMapping("/matching/{senderId}")
-    public ResponseEntity<ChattingDto> mateAccept(
+    public ResponseEntity<Object> mateAccept(
             //@RequestHeader("token") String token
             @PathVariable Long senderId,
             @RequestParam boolean is_matched
     ){
-        return ResponseEntity.ok(mateService.mateAccept(senderId,is_matched));
-    }
+        mateService.mateAccept(senderId,is_matched);
 
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("status", "success");
+        responseData.put("message", "메이트 수락 완료");
+
+        return ResponseEntity.ok(responseData);
+    }
 
 }
