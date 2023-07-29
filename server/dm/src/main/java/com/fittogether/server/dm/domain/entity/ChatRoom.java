@@ -24,7 +24,6 @@ public class ChatRoom {
     private LocalDateTime chatRoomDt;
 
 
-    public ChatRoom(LocalDateTime now) {
-    }
+
 
 }

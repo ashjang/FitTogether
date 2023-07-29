@@ -25,9 +25,10 @@ public class mateController {
           return ResponseEntity.ok(mateService.mateRequest(requestForm));
     }
 
-    @PutMapping("/matching/request")
+    @PutMapping("/matching/{senderId}")
     public ResponseEntity<ChattingDto> mateAccept(
             //@RequestHeader("token") String token
+            @PathVariable Long senderId,
             @RequestParam boolean is_matched
     ){
         return null;

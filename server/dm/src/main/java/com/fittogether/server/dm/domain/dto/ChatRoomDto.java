@@ -15,14 +15,10 @@ public class ChatRoomDto {
     private LocalDateTime chatRoomDt;// 채팅방 생성 시간
 
     public ChatRoomDto(LocalDateTime now) {
+        this.chatRoomDt=now;
     }
 
 
-    public static ChatRoomDto from(ChatRoom chatRoom){
-        return ChatRoomDto.builder()
-                .chatRoomId(chatRoom.getChatRoomId())
-                .chatRoomDt(chatRoom.getChatRoomDt())
-                .build();
-    }
+
 
 }
