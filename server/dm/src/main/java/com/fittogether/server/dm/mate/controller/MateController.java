@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class mateController {
+public class MateController {
     private final MateService mateService;
 
-    public mateController(MateService mateService) {
+    public MateController(MateService mateService) {
         this.mateService = mateService;
     }
 
