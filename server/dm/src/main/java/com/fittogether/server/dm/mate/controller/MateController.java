@@ -3,6 +3,7 @@ package com.fittogether.server.dm.mate.controller;
 import com.fittogether.server.dm.domain.dto.RequestDto;
 import com.fittogether.server.dm.domain.dto.RequestForm;
 import com.fittogether.server.dm.service.MateService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,12 +11,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 public class MateController {
     private final MateService mateService;
 
-    public MateController(MateService mateService) {
-        this.mateService = mateService;
-    }
 
 
 

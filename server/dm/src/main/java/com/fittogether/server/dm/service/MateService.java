@@ -8,6 +8,7 @@ import com.fittogether.server.dm.exception.MateExceptionCode;
 import com.fittogether.server.domain.token.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -18,6 +19,7 @@ public class MateService {
 
 
     // 운동 메이트 요청
+    @Transactional
     public RequestDto mateRequest(
             //String token,
             RequestForm requestForm
@@ -38,6 +40,7 @@ public class MateService {
 
 
     //운동 메이트 수락
+    @Transactional
     public void mateAccept(
             //String token,
             Long receiverId
@@ -57,9 +60,6 @@ public class MateService {
             request.setAccepted(true);
             requestRepository.save(request);
         }
-
-
-
 
 
 
