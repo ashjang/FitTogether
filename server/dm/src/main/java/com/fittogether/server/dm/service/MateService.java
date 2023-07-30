@@ -6,6 +6,7 @@ import com.fittogether.server.dm.domain.entity.Request;
 import com.fittogether.server.dm.domain.repository.RequestRepository;
 import com.fittogether.server.dm.exception.MateExceptionCode;
 import com.fittogether.server.domain.token.JwtProvider;
+import com.fittogether.server.domain.token.UserVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,8 @@ public class MateService {
         /* if (!jwtProvider.validateToken(token)) {
             throw new validateErrorCode("유효하지 않은 토큰입니다");
         }
+
+        UserVo userVo= jwtProvider.getUserVo(token);
         */
         Request request = Request.from(requestForm);
 
@@ -36,10 +39,16 @@ public class MateService {
 
 
     //운동 메이트 수락
-    public void mateAccept(Long senderId, boolean is_matched) {
+    public void mateAccept(
+            //String token,
+            Long senderId
+            , boolean is_matched
+    ) {
          /* if (!jwtProvider.validateToken(token)) {
             throw new validateErrorCode("유효하지 않은 토큰입니다");
         }
+
+        UserVo userVo= jwtProvider.getUserVo(token);
         */
 
         if (!is_matched) {
