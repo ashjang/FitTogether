@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import LogoImg from './../../assets/logo.png';
-import AlertList from './AlertList';
 
 // headerMainBar
 function Header() {
@@ -16,9 +15,9 @@ function Header() {
     setPopupOpen(true);
   };
 
-  // const handleClosePopup = () => {
-  //   setPopupOpen(false);
-  // };
+  const handleClosePopup = () => {
+    setPopupOpen(false);
+  };
 
   return (
     <div className="header-inn" css={headerInn}>
@@ -51,8 +50,7 @@ function Header() {
           </ul>
           {isPopupOpen && (
             <BellPop className="popup">
-              <AlertList />
-              {/* <h3 className="pop-bell-title">알림창</h3>
+              <h3 className="pop-bell-title">알림창</h3>
               <p>
                 Lorem ipsum dolor, sit amet consectetur adipisicing elit.
                 Quaerat, accusantium.
@@ -60,7 +58,7 @@ function Header() {
               <button onClick={handleClosePopup}>
                 <span className="blind">닫기</span>
                 <i className="fas fa-times"></i>
-              </button> */}
+              </button>
             </BellPop>
           )}
         </div>

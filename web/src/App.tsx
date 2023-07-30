@@ -1,24 +1,24 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import Header from "./components/common/Header";
-import Footer from "./components/common/Footer";
+import Header from './components/common/Header';
+import Footer from './components/common/Footer';
 
 // 상단 우측 아이콘
-import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
-import Messenger from "./pages/Messenger";
-import Bookmark from "./pages/Bookmark";
+import SignIn from './pages/SignIn';
+import SignUp from './pages/SignUp';
+import Messenger from './pages/Messenger';
+import Bookmark from './pages/Bookmark';
 
 //하단 4개 카테고리 해당페이지
-import ExerciseInfo from "./pages/ExerciseInfo";
-import FindMate from "./pages/FindMate";
-import Community from "./pages/Community";
-import Post from "./pages/Post";
-import CreatePost from "./pages/CreatePost";
-import MyPage from "./pages/MyPage";
-import MyVideos from "./pages/MyVideos";
+import ExerciseInfo from './pages/ExerciseInfo';
+import FindMate from './pages/FindMate';
+import Community from './pages/Community';
+import Post from './pages/Post';
+import CreatePost from './pages/CreatePost';
+import MyPage from './pages/MyPage';
+import MyVideos from './pages/MyVideos';
 
-import "./index.css";
+import './index.css';
 
 function App() {
   return (
