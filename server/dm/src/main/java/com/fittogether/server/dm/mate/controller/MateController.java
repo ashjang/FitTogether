@@ -10,10 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-public class mateController {
+public class MateController {
     private final MateService mateService;
 
-    public mateController(MateService mateService) {
+    public MateController(MateService mateService) {
         this.mateService = mateService;
     }
 
