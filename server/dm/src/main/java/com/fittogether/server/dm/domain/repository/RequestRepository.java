@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RequestRepository extends JpaRepository<Request,Long> {
     Request findAllBySenderId(Long senderId);
+    Request findAllByReceiverId(Long receiverId);
 }

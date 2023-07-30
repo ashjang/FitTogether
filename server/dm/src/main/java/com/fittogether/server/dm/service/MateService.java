@@ -6,7 +6,6 @@ import com.fittogether.server.dm.domain.entity.Request;
 import com.fittogether.server.dm.domain.repository.RequestRepository;
 import com.fittogether.server.dm.exception.MateExceptionCode;
 import com.fittogether.server.domain.token.JwtProvider;
-import com.fittogether.server.domain.token.UserVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +40,7 @@ public class MateService {
     //운동 메이트 수락
     public void mateAccept(
             //String token,
-            Long senderId
+            Long receiverId
             , boolean is_matched
     ) {
          /* if (!jwtProvider.validateToken(token)) {
@@ -53,11 +52,15 @@ public class MateService {
 
         if (!is_matched) {
             throw new MateExceptionCode("요청 거절");
+        }else{
+            Request request = requestRepository.findAllByReceiverId(receiverId);
+            request.setAccepted(true);
+            requestRepository.save(request);
         }
-        Request request = requestRepository.findAllBySenderId(senderId);
-        request.setAccepted(true);
 
-        requestRepository.save(request);
+
+
+
 
 
     }

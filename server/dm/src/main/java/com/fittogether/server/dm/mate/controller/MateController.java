@@ -27,13 +27,13 @@ public class MateController {
           return ResponseEntity.ok(mateService.mateRequest(requestForm));
     }
 
-    @PutMapping("/matching/{senderId}")
+    @PutMapping("/matching/{receiverId}")
     public ResponseEntity<Object> mateAccept(
             //@RequestHeader("token") String token
-            @PathVariable Long senderId,
+            @PathVariable Long receiverId,
             @RequestParam boolean is_matched
     ){
-        mateService.mateAccept(senderId,is_matched);
+        mateService.mateAccept(receiverId,is_matched);
 
         Map<String, Object> responseData = new HashMap<>();
         responseData.put("status", "success");
