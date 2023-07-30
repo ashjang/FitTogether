@@ -3,9 +3,7 @@ package com.fittogether.server.dm.service;
 import com.fittogether.server.dm.domain.dto.RequestDto;
 import com.fittogether.server.dm.domain.dto.RequestForm;
 import com.fittogether.server.dm.domain.entity.Request;
-import com.fittogether.server.dm.domain.repository.ChatRoomRepository;
 import com.fittogether.server.dm.domain.repository.RequestRepository;
-import com.fittogether.server.dm.exception.validateErrorCode;
 import com.fittogether.server.domain.token.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MateService {
     private final RequestRepository requestRepository;
-    private final ChatRoomRepository chatRoomRepository;
+
     private final JwtProvider jwtProvider;
 
 
