@@ -1,13 +1,13 @@
 import React from "react";
 import styled from "@emotion/styled";
+import QuillEditor from "../components/CreatePost/QuillEditor";
 
 interface Props {}
 
 const CreatePost: React.FC<Props> = () => {
   return (
     <Page>
-      <Title placeholder="Title" />
-      <EditorField>게시판 에디터</EditorField>
+      <QuillEditor />
       <SettingField>
         <SettingItem>
           <About>해시태그</About>
@@ -43,23 +43,9 @@ const Page = styled.div`
   min-height: calc(100vh - 300px);
 `;
 
-const Title = styled.input`
-  width: 1000px;
-`;
-
-const EditorField = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 1000px;
-  height: 500px;
-  margin-bottom: 30px;
-  background-color: #d7d7d7;
-`;
-
 const SettingField = styled.div`
   position: relative;
-  width: 1000px;
+  width: 850px;
 `;
 
 const SettingItem = styled.div`

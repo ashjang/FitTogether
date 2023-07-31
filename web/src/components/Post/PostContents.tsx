@@ -11,7 +11,7 @@ const PostContents: React.FC<Props> = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleToggleModal = () => {
-    setIsModalOpen(!isModalOpen); // isModalOpen 상태를 반대로 토글합니다.
+    setIsModalOpen(!isModalOpen);
   };
 
   return (
@@ -20,7 +20,7 @@ const PostContents: React.FC<Props> = () => {
         <ProfileImageContainer>
           <ProfileImage src={imgSrc} />
         </ProfileImageContainer>
-        <ProfileNickname>sports addict</ProfileNickname>
+        <ProfileNickname>ehhdrud</ProfileNickname>
         <FaEllipsis icon={faEllipsis} onClick={handleToggleModal} />
         <Modal
           isOpen={isModalOpen}
@@ -129,7 +129,7 @@ const FaEllipsis = styled(FontAwesomeIcon)`
 `;
 
 const Post = styled.div`
-  width: 900px;
+  width: 850px;
 `;
 
 export default PostContents;
