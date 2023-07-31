@@ -1,8 +1,11 @@
 package com.fittogether.server.posts.domain.model;
 
+import com.fittogether.server.posts.type.Category;
 import com.fittogether.server.user.domain.model.User;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,7 +36,9 @@ public class Post {
   private String title;
   private String description;
   private String image;
-  private String category;
+
+  @Enumerated(value = EnumType.STRING)
+  private Category category;
   private Long likes;
   private Long watched;
   private boolean accessLevel;

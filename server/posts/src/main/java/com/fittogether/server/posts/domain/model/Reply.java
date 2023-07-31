@@ -25,7 +25,6 @@ public class Reply {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String comment;
-  private Long likes;
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
 

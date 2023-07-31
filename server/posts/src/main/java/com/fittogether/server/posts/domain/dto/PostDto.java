@@ -1,15 +1,14 @@
 package com.fittogether.server.posts.domain.dto;
 
 import com.fittogether.server.posts.domain.model.Post;
+import com.fittogether.server.posts.type.Category;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -18,7 +17,7 @@ public class PostDto {
   private String title;
   private String description;
   private String image;
-  private String category;
+  private Category category;
   private boolean accessLevel;
   private LocalDateTime createdAt;
 

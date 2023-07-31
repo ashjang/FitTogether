@@ -20,8 +20,8 @@ import com.fittogether.server.user.domain.repository.UserRepository;
 import com.fittogether.server.user.exception.UserCustomException;
 import com.fittogether.server.user.exception.UserErrorCode;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,51 +49,55 @@ public class PostService {
     User user = userRepository.findById(userVo.getUserId())
         .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
-//    if (!addPostForm.isAccessLevel()) {
-//    }
-
-    List<Hashtag> savedHashtag = addHashtag(postForm);
-
     Post post = Post.builder()
         .user(user)
         .title(postForm.getTitle())
         .description(postForm.getDescription())
         .image(postForm.getImage())
-        .category(postForm.getCategory().name())
+        .category(postForm.getCategory())
         .accessLevel(postForm.isAccessLevel())
         .createdAt(LocalDateTime.now()).build();
 
-    for (Hashtag hashtags : savedHashtag) {
-      postHashtagRepository.save(PostHashtag.builder()
-          .post(post)
-          .hashtag(hashtags)
-          .build());
-    }
+    List<Hashtag> savedHashtag = addHashtag(postForm);
+
+    List<PostHashtag> postHashtags = savedHashtag.stream()
+        .map(hashtag -> PostHashtag.builder()
+            .post(post)
+            .hashtag(hashtag)
+            .build())
+        .collect(Collectors.toList());
+
+    postHashtagRepository.saveAll(postHashtags);
 
     return postRepository.save(post);
   }
 
-  private List<Hashtag> addHashtag(PostForm addPostForm) {
-    List<Hashtag> savedHashtag = new ArrayList<>();
+  @Transactional
+  public List<Hashtag> addHashtag(PostForm addPostForm) {
+    List<String> hashtags = addPostForm.getHashtag();
 
-    for (Hashtag hashtags : addPostForm.getHashtag()) {
-      Hashtag keyword = hashtagRepository.findByKeyword(hashtags.getKeyword());
+    List<Hashtag> savedHashtag = hashtags.stream()
+        .map(hashtag -> {
+          Hashtag existKeyword = hashtagRepository.findByKeyword(hashtag);
+          // 해당 해시태그가 이미 존재한다면, 기존의 것을 사용합니다.
+          if (existKeyword != null) {
+            return existKeyword;
+          } else {
+            // 해당 해시태그가 데이터베이스에 존재하지 않으면, 새로운 해시태그를 저장합니다.
+            Hashtag newHashtag = new Hashtag();
+            newHashtag.setKeyword(hashtag);
+            return newHashtag;
+          }
+        })
+        .collect(Collectors.toList());
 
-      if (keyword == null) {
-        // 해당 해시태그가 데이터베이스에 존재하지 않으면, 새로운 해시태그를 저장합니다.
-        savedHashtag.add(hashtagRepository.save(hashtags));
-      } else {
-        // 해당 해시태그가 이미 존재한다면, 기존의 것을 사용합니다.
-        savedHashtag.add(keyword);
-      }
-    }
-    return savedHashtag;
+    return hashtagRepository.saveAll(savedHashtag);
+
   }
 
   @Transactional
   public Post updatePost(String token, Long postId, PostForm postForm) {
-//    if (!addPostForm.isAccessLevel()) {
-//    }
+
     Post post = postRepository.findById(postId)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
@@ -102,7 +106,7 @@ public class PostService {
     post.setTitle(postForm.getTitle());
     post.setDescription(postForm.getDescription());
     post.setImage(postForm.getImage());
-    post.setCategory(postForm.getCategory().name());
+    post.setCategory(postForm.getCategory());
     post.setAccessLevel(postForm.isAccessLevel());
     post.setModifiedAt(LocalDateTime.now());
 
@@ -111,12 +115,14 @@ public class PostService {
 
     List<Hashtag> hashtag = addHashtag(postForm);
 
-    for (Hashtag hashtags : hashtag) {
-      postHashtagRepository.save(PostHashtag.builder()
-          .post(post)
-          .hashtag(hashtags)
-          .build());
-    }
+    List<PostHashtag> postHashtags = hashtag.stream()
+        .map(hashtags -> PostHashtag.builder()
+            .post(post)
+            .hashtag(hashtags)
+            .build())
+        .collect(Collectors.toList());
+
+    postHashtagRepository.saveAll(postHashtags);
 
     return post;
   }
@@ -179,7 +185,6 @@ public class PostService {
         .post(post)
         .user(user)
         .comment(replyForm.getComment())
-//        .likes()
         .createdAt(LocalDateTime.now())
         .build();
 

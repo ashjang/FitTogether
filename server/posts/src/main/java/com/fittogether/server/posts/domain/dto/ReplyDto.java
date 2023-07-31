@@ -6,16 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ReplyDto {
   private String comment;
-  private Long likes;
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
   private String userNickname;
@@ -24,7 +21,6 @@ public class ReplyDto {
   public static ReplyDto from(Reply reply) {
     return ReplyDto.builder()
         .comment(reply.getComment())
-        .likes(reply.getLikes())
         .createdAt(LocalDateTime.now())
         .userNickname(reply.getUser().getNickname())
         .postId(reply.getPost().getId())
