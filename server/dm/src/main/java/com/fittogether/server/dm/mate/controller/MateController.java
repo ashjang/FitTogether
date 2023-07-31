@@ -20,10 +20,13 @@ public class MateController {
 
     @PostMapping("/matching/request")
     public ResponseEntity<RequestDto> mateRequest(
-            //@RequestHeader("token") String token
+           // @RequestHeader("token") String token,
             @RequestBody RequestForm requestForm
     ){
-          return ResponseEntity.ok(mateService.mateRequest(requestForm));
+        return ResponseEntity.ok(RequestDto.from(mateService.mateRequest(
+                // token ,
+                requestForm
+        )));
     }
 
     @PutMapping("/matching/{receiverId}")
