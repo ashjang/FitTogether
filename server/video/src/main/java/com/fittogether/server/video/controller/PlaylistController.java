@@ -1,7 +1,6 @@
 package com.fittogether.server.video.controller;
 
 import com.fittogether.server.domain.token.JwtProvider;
-import com.fittogether.server.domain.token.UserVo;
 import com.fittogether.server.video.domain.form.PlaylistForm;
 import com.fittogether.server.video.domain.model.Playlist;
 import com.fittogether.server.video.service.PlaylistService;
@@ -18,15 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/playlist")
 public class PlaylistController {
 
-  private final JwtProvider provider;
   private final PlaylistService playlistService;
 
   @PostMapping
   public ResponseEntity<Playlist> createPlaylist(
-//      @RequestHeader(name = "X-AUTH-TOKEN") String token,
+      @RequestHeader(name = "X-AUTH-TOKEN") String token,
       @RequestBody PlaylistForm form) {
-//    UserVo vo = provider.getUserVo(token);
-    return ResponseEntity.ok(playlistService.createPlaylist(/*vo.getUserId()*/1L, form));
+
+    return ResponseEntity.ok(playlistService.createPlaylist(token, form));
   }
 
 }

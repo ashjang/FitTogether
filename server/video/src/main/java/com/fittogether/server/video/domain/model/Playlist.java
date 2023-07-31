@@ -35,16 +35,13 @@ public class Playlist extends BaseEntity {
   private String playlistName;
 
   @ManyToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "user_id", insertable = false, updatable = false)
+  @JoinColumn(name = "user_id")
   private User user;
 
-  @Column(name = "user_id")
-  private Long userId;
-
-  public static Playlist of(Long userId, PlaylistForm form) {
+  public static Playlist of(User user, PlaylistForm form) {
     return Playlist.builder()
         .playlistName(form.getPlaylistName())
-        .userId(userId)
+        .user(user)
         .build();
   }
 
