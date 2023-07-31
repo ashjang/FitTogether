@@ -216,8 +216,8 @@ public class PostService {
 
     if (existingLike != null) {
       likeRepository.deleteByPostAndUser(post, user);
-      evictPostLikeCount(postId);
       post.setLikes(post.getLikes() - 1);
+      evictPostLikeCount(postId);
     } else {
       Like like = Like.builder()
           .post(post)
