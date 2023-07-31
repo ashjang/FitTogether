@@ -26,7 +26,6 @@ public class Reply {
   private Long id;
   private String comment;
   private LocalDateTime createdAt;
-  private LocalDateTime modifiedAt;
 
   @ManyToOne
   @JoinColumn(name = "user_id")

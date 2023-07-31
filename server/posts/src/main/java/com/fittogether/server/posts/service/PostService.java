@@ -154,7 +154,6 @@ public class PostService {
     postRepository.delete(post);
   }
 
-  @Transactional
   public PostInfo getPostById(Long postId) {
 
     Post post = postRepository.findById(postId)
