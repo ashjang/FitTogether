@@ -1,11 +1,8 @@
 package com.fittogether.server.posts.domain.model;
 
-import com.fittogether.server.posts.type.Category;
 import com.fittogether.server.user.domain.model.User;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,30 +20,18 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Post {
-
+public class Reply {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+  private String comment;
+  private LocalDateTime createdAt;
 
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
 
-  @JoinColumn(name = "user_id")
-  private Long userId;
-
-  private String title;
-  private String description;
-  private String image;
-
-  @Enumerated(value = EnumType.STRING)
-  private Category category;
-  private Long likes;
-  private Long watched;
-  private boolean accessLevel;
-
-  private LocalDateTime createdAt;
-  private LocalDateTime modifiedAt;
-
+  @ManyToOne
+  @JoinColumn(name = "post_id")
+  private Post post;
 }
