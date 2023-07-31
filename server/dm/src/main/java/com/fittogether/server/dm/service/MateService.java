@@ -20,7 +20,7 @@ public class MateService {
 
     // 운동 메이트 요청
     @Transactional
-    public RequestDto mateRequest(
+    public Request mateRequest(
             //String token,
             RequestForm requestForm
     ) {
@@ -35,7 +35,7 @@ public class MateService {
         requestRepository.save(request);
 
 
-        return RequestDto.from(request);
+        return request;
     }
 
 
