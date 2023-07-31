@@ -6,10 +6,12 @@ import com.fittogether.server.posts.domain.dto.PostForm;
 import com.fittogether.server.posts.domain.dto.PostInfo;
 import com.fittogether.server.posts.domain.dto.ReplyForm;
 import com.fittogether.server.posts.domain.model.Hashtag;
+import com.fittogether.server.posts.domain.model.Like;
 import com.fittogether.server.posts.domain.model.Post;
 import com.fittogether.server.posts.domain.model.PostHashtag;
 import com.fittogether.server.posts.domain.model.Reply;
 import com.fittogether.server.posts.domain.repository.HashtagRepository;
+import com.fittogether.server.posts.domain.repository.LikeRepository;
 import com.fittogether.server.posts.domain.repository.PostHashtagRepository;
 import com.fittogether.server.posts.domain.repository.PostRepository;
 import com.fittogether.server.posts.domain.repository.ReplyRepository;
@@ -23,6 +25,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +41,9 @@ public class PostService {
   private final UserRepository userRepository;
   private final HashtagRepository hashtagRepository;
   private final ReplyRepository replyRepository;
+  private final LikeRepository likeRepository;
   private final JwtProvider provider;
+  private final CacheManager cacheManager;
 
   // 게시글 작성
   @Transactional
@@ -56,6 +64,7 @@ public class PostService {
         .image(postForm.getImage())
         .category(postForm.getCategory())
         .accessLevel(postForm.isAccessLevel())
+        .likes(0L)
         .createdAt(LocalDateTime.now()).build();
 
     List<Hashtag> savedHashtag = addHashtag(postForm);
@@ -165,7 +174,6 @@ public class PostService {
 
     List<Reply> replyList = replyRepository.findByPostId(postId);
 
-
     return PostInfo.from(post, replyList);
   }
 
@@ -187,7 +195,53 @@ public class PostService {
         .createdAt(LocalDateTime.now())
         .build();
 
-
     return replyRepository.save(reply);
+  }
+
+  @Transactional
+  public boolean likePost(String token, Long postId) {
+
+    Post post = postRepository.findById(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
+
+    if (!provider.validateToken(token)) {
+      throw new RuntimeException("Invalid or expired token.");
+    }
+
+    UserVo userVo = provider.getUserVo(token);
+    User user = userRepository.findById(userVo.getUserId())
+        .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+    Like existingLike = likeRepository.findByPostAndUser(post, user);
+
+    if (existingLike != null) {
+      likeRepository.deleteByPostAndUser(post, user);
+      evictPostLikeCount(postId);
+      post.setLikes(post.getLikes() - 1);
+    } else {
+      Like like = Like.builder()
+          .post(post)
+          .user(user)
+          .build();
+      post.setLikes(post.getLikes() + 1);
+      likeRepository.save(like);
+      evictPostLikeCount(postId);
+    }
+
+    return existingLike == null;
+  }
+
+  @Cacheable(value = "postLikeCount", key = "#postId")
+  public Long getPostLikeCount(Long postId) {
+    return likeRepository.countByPostId(postId);
+  }
+
+
+  @CacheEvict(value = "postLikeCount", key = "#postId")
+  public void evictPostLikeCount(Long postId) {
+      Cache cache = cacheManager.getCache("postLikeCount");
+      if (cache != null) {
+        cache.evict(postId);
+      }
   }
 }

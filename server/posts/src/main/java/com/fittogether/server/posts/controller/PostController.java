@@ -1,5 +1,6 @@
 package com.fittogether.server.posts.controller;
 
+import com.fittogether.server.posts.domain.dto.LikeDto;
 import com.fittogether.server.posts.domain.dto.PostDto;
 import com.fittogether.server.posts.domain.dto.PostForm;
 import com.fittogether.server.posts.domain.dto.PostInfo;
@@ -61,5 +62,12 @@ public class PostController {
     return ResponseEntity.ok(
         postService.getPostById(postId));
 
+  }
+
+  @PostMapping("/posts/{postId}/like")
+  public ResponseEntity<LikeDto> likePost(@RequestHeader(name = "X-AUTH-TOKEN") String token,
+                                          @PathVariable Long postId) {
+    return ResponseEntity.ok(LikeDto.from(
+        postService.likePost(token, postId)));
   }
 }
