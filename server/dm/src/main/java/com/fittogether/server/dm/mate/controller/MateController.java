@@ -20,22 +20,22 @@ public class MateController {
 
     @PostMapping("/matching/request")
     public ResponseEntity<RequestDto> mateRequest(
-           // @RequestHeader("token") String token,
+            @RequestHeader("X-AUTH-TOKEN") String token,
             @RequestBody RequestForm requestForm
     ){
         return ResponseEntity.ok(RequestDto.from(mateService.mateRequest(
-                // token ,
+                 token ,
                 requestForm
         )));
     }
 
     @PutMapping("/matching/{receiverId}")
     public ResponseEntity<Object> mateAccept(
-            //@RequestHeader("token") String token
+            @RequestHeader("X-AUTH-TOKEN") String token,
             @PathVariable Long receiverId,
             @RequestParam boolean is_matched
     ){
-        mateService.mateAccept(receiverId,is_matched);
+        mateService.mateAccept(token,receiverId,is_matched);
 
         Map<String, Object> responseData = new HashMap<>();
         responseData.put("status", "success");
