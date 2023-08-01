@@ -40,9 +40,6 @@ function App() {
         <Route path="/community/createpost" element={<CreatePost />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/mypage/myvideos" element={<MyVideos />} />
-        
-        {/* 메인페이지 슬라이드에 따른 페이지 이동 */}
-        <Route path='/exerciseInfo/:slideNumber' element={<ExerciseInfo />} />
       </Routes>
       <ScrollTopButton />
       <Footer />
