@@ -27,14 +27,14 @@ public class UserSignUpService {
     }
 
     // 닉네임 중복검사
-    public void isExistNickname(String nickname) {
+    private void isExistNickname(String nickname) {
         if (userRepository.existsByNickname(nickname)) {
             throw new UserCustomException(UserErrorCode.ALREADY_EXIST_NICKNAME);
         }
     }
 
     // 이메일 중복검사
-    public void isExistEmail(String email) {
+    private void isExistEmail(String email) {
         if (userRepository.existsByEmail(email)) {
             throw new UserCustomException(UserErrorCode.ALREADY_EXIST_EMAIL);
         }

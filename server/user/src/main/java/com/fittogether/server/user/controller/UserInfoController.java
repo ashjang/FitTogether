@@ -1,5 +1,6 @@
 package com.fittogether.server.user.controller;
 
+import com.fittogether.server.user.domain.dto.AnotherUserDto;
 import com.fittogether.server.user.domain.dto.UpdateUserForm;
 import com.fittogether.server.user.domain.dto.UserDto;
 import com.fittogether.server.user.service.UserService;
@@ -31,10 +32,10 @@ public class UserInfoController {
         );
     }
 
-    @ApiOperation(value = "유저 프로필 조회", response = UserDto.class)
+    @ApiOperation(value = "유저 프로필 조회", response = AnotherUserDto.class)
     @GetMapping()
-    public ResponseEntity<UserDto> getUserInfo(@RequestHeader(name = "X-AUTH-TOKEN") String token,
-                                               @RequestParam("id") Long userId) {
+    public ResponseEntity<AnotherUserDto> getUserInfo(@RequestHeader(name = "X-AUTH-TOKEN") String token,
+                                                      @RequestParam("id") Long userId) {
         return ResponseEntity.ok(
                 userService.getUserInfo(token, userId)
         );
