@@ -16,20 +16,32 @@ function Header() {
   const [isPopupOpen, setPopupOpen] = useState(false);
   const bellPopupRef = useRef<HTMLDivElement | null>(null);
 
+  const [isScrolled, setScrolled] = useState(false);
+
+  // dark light Mode
   const handleToggleDarkMode = () => {
     setDarkMode((prevMode) => !prevMode);
   };
 
+  // 스크롤 내렸을때 배경색 #fff
+  const handleScroll = () => {
+    const isHeaderScrolled = window.scrollY > 0;
+    setScrolled(isHeaderScrolled);
+  };
+
+  // icon click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (bellPopupRef.current && !bellPopupRef.current.contains(event.target as Node)) {
         setPopupOpen(false);
       }
     };
-  
+    window.addEventListener('scroll', handleScroll);
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, [isPopupOpen, bellPopupRef]);
 
@@ -42,7 +54,13 @@ function Header() {
   };
 
   return (
-    <div className="header-inn" css={headerInn}>
+    <div
+      className="header-inn"
+      css={[
+        headerInn,
+        isScrolled && scrolledHeader,
+      ]}
+    >      
       <div className="top-bar" css={topBar}>
         <Logo className="logo">
           <Link to="/">
@@ -129,6 +147,11 @@ function Header() {
                 <span>운동 정보</span>
               </Link>
             </li>
+            <li css={menuLi}>
+              <Link to="/fineMate">
+                <span>운동 메이트 찾기</span>
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>
@@ -150,6 +173,10 @@ const headerInn = css`
   margin: 0 auto;
   padding: 10px 60px;
   z-index: 2;
+`;
+const scrolledHeader = css`
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 `;
 
 // topBar
