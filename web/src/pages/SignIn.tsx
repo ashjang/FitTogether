@@ -1,15 +1,23 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
-import KakaoTalk_logo from "../assets/KakaoTalk_logo.png";
+import React, { useState } from 'react';
+import axios from 'axios';
+import { css } from '@emotion/react';
+import styled from '@emotion/styled';
+import KakaoTalk_logo from '../assets/KakaoTalk_logo.png';
 
 interface Props {}
 
 const SignIn: React.FC<Props> = () => {
-  const [nickname, setnickName] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [token, setToken] = useState<string>("");
+  const [nickname, setnickName] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [token, setToken] = useState<string>('');
+
+  const KAKAO_REST_API_KEY = `${import.meta.env.VITE_APP_KAKAO_REST_API_KEY}`;
+  const REDIRECT_URI = `${import.meta.env.VITE_APP_REDIRECT_URI}`;
+  const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+
+  const handleKakaoLogin = () => {
+    window.location.href = kakaoURL;
+  };
 
   const handleSignIn = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -21,26 +29,26 @@ const SignIn: React.FC<Props> = () => {
 
     try {
       const response = await axios.post<{ token: string }>(
-        "/users/signin",
+        '/users/signin',
         formData
       );
 
       if (response.status === 200) {
         setToken(response.data.token);
-        localStorage.setItem("token", token);
+        localStorage.setItem('token', token);
         // 로그인 성공 처리
       } else {
         // 로그인 실패 처리
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error('Error:', error);
     }
   };
 
   return (
     <Page>
       <Container>
-        <KakaoTalkSignIn>
+        <KakaoTalkSignIn onClick={handleKakaoLogin}>
           <img src={KakaoTalk_logo} alt="KakaoTalk Logo" />
           카카오톡 로그인
         </KakaoTalkSignIn>
