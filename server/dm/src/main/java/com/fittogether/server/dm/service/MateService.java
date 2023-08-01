@@ -31,16 +31,23 @@ public class MateService {
             String token,
             RequestForm requestForm
     ) {
-         if (!jwtProvider.validateToken(token)) {
+        if (!jwtProvider.validateToken(token)) {
             throw new ValidateErrorCode("유효하지 않은 토큰입니다");
         }
 
-        UserVo userVo= jwtProvider.getUserVo(token);
+        UserVo userVo = jwtProvider.getUserVo(token);
 
-         User user = userRepository.findById(userVo.getUserId())
-        .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+        User senderId = userRepository.findById(requestForm.getSenderId())
+                .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
-        Request request = Request.from(requestForm);
+        User receiverId = userRepository.findById(requestForm.getReceiverId())
+                .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+        Request request = Request.builder()
+                .senderId(senderId)
+                .receiverId(receiverId)
+                .build();
+
 
         requestRepository.save(request);
 
@@ -53,27 +60,35 @@ public class MateService {
     @Transactional
     public void mateAccept(
             String token,
-            Long receiverId
-            , boolean is_matched
+            Long senderId,
+            Long receiverId,
+            boolean is_matched
     ) {
         if (!jwtProvider.validateToken(token)) {
             throw new ValidateErrorCode("유효하지 않은 토큰입니다");
         }
 
-        UserVo userVo= jwtProvider.getUserVo(token);
+        UserVo userVo = jwtProvider.getUserVo(token);
 
-         User user = userRepository.findById(userVo.getUserId())
-        .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+        User sender = userRepository.findById(senderId)
+                .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+        User receiver = userRepository.findById(receiverId)
+                .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
 
         if (!is_matched) {
             throw new MateExceptionCode("요청 거절");
-        }else{
-            Request request = requestRepository.findAllByReceiverId(receiverId);
+        } else {
+            Request request = requestRepository.findAllBySenderIdAndReceiverId(sender, receiver);
+
             request.setAccepted(true);
             requestRepository.save(request);
         }
 
+
+
     }
 
-}
+    }
