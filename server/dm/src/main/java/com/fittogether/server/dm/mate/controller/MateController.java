@@ -1,12 +1,14 @@
 package com.fittogether.server.dm.mate.controller;
 
 import com.fittogether.server.dm.domain.dto.RequestDto;
+import com.fittogether.server.dm.domain.entity.Request;
 import com.fittogether.server.dm.service.MateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -40,6 +42,13 @@ public class MateController {
         responseData.put("message", "메이트 수락 완료");
 
         return ResponseEntity.ok(responseData);
+    }
+
+    @GetMapping("/matching/requests/lists")
+    public List<Request> requestLists(
+           @RequestHeader("X-AUTH-TOKEN") String token
+    ){
+        return mateService.requestLists(token);
     }
 
 }

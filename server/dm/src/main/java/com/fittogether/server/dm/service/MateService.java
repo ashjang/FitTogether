@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class MateService {
@@ -85,8 +87,24 @@ public class MateService {
             requestRepository.save(request);
         }
 
-
-
     }
 
+
+    public List<Request> requestLists(String token) {
+
+        if (!jwtProvider.validateToken(token)) {
+            throw new ValidateErrorCode("유효하지 않은 토큰입니다");
+        }
+
+        UserVo userVo = jwtProvider.getUserVo(token);
+        User senderId = userRepository.findById(userVo.getUserId())
+                .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+
+        List<Request> mateList = requestRepository.findAllBySenderId(senderId);
+
+        return mateList;
     }
+
+
+}
