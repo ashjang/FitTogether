@@ -1,13 +1,13 @@
 /** @jsxImportSource @emotion/react */
 
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
-import { FaPlus, FaMinus } from "react-icons/fa";
+import styled from '@emotion/styled';
+import { css } from '@emotion/react';
+import { FaPlus, FaMinus } from 'react-icons/fa';
 
-import BookmarkFolder from "../components/Bookmark/BookmarkFolder";
-import BookmarkSetting from "../components/Bookmark/BookmarkSetting";
+import BookmarkFolder from '../components/Bookmark/BookmarkFolder';
+import BookmarkSetting from '../components/Bookmark/BookmarkSetting';
 
 const Bookmark: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -19,7 +19,7 @@ const Bookmark: React.FC = () => {
   const addFolder = () => {};
 
   return (
-    <div>
+    <>
       <div css={Container}>
         <TitleArea>
           <p css={centeredTextStyle}>즐겨찾기</p>
@@ -36,7 +36,7 @@ const Bookmark: React.FC = () => {
       <div css={Container}>
         <BookmarkFolder />
       </div>
-    </div>
+    </>
   );
 };
 
@@ -53,8 +53,10 @@ const TitleArea = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 8px;
+  padding-bottom: 30px;
   margin-top: 70px;
   margin-bottom: 70px;
+  font-weight: bold;
 `;
 
 const centeredTextStyle = css`

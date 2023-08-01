@@ -36,7 +36,7 @@ function App() {
         <Route path="/community/post" element={<Post />} />
         <Route path="/community/createpost" element={<CreatePost />} />
         <Route path="/mypage" element={<MyPage />} />
-        <Route path="/mypage/myvideos" element={<MyVideos />} />
+        <Route path="/mypage/myvideos/:playlistId" element={<MyVideos />} />
       </Routes>
       <Footer />
     </BrowserRouter>
