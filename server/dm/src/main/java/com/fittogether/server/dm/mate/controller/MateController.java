@@ -1,7 +1,6 @@
 package com.fittogether.server.dm.mate.controller;
 
 import com.fittogether.server.dm.domain.dto.RequestDto;
-import com.fittogether.server.dm.domain.dto.RequestForm;
 import com.fittogether.server.dm.service.MateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,22 +20,20 @@ public class MateController {
     @PostMapping("/matching/request")
     public ResponseEntity<RequestDto> mateRequest(
             @RequestHeader("X-AUTH-TOKEN") String token,
-            @RequestBody RequestForm requestForm
+            @RequestParam Long receiverId
     ){
         return ResponseEntity.ok(RequestDto.from(mateService.mateRequest(
-                 token ,
-                requestForm
+                 token ,receiverId
         )));
     }
 
-    @PutMapping("/matching/{senderId}/{receiverId}")
+    @PutMapping("/matching/{receiverId}")
     public ResponseEntity<Object> mateAccept(
             @RequestHeader("X-AUTH-TOKEN") String token,
-            @PathVariable Long senderId,
             @PathVariable Long receiverId,
             @RequestParam boolean is_matched
     ){
-        mateService.mateAccept(token,senderId,receiverId,is_matched);
+        mateService.mateAccept(token,receiverId,is_matched);
 
         Map<String, Object> responseData = new HashMap<>();
         responseData.put("status", "success");

@@ -1,7 +1,6 @@
 package com.fittogether.server.dm.service;
 
 
-import com.fittogether.server.dm.domain.dto.RequestForm;
 import com.fittogether.server.dm.domain.entity.Request;
 import com.fittogether.server.dm.domain.repository.RequestRepository;
 import com.fittogether.server.dm.exception.MateExceptionCode;
@@ -29,7 +28,7 @@ public class MateService {
     @Transactional
     public Request mateRequest(
             String token,
-            RequestForm requestForm
+            Long receiver
     ) {
         if (!jwtProvider.validateToken(token)) {
             throw new ValidateErrorCode("유효하지 않은 토큰입니다");
@@ -37,10 +36,10 @@ public class MateService {
 
         UserVo userVo = jwtProvider.getUserVo(token);
 
-        User senderId = userRepository.findById(requestForm.getSenderId())
+        User senderId = userRepository.findById(userVo.getUserId())
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
-        User receiverId = userRepository.findById(requestForm.getReceiverId())
+        User receiverId = userRepository.findById(receiver)
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
         Request request = Request.builder()
@@ -60,7 +59,6 @@ public class MateService {
     @Transactional
     public void mateAccept(
             String token,
-            Long senderId,
             Long receiverId,
             boolean is_matched
     ) {
@@ -71,7 +69,7 @@ public class MateService {
         UserVo userVo = jwtProvider.getUserVo(token);
 
 
-        User sender = userRepository.findById(senderId)
+        User sender = userRepository.findById(userVo.getUserId())
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
         User receiver = userRepository.findById(receiverId)
