@@ -2,6 +2,7 @@ package com.fittogether.server.user.service;
 
 import com.fittogether.server.domain.token.JwtProvider;
 import com.fittogether.server.domain.token.UserVo;
+import com.fittogether.server.user.domain.dto.AnotherUserDto;
 import com.fittogether.server.user.domain.dto.UpdateUserForm;
 import com.fittogether.server.user.domain.dto.UserDto;
 import com.fittogether.server.user.domain.dto.UserType;
@@ -54,4 +55,21 @@ public class UserService {
 
         return UserDto.from(user);
     }
+
+    // 다른 회원 프로필 조회
+    public AnotherUserDto getUserInfo(String token, Long userId) {
+        if (!jwtProvider.validateToken(token)) {
+            throw new UserCustomException(UserErrorCode.NEED_TO_SIGNIN);
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+        if (!user.isPublicInfo()) {
+            throw new UserCustomException(UserErrorCode.PRIVATE_USER);
+        }
+
+        return AnotherUserDto.from(user);
+    }
+
 }
