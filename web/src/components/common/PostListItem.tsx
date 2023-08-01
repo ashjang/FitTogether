@@ -103,6 +103,7 @@ const PostDetail = styled.div`
 const PostDetailItem = styled.div`
   margin-right: 15px;
 `;
+
 const FaThumbsUp = styled(FontAwesomeIcon)``;
 
 const FaComment = styled(FontAwesomeIcon)``;

@@ -3,24 +3,43 @@ import ReactQuill from "react-quill";
 import styled from "@emotion/styled";
 import "react-quill/dist/quill.snow.css";
 
+export const formats = [
+  "header",
+  "font",
+  "size",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "align",
+  "blockquote",
+  "list",
+  "bullet",
+  "indent",
+  "background",
+  "color",
+  "link",
+  "image",
+  "video",
+  "width",
+];
+
 const QuillEditor = () => {
   const QuillRef = useRef<ReactQuill>();
   const [contents, setContents] = useState("");
+  console.log(contents);
 
   const modules = useMemo(
     () => ({
       toolbar: {
         container: [
-          ["bold", "italic", "underline", "strike", "blockquote"],
-          [{ size: ["small", false, "large", "huge"] }, { color: [] }],
-          [
-            { list: "ordered" },
-            { list: "bullet" },
-            { indent: "-1" },
-            { indent: "+1" },
-            { align: [] },
-          ],
-          ["image", "video"],
+          ["link", "image", "video"],
+          [{ header: [1, 2, 3, false] }],
+          ["bold", "italic", "underline", "strike"],
+          ["blockquote"],
+          [{ list: "ordered" }, { list: "bullet" }],
+          [{ color: [] }, { background: [] }],
+          [{ align: [] }],
         ],
       },
     }),
@@ -39,6 +58,7 @@ const QuillEditor = () => {
         value={contents}
         onChange={setContents}
         modules={modules}
+        formats={formats}
         theme="snow"
         placeholder="contents..."
       />

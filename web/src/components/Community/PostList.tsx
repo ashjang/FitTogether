@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from "react";
 import { css } from "@emotion/react";
-
 import PostListItem from "../common/PostListItem";
 import styled from "@emotion/styled";
 import post_image_example from "../../assets/post_image_example.jpg";

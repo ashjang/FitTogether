@@ -1,11 +1,46 @@
 import React, { useState } from "react";
-import imgSrc from "../../assets/default-user-image.png";
+import default_user_image from "../../assets/default-user-image.png";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import { faThumbsUp } from "@fortawesome/free-regular-svg-icons";
+import { faComment } from "@fortawesome/free-regular-svg-icons";
 import Modal from "react-modal";
 
+const imageSrc: string = default_user_image;
+
 interface Props {}
+
+interface Data {
+  profileImage: string;
+  nickname: string;
+  postTitle: string;
+  postContents: string;
+  likeCount: number;
+  commentCount: number;
+  hitsCount: number;
+}
+
+const data: Data = {
+  profileImage: imageSrc,
+  nickname: "ehhdrud",
+  postTitle: "postTitle",
+  postContents:
+    "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic.",
+  likeCount: 99,
+  commentCount: 20,
+  hitsCount: 500,
+};
+
+const {
+  profileImage,
+  nickname,
+  postTitle,
+  postContents,
+  likeCount,
+  commentCount,
+  hitsCount,
+} = data;
 
 const PostContents: React.FC<Props> = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,9 +53,9 @@ const PostContents: React.FC<Props> = () => {
     <PostContentsComponent>
       <ProfileContainer>
         <ProfileImageContainer>
-          <ProfileImage src={imgSrc} />
+          <ProfileImage src={profileImage} />
         </ProfileImageContainer>
-        <ProfileNickname>ehhdrud</ProfileNickname>
+        <ProfileNickname>{nickname}</ProfileNickname>
         <FaEllipsis icon={faEllipsis} onClick={handleToggleModal} />
         <Modal
           isOpen={isModalOpen}
@@ -47,38 +82,22 @@ const PostContents: React.FC<Props> = () => {
         </Modal>
       </ProfileContainer>
       <Post>
-        <h1>Title</h1>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Distinctio
-          obcaecati consequatur qui temporibus nisi impedit maxime, deleniti
-          perspiciatis numquam dicta quas ipsum eveniet debitis eligendi porro
-          explicabo, optio, quod corporis?
-          <br />
-          <br />
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Distinctio
-          obcaecati consequatur qui temporibus nisi impedit maxime, deleniti
-          perspiciatis numquam dicta quas ipsum eveniet debitis eligendi porro
-          explicabo, optio, quod corporis?
-          <br />
-          <br />
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Distinctio
-          obcaecati consequatur qui temporibus nisi impedit maxime, deleniti
-          perspiciatis numquam dicta quas ipsum eveniet debitis eligendi porro
-          explicabo, optio, quod corporis?
-          <br />
-          <br />
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Distinctio
-          obcaecati consequatur qui temporibus nisi impedit maxime, deleniti
-          perspiciatis numquam dicta quas ipsum eveniet debitis eligendi porro
-          explicabo, optio, quod corporis?
-          <br />
-          <br />
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Distinctio
-          obcaecati consequatur qui temporibus nisi impedit maxime, deleniti
-          perspiciatis numquam dicta quas ipsum eveniet debitis eligendi porro
-          explicabo, optio, quod corporis?
-        </p>
+        <h1>{postTitle}</h1>
+        <p>{postContents}</p>
       </Post>
+      <PostDetail>
+        <PostDetailItem>
+          <FaThumbsUp icon={faThumbsUp} />
+          <span>{likeCount}</span>
+        </PostDetailItem>
+        <PostDetailItem>
+          <FaComment icon={faComment} />
+          <span>{commentCount}</span>
+        </PostDetailItem>
+        <PostDetailItem>
+          <span>조회수: {hitsCount}</span>
+        </PostDetailItem>
+      </PostDetail>
     </PostContentsComponent>
   );
 };
@@ -130,6 +149,29 @@ const FaEllipsis = styled(FontAwesomeIcon)`
 
 const Post = styled.div`
   width: 850px;
+`;
+
+const PostDetail = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 850px;
+`;
+
+const PostDetailItem = styled.div`
+  margin-right: 15px;
+`;
+
+const FaThumbsUp = styled(FontAwesomeIcon)`
+  // position: absolute;
+  // margin: 0 30px;
+  // right: 0px;
+`;
+
+const FaComment = styled(FontAwesomeIcon)`
+  // position: absolute;
+  // margin: 0 30px;
+  // right: 0px;
 `;
 
 export default PostContents;

@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import styled from "@emotion/styled";
 import imgSrc from "../../assets/default-user-image.png";
 import { nanoid } from "nanoid";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
+import Modal from "react-modal";
 
 interface Comment {
   commentId: string; // 댓글의 고유 ID
@@ -14,6 +17,7 @@ interface Comment {
 }
 
 const Comments: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
   const [newReply, setNewReply] = useState("");
@@ -75,6 +79,13 @@ const Comments: React.FC = () => {
     });
   };
 
+  const handleToggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  // 해당 댓글을 삭제하는 로직 추가해야!!
+  const handleDeleteIconClick = () => {};
+
   return (
     <CommentsComponent>
       <div>
@@ -88,6 +99,31 @@ const Comments: React.FC = () => {
                   </ProfileImageContainer>
                   <UserId>{comment.userId}</UserId>
                   <PostTime>{comment.postedAt}</PostTime>
+                  {/* 해당 댓글의 작성자만 아이콘이 보이도록하는 로직 추가해야!! */}
+                  <FaTrashCan icon={faTrashCan} onClick={handleToggleModal} />
+                  <Modal
+                    isOpen={isModalOpen}
+                    onRequestClose={handleToggleModal}
+                    contentLabel="Example Modal"
+                    style={{
+                      overlay: {
+                        backgroundColor: "rgba(0, 0, 0, 0.1)",
+                      },
+                      content: {
+                        width: "max-content",
+                        height: "max-content",
+                        margin: "auto",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "white",
+                      },
+                    }}
+                  >
+                    <button onClick={handleDeleteIconClick}>삭제하기</button>
+                    <button>취소하기</button>
+                  </Modal>
                 </TopDiv>
                 <Content>{comment.content}</Content>
               </CommentItem>
@@ -121,6 +157,34 @@ const Comments: React.FC = () => {
                       </ProfileImageContainer>
                       <UserId>{reply.userId}</UserId>
                       <PostTime>{reply.postedAt}</PostTime>
+                      {/* 해당 댓글의 작성자만 아이콘이 보이도록하는 로직 추가해야!! */}
+                      <FaTrashCan
+                        icon={faTrashCan}
+                        onClick={handleToggleModal}
+                      />
+                      <Modal
+                        isOpen={isModalOpen}
+                        onRequestClose={handleToggleModal}
+                        contentLabel="Example Modal"
+                        style={{
+                          overlay: {
+                            backgroundColor: "rgba(0, 0, 0, 0.1)",
+                          },
+                          content: {
+                            width: "max-content",
+                            height: "max-content",
+                            margin: "auto",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            backgroundColor: "white",
+                          },
+                        }}
+                      >
+                        <button>수정하기</button>
+                        <button>삭제하기</button>
+                      </Modal>
                     </TopDiv>
                     <Content>{reply.content}</Content>
                   </ReplyItem>
@@ -187,6 +251,7 @@ const TopDiv = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  position: relative;
 `;
 
 const UserId = styled.p`
@@ -198,6 +263,11 @@ const UserId = styled.p`
 const PostTime = styled.p`
   margin: 5px 0 0 0;
   font-size: 10px;
+`;
+
+const FaTrashCan = styled(FontAwesomeIcon)`
+  position: absolute;
+  right: 0;
 `;
 
 const Content = styled.p`
