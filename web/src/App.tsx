@@ -32,7 +32,7 @@ function App() {
         <Route path="/bookmark" element={<Bookmark />} />
         <Route path="/exerciseinfo" element={<ExerciseInfo />} />
         <Route path="/findmate" element={<FindMate />} />
-        <Route path="/community" element={<Community />} />
+        <Route path="/community/" element={<Community />} />
         <Route path="/community/post" element={<Post />} />
         <Route path="/community/createpost" element={<CreatePost />} />
         <Route path="/mypage" element={<MyPage />} />

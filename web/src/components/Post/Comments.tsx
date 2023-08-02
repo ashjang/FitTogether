@@ -35,7 +35,6 @@ const Comments: React.FC = () => {
       replies: [],
     };
 
-    // 실제로는 comments가 아닌 백엔드 데이터베이스에 newCommentItem을 추가!!
     setComments([...comments, newCommentItem]);
     setNewComment("");
   };

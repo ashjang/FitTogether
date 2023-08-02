@@ -56,6 +56,7 @@ const PostContents: React.FC<Props> = () => {
           <ProfileImage src={profileImage} />
         </ProfileImageContainer>
         <ProfileNickname>{nickname}</ProfileNickname>
+        {/* 해당 포스트의 작성자만 아이콘이 보이도록하는 로직 추가해야!! */}
         <FaEllipsis icon={faEllipsis} onClick={handleToggleModal} />
         <Modal
           isOpen={isModalOpen}

@@ -4,9 +4,7 @@ import PostFilter from "../components/Community/PostFilter";
 import PostList from "../components/Community/PostList";
 import styled from "@emotion/styled";
 
-interface Props {}
-
-const Community: React.FC<Props> = () => {
+const Community: React.FC = () => {
   return (
     <Page>
       <Title>커뮤니티</Title>

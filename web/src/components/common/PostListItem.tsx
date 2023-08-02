@@ -8,20 +8,20 @@ interface Props {
   postCategory: string;
   postTitle: string;
   postFirstParagraph: string;
-  likeCount: number;
-  commentCount: number;
-  hitsCount: number;
   postFirstImage: string;
+  likesCounts: number;
+  commentsCounts: number;
+  hitsCounts: number;
 }
 
 const PostListItem: React.FC<Props> = ({
   postCategory,
   postTitle,
   postFirstParagraph,
-  likeCount,
-  commentCount,
-  hitsCount,
   postFirstImage,
+  likesCounts,
+  commentsCounts,
+  hitsCounts,
 }) => {
   return (
     <PostListItemComponent>
@@ -33,14 +33,14 @@ const PostListItem: React.FC<Props> = ({
           <PostDetail>
             <PostDetailItem>
               <FaThumbsUp icon={faThumbsUp} />
-              <span>{likeCount}</span>
+              <span>{likesCounts}</span>
             </PostDetailItem>
             <PostDetailItem>
               <FaComment icon={faComment} />
-              <span>{commentCount}</span>
+              <span>{commentsCounts}</span>
             </PostDetailItem>
             <PostDetailItem>
-              <span>조회수: {hitsCount}</span>
+              <span>조회수: {hitsCounts}</span>
             </PostDetailItem>
           </PostDetail>
         </PostInfo>
