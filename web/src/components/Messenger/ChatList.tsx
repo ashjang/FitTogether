@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import ChatListItem from "./ChatListItem";
 import styled from "@emotion/styled";
 import default_user_image from "../../assets/default-user-image.png";
+import MateList from "../common/MateList";
 
 const imageSrc: string = default_user_image;
 
@@ -22,63 +23,63 @@ interface ChatData {
 const data: ChatData = {
   message1: {
     senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-    senderNickname: "보낸사람닉네임",
-    lastMessageDate: "마지막메시지날짜",
-    lastMessageContent: "마지막메시지내용",
+    senderNickname: "nickname",
+    lastMessageDate: "lastMessageDate",
+    lastMessageContent: "lastMessageContent",
     newMessageCount: 99,
   },
   message2: {
     senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-    senderNickname: "운동중독자",
+    senderNickname: "fittogether",
     lastMessageDate: "오전 8:55",
     lastMessageContent: "안녕하세요💪💪💪",
     newMessageCount: 1,
   },
   message3: {
     senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-    senderNickname: "홍길동",
+    senderNickname: "ehhdrud",
     lastMessageDate: "어제",
     lastMessageContent: "ㅅㄱ하세요",
     newMessageCount: 0,
   },
   message4: {
     senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-    senderNickname: "김길동",
+    senderNickname: "emfkdlvnem",
     lastMessageDate: "어제",
     lastMessageContent: "ㅅㄱ하세요",
     newMessageCount: 0,
   },
   message5: {
     senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-    senderNickname: "이길동",
+    senderNickname: "ashjang",
     lastMessageDate: "어제",
     lastMessageContent: "ㅅㄱ하세요",
     newMessageCount: 0,
   },
   message6: {
     senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-    senderNickname: "박길동",
+    senderNickname: "hg051510",
     lastMessageDate: "어제",
     lastMessageContent: "ㅅㄱ하세요",
     newMessageCount: 0,
   },
   message7: {
     senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-    senderNickname: "최길동",
+    senderNickname: "2gigeum",
     lastMessageDate: "어제",
     lastMessageContent: "ㅅㄱ하세요",
     newMessageCount: 0,
   },
   message8: {
     senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-    senderNickname: "정길동",
+    senderNickname: "woojkk",
     lastMessageDate: "어제",
     lastMessageContent: "ㅅㄱ하세요",
     newMessageCount: 0,
   },
   message9: {
     senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-    senderNickname: "강길동",
+    senderNickname: "fighting",
     lastMessageDate: "어제",
     lastMessageContent: "ㅅㄱ하세요",
     newMessageCount: 0,
@@ -86,14 +87,31 @@ const data: ChatData = {
 };
 
 const ChatList: React.FC<Props> = () => {
+  const [isMateListOpen, setIsMateListOpen] = useState(false);
+
+  // "운동 메이트 리스트" 클릭 이벤트를 처리하는 함수를 추가합니다.
+  const handleShowMateListClick = () => {
+    setIsMateListOpen(true);
+  };
+
+  // MateList 모달을 닫는 함수를 추가합니다.
+  const handleCloseMateList = () => {
+    setIsMateListOpen(false);
+  };
+
   return (
     <div>
-      <ShowMateList>운동 메이트 리스트</ShowMateList>
+      <ShowMateList onClick={handleShowMateListClick}>
+        운동 메이트 리스트
+      </ShowMateList>
       <ChatListItems>
         {Object.entries(data).map(([key, message]) => (
           <ChatListItem key={key} {...message} />
         ))}
       </ChatListItems>
+      {isMateListOpen && (
+        <MateList isOpen={true} onClose={handleCloseMateList} />
+      )}
     </div>
   );
 };

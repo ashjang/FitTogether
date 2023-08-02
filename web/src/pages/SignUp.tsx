@@ -23,27 +23,21 @@ const SignUp: React.FC<Props> = () => {
     const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setNickname(event.target.value);
     };
-
     const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(event.target.value);
     };
-
     const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(event.target.value);
     };
-
     const handleConfirmPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setConfirmPassword(event.target.value);
     };
-
     const handleGenderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setGender(event.target.value);
     };
-
     const handlePublicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsPublic(event.target.value === 'public');
     };
-
     const handleSignUp = async (event: React.FormEvent) => {
         event.preventDefault();
 
@@ -197,7 +191,6 @@ const SignUp: React.FC<Props> = () => {
         </Page>
     );
 };
-
 const Page = styled.div`
     display: flex;
     flex-direction: column;
@@ -206,18 +199,15 @@ const Page = styled.div`
     // min-height는 삭제 예정
     min-height: calc(100vh - 300px);
 `;
-
 const Title = styled.h1`
     width: 510px;
     margin-bottom: 50px;
 `;
-
 const Form = styled.form`
     position: relative;
     width: 510px;
     height: 450px;
 `;
-
 const InputTextDiv = styled.div`
     display: flex;
     justify-content: space-between;
@@ -225,7 +215,6 @@ const InputTextDiv = styled.div`
     position: relative;
     margin-bottom: 30px;
 `;
-
 const DuplicateCheckButton = styled.button`
     display: flex;
     justify-content: center;
@@ -237,10 +226,9 @@ const DuplicateCheckButton = styled.button`
     border-radius: 5px;
     margin-right: 3px;
     outline: none;
-    background-color: #c7c7c7;
+    background-color: #C7C7C7;
     font-size: 14px;
 `;
-
 const InputText = styled.input`
     width: 350px;
     height: 40px;
@@ -250,22 +238,18 @@ const InputText = styled.input`
     padding-left: 10px;
     background-color: rgb(222, 222, 222);
 `;
-
 const InputRadioDiv = styled.div`
     display: flex;
     position: relative;
     margin-bottom: 30px;
 `;
-
 const RadioContainer = styled.div`
     position: absolute;
     left: 160px;
 `;
-
 const InputRadio = styled.input`
     margin: 0px 30px 0px 5px;
 `;
-
 const SignUpButton = styled.button`
     position: absolute;
     right: 0px;
@@ -275,24 +259,22 @@ const SignUpButton = styled.button`
     border-radius: 5px;
     outline: none;
     padding: 5px 20px;
-    background-color: #007bff;
+
+    background-color: #007BFF;
     color: white;
     ${css`
         &:hover {
-            background-color: #0056b3;
+            background-color: #0056B3;
         }
     `}
 `;
-
 const BackButton = styled.a`
     position: relative;
     left: -172.5px;
     top: -24px;
 `;
-
 const BackButtonText = styled.p`
     font-size: 14px;
     border-bottom: 1px solid black;
 `;
-
 export default SignUp;

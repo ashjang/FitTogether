@@ -10,24 +10,25 @@ const PostFilter: React.FC<Props> = () => {
   const [hashtag, setHashtag] = useState("");
   const [align, setAlign] = useState("최신순");
 
+  // 검색으로 필터링
   const handleKeywordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(event.target.value);
   };
-
   const handleKeywordSubmit = async () => {
     // 서버에게 'keyword'로 필터링된 데이터 요청
     await fetchData(category, keyword, hashtag, align);
   };
 
+  // 해시태그로 필터링
   const handleHashtagChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHashtag(event.target.value);
   };
-
   const handleHashtagSubmit = async () => {
     // 서버에게 'hashtag'로 필터링된 데이터 요청
     await fetchData(category, keyword, hashtag, align);
   };
 
+  // 카테고리로 필터링
   const handleCategoryClick = async (newCategory: string) => {
     // 이전 선택과 다른 카테고리를 선택했을 때만 업데이트
     if (category !== newCategory) {
@@ -39,8 +40,9 @@ const PostFilter: React.FC<Props> = () => {
     await fetchData(category, keyword, hashtag, align);
   };
 
+  // 정렬방식으로 필터링
   const handleAlignClick = async (newAlign: string) => {
-    // 이전 선택과 다른 카테고리를 선택했을 때만 업데이트
+    // 이전 선택과 다른 정렬 방식을 선택했을 때만 업데이트
     setAlign(newAlign);
     await fetchData(category, keyword, hashtag, align);
   };
@@ -75,7 +77,7 @@ const PostFilter: React.FC<Props> = () => {
           <button onClick={() => handleCategoryClick("헬스")}>헬스</button>
         </div>
         <div>
-          <input
+          <PostFilterInput
             type="text"
             value={keyword}
             onChange={handleKeywordChange}
@@ -84,7 +86,7 @@ const PostFilter: React.FC<Props> = () => {
           <button onClick={handleKeywordSubmit}>검색</button>
         </div>
         <div>
-          <input
+          <PostFilterInput
             type="text"
             value={hashtag}
             onChange={handleHashtagChange}
@@ -105,9 +107,18 @@ const PostFilter: React.FC<Props> = () => {
 
 const PostFilterComponent = styled.div`
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 750px;
+`;
+
+const PostFilterInput = styled.input`
+  width: 400px;
 `;
 
 const PopularHashtag = styled.div`
+  width: 200px;
+  height: 120px;
   background-color: #d7d7d7;
 `;
 
