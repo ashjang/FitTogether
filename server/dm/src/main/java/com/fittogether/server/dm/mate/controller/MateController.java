@@ -1,7 +1,7 @@
 package com.fittogether.server.dm.mate.controller;
 
 import com.fittogether.server.dm.domain.dto.RequestDto;
-import com.fittogether.server.dm.domain.entity.Request;
+import com.fittogether.server.dm.domain.dto.RequestListDto;
 import com.fittogether.server.dm.service.MateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -45,10 +45,10 @@ public class MateController {
     }
 
     @GetMapping("/matching/requests/lists")
-    public List<Request> requestLists(
+    public List<RequestListDto> requestLists(
            @RequestHeader("X-AUTH-TOKEN") String token
     ){
-        return mateService.requestLists(token);
+        return RequestListDto.from(mateService.requestLists(token));
     }
 
 }
