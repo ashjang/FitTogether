@@ -154,7 +154,9 @@ function VideoList() {
                     </VideoCategory>
                 </VideoSection>
             </VideoInn>
-            {currentVideo && <VideoPopup video={currentVideo} onClose={() => setCurrentVideo(null)} />}
+            {currentVideo && (
+                <VideoPopup video={currentVideo} onClose={() => setCurrentVideo(null)} />
+            )}
             <div ref={bottomRef} />
         </>
     );
