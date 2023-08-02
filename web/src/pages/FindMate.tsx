@@ -1,8 +1,5 @@
 const FindMate: React.FC = () => {
-    return (
-        <>
-        </>
-    );
+    return <></>;
 };
 
 export default FindMate;

@@ -1,0 +1,274 @@
+{
+  "postListData": [
+    {
+      "postId": 1,
+      "postCategory": "카테고리1",
+      "postTitle": "게시물 제목 1",
+      "postFirstParagraph": "첫 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 10,
+      "commentsCounts": 5,
+      "hitsCounts": 100
+    },
+    {
+      "postId": 2,
+      "postCategory": "카테고리2",
+      "postTitle": "게시물 제목 2",
+      "postFirstParagraph": "두 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 20,
+      "commentsCounts": 3,
+      "hitsCounts": 50
+    },
+    {
+      "postId": 3,
+      "postCategory": "카테고리3",
+      "postTitle": "게시물 제목 3",
+      "postFirstParagraph": "세 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 30,
+      "commentsCounts": 8,
+      "hitsCounts": 70
+    },
+    {
+      "postId": 4,
+      "postCategory": "카테고리4",
+      "postTitle": "게시물 제목 4",
+      "postFirstParagraph": "네 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 40,
+      "commentsCounts": 15,
+      "hitsCounts": 90
+    },
+    {
+      "postId": 5,
+      "postCategory": "카테고리5",
+      "postTitle": "게시물 제목 5",
+      "postFirstParagraph": "다섯 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 50,
+      "commentsCounts": 10,
+      "hitsCounts": 120
+    },
+    {
+      "postId": 6,
+      "postCategory": "카테고리6",
+      "postTitle": "게시물 제목 6",
+      "postFirstParagraph": "여섯 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 60,
+      "commentsCounts": 7,
+      "hitsCounts": 80
+    },
+    {
+      "postId": 7,
+      "postCategory": "카테고리7",
+      "postTitle": "게시물 제목 7",
+      "postFirstParagraph": "일곱 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 70,
+      "commentsCounts": 20,
+      "hitsCounts": 130
+    },
+    {
+      "postId": 8,
+      "postCategory": "카테고리8",
+      "postTitle": "게시물 제목 8",
+      "postFirstParagraph": "여덟 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 80,
+      "commentsCounts": 12,
+      "hitsCounts": 110
+    },
+    {
+      "postId": 9,
+      "postCategory": "카테고리9",
+      "postTitle": "게시물 제목 9",
+      "postFirstParagraph": "아홉 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 90,
+      "commentsCounts": 6,
+      "hitsCounts": 60
+    },
+    {
+      "postId": 10,
+      "postCategory": "카테고리10",
+      "postTitle": "게시물 제목 10",
+      "postFirstParagraph": "열 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 100,
+      "commentsCounts": 18,
+      "hitsCounts": 140
+    },
+    {
+      "postId": 11,
+      "postCategory": "카테고리11",
+      "postTitle": "게시물 제목 11",
+      "postFirstParagraph": "열한 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 110,
+      "commentsCounts": 25,
+      "hitsCounts": 170
+    },
+    {
+      "postId": 12,
+      "postCategory": "카테고리12",
+      "postTitle": "게시물 제목 12",
+      "postFirstParagraph": "열두 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 120,
+      "commentsCounts": 30,
+      "hitsCounts": 200
+    },
+    {
+      "postId": 13,
+      "postCategory": "카테고리13",
+      "postTitle": "게시물 제목 13",
+      "postFirstParagraph": "열세 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 130,
+      "commentsCounts": 22,
+      "hitsCounts": 180
+    },
+    {
+      "postId": 14,
+      "postCategory": "카테고리14",
+      "postTitle": "게시물 제목 14",
+      "postFirstParagraph": "열네 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 40,
+      "commentsCounts": 19,
+      "hitsCounts": 120
+    },
+    {
+      "postId": 15,
+      "postCategory": "카테고리15",
+      "postTitle": "게시물 제목 15",
+      "postFirstParagraph": "열다섯 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 50,
+      "commentsCounts": 14,
+      "hitsCounts": 100
+    },
+    {
+      "postId": 16,
+      "postCategory": "카테고리16",
+      "postTitle": "게시물 제목 16",
+      "postFirstParagraph": "열여섯 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 60,
+      "commentsCounts": 10,
+      "hitsCounts": 90
+    },
+    {
+      "postId": 17,
+      "postCategory": "카테고리17",
+      "postTitle": "게시물 제목 17",
+      "postFirstParagraph": "열일곱 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 50,
+      "commentsCounts": 8,
+      "hitsCounts": 70
+    },
+    {
+      "postId": 18,
+      "postCategory": "카테고리18",
+      "postTitle": "게시물 제목 18",
+      "postFirstParagraph": "열여덟 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 10,
+      "commentsCounts": 5,
+      "hitsCounts": 60
+    },
+    {
+      "postId": 19,
+      "postCategory": "카테고리19",
+      "postTitle": "게시물 제목 19",
+      "postFirstParagraph": "열아홉 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 10,
+      "commentsCounts": 3,
+      "hitsCounts": 50
+    },
+    {
+      "postId": 20,
+      "postCategory": "카테고리20",
+      "postTitle": "게시물 제목 20",
+      "postFirstParagraph": "스무 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 20,
+      "commentsCounts": 2,
+      "hitsCounts": 40
+    },
+    {
+      "postId": 21,
+      "postCategory": "카테고리21",
+      "postTitle": "게시물 제목 21",
+      "postFirstParagraph": "스물하나 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 10,
+      "commentsCounts": 1,
+      "hitsCounts": 30
+    },
+    {
+      "postId": 22,
+      "postCategory": "카테고리22",
+      "postTitle": "게시물 제목 22",
+      "postFirstParagraph": "스물두 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 20,
+      "commentsCounts": 4,
+      "hitsCounts": 45
+    },
+    {
+      "postId": 23,
+      "postCategory": "카테고리23",
+      "postTitle": "게시물 제목 23",
+      "postFirstParagraph": "스물세 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 20,
+      "commentsCounts": 6,
+      "hitsCounts": 55
+    },
+    {
+      "postId": 24,
+      "postCategory": "카테고리24",
+      "postTitle": "게시물 제목 24",
+      "postFirstParagraph": "스물네 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 20,
+      "commentsCounts": 9,
+      "hitsCounts": 65
+    },
+    {
+      "postId": 25,
+      "postCategory": "카테고리25",
+      "postTitle": "게시물 제목 25",
+      "postFirstParagraph": "스물다섯 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 25,
+      "commentsCounts": 11,
+      "hitsCounts": 75
+    },
+    {
+      "postId": 26,
+      "postCategory": "카테고리26",
+      "postTitle": "게시물 제목 26",
+      "postFirstParagraph": "스물여섯 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 20,
+      "commentsCounts": 15,
+      "hitsCounts": 80
+    },
+    {
+      "postId": 27,
+      "postCategory": "카테고리27",
+      "postTitle": "게시물 제목 27",
+      "postFirstParagraph": "스물일곱 번째 게시물 내용...",
+      "postFirstImage": "../../assets/post_image_example.jpg",
+      "likesCounts": 10,
+      "commentsCounts": 12,
+      "hitsCounts": 70
+    }
+  ]
+}
