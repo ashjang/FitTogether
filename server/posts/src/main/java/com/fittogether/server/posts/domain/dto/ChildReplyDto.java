@@ -1,6 +1,6 @@
 package com.fittogether.server.posts.domain.dto;
 
-import com.fittogether.server.posts.domain.model.Reply;
+import com.fittogether.server.posts.domain.model.ChildReply;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,18 +11,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReplyDto {
+public class ChildReplyDto {
   private String comment;
   private LocalDateTime createdAt;
   private String userNickname;
   private Long postId;
+  private Long replyId;
 
-  public static ReplyDto from(Reply reply) {
-    return ReplyDto.builder()
-        .comment(reply.getComment())
+  public static ChildReplyDto fromChild(ChildReply childReply) {
+    return ChildReplyDto.builder()
+        .comment(childReply.getComment())
         .createdAt(LocalDateTime.now())
-        .userNickname(reply.getUser().getNickname())
-        .postId(reply.getPost().getId())
+        .userNickname(childReply.getUser().getNickname())
+        .postId(childReply.getReply().getPost().getId())
+        .replyId(childReply.getReply().getId())
         .build();
   }
 }

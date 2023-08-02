@@ -1,5 +1,6 @@
 package com.fittogether.server.posts.controller;
 
+import com.fittogether.server.posts.domain.dto.ChildReplyDto;
 import com.fittogether.server.posts.domain.dto.ReplyDto;
 import com.fittogether.server.posts.domain.dto.ReplyForm;
 import com.fittogether.server.posts.service.ReplyService;
@@ -34,19 +35,21 @@ public class ReplyController {
     return ResponseEntity.ok().body("댓글 삭제 완료");
   }
 
-  @PostMapping("/comments/{replyId}")
-  public ResponseEntity<ReplyDto> createChildReply(@RequestHeader(name = "X-AUTH-TOKEN") String token,
+  @PostMapping("/{postId}/comments/{replyId}")
+  public ResponseEntity<ChildReplyDto> createChildReply(@RequestHeader(name = "X-AUTH-TOKEN") String token,
+      @PathVariable Long postId,
       @PathVariable Long replyId,
       @RequestBody ReplyForm replyForm) {
-    return ResponseEntity.ok(ReplyDto.fromChild(
+    return ResponseEntity.ok(ChildReplyDto.fromChild(
         replyService.createChildReply(token, replyId, replyForm)));
   }
 
-  @DeleteMapping("/comments/{replyId}/child-comment/{childReplyId}")
+  @DeleteMapping("/{postId}/comments/{replyId}/child-comment/{childReplyId}")
   public ResponseEntity<?> deleteChildReply(@RequestHeader(name = "X-AUTH-TOKEN") String token,
+      @PathVariable Long postId,
       @PathVariable Long replyId,
       @PathVariable Long childReplyId) {
-    replyService.deleteChildReply(token, replyId, childReplyId);
+    replyService.deleteChildReply(token, childReplyId);
 
     return ResponseEntity.ok().body("댓글 삭제 완료");
   }

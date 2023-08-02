@@ -3,8 +3,8 @@ package com.fittogether.server.posts.service;
 import com.fittogether.server.domain.token.JwtProvider;
 import com.fittogether.server.domain.token.UserVo;
 import com.fittogether.server.posts.domain.model.Post;
-import com.fittogether.server.user.exception.UserCustomException;
-import com.fittogether.server.user.exception.UserErrorCode;
+import com.fittogether.server.posts.exception.ErrorCode;
+import com.fittogether.server.posts.exception.PostException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ public class AuthenticationService {
     UserVo userVo = provider.getUserVo(token);
 
     if (!post.getUser().getUserId().equals(userVo.getUserId())) {
-      throw new UserCustomException(UserErrorCode.NOT_FOUND_USER);
+      throw new PostException(ErrorCode.NO_PERMISSION_TO_VIEW_POST);
     }
   }
 

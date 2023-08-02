@@ -31,6 +31,7 @@ public class ChildReply {
   @JoinColumn(name = "user_id")
   private User user;
 
+
   @ManyToOne
   @JoinColumn(name = "reply_id")
   private Reply reply;

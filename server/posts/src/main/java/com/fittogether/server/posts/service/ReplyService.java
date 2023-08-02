@@ -60,6 +60,7 @@ public class ReplyService {
   /**
    * 댓글 삭제
    */
+  @Transactional
   public void deleteReply(String token, Long postId, Long replyId) {
     Post post = postRepository.findById(postId)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
@@ -74,6 +75,7 @@ public class ReplyService {
   /**
    * 대댓글 작성
    */
+  @Transactional
   public ChildReply createChildReply(String token, Long replyId, ReplyForm replyForm) {
     UserVo userVo = provider.getUserVo(token);
 
@@ -93,22 +95,20 @@ public class ReplyService {
     return childReplyRepository.save(childReply);
   }
 
-  public void deleteChildReply(String token, Long replyId, Long childReplyId) {
+  @Transactional
+  public void deleteChildReply(String token, Long childReplyId) {
     if (!provider.validateToken(token)) {
       throw new RuntimeException("Invalid or expired token.");
     }
 
     UserVo userVo = provider.getUserVo(token);
 
-    Reply reply = replyRepository.findById(replyId)
-        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
-
-    if (!reply.getUser().getUserId().equals(userVo.getUserId())) {
-      throw new PostException(ErrorCode.ONLY_AUTHOR_DELETE);
-    }
-
     ChildReply childReply = childReplyRepository.findById(childReplyId)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
+
+    if (!childReply.getUser().getUserId().equals(userVo.getUserId())) {
+      throw new PostException(ErrorCode.ONLY_AUTHOR_DELETE);
+    }
 
     childReplyRepository.delete(childReply);
   }

@@ -26,7 +26,7 @@ public class PostInfo {
   private Long likes;
   private Long watched;
   private List<ReplyDto> replyList;
-  private List<ReplyDto> childReplyList;
+  private List<ChildReplyDto> childReplyList;
   private LocalDateTime createdAt;
 
   public static PostInfo from(Post post, List<Reply> replyList, List<ChildReply> childReplyList) {
@@ -40,7 +40,7 @@ public class PostInfo {
         .likes(post.getLikes())
         .watched(post.getWatched())
         .replyList(replyList.stream().map(ReplyDto::from).collect(Collectors.toList()))
-        .replyList(childReplyList.stream().map(ReplyDto::fromChild).collect(Collectors.toList()))
+        .childReplyList(childReplyList.stream().map(ChildReplyDto::fromChild).collect(Collectors.toList()))
         .createdAt(post.getCreatedAt())
         .build();
   }

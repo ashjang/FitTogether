@@ -173,11 +173,11 @@ public class PostService {
 
     List<Reply> replyList = replyRepository.findByPostId(postId);
 
-    List<ChildReply> childReplies = replyList.stream()
-        .map(reply -> childReplyRepository.findByReplyId(reply.getId()))
+    List<Long> replyIds = replyList.stream()
+        .map(Reply::getId)
         .collect(Collectors.toList());
 
-
+    List<ChildReply> childReplies = childReplyRepository.findByReplyIdIn(replyIds);
 
     return PostInfo.from(post, replyList, childReplies);
   }
