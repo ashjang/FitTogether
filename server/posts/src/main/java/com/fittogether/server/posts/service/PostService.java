@@ -20,10 +20,13 @@ import com.fittogether.server.user.domain.model.User;
 import com.fittogether.server.user.domain.repository.UserRepository;
 import com.fittogether.server.user.exception.UserCustomException;
 import com.fittogether.server.user.exception.UserErrorCode;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +42,8 @@ public class PostService {
   private final ChildReplyRepository childReplyRepository;
   private final JwtProvider provider;
   private final AuthenticationService authenticationService;
+
+  private final RedisTemplate redisTemplate;
 
   /**
    * 게시글 작성
@@ -179,6 +184,35 @@ public class PostService {
 
     List<ChildReply> childReplies = childReplyRepository.findByReplyIdIn(replyIds);
 
+    incrementWatchedCount(postId);
+
     return PostInfo.from(post, replyList, childReplies);
   }
+
+  @Transactional
+  public void incrementWatchedCount(Long postId) {
+    String key = "postWatchedCount::" + postId;
+
+    ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+
+    Post post = postRepository.findById(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
+
+    valueOperations.set(key, String.valueOf(post.getWatched()), Duration.ofMinutes(5));
+
+    Long incrementWatchedCount = valueOperations.increment(key);
+
+    updateWatchedCount(postId, incrementWatchedCount);
+
+  }
+
+  @Transactional
+  public void updateWatchedCount(Long postId, Long watchedCount) {
+    Post post = postRepository.findById(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
+
+    post.setWatched(watchedCount); // 조회수 업데이트
+    postRepository.save(post);
+  }
+
 }
