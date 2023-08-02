@@ -1,54 +1,58 @@
-type Video = {
-    id: string;
-    thumbnail: string;
-    title: string;
-};
+import axios from 'axios';
 
-interface Item {
+export type Video = {
     id: {
         videoId: string;
     };
     snippet: {
-        thumbnails: {
-            default: {
-                url: string;
-            };
-        };
         title: string;
+        thumbnails: {
+            default: Thumbnail;
+            medium: Thumbnail;
+            high: Thumbnail;
+        };
     };
-}
+};
 
-const API_KEY = 'AIzaSyCfmtIFijnjp9e--1hTc5FICf3mippF2kY';
+export type Thumbnail = {
+    url: string;
+    width: number;
+    height: number;
+};
 
-export const fetchVideosFromYoutubeAPI = async (
-    activeTab: string,
-    page: number,
-    maxResults: number
-): Promise<Video[]> => {
-    try {
-        const response = await fetch(
-            `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&q=${encodeURIComponent(activeTab)}&type=video&part=snippet&maxResults=${maxResults}&pageToken=${page}`
-        );
+export type VideosResponse = {
+    nextPageToken: string | null;
+    items: Video[];
+};
 
-        if (!response.ok) {
-            throw new Error('Failed to fetch videos from YouTube API');
-        }
+export const YOUTUBE_API_KEY = "AIzaSyCiNRWlBZEQLTiZczKSieY7BS8lOLAA3_8";
 
-        const data = await response.json() as { items: Item[] };
-
-        if (!data.items) {
-            throw new Error('Invalid response data from YouTube API');
-        }
-
-        const videos: Video[] = data.items.map((item: Item) => ({
-            id: item.id.videoId,
-            thumbnail: item.snippet.thumbnails.default.url,
-            title: item.snippet.title,
-        }));
-
-        return videos;
-    } catch (error) {
-        console.error('Error fetching videos from YouTube API:', error);
-        return [];
+let totalResults = 0;
+export const fetchVideos = async (pageToken: string | null, category: string): Promise<VideosResponse> => {
+    if (totalResults >= 20) {
+        return { nextPageToken: null, items: [] }; 
     }
+    
+    try {
+        const response = await axios.get<VideosResponse>('https://www.googleapis.com/youtube/v3/search', {
+            params: {
+                part: 'snippet',
+                maxResults: 4,
+                key: YOUTUBE_API_KEY,
+                q: category,
+                pageToken,
+            },
+        });
+
+        totalResults += response.data.items.length;
+
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
+export const resetTotalResults = () => {
+    totalResults = 0;
 };

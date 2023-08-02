@@ -115,17 +115,21 @@ function Header() {
           )} */}
         </IconSection>
         <div className="login-section" css={loginSection}>
-          <SignInLink
-            to="/signin"
+          <LoginLink
+            to="/login"
+            id="header-btn-login"
+            className="btn btn-login-link"
           >
             로그인
-          </SignInLink>
+          </LoginLink>
           <span>|</span>
-          <SignUpLink
-            to="/signup"
+          <SignInLink
+            to="/signin"
+            id="header-btn-signin"
+            className="btn btn-signin-link"
           >
             회원가입
-          </SignUpLink>
+          </SignInLink>
         </div>
       </div>
 
@@ -218,10 +222,10 @@ const loginSection = css`
     margin: 0 5px
   }
 `;
-const SignInLink = styled(Link)`
+const LoginLink = styled(Link)`
   display: block;
 `;
-const SignUpLink = styled(Link)`
+const SignInLink = styled(Link)`
   display: block;
 `;
 
