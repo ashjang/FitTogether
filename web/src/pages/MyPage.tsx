@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import MyInformation from '../components/MyPage/MyInformation';
 import MyPostList from '../components/MyPage/MyPostList';
-import MateList from '../components/common/MateList';
 import styled from '@emotion/styled';
 
 const MyPage: React.FC = () => {
@@ -25,7 +24,6 @@ const MyPage: React.FC = () => {
       <Content>
         {activeTab === 'MyInformation' && <MyInformation />}
         {activeTab === 'MyPostList' && <MyPostList />}
-        {activeTab === 'MateList' && <MateList />}
       </Content>
     </div>
   );

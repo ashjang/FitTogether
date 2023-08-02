@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
+import MainPage from './pages/MainPage';
 
 // 상단 우측 아이콘
 import SignIn from './pages/SignIn';

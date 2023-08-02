@@ -4,15 +4,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
-interface Props {
-    nickname: string;
-    email: string;
-    password: string;
-    gender: string;
-    isPublic: false;
-}
-
-const SignUp: React.FC<Props> = () => {
+const SignUp: React.FC = () => {
     const [nickname, setNickname] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
