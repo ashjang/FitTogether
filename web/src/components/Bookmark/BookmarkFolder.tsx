@@ -1,7 +1,21 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+
+import styled from '@emotion/styled';
 
 const BookmarkFolder: React.FC = () => {
-  return <div>사용자가 만든 폴더(비디오 4개를 보여주고 있는)</div>;
+  return (
+    <BookmarkFolderContainer>
+      <div>
+        <Link to="/mypage/myvideos/playlistId1">맘에들어 등산</Link>
+      </div>
+      <div>
+        <Link to="/mypage/myvideos/playlistId2">친구랑 같이할거</Link>
+      </div>
+    </BookmarkFolderContainer>
+  );
 };
+
+const BookmarkFolderContainer = styled.div``;
 
 export default BookmarkFolder;

@@ -24,9 +24,12 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
     "react-infinite-scroll-component": "^6.1.0",
+<<<<<<< HEAD
+=======
     "react-modal": "^3.16.1",
     "react-quill": "^2.0.0",
     "react-query": "^3.39.3",
+>>>>>>> 1f3a3bd5c905c8eac593a31bf82162ec67b25626
     "react-router-dom": "^6.14.2"
   },
   "devDependencies": {

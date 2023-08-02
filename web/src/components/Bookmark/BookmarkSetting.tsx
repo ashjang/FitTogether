@@ -86,6 +86,8 @@ const popupContainer = css`
 
   display: flex;
   flex-direction: column;
+
+  z-index: 9999;
 `;
 
 const inputArea = css`

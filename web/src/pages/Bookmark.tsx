@@ -18,26 +18,26 @@ const Bookmark: React.FC = () => {
 
     const addFolder = () => {};
 
-    return (
-        <div>
-            <div css={Container}>
-                <TitleArea>
-                    <p css={centeredTextStyle}>즐겨찾기</p>
-                    {isPopupOpen ? (
-                        <>
-                            <BookmarkSetting addFolder={addFolder} />
-                            <FaMinus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
-                        </>
-                    ) : (
-                        <FaPlus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
-                    )}
-                </TitleArea>
-            </div>
-            <div css={Container}>
-                <BookmarkFolder />
-            </div>
-        </div>
-    );
+  return (
+    <>
+      <div css={Container}>
+        <TitleArea>
+          <p css={centeredTextStyle}>즐겨찾기</p>
+          {isPopupOpen ? (
+            <>
+              <BookmarkSetting addFolder={addFolder} />
+              <FaMinus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
+            </>
+          ) : (
+            <FaPlus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
+          )}
+        </TitleArea>
+      </div>
+      <div css={Container}>
+        <BookmarkFolder />
+      </div>
+    </>
+  );
 };
 
 const Container = css`
@@ -47,14 +47,16 @@ const Container = css`
 `;
 
 const TitleArea = styled.div`
-    width: 1200px;
-    border-bottom: 1px solid black;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px;
-    margin-top: 70px;
-    margin-bottom: 70px;
+  width: 1200px;
+  border-bottom: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  padding-bottom: 30px;
+  margin-top: 70px;
+  margin-bottom: 70px;
+  font-weight: bold;
 `;
 
 const centeredTextStyle = css`
