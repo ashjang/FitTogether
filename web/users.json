@@ -1,0 +1,36 @@
+{
+  "users": [
+    {
+      "nickname": "gg",
+      "email": "ggg@gmail.com",
+      "password": "123123",
+      "gender": "female",
+      "isPublic": false,
+      "id": 1
+    },
+    {
+      "nickname": "abc",
+      "email": "jjj@gmail.com",
+      "password": "123456",
+      "gender": "male",
+      "isPublic": true,
+      "id": 2
+    },
+    {
+      "nickname": "ㅇㅇ",
+      "email": "dddd@gmail.com",
+      "password": "12345678",
+      "gender": "female",
+      "isPublic": false,
+      "id": 3
+    },
+    {
+      "nickname": "test1",
+      "email": "test1@naver.com",
+      "password": "test1",
+      "gender": "male",
+      "isPublic": true,
+      "id": 4
+    }
+  ]
+}

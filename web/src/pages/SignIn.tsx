@@ -7,10 +7,18 @@ import KakaoTalk_logo from '../assets/KakaoTalk_logo.png';
 interface Props {}
 
 const SignIn: React.FC<Props> = () => {
-    const [nickname, setnickName] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [token, setToken] = useState<string>('');
 
+  const [nickname, setnickName] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [token, setToken] = useState<string>('');
+
+  const KAKAO_REST_API_KEY = `${import.meta.env.VITE_APP_KAKAO_REST_API_KEY}`;
+  const REDIRECT_URI = `${import.meta.env.VITE_APP_REDIRECT_URI}`;
+  const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+
+  const handleKakaoLogin = () => {
+    window.location.href = kakaoURL;
+  };
     const handleSignIn = async (event: React.FormEvent) => {
         event.preventDefault();
 
@@ -19,51 +27,55 @@ const SignIn: React.FC<Props> = () => {
             password: password,
         };
 
-        try {
-            const response = await axios.post<{ token: string }>('/users/signin', formData);
+    try {
+      const response = await axios.post<{ token: string }>(
+        '/users/signin',
+        formData
+      );
 
-            if (response.status === 200) {
-                setToken(response.data.token);
-                localStorage.setItem('token', token);
-                // 로그인 성공 처리
-            } else {
-                // 로그인 실패 처리
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
+      if (response.status === 200) {
+        setToken(response.data.token);
+        localStorage.setItem('token', token);
+        // 로그인 성공 처리
+      } else {
+        // 로그인 실패 처리
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
-    return (
-        <Page>
-            <Container>
-                <KakaoTalkSignIn>
-                    <img src={KakaoTalk_logo} alt="KakaoTalk Logo" />
-                    카카오톡 로그인
-                </KakaoTalkSignIn>
-                <Divider>또는</Divider>
-                <FormContainer onSubmit={handleSignIn}>
-                    <InputField>
-                        <input
-                            type="text"
-                            value={nickname}
-                            onChange={(e) => setnickName(e.target.value)}
-                            placeholder="아이디(닉네임)를 입력하세요"
-                        />
-                    </InputField>
-                    <InputField>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="비밀번호를 입력하세요"
-                        />
-                    </InputField>
-                    <SignInButton type="submit">로그인</SignInButton>
-                </FormContainer>
-            </Container>
-        </Page>
-    );
+  return (
+    <Page>
+      <Container>
+        <KakaoTalkSignIn onClick={handleKakaoLogin}>
+          <img src={KakaoTalk_logo} alt="KakaoTalk Logo" />
+          카카오톡 로그인
+        </KakaoTalkSignIn>
+        <Divider>또는</Divider>
+        <FormContainer onSubmit={handleSignIn}>
+          <InputField>
+            <input
+              type="text"
+              value={nickname}
+              onChange={(e) => setnickName(e.target.value)}
+              placeholder="아이디(닉네임)를 입력하세요"
+            />
+          </InputField>
+          <InputField>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="비밀번호를 입력하세요"
+            />
+          </InputField>
+          <SignInButton type="submit">로그인</SignInButton>
+        </FormContainer>
+      </Container>
+    </Page>
+  );
+
 };
 
 const Page = styled.div`
