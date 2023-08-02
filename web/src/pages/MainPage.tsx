@@ -10,26 +10,24 @@ type BtnTabProps = {
     isActive: boolean;
 };
 
-
 const MainPage: React.FC = () => {
     //slide
     const [activeSlide, setActiveSlide] = useState(0);
     const totalSlides = 3;
     const slideDuration = 3000;
-    
+
     //tab
     const [activeTab, setActiveTab] = useState('탭버튼01');
 
-    
     //slide
     useEffect(() => {
         const autoSlideTimer = setInterval(() => {
             goToSlide((activeSlide + 1) % totalSlides);
         }, slideDuration);
-    
+
         return () => clearInterval(autoSlideTimer);
     }, [activeSlide]);
-    
+
     const goToSlide = (index: number) => {
         setActiveSlide(index);
     };
@@ -43,13 +41,12 @@ const MainPage: React.FC = () => {
     const handleIndicatorClick = (index: number) => {
         goToSlide(index);
     };
-    
 
     // 탭 클릭
     const handleTabClick = (tab: string) => {
         setActiveTab(tab);
     };
-    
+
     return (
         <>
             <Container>
@@ -58,22 +55,43 @@ const MainPage: React.FC = () => {
                         <Slide className={`slide ${activeSlide === 0 ? 'active' : ''}`}>
                             <SlideContent>
                                 <h2 className="title">슬라이드 01 타이틀 넣기</h2>
-                                <p className="txt">첫 번째 슬라이드<br />첫 번째 슬라이드</p>
-                                <Link to={`/slide${(activeSlide + 1) % totalSlides + 1}`} className="btn btn-more"><span>More</span></Link>
+                                <p className="txt">
+                                    첫 번째 슬라이드
+                                    <br />첫 번째 슬라이드
+                                </p>
+                                <Link
+                                    to={`/slide${((activeSlide + 1) % totalSlides) + 1}`}
+                                    className="btn btn-more"
+                                >
+                                    <span>More</span>
+                                </Link>
                             </SlideContent>
                         </Slide>
                         <Slide className={`slide ${activeSlide === 1 ? 'active' : ''}`}>
                             <SlideContent>
                                 <h2 className="title">슬라이드 02 타이틀 넣기</h2>
-                                <p className="txt">두 번째 슬라이드<br />두 번째 슬라이드</p>
-                                <Link to={`/slide${(activeSlide + 2) % totalSlides + 1}`} className="btn btn-more"><span>More</span></Link>
+                                <p className="txt">
+                                    두 번째 슬라이드
+                                    <br />두 번째 슬라이드
+                                </p>
+                                <Link
+                                    to={`/slide${((activeSlide + 2) % totalSlides) + 1}`}
+                                    className="btn btn-more"
+                                >
+                                    <span>More</span>
+                                </Link>
                             </SlideContent>
                         </Slide>
                         <Slide className={`slide ${activeSlide === 2 ? 'active' : ''}`}>
                             <SlideContent>
                                 <h2 className="title">슬라이드 03 타이틀 넣기</h2>
-                                <p className="txt">세 번째 슬라이드<br />세 번째 슬라이드</p>
-                                <Link to={`/slide${activeSlide + 1}`} className="btn btn-more"><span>More</span></Link>
+                                <p className="txt">
+                                    세 번째 슬라이드
+                                    <br />세 번째 슬라이드
+                                </p>
+                                <Link to={`/slide${activeSlide + 1}`} className="btn btn-more">
+                                    <span>More</span>
+                                </Link>
                             </SlideContent>
                         </Slide>
                     </SlideArea>
@@ -82,7 +100,7 @@ const MainPage: React.FC = () => {
                             <span
                                 key={index}
                                 className={`indicator ${activeSlide === index ? 'active' : ''}`}
-                                onClick={() => handleIndicatorClick(index)} 
+                                onClick={() => handleIndicatorClick(index)}
                             ></span>
                         ))}
                     </IndicatorArea>
@@ -109,7 +127,7 @@ const MainPage: React.FC = () => {
                                 onClick={() => handleTabClick('탭버튼01')}
                             >
                                 탭버튼01
-                            </BtnTab>                        
+                            </BtnTab>
                         </Category01>
                         {activeTab === '탭버튼01' && (
                             <TabSectionList>
@@ -159,7 +177,7 @@ const MainPage: React.FC = () => {
                                 onClick={() => handleTabClick('탭버튼02')}
                             >
                                 탭버튼02
-                            </BtnTab>                        
+                            </BtnTab>
                         </Category02>
                         {activeTab === '탭버튼02' && (
                             <TabSectionList>
@@ -208,8 +226,14 @@ const MainPage: React.FC = () => {
                     <div className="content">
                         <div className="inn">
                             <h3 className="title">타이틀 내용 넣기</h3>
-                            <p className="txt">내용 넣기<br/>내용 미정</p>
-                            <Link to="/" className="btn btn-more"><span>More</span></Link>
+                            <p className="txt">
+                                내용 넣기
+                                <br />
+                                내용 미정
+                            </p>
+                            <Link to="/" className="btn btn-more">
+                                <span>More</span>
+                            </Link>
                         </div>
                     </div>
                 </section>
@@ -238,11 +262,11 @@ const Slide = styled.div`
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: #efefef; 
+    background-color: #efefef;
     opacity: 0;
     z-index: 1;
     transition: opacity 0.5s ease-in-out;
-    
+
     &.active {
         opacity: 1;
     }
@@ -253,7 +277,7 @@ const Slide = styled.div`
         top: 0;
         right: 0;
         bottom: 0;
-        background-color: rgba(34,34,34,0.4);
+        background-color: rgba(34, 34, 34, 0.4);
     }
 `;
 const SlideContent = styled.div`
@@ -284,7 +308,7 @@ const SlideContent = styled.div`
     }
     .btn-more:hover {
         color: #fff;
-        background-color: #7F5539;
+        background-color: #7f5539;
         transition: all 0.3s;
     }
 `;
@@ -304,18 +328,18 @@ const IndicatorArea = styled.div`
         margin: 0 5px;
         border-radius: 50%;
         cursor: pointer;
-        background-color: #C4C4C4;
+        background-color: #c4c4c4;
     }
     .indicator:hover {
         transition: all 0.3s;
         background-color: #fff;
     }
-    
+
     .indicator.active {
-        background-color: #1877F2;
+        background-color: #1877f2;
     }
 `;
-const BtnCarousel = styled.div `
+const BtnCarousel = styled.div`
     .btn {
         position: absolute;
         top: 50%;
@@ -335,7 +359,7 @@ const BtnCarousel = styled.div `
         right: 0;
     }
     .btn:hover {
-        color: #7F5539;
+        color: #7f5539;
         opacity: 1;
         transition: all 0.3s;
     }
@@ -354,13 +378,13 @@ const MainTabSection = styled.section`
     }
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 `;
-const Category01 = styled.dt `
+const Category01 = styled.dt`
     position: absolute;
     top: 80px;
     left: 43%;
     transform: translateX(-43%);
 `;
-const Category02 = styled.dt `
+const Category02 = styled.dt`
     position: absolute;
     top: 80px;
     right: 43%;
@@ -378,7 +402,7 @@ const BtnTab = styled.button<BtnTabProps>`
 `;
 const TabSectionList = styled.dd`
     position: relative;
-    
+
     .link-move {
         position: absolute;
         top: -50px;
