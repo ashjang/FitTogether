@@ -24,7 +24,7 @@ function App() {
 							<Route path="/header" element={<Header />} />
 							<Route path='/footer' element={<Footer />} />
 							<Route path='/exerciseInfo' element={<ExerciseInfo />} />
-							<Route path='/fineMate' element={<FineMate />} />
+							<Route path='/findMate' element={<FineMate />} />
 					</Routes>
 				<Footer />
 				<ScrollTopButton />
