@@ -40,6 +40,7 @@ const MyInformation: React.FC = () => {
           value={inputIdValue}
           onChange={handleInputChange}
           placeholder="영문 대소문자/숫자중 최대 10자"
+          // disabled={isKakaoLoggedIn}
         />
         <button onClick={duplicationCheck} css={inputButton}>
           중복검사
@@ -52,6 +53,7 @@ const MyInformation: React.FC = () => {
           name="password"
           css={inputStyles}
           placeholder="영문 대소문자/숫자/특수문자 중 2가지 이상 조합, 8~16자"
+          // disabled={isKakaoLoggedIn}
         />
       </InputContainer>
       <InputContainer>
@@ -61,6 +63,7 @@ const MyInformation: React.FC = () => {
           name="password"
           css={inputStyles}
           placeholder="다시 한번 입력하세요"
+          // disabled={isKakaoLoggedIn}
         />
       </InputContainer>
       <InputContainer>
@@ -155,6 +158,7 @@ const inputStyles = css`
   border-bottom: 1px solid black;
   outline: none;
   width: 350px;
+  background-color: rgba(0, 0, 0, 0);
 `;
 
 const inputButton = css`
@@ -164,6 +168,7 @@ const inputButton = css`
   box-shadow: 4px 4px 4px rgba(0, 0, 0, 25%);
   cursor: pointer;
   margin-left: 50px;
+  padding: 5px 10px;
 `;
 
 const formArea = css`
