@@ -17,6 +17,7 @@ import Post from './pages/Post';
 import CreatePost from './pages/CreatePost';
 import MyPage from './pages/MyPage';
 import MyVideos from './pages/MyVideos';
+
 import './index.css';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <BrowserRouter>
             <Header />
             <Routes>
+                <Route path="/" />
                 <Route path="/" element={<MainPage />} />
                 <Route path="/signin" element={<SignIn />} />
                 <Route path="/signup" element={<SignUp />} />

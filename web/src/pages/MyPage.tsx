@@ -51,11 +51,11 @@ const Button = styled.button`
 `;
 
 const Tab = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 90px;
-  margin-bottom: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 90px;
+    margin-bottom: 70px;
 `;
 
 const Content = styled.div`

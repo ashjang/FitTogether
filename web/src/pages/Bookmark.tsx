@@ -10,13 +10,13 @@ import BookmarkFolder from '../components/Bookmark/BookmarkFolder';
 import BookmarkSetting from '../components/Bookmark/BookmarkSetting';
 
 const Bookmark: React.FC = () => {
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const togglePopup = () => {
-    setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
-  };
+    const togglePopup = () => {
+        setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
+    };
 
-  const addFolder = () => {};
+    const addFolder = () => {};
 
   return (
     <>
@@ -41,9 +41,9 @@ const Bookmark: React.FC = () => {
 };
 
 const Container = css`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
 const TitleArea = styled.div`
@@ -60,18 +60,18 @@ const TitleArea = styled.div`
 `;
 
 const centeredTextStyle = css`
-  flex: 25;
-  text-align: center;
-  font-size: 3rem;
+    flex: 25;
+    text-align: center;
+    font-size: 3rem;
 `;
 
 const rightAlignedStyle = css`
-  flex: 1;
-  text-align: right;
+    flex: 1;
+    text-align: right;
 `;
 
 const icon = css`
-  cursor: pointer;
+    cursor: pointer;
 `;
 
 export default Bookmark;

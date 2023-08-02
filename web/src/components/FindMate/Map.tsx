@@ -1,172 +1,166 @@
-/** @jsxImportSource @emotion/react */
-// import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { useEffect, useRef, useState } from 'react';
+import UserProfile from './UserProfile';
 
-import { useState } from 'react';
-// import { Link } from 'react-router-dom';
-// import  from '';
-
-
-// import LogoImg from "./../../assets/logo.png";
-
-type BtnTabProps = {
-    isActive: boolean;
-};
-// type ProfileProps = {
-//     profile: {
-//         // photo: string;
-//         nickname: string;
-//         gender: string;
-//         intro: string;
-//         favoriteSport: string;
-//     };
-//     onClose: () => void;
-// }
-function Map() {
-    const [activeTab, setActiveTab] = useState('러닝');
-    return (
-        <MapInn>
-            <MapSection className="map-section">
-                <PageTitle>운동 메이트 찾기</PageTitle>
-
-                <MateCategory className="mate-category">
-                    <dt className="category01">
-                        <BtnTab type="button" className="btn btn-menu" isActive={activeTab === '러닝'} onClick={() => setActiveTab('러닝')}>러닝</BtnTab>
-                    </dt>
-                    {activeTab === '러닝' && (
-                        <dd>
-                            <div>러닝 지도1 페이지</div>
-                        </dd>
-                    )}
-                    <dt className="category02">
-                        <BtnTab type="button" className="btn btn-menu" isActive={activeTab === '등산'} onClick={() => setActiveTab('등산')}>등산</BtnTab>
-                    </dt>
-                    {activeTab === '등산' && (
-                        <dd>
-                            <div>등산 지도2 페이지</div>
-                        </dd>
-                    )}
-                    <dt className="category03">
-                        <BtnTab type="button" className="btn btn-menu" isActive={activeTab === '헬스'} onClick={() => setActiveTab('헬스')}>헬스</BtnTab>
-                    </dt>
-                    {activeTab === '헬스' && (
-                        <dd>
-                            <div>헬스 지도3 페이지</div>
-                        </dd>
-                    )}
-                </MateCategory>
-            </MapSection>
-            {/* <PopupContainer>
-                <CloseButton onClick={onClose}>X</CloseButton>
-                <ProfileImage src={profile.photo} alt="Profile" />
-                <Nickname>{profile.nickname}</Nickname>
-                <Gender>{profile.gender === 'M' ? '남자' : '여자'}</Gender>
-                <Intro>{profile.intro}</Intro>
-                <FavoriteSport>{profile.favoriteSport}</FavoriteSport>
-                <BtnFriend>친구 신청</BtnFriend>
-            </PopupContainer> */}
-
-        </MapInn>
-    );
+export interface User {
+    id: number;
+    category: string;
+    lat: number;
+    lng: number;
+}
+interface MapProps {
+    category: string;
 }
 
-const MapInn = styled.div`
+const Map = (props: MapProps) => {
+    //tab click
+    const [category, setCategory] = useState<string>(props.category || '러닝');
+    // map
+    const kakaoMapRef = useRef<HTMLDivElement>(null);
+    //user marker
+    const [users, setUsers] = useState<User[]>([]);
+    // user click
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+    const handleTabClick = (newCategory: string) => {
+        setCategory(newCategory);
+        setSelectedUser(null);
+    };
+
+    useEffect(() => {
+        fetch('http://localhost:3001/users')
+            .then((response) => response.json())
+            .then((data) => setUsers(data));
+    }, []);
+
+    // 마이페이지 내가 설정된 위치라고 가정했을때 (만약 홍대)
+    const userLocation = {
+        lat: 37.556862,
+        lng: 126.924678,
+    };
+
+    useEffect(() => {
+        if (!kakaoMapRef.current) {
+            return;
+        }
+        // 내 저장된 위치 기준으로 지도 생성
+        const targetPoint = new kakao.maps.LatLng(userLocation.lat, userLocation.lng);
+        const options = {
+            center: targetPoint,
+            level: 3,
+        };
+        const map = new window.kakao.maps.Map(kakaoMapRef.current, options);
+
+        users
+            .filter((user) => user.category === category)
+            .forEach((user) => {
+                const markerPosition = new kakao.maps.LatLng(user.lat, user.lng);
+                const marker = new kakao.maps.Marker({
+                    position: markerPosition,
+                });
+                marker.setMap(map);
+
+                kakao.maps.event.addListener(marker, 'click', function () {
+                    setSelectedUser(user);
+                });
+            });
+    }, [users, category]);
+
+    const handleClose = () => {
+        setSelectedUser(null);
+    };
+
+    return (
+        <MapContainer isSidebarOpen={selectedUser !== null}>
+            <BtnTab>
+                <button
+                    className={`category01 ${category === '러닝' ? 'active' : ''}`}
+                    onClick={() => handleTabClick('러닝')}
+                >
+                    러닝
+                </button>
+                <button
+                    className={`category02 ${category === '등산' ? 'active' : ''}`}
+                    onClick={() => handleTabClick('등산')}
+                >
+                    등산
+                </button>
+                <button
+                    className={`category03 ${category === '헬스' ? 'active' : ''}`}
+                    onClick={() => handleTabClick('헬스')}
+                >
+                    헬스
+                </button>
+            </BtnTab>
+            <MapBox ref={kakaoMapRef} isSidebarOpen={selectedUser !== null}></MapBox>
+            {selectedUser && (
+                <UserProfileWrapper>
+                    <UserProfile user={selectedUser} onClose={handleClose} />
+                </UserProfileWrapper>
+            )}
+        </MapContainer>
+    );
+};
+
+const MapContainer = styled.div<{ isSidebarOpen: boolean }>`
     position: relative;
     max-width: 1440px;
     height: 100%;
-    margin: 20px auto 0;
+    margin: 0px auto;
     padding: 20px 60px;
-
+    box-sizing: border-box;
     background-color: #f8f8f8;
+    transition: all 0.3s;
 `;
 
-const MapSection = styled.section`
+const BtnTab = styled.div`
     position: relative;
-`;
-
-const PageTitle = styled.h2`
-    position: relative;
-
-    &::before {
-        content: '';
+    top: 30px;
+    z-index: 10;
+    button {
         position: absolute;
-        left: 0;
-        bottom: -10px;
-        width: 100%;
-        height: 1px;
-        color: #000;
-        background-color: #000;
-    }
-`;
-
-const MateCategory = styled.dl`
-    position: relative;
-    width: 100%;
-    height:500px;
-    margin-bottom: 50px;    
-
-    dt {
-        position: absolute;
-        left: 0;
-        top: -60px;
-    }
-    dt.category02 {
-        left: 85px;
-    }
-    dt.category03 {
-        left: 170px;
-    }
-    dd {
-        width: 80%;
-        height: 500px;
-        padding: 10px;
-        margin: 100px auto 0;
+        left: 50%;
+        transform: translateX(-50%);
         border: 1px solid #000;
-        border-radius: 10px;
-    }
+        border-radius: 20px;
+        padding: 4px 20px;
+        background-color: #fff;
 
-    // 지도 부분
-    dd  {
-        font-size : 40px;
-        text-align: center;
+        &.active {
+            background-color: #000;
+            color: #fff;
+        }
+    }
+    .category01 {
+        left: 40%;
+        transform: translateX(-40%);
+    }
+    .category03 {
+        left: 60%;
+        transform: translateX(-60%);
     }
 `;
+const MapBox = styled.div<{ isSidebarOpen: boolean }>`
+    position: absolute;
+    top: 130px;
+    // left: 50%;
+    // transform: translateX(-50%);
+    width: ${(props) => (props.isSidebarOpen ? '50%' : '70%')};
+    height: 70%;
+    border-radius: 10px;
+    transition: all 0.3s;
 
-const BtnTab = styled.button<BtnTabProps>`
-    border: 1px solid #000;
-    border-radius: 20px;
-    padding: 4px 20px;
-    background-color: #fff;
-
-    // 탭 클릭 시 
-    background-color: ${props => (props.isActive ? '#000' : '#fff')};
-    color: ${props => (props.isActive ? '#fff' : '#000')};
+    left: ${(props) => (props.isSidebarOpen ? '40%' : '50%')};
+    transform: translateX(${(props) => (props.isSidebarOpen ? '-50%' : '-50%')});
 `;
 
+//프로필
+const UserProfileWrapper = styled.div`
+    position: absolute;
+    right: 0;
+    width: 30%;
+    height: 100%;
+    background-color: white;
+`;
 
-
-//profile
-// const PopupContainer = styled.div`
-// `;
-
-// const CloseButton = styled.button`
-// `;
-
-// const ProfileImage = styled.img`
-// `;
-
-// const Nickname = styled.h2`
-// `;
-
-// const Gender = styled.p`
-// `;
-
-// const Intro = styled.p`
-// `;
-
-// const FavoriteSport = styled.p`
-// `;
-
-// const BtnFriend = styled.button`
-// `;
 export default Map;

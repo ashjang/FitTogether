@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import MyVideoList from '../components/MyVideos/MyVideoList';
 
 const MyVideos: React.FC = () => {
+
   return (
     <>
       <MyVideosContainer>

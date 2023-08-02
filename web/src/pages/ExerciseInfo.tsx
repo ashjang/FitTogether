@@ -1,8 +1,5 @@
 const ExerciseInfo: React.FC = () => {
-    return (
-        <>
-        </>
-    );
+    return <></>;
 };
 
 export default ExerciseInfo;
