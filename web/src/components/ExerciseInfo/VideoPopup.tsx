@@ -13,11 +13,11 @@ const VideoPopupContainer = styled.div`
     z-index: 1000;
 `;
 
-const CloseButton = styled.button`
-    position: absolute;
-    top: 20px;
-    right: 20px;
-`;
+// const CloseButton = styled.button`
+//     position: absolute;
+//     top: 20px;
+//     right: 20px;
+// `;
 type VideoPopupProps = {
     video: {
         id: string;
@@ -28,7 +28,7 @@ type VideoPopupProps = {
 function VideoPopup({ video, onClose }: VideoPopupProps) {
     return (
         <VideoPopupContainer onClick={onClose}>
-            <CloseButton onClick={onClose}>닫기</CloseButton>
+            {/* <CloseButton onClick={onClose}>닫기</CloseButton> */}
             <iframe 
                 width="560" 
                 height="315" 
