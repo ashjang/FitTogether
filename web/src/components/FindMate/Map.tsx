@@ -28,9 +28,12 @@ const Map = (props: MapProps) => {
     };
 
     useEffect(() => {
-        fetch('http://localhost:3001/users')
+        fetch('http://localhost:3000/users')
             .then((response) => response.json())
-            .then((data) => setUsers(data));
+            .then((data: User[]) => setUsers(data))
+            .catch((error) => {
+                console.error('Error fetching users:', error);
+            });
     }, []);
 
     // 마이페이지 내가 설정된 위치라고 가정했을때 (만약 홍대)

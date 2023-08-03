@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 
-interface ScrollTopButtonProps {}
+// interface ScrollTopButtonProps {}
 
-const ScrollTopButton: React.FC<ScrollTopButtonProps> = () => {
+const ScrollTopButton: React.FC = () => {
     const [showScrollTopButton, setShowScrollTopButton] = useState(false);
 
     useEffect(() => {
@@ -47,7 +47,7 @@ const ButtonWrapper = styled.button`
     background: none;
     z-index: 101;
     cursor: pointer;
-    color: #7F5539;
+    color: #7f5539;
 `;
 
 export default ScrollTopButton;
