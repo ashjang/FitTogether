@@ -24,7 +24,8 @@ const Page = styled.div`
     align-items: center;
     position: relative;
     width: 750px;
-    margin: 0 auto;
+    // margin -> 150px auto로 변경해야.
+    margin: 40px auto;
     // // min-height는 삭제 예정
     // min-height: calc(100vh - 300px);
 `;

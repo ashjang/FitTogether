@@ -34,7 +34,7 @@ function App() {
                 <Route path="/exerciseinfo" element={<ExerciseInfo />} />
                 <Route path="/findmate" element={<FindMate />} />
                 <Route path="/community" element={<Community />} />
-                <Route path="/community/post" element={<Post />} />
+                <Route path="/community/:postId" element={<Post />} />
                 <Route path="/community/createpost" element={<CreatePost />} />
                 <Route path="/mypage" element={<MyPage />} />
                 <Route path="/mypage/myvideos" element={<MyVideos />} />
