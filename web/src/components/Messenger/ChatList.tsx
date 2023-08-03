@@ -1,136 +1,132 @@
-import React, { useState } from "react";
-import ChatListItem from "./ChatListItem";
-import styled from "@emotion/styled";
-import default_user_image from "../../assets/default-user-image.png";
-import MateList from "../common/MateList";
+import React, { useState } from 'react';
+import ChatListItem from './ChatListItem';
+import styled from '@emotion/styled';
+import default_user_image from '../../assets/default-user-image.png';
+import MateList from '../common/MateList';
 
 const imageSrc: string = default_user_image;
 
 interface Props {}
 
 interface ChatMessage {
-  senderProfileImage: string;
-  senderNickname: string;
-  lastMessageDate: string;
-  lastMessageContent: string;
-  newMessageCount: number;
+    senderProfileImage: string;
+    senderNickname: string;
+    lastMessageDate: string;
+    lastMessageContent: string;
+    newMessageCount: number;
 }
 
 interface ChatData {
-  [key: string]: ChatMessage;
+    [key: string]: ChatMessage;
 }
 
 const data: ChatData = {
-  message1: {
-    senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-    senderNickname: "nickname",
-    lastMessageDate: "lastMessageDate",
-    lastMessageContent: "lastMessageContent",
-    newMessageCount: 99,
-  },
-  message2: {
-    senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-    senderNickname: "fittogether",
-    lastMessageDate: "오전 8:55",
-    lastMessageContent: "안녕하세요💪💪💪",
-    newMessageCount: 1,
-  },
-  message3: {
-    senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-    senderNickname: "ehhdrud",
-    lastMessageDate: "어제",
-    lastMessageContent: "ㅅㄱ하세요",
-    newMessageCount: 0,
-  },
-  message4: {
-    senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-    senderNickname: "emfkdlvnem",
-    lastMessageDate: "어제",
-    lastMessageContent: "ㅅㄱ하세요",
-    newMessageCount: 0,
-  },
-  message5: {
-    senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-    senderNickname: "ashjang",
-    lastMessageDate: "어제",
-    lastMessageContent: "ㅅㄱ하세요",
-    newMessageCount: 0,
-  },
-  message6: {
-    senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-    senderNickname: "hg051510",
-    lastMessageDate: "어제",
-    lastMessageContent: "ㅅㄱ하세요",
-    newMessageCount: 0,
-  },
-  message7: {
-    senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-    senderNickname: "2gigeum",
-    lastMessageDate: "어제",
-    lastMessageContent: "ㅅㄱ하세요",
-    newMessageCount: 0,
-  },
-  message8: {
-    senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-    senderNickname: "woojkk",
-    lastMessageDate: "어제",
-    lastMessageContent: "ㅅㄱ하세요",
-    newMessageCount: 0,
-  },
-  message9: {
-    senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-    senderNickname: "fighting",
-    lastMessageDate: "어제",
-    lastMessageContent: "ㅅㄱ하세요",
-    newMessageCount: 0,
-  },
+    message1: {
+        senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
+        senderNickname: 'nickname',
+        lastMessageDate: 'lastMessageDate',
+        lastMessageContent: 'lastMessageContent',
+        newMessageCount: 99,
+    },
+    message2: {
+        senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
+        senderNickname: 'fittogether',
+        lastMessageDate: '오전 8:55',
+        lastMessageContent: '안녕하세요💪💪💪',
+        newMessageCount: 1,
+    },
+    message3: {
+        senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
+        senderNickname: 'ehhdrud',
+        lastMessageDate: '어제',
+        lastMessageContent: 'ㅅㄱ하세요',
+        newMessageCount: 0,
+    },
+    message4: {
+        senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
+        senderNickname: 'emfkdlvnem',
+        lastMessageDate: '어제',
+        lastMessageContent: 'ㅅㄱ하세요',
+        newMessageCount: 0,
+    },
+    message5: {
+        senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
+        senderNickname: 'ashjang',
+        lastMessageDate: '어제',
+        lastMessageContent: 'ㅅㄱ하세요',
+        newMessageCount: 0,
+    },
+    message6: {
+        senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
+        senderNickname: 'hg051510',
+        lastMessageDate: '어제',
+        lastMessageContent: 'ㅅㄱ하세요',
+        newMessageCount: 0,
+    },
+    message7: {
+        senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
+        senderNickname: '2gigeum',
+        lastMessageDate: '어제',
+        lastMessageContent: 'ㅅㄱ하세요',
+        newMessageCount: 0,
+    },
+    message8: {
+        senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
+        senderNickname: 'woojkk',
+        lastMessageDate: '어제',
+        lastMessageContent: 'ㅅㄱ하세요',
+        newMessageCount: 0,
+    },
+    message9: {
+        senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
+        senderNickname: 'fighting',
+        lastMessageDate: '어제',
+        lastMessageContent: 'ㅅㄱ하세요',
+        newMessageCount: 0,
+    },
 };
 
 const ChatList: React.FC<Props> = () => {
-  const [isMateListOpen, setIsMateListOpen] = useState(false);
+    const [isMateListOpen, setIsMateListOpen] = useState(false);
 
-  // "운동 메이트 리스트" 클릭 이벤트를 처리하는 함수를 추가합니다.
-  const handleShowMateListClick = () => {
-    setIsMateListOpen(true);
-  };
+    // "운동 메이트 리스트" 클릭 이벤트를 처리하는 함수를 추가합니다.
+    const handleShowMateListClick = () => {
+        setIsMateListOpen(true);
+    };
 
-  // MateList 모달을 닫는 함수를 추가합니다.
-  const handleCloseMateList = () => {
-    setIsMateListOpen(false);
-  };
+    // MateList 모달을 닫는 함수를 추가합니다.
+    const handleCloseMateList = () => {
+        setIsMateListOpen(false);
+    };
 
-  return (
-    <div>
-      <ShowMateList onClick={handleShowMateListClick}>
-        운동 메이트 리스트
-      </ShowMateList>
-      <ChatListItems>
-        {Object.entries(data).map(([key, message]) => (
-          <ChatListItem key={key} {...message} />
-        ))}
-      </ChatListItems>
-      {isMateListOpen && (
-        <MateList isOpen={true} onClose={handleCloseMateList} />
-      )}
-    </div>
-  );
+    return (
+        <div>
+            <ShowMateList onClick={handleShowMateListClick}>운동 메이트 리스트</ShowMateList>
+            <ChatListItems>
+                {Object.entries(data).map(([key, message]) => (
+                    <ChatListItem key={key} {...message} />
+                ))}
+            </ChatListItems>
+            {isMateListOpen && <MateList isOpen={true} onClose={handleCloseMateList} />}
+        </div>
+    );
 };
 
 const ShowMateList = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 290px;
-  height: 80px;
-  font-size: 18px;
-  font-weight: bold;
-  background-color: #cccccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 290px;
+    height: 80px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #cccccc;
 `;
 
 const ChatListItems = styled.div`
-  width: 290px;
-  height: 420px;
-  overflow-y: auto;
+    width: 290px;
+    height: 420px;
+    overflow-y: auto;
 `;
 
 export default ChatList;
