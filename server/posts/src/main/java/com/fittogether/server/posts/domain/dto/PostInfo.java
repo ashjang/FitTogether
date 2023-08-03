@@ -23,13 +23,14 @@ public class PostInfo {
   private String title;
   private String description;
   private String image;
-  private Long likes;
-  private Long watched;
+  private Long likeCount;
+  private Long viewCount;
+  private Long replyCount;
   private List<ReplyDto> replyList;
-  private List<ChildReplyDto> childReplyList;
+  private List<ReplyDto> childReplyList;
   private LocalDateTime createdAt;
 
-  public static PostInfo from(Post post, List<Reply> replyList, List<ChildReply> childReplyList) {
+  public static PostInfo from(Post post, List<Reply> replyList, List<ChildReply> childReplyList, Long totalCount) {
 
     return PostInfo.builder()
         .userId(post.getUser().getUserId())
@@ -37,10 +38,11 @@ public class PostInfo {
         .title(post.getTitle())
         .description(post.getDescription())
         .image(post.getImage())
-        .likes(post.getLikes())
-        .watched(post.getWatched())
+        .likeCount(post.getLikes())
+        .viewCount(post.getWatched())
+        .replyCount(totalCount)
         .replyList(replyList.stream().map(ReplyDto::from).collect(Collectors.toList()))
-        .childReplyList(childReplyList.stream().map(ChildReplyDto::fromChild).collect(Collectors.toList()))
+        .childReplyList(childReplyList.stream().map(ReplyDto::fromChild).collect(Collectors.toList()))
         .createdAt(post.getCreatedAt())
         .build();
   }

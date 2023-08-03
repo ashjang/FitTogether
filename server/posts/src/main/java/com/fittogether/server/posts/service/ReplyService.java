@@ -76,7 +76,7 @@ public class ReplyService {
    * 대댓글 작성
    */
   @Transactional
-  public ChildReply createChildReply(String token, Long replyId, ReplyForm replyForm) {
+  public ChildReply createChildReply(String token, Long postId, Long replyId, ReplyForm replyForm) {
     UserVo userVo = provider.getUserVo(token);
 
     User user = userRepository.findById(userVo.getUserId())
@@ -85,9 +85,13 @@ public class ReplyService {
     Reply postReply = replyRepository.findById(replyId)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
 
+    Post post = postRepository.findById(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
+
     ChildReply childReply = ChildReply.builder()
         .reply(postReply)
         .user(user)
+        .post(post)
         .comment(replyForm.getComment())
         .createdAt(LocalDateTime.now())
         .build();

@@ -179,6 +179,11 @@ public class PostService {
 
     List<ChildReply> childReplies = childReplyRepository.findByReplyIdIn(replyIds);
 
-    return PostInfo.from(post, replyList, childReplies);
+    Long replyCount = replyRepository.countByPostId(postId);
+    Long childReplyCount = childReplyRepository.countByPostId(postId);
+
+    Long totalCount = replyCount+childReplyCount;
+
+    return PostInfo.from(post, replyList, childReplies, totalCount);
   }
 }
