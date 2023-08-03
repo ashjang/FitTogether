@@ -6,12 +6,10 @@ import com.fittogether.server.posts.domain.dto.PostForm;
 import com.fittogether.server.posts.domain.dto.PostInfo;
 import com.fittogether.server.posts.domain.dto.ReplyForm;
 import com.fittogether.server.posts.domain.model.Hashtag;
-import com.fittogether.server.posts.domain.model.Like;
 import com.fittogether.server.posts.domain.model.Post;
 import com.fittogether.server.posts.domain.model.PostHashtag;
 import com.fittogether.server.posts.domain.model.Reply;
 import com.fittogether.server.posts.domain.repository.HashtagRepository;
-import com.fittogether.server.posts.domain.repository.LikeRepository;
 import com.fittogether.server.posts.domain.repository.PostHashtagRepository;
 import com.fittogether.server.posts.domain.repository.PostRepository;
 import com.fittogether.server.posts.domain.repository.ReplyRepository;
@@ -25,27 +23,28 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PostService {
 
   private final PostRepository postRepository;
-  private final PostHashtagRepository postHashtagRepository;
   private final UserRepository userRepository;
+  private final PostHashtagRepository postHashtagRepository;
   private final HashtagRepository hashtagRepository;
   private final ReplyRepository replyRepository;
-  private final LikeRepository likeRepository;
   private final JwtProvider provider;
-  private final CacheManager cacheManager;
 
-  // 게시글 작성
+  private final RedisTemplate redisTemplate;
+
+  /**
+   * 게시글 작성
+   */
   @Transactional
   public Post createPost(String token, PostForm postForm) {
     if (!provider.validateToken(token)) {
@@ -65,6 +64,7 @@ public class PostService {
         .category(postForm.getCategory())
         .accessLevel(postForm.isAccessLevel())
         .likes(0L)
+        .watched(0L)
         .createdAt(LocalDateTime.now()).build();
 
     List<Hashtag> savedHashtag = addHashtag(postForm);
@@ -81,6 +81,9 @@ public class PostService {
     return postRepository.save(post);
   }
 
+  /**
+   * 해시태그 추가
+   */
   @Transactional
   public List<Hashtag> addHashtag(PostForm addPostForm) {
     List<String> hashtags = addPostForm.getHashtag();
@@ -104,6 +107,9 @@ public class PostService {
 
   }
 
+  /**
+   * 게시글 수정
+   */
   @Transactional
   public Post updatePost(String token, Long postId, PostForm postForm) {
 
@@ -136,6 +142,9 @@ public class PostService {
     return post;
   }
 
+  /**
+   * 토큰 및 유저 검증
+   */
   private void validate(String token, Post post) {
     if (!provider.validateToken(token)) {
       throw new RuntimeException("Invalid or expired token.");
@@ -148,6 +157,9 @@ public class PostService {
     }
   }
 
+  /**
+   * 게시글 삭제
+   */
   @Transactional
   public void deletePost(String token, Long postId) {
 
@@ -163,20 +175,9 @@ public class PostService {
     postRepository.delete(post);
   }
 
-  public PostInfo getPostById(Long postId) {
-
-    Post post = postRepository.findById(postId)
-        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
-
-    if (!post.isAccessLevel()) {
-      throw new PostException(ErrorCode.NO_PERMISSION_TO_VIEW_POST);
-    }
-
-    List<Reply> replyList = replyRepository.findByPostId(postId);
-
-    return PostInfo.from(post, replyList);
-  }
-
+  /**
+   * 댓글 작성
+   */
   @Transactional
   public Reply createReply(String token, Long postId, ReplyForm replyForm) {
 
@@ -198,50 +199,21 @@ public class PostService {
     return replyRepository.save(reply);
   }
 
-  @Transactional
-  public boolean likePost(String token, Long postId) {
+  /**
+   * 게시글 보기
+   */
+  public PostInfo clickPostById(Long postId) {
 
     Post post = postRepository.findById(postId)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
-    if (!provider.validateToken(token)) {
-      throw new RuntimeException("Invalid or expired token.");
+    if (!post.isAccessLevel()) {
+      throw new PostException(ErrorCode.NO_PERMISSION_TO_VIEW_POST);
     }
 
-    UserVo userVo = provider.getUserVo(token);
-    User user = userRepository.findById(userVo.getUserId())
-        .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
-    Like existingLike = likeRepository.findByPostAndUser(post, user);
+    List<Reply> replyList = replyRepository.findByPostId(postId);
 
-    if (existingLike != null) {
-      likeRepository.deleteByPostAndUser(post, user);
-      post.setLikes(post.getLikes() - 1);
-      evictPostLikeCount(postId);
-    } else {
-      Like like = Like.builder()
-          .post(post)
-          .user(user)
-          .build();
-      post.setLikes(post.getLikes() + 1);
-      likeRepository.save(like);
-      evictPostLikeCount(postId);
-    }
-
-    return existingLike == null;
-  }
-
-  @Cacheable(value = "postLikeCount", key = "#postId")
-  public Long getPostLikeCount(Long postId) {
-    return likeRepository.countByPostId(postId);
-  }
-
-
-  @CacheEvict(value = "postLikeCount", key = "#postId")
-  public void evictPostLikeCount(Long postId) {
-      Cache cache = cacheManager.getCache("postLikeCount");
-      if (cache != null) {
-        cache.evict(postId);
-      }
+    return PostInfo.from(post, replyList);
   }
 }
