@@ -3,7 +3,7 @@ package com.fittogether.server.dm.service;
 
 import com.fittogether.server.dm.domain.entity.Request;
 import com.fittogether.server.dm.domain.repository.RequestRepository;
-import com.fittogether.server.dm.exception.ValidateErrorCode;
+import com.fittogether.server.dm.exception.RequestNotFoundException;
 import com.fittogether.server.domain.token.JwtProvider;
 import com.fittogether.server.domain.token.UserVo;
 import com.fittogether.server.user.domain.model.User;
@@ -30,7 +30,7 @@ public class MateService {
             Long receiver
     ) {
         if (!jwtProvider.validateToken(token)) {
-            throw new ValidateErrorCode("유효하지 않은 토큰입니다");
+            throw new UserCustomException(UserErrorCode.NOT_FOUND_USER);
         }
 
         UserVo userVo = jwtProvider.getUserVo(token);
@@ -61,7 +61,7 @@ public class MateService {
             Long senderId
     ) {
         if (!jwtProvider.validateToken(token)) {
-            throw new ValidateErrorCode("유효하지 않은 토큰입니다");
+            throw new UserCustomException(UserErrorCode.NOT_FOUND_USER);
         }
 
         UserVo userVo = jwtProvider.getUserVo(token);
@@ -71,12 +71,15 @@ public class MateService {
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
 
-        //수락한 사람
+        //수락 요청을 보낸사람  (수락한 사람은 현재 사용자)
         User sender = userRepository.findById(senderId)
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
 
-        Request request = requestRepository.findAllBySenderIdAndReceiverId(user, sender);
+        Request request = requestRepository.findAllBySenderIdAndReceiverId(sender, user);
+        if(request==null){
+            throw new RequestNotFoundException("REQUEST_NOT_FOUND_EXCEPTION");
+        }
         request.setAccepted(true);
         requestRepository.save(request);
 
