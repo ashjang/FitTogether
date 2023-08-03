@@ -3,7 +3,6 @@ package com.fittogether.server.dm.service;
 
 import com.fittogether.server.dm.domain.entity.Request;
 import com.fittogether.server.dm.domain.repository.RequestRepository;
-import com.fittogether.server.dm.exception.MateExceptionCode;
 import com.fittogether.server.dm.exception.ValidateErrorCode;
 import com.fittogether.server.domain.token.JwtProvider;
 import com.fittogether.server.domain.token.UserVo;
@@ -59,8 +58,7 @@ public class MateService {
     @Transactional
     public void mateAccept(
             String token,
-            Long receiverId,
-            boolean is_matched
+            Long senderId
     ) {
         if (!jwtProvider.validateToken(token)) {
             throw new ValidateErrorCode("유효하지 않은 토큰입니다");
@@ -68,22 +66,19 @@ public class MateService {
 
         UserVo userVo = jwtProvider.getUserVo(token);
 
-
-        User sender = userRepository.findById(userVo.getUserId())
-                .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
-
-        User receiver = userRepository.findById(receiverId)
+        //사용자
+        User user = userRepository.findById(userVo.getUserId())
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
 
-        if (!is_matched) {
-            throw new MateExceptionCode("요청 거절");
-        } else {
-            Request request = requestRepository.findAllBySenderIdAndReceiverId(sender, receiver);
+        //수락한 사람
+        User sender = userRepository.findById(senderId)
+                .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
-            request.setAccepted(true);
-            requestRepository.save(request);
-        }
+
+        Request request = requestRepository.findAllBySenderIdAndReceiverId(user, sender);
+        request.setAccepted(true);
+        requestRepository.save(request);
 
 
 

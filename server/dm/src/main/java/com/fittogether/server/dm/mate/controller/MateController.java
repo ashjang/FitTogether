@@ -27,13 +27,12 @@ public class MateController {
         )));
     }
 
-    @PutMapping("/matching/{receiverId}")
+    @PutMapping("/matching/accept")
     public ResponseEntity<Object> mateAccept(
             @RequestHeader("X-AUTH-TOKEN") String token,
-            @PathVariable Long receiverId,
-            @RequestParam boolean is_matched
+            @RequestParam Long senderId
     ){
-        mateService.mateAccept(token,receiverId,is_matched);
+        mateService.mateAccept(token,senderId);
 
         Map<String, Object> responseData = new HashMap<>();
         responseData.put("status", "success");

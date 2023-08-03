@@ -10,4 +10,5 @@ public interface RequestRepository extends JpaRepository<Request,Long> {
 
    // 수락 유저용
      Request findAllBySenderIdAndReceiverId(User senderId,User receiverId);
+
 }
