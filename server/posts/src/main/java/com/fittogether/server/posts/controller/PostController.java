@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,8 +34,8 @@ public class PostController {
 
     return ResponseEntity.ok(PostDto.from(
         postService.createPost(token, postForm)));
-
   }
+
   @GetMapping("/{postId}")
   public ResponseEntity<PostInfo> clickPost(@PathVariable Long postId) {
 
@@ -60,8 +62,16 @@ public class PostController {
 
   @PostMapping("/{postId}/like")
   public ResponseEntity<LikeDto> likePost(@RequestHeader(name = "X-AUTH-TOKEN") String token,
-                                          @PathVariable Long postId) {
+      @PathVariable Long postId) {
     return ResponseEntity.ok(LikeDto.from(
         likeService.likePost(token, postId)));
+  }
+
+
+  @PostMapping("/upload")
+  public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
+
+    return ResponseEntity.ok(
+        postService.uploadImage(file));
   }
 }

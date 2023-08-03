@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @NoArgsConstructor
@@ -15,7 +16,7 @@ public class PostForm {
 
   private String title;
   private String description;
-  private String image;
+  private MultipartFile image;
   private Category category;
   private boolean accessLevel;
   private List<String> hashtag;

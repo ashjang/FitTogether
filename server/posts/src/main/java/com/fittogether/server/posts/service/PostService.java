@@ -20,15 +20,23 @@ import com.fittogether.server.user.domain.model.User;
 import com.fittogether.server.user.domain.repository.UserRepository;
 import com.fittogether.server.user.exception.UserCustomException;
 import com.fittogether.server.user.exception.UserErrorCode;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -59,11 +67,13 @@ public class PostService {
     User user = userRepository.findById(userVo.getUserId())
         .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
+    String imagePath = uploadImage(postForm.getImage());
+
     Post post = Post.builder()
         .user(user)
         .title(postForm.getTitle())
         .description(postForm.getDescription())
-        .image(postForm.getImage())
+        .image(imagePath)
         .category(postForm.getCategory())
         .accessLevel(postForm.isAccessLevel())
         .likes(0L)
@@ -121,9 +131,11 @@ public class PostService {
 
     authenticationService.validate(token, post);
 
+    String imagePath = uploadImage(postForm.getImage());
+
     post.setTitle(postForm.getTitle());
     post.setDescription(postForm.getDescription());
-    post.setImage(postForm.getImage());
+    post.setImage(imagePath);
     post.setCategory(postForm.getCategory());
     post.setAccessLevel(postForm.isAccessLevel());
     post.setModifiedAt(LocalDateTime.now());
@@ -213,6 +225,22 @@ public class PostService {
 
     post.setWatched(watchedCount); // 조회수 업데이트
     postRepository.save(post);
+  }
+
+  @Value("${upload.path}")
+  private String uploadPath;
+
+  public String uploadImage(MultipartFile file) {
+
+    String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+    Path filePath = Paths.get(uploadPath).resolve(fileName);
+
+    try {
+      Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+      return filePath.toString() ;
+    } catch (IOException e) {
+      throw new RuntimeException("Failed to upload image", e);
+    }
   }
 
 }
