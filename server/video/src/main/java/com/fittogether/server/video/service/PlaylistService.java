@@ -11,8 +11,10 @@ import com.fittogether.server.video.domain.model.Playlist;
 import com.fittogether.server.video.domain.repository.PlaylistRepository;
 import com.fittogether.server.video.exception.VideoCustomException;
 import com.fittogether.server.video.exception.VideoErrorCode;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ public class PlaylistService {
   private final UserRepository userRepository;
   private final JwtProvider provider;
 
+  @Transactional
   public Playlist createPlaylist(String token, PlaylistForm form) {
     UserVo userVo = provider.getUserVo(token);
 
@@ -32,6 +35,15 @@ public class PlaylistService {
       throw new VideoCustomException(VideoErrorCode.SAME_PLAYLIST_NAME);
     }
     return playlistRepository.save(Playlist.of(user, form));
+  }
+
+  public List<Playlist> readPlaylist(String token) {
+    UserVo userVo = provider.getUserVo(token);
+
+    User user = userRepository.findById(userVo.getUserId())
+        .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+    return playlistRepository.findByUser_UserId(user.getUserId());
   }
 
   public boolean isPlaylistExist(Long userId, String playlistName) {
