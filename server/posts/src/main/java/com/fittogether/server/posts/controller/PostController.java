@@ -73,11 +73,4 @@ public class PostController {
     return ResponseEntity.ok(LikeDto.from(
         likeService.likePost(token, postId)));
   }
-
-  @GetMapping("/posts")
-  public ResponseEntity<PostPageDto> getPostByPage(@RequestParam(defaultValue = "0") int page,
-                                     @RequestParam(defaultValue = "5") int size) {
-    return ResponseEntity.ok(PostPageDto.from(
-        postService.getPostsByPage(page,size)));
-  }
 }
