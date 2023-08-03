@@ -45,7 +45,6 @@ public class LikeService {
         .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
 
-    synchronized (postId.toString().intern()) {
       Like existingLike = likeRepository.findByPostAndUser(post, user);
 
       if (existingLike != null) {
@@ -63,7 +62,6 @@ public class LikeService {
       }
 
       return existingLike == null;
-    }
   }
 
   /**
