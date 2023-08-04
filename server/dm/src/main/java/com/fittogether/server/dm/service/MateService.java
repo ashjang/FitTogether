@@ -77,14 +77,12 @@ public class MateService {
 
 
         Request request = requestRepository.findAllBySenderIdAndReceiverId(sender, user);
-        if(request==null){
+        if (request == null) {
             throw new RequestNotFoundException("REQUEST_NOT_FOUND_EXCEPTION");
         }
         request.setAccepted(true);
-        requestRepository.save(request);
-
 
 
     }
 
-    }
+}

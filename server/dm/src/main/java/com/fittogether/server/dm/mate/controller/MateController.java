@@ -6,9 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
 @RequiredArgsConstructor
 public class MateController {
@@ -34,11 +31,8 @@ public class MateController {
     ){
         mateService.mateAccept(token,senderId);
 
-        Map<String, Object> responseData = new HashMap<>();
-        responseData.put("status", "success");
-        responseData.put("message", "메이트 수락 완료");
 
-        return ResponseEntity.ok(responseData);
+        return ResponseEntity.ok().body("메이트 수락 완료");
     }
 
 }

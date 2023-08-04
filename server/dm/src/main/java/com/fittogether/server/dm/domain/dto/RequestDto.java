@@ -1,7 +1,6 @@
 package com.fittogether.server.dm.domain.dto;
 
 import com.fittogether.server.dm.domain.entity.Request;
-import com.fittogether.server.user.domain.model.User;
 import lombok.*;
 
 @Getter
@@ -12,17 +11,17 @@ import lombok.*;
 public class RequestDto {
 
 
-    private User senderId; //매칭 요청하는 유저 아이디 값
+    private String senderNickname; //매칭 요청하는 유저 닉네임
 
-    private User receiverId; // 매창 요청받는 유저 아이디 값
+    private String receiverNickname; // 매창 요청받는 유저 닉네임
 
     private boolean isAccept; //매칭 수락여부
 
 
     public static RequestDto from(Request request){
         return RequestDto.builder()
-                .senderId(request.getSenderId())
-                .receiverId(request.getReceiverId())
+                .senderNickname(request.getSenderId().getNickname())
+                .receiverNickname(request.getReceiverId().getNickname())
                 .isAccept(request.isAccepted())
                 .build();
     }
