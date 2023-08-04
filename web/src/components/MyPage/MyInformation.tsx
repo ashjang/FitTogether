@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import DaumPostcode, { Address } from 'react-daum-postcode';
+import axios from 'axios';
 
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
@@ -13,9 +14,14 @@ const MyInformation: React.FC = () => {
     const [selectedAddress, setSelectedAddress] = useState<string>('');
     const [inputIdValue, setInputIdValue] = useState<string>('');
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [gender, setGender] = useState(false);
+    const [publicStatus, setPublicStatus] = useState(true);
+    const [favoriteSports, setFavoriteSports] = useState<string[]>([]);
+    const [introduction, setIntroduction] = useState<string>('');
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+    // 주소찾기 모달
     const handleAddressModalToggle = () => {
         if (!isAddressModalOpen) {
             // setSelectedAddress(''); // 주소찾기 모달이 닫힐 때 주소 입력 값을 초기화
@@ -23,6 +29,7 @@ const MyInformation: React.FC = () => {
         setAddressModalOpen((prev) => !prev); // 모달 상태를 토글
     };
 
+    // 찾은 주소를 거주지 Value값으로 입력
     const handleComplete = (data: Address) => {
         // console.log(data); // Address data 확인
         const userAddress =
@@ -31,6 +38,7 @@ const MyInformation: React.FC = () => {
         handleAddressModalToggle(); //
     };
 
+    // 프로필 이미지 업로드
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
@@ -42,14 +50,66 @@ const MyInformation: React.FC = () => {
         }
     };
 
-    const handleSaveClick = () => {
-        alert('저장되었습니다.');
+    // 성별 정보
+    const handleGenderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setGender(event.target.value === '남성');
     };
 
+    // 정보 공개 여부
+    const handlePublicStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setPublicStatus(event.target.value === '공개');
+    };
+
+    // 주로 하는 운동
+    const handleFavoriteSportsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const sport = event.target.value;
+
+        // 마지막에 체크된 값만 유지되도록 favoriteSports 배열을 업데이트
+        setFavoriteSports((prevSports) => {
+            if (event.target.checked) {
+                return [...prevSports, sport];
+            } else {
+                return prevSports.filter((s) => s !== sport);
+            }
+        });
+    };
+
+    const handleIntroductionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setIntroduction(event.target.value);
+    };
+
+    // 중복검사
     const duplicationCheck = () => {
         alert('중복검사');
     };
 
+    // 회원정보 데이터 저장
+    const handleSaveClick = () => {
+        const userInfo = {
+            username: inputIdValue,
+            password: '',
+            email: 'qwerty1234@gmail.com',
+            address: selectedAddress,
+            profileImage: imagePreview || null,
+            gender: true,
+            favoriteSports: favoriteSports,
+            introduction: introduction,
+            publicStatus: true,
+        };
+
+        // 서버에 POST 요청을 보내서 데이터 저장
+        axios
+            .post('http://localhost:5001/users', userInfo)
+            .then((response) => {
+                alert('저장되었습니다.');
+            })
+            .catch((error) => {
+                console.error('저장 실패:', error);
+                alert('저장에 실패했습니다.');
+            });
+    };
+
+    // 아이디(닉네임) 형식 제한
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setInputIdValue(event.target.value);
 
@@ -154,26 +214,56 @@ const MyInformation: React.FC = () => {
             <div css={containerStyles}>
                 <p css={labelStyle}>성별</p>
                 <label css={radioButtonStyles}>
-                    <input type="radio" name="gender" value="남성" />
+                    <input
+                        type="radio"
+                        name="gender"
+                        value="남성"
+                        checked={gender === true}
+                        onChange={handleGenderChange}
+                    />
                     남성
                 </label>
                 <label css={radioButtonStyles}>
-                    <input type="radio" name="gender" value="여성" />
+                    <input
+                        type="radio"
+                        name="gender"
+                        value="여성"
+                        checked={gender === false}
+                        onChange={handleGenderChange}
+                    />
                     여성
                 </label>
             </div>
             <div css={containerStyles}>
                 <p css={labelStyle}>주로 하는 운동</p>
                 <label css={radioButtonStyles}>
-                    <input type="checkbox" name="favorite" value="러닝" />
+                    <input
+                        type="checkbox"
+                        name="favorite"
+                        value="RUNNING"
+                        checked={favoriteSports.includes('RUNNING')}
+                        onChange={handleFavoriteSportsChange}
+                    />
                     러닝
                 </label>
                 <label css={radioButtonStyles}>
-                    <input type="checkbox" name="favorite" value="등산" />
+                    <input
+                        type="checkbox"
+                        name="favorite"
+                        value="HIKING"
+                        checked={favoriteSports.includes('HIKING')}
+                        onChange={handleFavoriteSportsChange}
+                    />
                     등산
                 </label>
                 <label>
-                    <input type="checkbox" name="favorite" value="헬스" />
+                    <input
+                        type="checkbox"
+                        name="favorite"
+                        value="WEIGHT"
+                        checked={favoriteSports.includes('WEIGHT')}
+                        onChange={handleFavoriteSportsChange}
+                    />
                     헬스
                 </label>
             </div>
@@ -182,6 +272,8 @@ const MyInformation: React.FC = () => {
                 <input
                     type="text"
                     css={inputStyles}
+                    value={introduction}
+                    onChange={handleIntroductionChange}
                     placeholder="최대 100자까지 입력 가능"
                     maxLength={100}
                 />
@@ -189,11 +281,23 @@ const MyInformation: React.FC = () => {
             <div css={containerStyles}>
                 <p css={labelStyle}>공개 여부 </p>
                 <label css={radioButtonStyles}>
-                    <input type="radio" name="publicStatus" value="공개" />
+                    <input
+                        type="radio"
+                        name="publicStatus"
+                        value="공개"
+                        checked={publicStatus === true}
+                        onChange={handlePublicStatusChange}
+                    />
                     공개
                 </label>
                 <label css={radioButtonStyles}>
-                    <input type="radio" name="publicStatus" value="비공개" />
+                    <input
+                        type="radio"
+                        name="publicStatus"
+                        value="비공개"
+                        checked={publicStatus === false}
+                        onChange={handlePublicStatusChange}
+                    />
                     비공개
                 </label>
             </div>
