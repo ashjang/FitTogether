@@ -1,9 +1,12 @@
 /** @jsxImportSource @emotion/react */
 
-import { css } from '@emotion/react';
-import styled from '@emotion/styled';
 import React, { useState } from 'react';
 import DaumPostcode, { Address } from 'react-daum-postcode';
+
+import { css } from '@emotion/react';
+import styled from '@emotion/styled';
+
+import { LiaWindowClose } from 'react-icons/lia';
 
 const MyInformation: React.FC = () => {
     const [isAddressModalOpen, setAddressModalOpen] = useState(false);
@@ -12,16 +15,17 @@ const MyInformation: React.FC = () => {
 
     const handleAddressModalToggle = () => {
         if (!isAddressModalOpen) {
-            setSelectedAddress(''); // 주소찾기 모달이 닫힐 때 주소 입력 값을 초기화
+            // setSelectedAddress(''); // 주소찾기 모달이 닫힐 때 주소 입력 값을 초기화
         }
         setAddressModalOpen((prev) => !prev); // 모달 상태를 토글
     };
 
     const handleComplete = (data: Address) => {
-        console.log(data);
+        // console.log(data); // Address data 확인
         const userAddress =
             data.address.length > 3 ? data.address.split(' ').splice(0, 3).join(' ') : data.address;
         setSelectedAddress(userAddress);
+        handleAddressModalToggle(); //
     };
 
     const handleSaveClick = () => {
@@ -109,7 +113,14 @@ const MyInformation: React.FC = () => {
                     주소찾기
                 </button>
             </InputContainer>
-            {isAddressModalOpen && <DaumPostcode onComplete={handleComplete} />}
+            {isAddressModalOpen && (
+                <AddressPopup>
+                    <PopupContent>
+                        <DaumPostcode onComplete={handleComplete} />
+                        <LiaWindowClose onClick={handleAddressModalToggle} />
+                    </PopupContent>
+                </AddressPopup>
+            )}
             <InputContainer>
                 <label css={labelStyle}>프로필 이미지</label>
                 <input
@@ -229,6 +240,28 @@ const InputContainer = styled.div`
     display: flex;
     align-items: center;
     margin-bottom: 10px;
+`;
+
+const AddressPopup = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+`;
+
+const PopupContent = styled.div`
+    width: 500px;
+    background-color: white;
+    padding: 20px;
+
+    border-radius: 8px;
+    text-align: right;
 `;
 
 const radioButtonStyles = css`
