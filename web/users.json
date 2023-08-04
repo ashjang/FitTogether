@@ -118,6 +118,20 @@
       "introduction": "체력이 국력",
       "publicStatus": true,
       "id": 9
+    },
+    {
+      "username": "test6",
+      "password": "",
+      "email": "qwerty1234@gmail.com",
+      "address": "경기 성남시 분당구 백현동 532",
+      "profileImage": null,
+      "gender": true,
+      "favoriteSports": [
+        "WEIGHT"
+      ],
+      "introduction": "3대 500을 누가 못해? 그 사람이 바로 나예요",
+      "publicStatus": true,
+      "id": 10
     }
   ]
 }

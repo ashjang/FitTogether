@@ -32,8 +32,8 @@ const MyInformation: React.FC = () => {
     // 찾은 주소를 거주지 Value값으로 입력
     const handleComplete = (data: Address) => {
         // console.log(data); // Address data 확인
-        const userAddress =
-            data.address.length > 3 ? data.address.split(' ').splice(0, 3).join(' ') : data.address;
+        const userAddress = data.address;
+        // data.address.length > 3 ? data.address.split(' ').splice(0, 3).join(' ') : data.address;
         setSelectedAddress(userAddress);
         handleAddressModalToggle(); //
     };
