@@ -2,7 +2,6 @@ package com.fittogether.server.user.service;
 
 import com.fittogether.server.domain.token.JwtProvider;
 import com.fittogether.server.domain.token.UserVo;
-import com.fittogether.server.user.domain.dto.LocationDto;
 import com.fittogether.server.user.domain.model.User;
 import com.fittogether.server.user.domain.repository.UserRepository;
 import com.fittogether.server.user.exception.UserCustomException;
@@ -19,7 +18,7 @@ public class LocationService {
 
     // 현재 나의 위치 업데이트
     @Transactional
-    public boolean updateMyLocation(String token, Double latitude, Double longitude) {
+    public void updateMyLocation(String token, Double latitude, Double longitude) {
         if (!jwtProvider.validateToken(token)) {
             throw new UserCustomException(UserErrorCode.NEED_TO_SIGNIN);
         }
@@ -30,7 +29,5 @@ public class LocationService {
 
         user.setLatitude(latitude);
         user.setLongitude(longitude);
-
-        return true;
     }
 }
