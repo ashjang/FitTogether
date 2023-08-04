@@ -27,11 +27,8 @@ public class PlaylistController {
       @RequestHeader(name = "X-AUTH-TOKEN") String token,
       @RequestBody PlaylistForm form) {
 
-    PlaylistDto playlistDto = PlaylistDto.from(playlistService.createPlaylist(token, form));
-
-    return playlistDto == null ?
-        ResponseEntity.badRequest().body("생성 실패했습니다.") :
-        ResponseEntity.status(HttpStatus.CREATED).body(playlistDto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(
+        PlaylistDto.from(playlistService.createPlaylist(token, form)));
   }
 
   @GetMapping
