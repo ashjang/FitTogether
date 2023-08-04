@@ -43,6 +43,7 @@ public class MateController {
             @RequestHeader("X-AUTH-TOKEN") String token
     ){
         return RequestListDto.from(mateService.requestLists(token));
+
     }
 
 }

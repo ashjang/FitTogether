@@ -101,6 +101,7 @@ public class MateService {
 
         List<Request> mateList = requestRepository.findAllBySenderId(senderId);
 
+
         return mateList;
     }
 

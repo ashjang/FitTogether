@@ -14,4 +14,5 @@ public interface RequestRepository extends JpaRepository<Request,Long> {
      Request findAllBySenderIdAndReceiverId(User senderId,User receiverId);
      List<Request> findAllBySenderId(User senderId);
 
+
 }
