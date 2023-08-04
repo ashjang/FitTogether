@@ -148,8 +148,11 @@ const MapBox = styled.div<{ isSidebarOpen: boolean }>`
     top: 130px;
     // left: 50%;
     // transform: translateX(-50%);
-    width: ${(props) => (props.isSidebarOpen ? '50%' : '70%')};
+
+    // width: ${(props) => (props.isSidebarOpen ? '50%' : '70%')};
+    width: 70%;
     height: 70%;
+
     border-radius: 10px;
     transition: all 0.3s;
 
@@ -160,10 +163,10 @@ const MapBox = styled.div<{ isSidebarOpen: boolean }>`
 //프로필
 const UserProfileWrapper = styled.div`
     position: absolute;
-    right: 0;
+    right: -120px;
+    top: 200px;
     width: 30%;
     height: 100%;
-    background-color: white;
 `;
 
 export default Map;
