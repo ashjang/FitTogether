@@ -74,6 +74,7 @@ const MyInformation: React.FC = () => {
         });
     };
 
+    // 자기소개
     const handleIntroductionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIntroduction(event.target.value);
     };
