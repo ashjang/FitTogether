@@ -7,13 +7,13 @@ import axios from 'axios';
 
 interface PostDataItem {
     postId: number;
-    postCategory: string;
-    postTitle: string;
-    postFirstParagraph: string;
-    postFirstImage: string;
-    likesCounts: number;
-    commentsCounts: number;
-    hitsCounts: number;
+    category: string;
+    title: string;
+    firstParagraph: string;
+    firstImage: string;
+    likeCount: number;
+    replyCount: number;
+    viewCount: number;
 }
 
 const PostList: React.FC = () => {
@@ -24,7 +24,7 @@ const PostList: React.FC = () => {
     useEffect(() => {
         // axios를 사용하여 posts.json에서 데이터를 가져옴
         // 실제로는 이렇게 요청해야 axios.get('/posts/')
-        axios.get('http://localhost:3001/postListData').then((response) => {
+        axios.get('http://localhost:3001/posts').then((response) => {
             setPostData(response.data);
         });
     }, []);

@@ -1,347 +1,395 @@
 {
-    "postListData": [
+    "posts": [
         {
             "postId": 1,
-            "postCategory": "등산",
-            "postTitle": "게시물 제목 1",
-            "postFirstParagraph": "첫 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 10,
-            "commentsCounts": 5,
-            "hitsCounts": 100
+            "category": "등산",
+            "title": "게시물 제목 1",
+            "firstParagraph": "첫 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 10,
+            "replyCount": 5,
+            "viewCount": 100
         },
         {
             "postId": 2,
-            "postCategory": "러닝",
-            "postTitle": "게시물 제목 2",
-            "postFirstParagraph": "두 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 20,
-            "commentsCounts": 3,
-            "hitsCounts": 50
+            "category": "러닝",
+            "title": "게시물 제목 2",
+            "firstParagraph": "두 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 20,
+            "replyCount": 3,
+            "viewCount": 50
         },
         {
             "postId": 3,
-            "postCategory": "헬스",
-            "postTitle": "게시물 제목 3",
-            "postFirstParagraph": "세 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 30,
-            "commentsCounts": 8,
-            "hitsCounts": 70
+            "category": "헬스",
+            "title": "게시물 제목 3",
+            "firstParagraph": "세 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 30,
+            "replyCount": 8,
+            "viewCount": 70
         },
         {
             "postId": 4,
-            "postCategory": "등산",
-            "postTitle": "게시물 제목 4",
-            "postFirstParagraph": "네 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 40,
-            "commentsCounts": 15,
-            "hitsCounts": 90
+            "category": "등산",
+            "title": "게시물 제목 4",
+            "firstParagraph": "네 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 40,
+            "replyCount": 15,
+            "viewCount": 90
         },
         {
             "postId": 5,
-            "postCategory": "러닝",
-            "postTitle": "게시물 제목 5",
-            "postFirstParagraph": "다섯 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 50,
-            "commentsCounts": 10,
-            "hitsCounts": 120
+            "category": "러닝",
+            "title": "게시물 제목 5",
+            "firstParagraph": "다섯 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 50,
+            "replyCount": 10,
+            "viewCount": 120
         },
         {
             "postId": 6,
-            "postCategory": "헬스",
-            "postTitle": "게시물 제목 6",
-            "postFirstParagraph": "여섯 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 60,
-            "commentsCounts": 7,
-            "hitsCounts": 80
+            "category": "헬스",
+            "title": "게시물 제목 6",
+            "firstParagraph": "여섯 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 60,
+            "replyCount": 7,
+            "viewCount": 80
         },
         {
             "postId": 7,
-            "postCategory": "등산",
-            "postTitle": "게시물 제목 7",
-            "postFirstParagraph": "일곱 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 70,
-            "commentsCounts": 20,
-            "hitsCounts": 130
+            "category": "등산",
+            "title": "게시물 제목 7",
+            "firstParagraph": "일곱 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 70,
+            "replyCount": 20,
+            "viewCount": 130
         },
         {
             "postId": 8,
-            "postCategory": "러닝",
-            "postTitle": "게시물 제목 8",
-            "postFirstParagraph": "여덟 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 80,
-            "commentsCounts": 12,
-            "hitsCounts": 110
+            "category": "러닝",
+            "title": "게시물 제목 8",
+            "firstParagraph": "여덟 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 80,
+            "replyCount": 12,
+            "viewCount": 110
         },
         {
             "postId": 9,
-            "postCategory": "헬스",
-            "postTitle": "게시물 제목 9",
-            "postFirstParagraph": "아홉 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 90,
-            "commentsCounts": 6,
-            "hitsCounts": 60
+            "category": "헬스",
+            "title": "게시물 제목 9",
+            "firstParagraph": "아홉 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 90,
+            "replyCount": 6,
+            "viewCount": 60
         },
         {
             "postId": 10,
-            "postCategory": "러닝",
-            "postTitle": "게시물 제목 10",
-            "postFirstParagraph": "열 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 100,
-            "commentsCounts": 18,
-            "hitsCounts": 140
+            "category": "러닝",
+            "title": "게시물 제목 10",
+            "firstParagraph": "열 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 100,
+            "replyCount": 18,
+            "viewCount": 140
         },
         {
             "postId": 11,
-            "postCategory": "러닝",
-            "postTitle": "게시물 제목 11",
-            "postFirstParagraph": "열한 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 110,
-            "commentsCounts": 25,
-            "hitsCounts": 170
+            "category": "러닝",
+            "title": "게시물 제목 11",
+            "firstParagraph": "열한 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 110,
+            "replyCount": 25,
+            "viewCount": 170
         },
         {
             "postId": 12,
-            "postCategory": "헬스",
-            "postTitle": "게시물 제목 12",
-            "postFirstParagraph": "열두 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 120,
-            "commentsCounts": 30,
-            "hitsCounts": 200
+            "category": "헬스",
+            "title": "게시물 제목 12",
+            "firstParagraph": "열두 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 120,
+            "replyCount": 30,
+            "viewCount": 200
         },
         {
             "postId": 13,
-            "postCategory": "러닝",
-            "postTitle": "게시물 제목 13",
-            "postFirstParagraph": "열세 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 130,
-            "commentsCounts": 22,
-            "hitsCounts": 180
+            "category": "러닝",
+            "title": "게시물 제목 13",
+            "firstParagraph": "열세 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 130,
+            "replyCount": 22,
+            "viewCount": 180
         },
         {
             "postId": 14,
-            "postCategory": "등산",
-            "postTitle": "게시물 제목 14",
-            "postFirstParagraph": "열네 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 40,
-            "commentsCounts": 19,
-            "hitsCounts": 120
+            "category": "등산",
+            "title": "게시물 제목 14",
+            "firstParagraph": "열네 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 40,
+            "replyCount": 19,
+            "viewCount": 120
         },
         {
             "postId": 15,
-            "postCategory": "헬스",
-            "postTitle": "게시물 제목 15",
-            "postFirstParagraph": "열다섯 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 50,
-            "commentsCounts": 14,
-            "hitsCounts": 100
+            "category": "헬스",
+            "title": "게시물 제목 15",
+            "firstParagraph": "열다섯 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 50,
+            "replyCount": 14,
+            "viewCount": 100
         },
         {
             "postId": 16,
-            "postCategory": "등산",
-            "postTitle": "게시물 제목 16",
-            "postFirstParagraph": "열여섯 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 60,
-            "commentsCounts": 10,
-            "hitsCounts": 90
+            "category": "등산",
+            "title": "게시물 제목 16",
+            "firstParagraph": "열여섯 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 60,
+            "replyCount": 10,
+            "viewCount": 90
         },
         {
             "postId": 17,
-            "postCategory": "러닝",
-            "postTitle": "게시물 제목 17",
-            "postFirstParagraph": "열일곱 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 50,
-            "commentsCounts": 8,
-            "hitsCounts": 70
+            "category": "러닝",
+            "title": "게시물 제목 17",
+            "firstParagraph": "열일곱 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 50,
+            "replyCount": 8,
+            "viewCount": 70
         },
         {
             "postId": 18,
-            "postCategory": "등산",
-            "postTitle": "게시물 제목 18",
-            "postFirstParagraph": "열여덟 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 10,
-            "commentsCounts": 5,
-            "hitsCounts": 60
+            "category": "등산",
+            "title": "게시물 제목 18",
+            "firstParagraph": "열여덟 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 10,
+            "replyCount": 5,
+            "viewCount": 60
         },
         {
             "postId": 19,
-            "postCategory": "헬스",
-            "postTitle": "게시물 제목 19",
-            "postFirstParagraph": "열아홉 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 10,
-            "commentsCounts": 3,
-            "hitsCounts": 50
+            "category": "헬스",
+            "title": "게시물 제목 19",
+            "firstParagraph": "열아홉 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 10,
+            "replyCount": 3,
+            "viewCount": 50
         },
         {
             "postId": 20,
-            "postCategory": "등산",
-            "postTitle": "게시물 제목 20",
-            "postFirstParagraph": "스무 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 20,
-            "commentsCounts": 2,
-            "hitsCounts": 40
+            "category": "등산",
+            "title": "게시물 제목 20",
+            "firstParagraph": "스무 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 20,
+            "replyCount": 2,
+            "viewCount": 40
         },
         {
             "postId": 21,
-            "postCategory": "헬스",
-            "postTitle": "게시물 제목 21",
-            "postFirstParagraph": "스물하나 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 10,
-            "commentsCounts": 1,
-            "hitsCounts": 30
+            "category": "헬스",
+            "title": "게시물 제목 21",
+            "firstParagraph": "스물하나 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 10,
+            "replyCount": 1,
+            "viewCount": 30
         },
         {
             "postId": 22,
-            "postCategory": "러닝",
-            "postTitle": "게시물 제목 22",
-            "postFirstParagraph": "스물두 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 20,
-            "commentsCounts": 4,
-            "hitsCounts": 45
+            "category": "러닝",
+            "title": "게시물 제목 22",
+            "firstParagraph": "스물두 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 20,
+            "replyCount": 4,
+            "viewCount": 45
         },
         {
             "postId": 23,
-            "postCategory": "헬스",
-            "postTitle": "게시물 제목 23",
-            "postFirstParagraph": "스물세 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 20,
-            "commentsCounts": 6,
-            "hitsCounts": 55
+            "category": "헬스",
+            "title": "게시물 제목 23",
+            "firstParagraph": "스물세 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 20,
+            "replyCount": 6,
+            "viewCount": 55
         },
         {
             "postId": 24,
-            "postCategory": "등산",
-            "postTitle": "게시물 제목 24",
-            "postFirstParagraph": "스물네 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 20,
-            "commentsCounts": 9,
-            "hitsCounts": 65
+            "category": "등산",
+            "title": "게시물 제목 24",
+            "firstParagraph": "스물네 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 20,
+            "replyCount": 9,
+            "viewCount": 65
         },
         {
             "postId": 25,
-            "postCategory": "러닝",
-            "postTitle": "게시물 제목 25",
-            "postFirstParagraph": "스물다섯 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 25,
-            "commentsCounts": 11,
-            "hitsCounts": 75
+            "category": "러닝",
+            "title": "게시물 제목 25",
+            "firstParagraph": "스물다섯 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 25,
+            "replyCount": 11,
+            "viewCount": 75
         },
         {
             "postId": 26,
-            "postCategory": "헬스",
-            "postTitle": "게시물 제목 26",
-            "postFirstParagraph": "스물여섯 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 20,
-            "commentsCounts": 15,
-            "hitsCounts": 80
+            "category": "헬스",
+            "title": "게시물 제목 26",
+            "firstParagraph": "스물여섯 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 20,
+            "replyCount": 15,
+            "viewCount": 80
         },
         {
             "postId": 27,
-            "postCategory": "등산",
-            "postTitle": "게시물 제목 27",
-            "postFirstParagraph": "스물일곱 번째 게시물 내용...",
-            "postFirstImage": "../../assets/post_image_example.jpg",
-            "likesCounts": 10,
-            "commentsCounts": 12,
-            "hitsCounts": 70
+            "category": "등산",
+            "title": "게시물 제목 27",
+            "firstParagraph": "스물일곱 번째 게시물 첫번째 문단...",
+            "firstImage": "../../assets/post_image_example.jpg",
+            "likeCount": 10,
+            "replyCount": 12,
+            "viewCount": 70
         }
     ],
 
-    "postId1": [
-        {
-            "posterImage": "../../assets/default-user-image.jpg",
-            "posterNickname": "ehhdrud",
-            "createdAt": "2023-07-31T14:49:54.4241304",
-            "postCategory": "등산",
-            "postHashtag": ["해시태그1", "해시태그2"],
-            "postTitle": "게시물 제목 1",
-            "postContents": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic.",
-            "likesCounts": 10,
-            "commentsCounts": 5,
-            "hitsCounts": 100
-        }
-    ],
-
-    "postId2": [
-        {
-            "posterImage": "../../assets/default-user-image.jpg",
-            "posterNickname": "ehhdrud",
-            "createdAt": "2023-07-31T14:49:54.4241304",
-            "postCategory": "러닝",
-            "postHashtag": ["해시태그1", "해시태그2"],
-            "postTitle": "게시물 제목 2",
-            "postContents": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic.",
-            "likesCounts": 20,
-            "commentsCounts": 3,
-            "hitsCounts": 50
-        }
-    ],
-
-    "postId3": [
-        {
-            "posterImage": "../../assets/default-user-image.jpg",
-            "posterNickname": "ehhdrud",
-            "createdAt": "2023-07-31T14:49:54.4241304",
-            "postCategory": "헬스",
-            "postHashtag": ["해시태그1", "해시태그2"],
-            "postTitle": "게시물 제목 3",
-            "postContents": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic.",
-            "likesCounts": 30,
-            "commentsCounts": 8,
-            "hitsCounts": 70
-        }
-    ],
-    "postId4": [
-        {
-            "posterImage": "../../assets/default-user-image.jpg",
-            "posterNickname": "ehhdrud",
-            "createdAt": "2023-07-31T14:49:54.4241304",
-            "postCategory": "등산",
-            "postHashtag": ["해시태그1", "해시태그2"],
-            "postTitle": "게시물 제목 4",
-            "postContents": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic.",
-            "likesCounts": 40,
-            "commentsCounts": 15,
-            "hitsCounts": 90
-        }
-    ],
-    "postId5": [
-        {
-            "posterImage": "../../assets/default-user-image.jpg",
-            "posterNickname": "ehhdrud",
-            "createdAt": "2023-07-31T14:49:54.4241304",
-            "postCategory": "러닝",
-            "postHashtag": ["해시태그1", "해시태그2"],
-            "postTitle": "게시물 제목 5",
-            "postContents": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic.",
-            "likesCounts": 50,
-            "commentsCounts": 10,
-            "hitsCounts": 120
-        }
-    ]
+    "posts-1": {
+        "postId": 1,
+        "userImage": "../../assets/default-user-image.jpg",
+        "userNickname": "ehhdrud",
+        "createdAt": "2023-07-31T14:49:54.4241304",
+        "category": "등산",
+        "hashtag": ["해시태그1", "해시태그2"],
+        "title": "게시물 제목 1",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic.",
+        "likeCount": 10,
+        "replyCount": 5,
+        "viewCount": 100,
+        "replyList": [
+            {
+                "postId": 1,
+                "replyId": 1,
+                "userImage": "../../assets/default-user-image.jpg",
+                "userNickname": "ehhdrud",
+                "createdAt": "2023-07-31T14:49:54.4241304",
+                "comment": "반갑습니다"
+            },
+            {
+                "postId": 1,
+                "replyId": 2,
+                "userImage": "../../assets/default-user-image.jpg",
+                "userNickname": "fittogether",
+                "createdAt": "2023-07-31T14:49:54.4241304",
+                "comment": "안녕"
+            }
+        ],
+        "childReplyList": [
+            {
+                "postId": 1,
+                "replyId": 1,
+                "childReplyId": 1,
+                "userImage": "../../assets/default-user-image.jpg",
+                "userNickname": "fittogether",
+                "createdAt": "2023-07-31T14:49:54.4241304",
+                "comment": "child반갑습니다"
+            },
+            {
+                "postId": 1,
+                "replyId": 1,
+                "childReplyId": 2,
+                "userImage": "../../assets/default-user-image.jpg",
+                "userNickname": "ehhdrud",
+                "createdAt": "2023-07-31T14:49:54.4241304",
+                "comment": "child반갑습니다"
+            },
+            {
+                "postId": 1,
+                "replyId": 2,
+                "childReplyId": 1,
+                "userImage": "../../assets/default-user-image.jpg",
+                "userNickname": "ehhdrud",
+                "createdAt": "2023-07-31T14:49:54.4241304",
+                "comment": "child반갑습니다"
+            }
+        ]
+    },
+    "posts-2": {
+        "postId": 2,
+        "userImage": "../../assets/default-user-image.jpg",
+        "userNickname": "ehhdrud",
+        "createdAt": "2023-07-31T14:49:54.4241304",
+        "category": "러닝",
+        "hashtag": ["해시태그1", "해시태그2"],
+        "title": "게시물 제목 2",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic.",
+        "likeCount": 20,
+        "replyCount": 3,
+        "viewCount": 50,
+        "replyList": [],
+        "childReplyList": []
+    },
+    "posts-3": {
+        "postId": 3,
+        "userImage": "../../assets/default-user-image.jpg",
+        "userNickname": "ehhdrud",
+        "createdAt": "2023-07-31T14:49:54.4241304",
+        "category": "헬스",
+        "hashtag": ["해시태그1", "해시태그2"],
+        "title": "게시물 제목 3",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic.",
+        "likeCount": 30,
+        "replyCount": 8,
+        "viewCount": 70,
+        "replyList": [],
+        "childReplyList": []
+    },
+    "posts-4": {
+        "postId": 4,
+        "userImage": "../../assets/default-user-image.jpg",
+        "userNickname": "ehhdrud",
+        "createdAt": "2023-07-31T14:49:54.4241304",
+        "category": "등산",
+        "hashtag": ["해시태그1", "해시태그2"],
+        "title": "게시물 제목 4",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic.",
+        "likeCount": 40,
+        "replyCount": 15,
+        "viewCount": 90,
+        "replyList": [],
+        "childReplyList": []
+    },
+    "posts-5": {
+        "postId": 5,
+        "userImage": "../../assets/default-user-image.jpg",
+        "userNickname": "ehhdrud",
+        "createdAt": "2023-07-31T14:49:54.4241304",
+        "category": "러닝",
+        "hashtag": ["해시태그1", "해시태그2"],
+        "title": "게시물 제목 5",
+        "description": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ut omnis, perferendis debitis officia exercitationem similique ipsum reiciendis fugiat suscipit quaerat doloremque neque eligendi ad soluta rerum, alias possimus qui hic.",
+        "likeCount": 50,
+        "replyCount": 10,
+        "viewCount": 120,
+        "replyList": [],
+        "childReplyList": []
+    }
 }

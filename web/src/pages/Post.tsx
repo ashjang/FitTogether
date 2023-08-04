@@ -5,29 +5,55 @@ import PostContents from '../components/Post/PostContents';
 import styled from '@emotion/styled';
 import Comments from '../components/Post/Comments';
 
-interface PostData {
-    posterImage: string;
-    posterNickname: string;
+interface ReplyData {
+    postId: number;
+    replyId: number;
+    userImage: string;
+    userNickname: string;
     createdAt: string;
-    postCategory: string;
-    postHashtag: string[];
-    postTitle: string;
-    postContents: string;
-    likesCounts: number;
-    commentsCounts: number;
-    hitsCounts: number;
+    comment: string;
+}
+
+interface ChildReplyData {
+    postId: number;
+    replyId: number;
+    childReplyId: number;
+    userImage: string;
+    userNickname: string;
+    createdAt: string;
+    comment: string;
+}
+
+interface PostData {
+    postId: number;
+    userImage: string;
+    userNickname: string;
+    createdAt: string;
+    category: string;
+    hashtag: string[];
+    title: string;
+    description: string;
+    likeCount: number;
+    replyCount: number;
+    viewCount: number;
+    replyList: ReplyData[];
+    childReplyList: ChildReplyData[];
 }
 
 const Post: React.FC = () => {
-    const [postData, setPostData] = useState<PostData[]>();
     const { postId } = useParams<{ postId: string }>();
+    const [postData, setPostData] = useState<PostData>();
+    const [replyData, setReplyData] = useState<ReplyData[]>();
+    const [childReplyData, setChildReplyData] = useState<ChildReplyData[]>();
 
     const getPostData = async () => {
-        // const response = await axios.get(`/posts/${postId}`); // 실제로는 이렇게 요청해야
+        // const response = await axios.post(`/posts/${postId}`,{postId} , header);
         try {
-            const response = await axios.get(`http://localhost:3001/postId${postId}`);
-            console.log(response.data);
-            setPostData(response.data);
+            const response = await axios.get(`http://localhost:3001/posts-${postId}`);
+            const { replyList, childReplyList, ...rest } = response.data;
+            setPostData(rest);
+            setReplyData(replyList);
+            setChildReplyData(childReplyList);
         } catch (error) {
             console.error(error);
         }
@@ -35,16 +61,26 @@ const Post: React.FC = () => {
 
     useEffect(() => {
         getPostData();
+        console.log(postData);
+        console.log(replyData);
+        console.log(childReplyData);
     }, []);
 
     return (
         <Page>
-            {postData && postData.length > 0 ? (
-                <PostContents {...postData[0]} /> // 첫 번째 게시물 데이터를 PostContents 컴포넌트로 넘겨줌
+            {postData ? (
+                <PostContents key={postData.postId} {...postData} /> // 첫 번째 게시물 데이터를 PostContents 컴포넌트로 넘겨줌
             ) : (
-                <div>Loading...</div> // 데이터가 없을 때 로딩 메시지를 렌더링
+                <div>Loading...</div>
             )}
-            <Comments />
+            {/* <Comments /> */}
+            {replyData && childReplyData && (
+                <Comments
+                    key={replyData[0].postId}
+                    replyData={replyData}
+                    childReplyData={childReplyData}
+                />
+            )}
         </Page>
     );
 };

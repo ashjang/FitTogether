@@ -10,29 +10,31 @@ import Modal from 'react-modal';
 const imageSrc: string = default_user_image;
 
 interface PostData {
-    posterImage: string;
-    posterNickname: string;
+    postId: number;
+    userImage: string;
+    userNickname: string;
     createdAt: string;
-    postCategory: string;
-    postHashtag: string[];
-    postTitle: string;
-    postContents: string;
-    likesCounts: number;
-    commentsCounts: number;
-    hitsCounts: number;
+    category: string;
+    hashtag: string[];
+    title: string;
+    description: string;
+    likeCount: number;
+    replyCount: number;
+    viewCount: number;
 }
 
 const PostContents: React.FC<PostData> = ({
-    // posterImage,
-    posterNickname,
+    // postId,
+    // userImage,
+    userNickname,
     createdAt,
-    postCategory,
-    postHashtag,
-    postTitle,
-    postContents,
-    likesCounts,
-    commentsCounts,
-    hitsCounts,
+    category,
+    hashtag,
+    title,
+    description,
+    likeCount,
+    replyCount,
+    viewCount,
 }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -43,8 +45,8 @@ const PostContents: React.FC<PostData> = ({
     return (
         <PostContentsComponent>
             <CategoryAndHashtag>
-                <PostCategory>{postCategory}</PostCategory>
-                {postHashtag.map((hashtag) => {
+                <PostCategory>{category}</PostCategory>
+                {hashtag.map((hashtag) => {
                     return <PostHashtag>{hashtag}</PostHashtag>;
                 })}
             </CategoryAndHashtag>
@@ -53,7 +55,7 @@ const PostContents: React.FC<PostData> = ({
                 <ProfileImageContainer>
                     <ProfileImage src={imageSrc} />
                 </ProfileImageContainer>
-                <ProfileNickname>{posterNickname}</ProfileNickname>
+                <ProfileNickname>{userNickname}</ProfileNickname>
                 <CreatedAt>{createdAt}</CreatedAt>
                 {/* 해당 포스트의 작성자만 아이콘이 보이도록하는 로직 추가해야!! */}
                 <FaEllipsis icon={faEllipsis} onClick={handleToggleModal} />
@@ -84,20 +86,20 @@ const PostContents: React.FC<PostData> = ({
             </ProfileContainer>
 
             <Post>
-                <h1>{postTitle}</h1>
-                <p>{postContents}</p>
+                <h1>{title}</h1>
+                <p>{description}</p>
             </Post>
             <PostDetail>
                 <PostDetailItem>
                     <FaThumbsUp icon={faThumbsUp} />
-                    <span>{likesCounts}</span>
+                    <span>{likeCount}</span>
                 </PostDetailItem>
                 <PostDetailItem>
                     <FaComment icon={faComment} />
-                    <span>{commentsCounts}</span>
+                    <span>{replyCount}</span>
                 </PostDetailItem>
                 <PostDetailItem>
-                    <span>조회수: {hitsCounts}</span>
+                    <span>조회수: {viewCount}</span>
                 </PostDetailItem>
             </PostDetail>
         </PostContentsComponent>

@@ -7,43 +7,43 @@ import imgSrc from '../../assets/post_image_example.jpg';
 
 interface Props {
     postId: number;
-    postCategory: string;
-    postTitle: string;
-    postFirstParagraph: string;
-    postFirstImage: string;
-    likesCounts: number;
-    commentsCounts: number;
-    hitsCounts: number;
+    category: string;
+    title: string;
+    firstParagraph: string;
+    firstImage: string;
+    likeCount: number;
+    replyCount: number;
+    viewCount: number;
 }
 const PostListItem: React.FC<Props> = ({
     postId,
-    postCategory,
-    postTitle,
-    postFirstParagraph,
-    // postFirstImage, // json-server에서 이미지 경로를 가져와 사용하는 것이 까다로워 임시로 import하여 사용
-    likesCounts,
-    commentsCounts,
-    hitsCounts,
+    category,
+    title,
+    firstParagraph,
+    // firstImage, // json-server에서 이미지 경로를 가져와 사용하는 것이 까다로워 임시로 import하여 사용
+    likeCount,
+    replyCount,
+    viewCount,
 }) => {
     return (
         <PostListItemComponent>
             {/* ShowPost: postId를 사용하여 해당 postId를 가진 post의 내용을 불러와 렌더링하도록 수정해야!! */}
             <ShowPost to={`/community/${postId}`}>
                 <PostInfo>
-                    <PostCategory>{postCategory}</PostCategory>
-                    <PostTitle>{postTitle}</PostTitle>
-                    <PostFirstParagraph>{postFirstParagraph}</PostFirstParagraph>
+                    <PostCategory>{category}</PostCategory>
+                    <PostTitle>{title}</PostTitle>
+                    <PostFirstParagraph>{firstParagraph}</PostFirstParagraph>
                     <PostDetail>
                         <PostDetailItem>
                             <FaThumbsUp icon={faThumbsUp} />
-                            <span>{likesCounts}</span>
+                            <span>{likeCount}</span>
                         </PostDetailItem>
                         <PostDetailItem>
                             <FaComment icon={faComment} />
-                            <span>{commentsCounts}</span>
+                            <span>{replyCount}</span>
                         </PostDetailItem>
                         <PostDetailItem>
-                            <span>조회수: {hitsCounts}</span>
+                            <span>조회수: {viewCount}</span>
                         </PostDetailItem>
                     </PostDetail>
                 </PostInfo>
