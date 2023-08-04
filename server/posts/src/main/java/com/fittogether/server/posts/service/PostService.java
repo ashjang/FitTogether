@@ -4,11 +4,12 @@ import com.fittogether.server.domain.token.JwtProvider;
 import com.fittogether.server.domain.token.UserVo;
 import com.fittogether.server.posts.domain.dto.PostForm;
 import com.fittogether.server.posts.domain.dto.PostInfo;
-import com.fittogether.server.posts.domain.dto.ReplyForm;
+import com.fittogether.server.posts.domain.model.ChildReply;
 import com.fittogether.server.posts.domain.model.Hashtag;
 import com.fittogether.server.posts.domain.model.Post;
 import com.fittogether.server.posts.domain.model.PostHashtag;
 import com.fittogether.server.posts.domain.model.Reply;
+import com.fittogether.server.posts.domain.repository.ChildReplyRepository;
 import com.fittogether.server.posts.domain.repository.HashtagRepository;
 import com.fittogether.server.posts.domain.repository.PostHashtagRepository;
 import com.fittogether.server.posts.domain.repository.PostRepository;
@@ -23,14 +24,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class PostService {
 
   private final PostRepository postRepository;
@@ -38,9 +36,9 @@ public class PostService {
   private final PostHashtagRepository postHashtagRepository;
   private final HashtagRepository hashtagRepository;
   private final ReplyRepository replyRepository;
+  private final ChildReplyRepository childReplyRepository;
   private final JwtProvider provider;
-
-  private final RedisTemplate redisTemplate;
+  private final AuthenticationService authenticationService;
 
   /**
    * 게시글 작성
@@ -116,7 +114,7 @@ public class PostService {
     Post post = postRepository.findById(postId)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
-    validate(token, post);
+    authenticationService.validate(token, post);
 
     post.setTitle(postForm.getTitle());
     post.setDescription(postForm.getDescription());
@@ -142,20 +140,6 @@ public class PostService {
     return post;
   }
 
-  /**
-   * 토큰 및 유저 검증
-   */
-  private void validate(String token, Post post) {
-    if (!provider.validateToken(token)) {
-      throw new RuntimeException("Invalid or expired token.");
-    }
-
-    UserVo userVo = provider.getUserVo(token);
-
-    if (!post.getUser().getUserId().equals(userVo.getUserId())) {
-      throw new UserCustomException(UserErrorCode.NOT_FOUND_USER);
-    }
-  }
 
   /**
    * 게시글 삭제
@@ -166,37 +150,13 @@ public class PostService {
     Post post = postRepository.findById(postId)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
-    validate(token, post);
+    authenticationService.validate(token, post);
 
     List<PostHashtag> postIds = postHashtagRepository.findByPostId(postId);
 
     postHashtagRepository.deleteAll(postIds);
 
     postRepository.delete(post);
-  }
-
-  /**
-   * 댓글 작성
-   */
-  @Transactional
-  public Reply createReply(String token, Long postId, ReplyForm replyForm) {
-
-    UserVo userVo = provider.getUserVo(token);
-
-    User user = userRepository.findById(userVo.getUserId())
-        .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
-
-    Post post = postRepository.findById(postId)
-        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
-
-    Reply reply = Reply.builder()
-        .post(post)
-        .user(user)
-        .comment(replyForm.getComment())
-        .createdAt(LocalDateTime.now())
-        .build();
-
-    return replyRepository.save(reply);
   }
 
   /**
@@ -211,9 +171,14 @@ public class PostService {
       throw new PostException(ErrorCode.NO_PERMISSION_TO_VIEW_POST);
     }
 
-
     List<Reply> replyList = replyRepository.findByPostId(postId);
 
-    return PostInfo.from(post, replyList);
+    List<Long> replyIds = replyList.stream()
+        .map(Reply::getId)
+        .collect(Collectors.toList());
+
+    List<ChildReply> childReplies = childReplyRepository.findByReplyIdIn(replyIds);
+
+    return PostInfo.from(post, replyList, childReplies);
   }
 }
