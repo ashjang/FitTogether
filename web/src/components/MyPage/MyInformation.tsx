@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import DaumPostcode, { Address } from 'react-daum-postcode';
 
 import { css } from '@emotion/react';
@@ -12,6 +12,9 @@ const MyInformation: React.FC = () => {
     const [isAddressModalOpen, setAddressModalOpen] = useState(false);
     const [selectedAddress, setSelectedAddress] = useState<string>('');
     const [inputIdValue, setInputIdValue] = useState<string>('');
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleAddressModalToggle = () => {
         if (!isAddressModalOpen) {
@@ -28,12 +31,19 @@ const MyInformation: React.FC = () => {
         handleAddressModalToggle(); //
     };
 
-    const handleSaveClick = () => {
-        alert('저장되었습니다.');
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
-    const uploadProfileImage = () => {
-        alert('이미지 업로드');
+    const handleSaveClick = () => {
+        alert('저장되었습니다.');
     };
 
     const duplicationCheck = () => {
@@ -123,13 +133,23 @@ const MyInformation: React.FC = () => {
             )}
             <InputContainer>
                 <label css={labelStyle}>프로필 이미지</label>
-                <input
-                    type="button"
-                    name="image"
-                    onClick={uploadProfileImage}
-                    css={inputButton}
-                    value="설정"
-                />
+                <ImageUploadContainer>
+                    <ImagePreviewContainer>
+                        {imagePreview ? (
+                            <img src={imagePreview} alt="프로필 이미지 미리보기" />
+                        ) : null}
+                    </ImagePreviewContainer>
+                    <ImageUploadButton>
+                        <span>사진선택</span>
+                        <input
+                            type="file"
+                            name="image"
+                            ref={fileInputRef}
+                            onChange={handleImageChange}
+                            accept="image/*"
+                        />
+                    </ImageUploadButton>
+                </ImageUploadContainer>
             </InputContainer>
             <div css={containerStyles}>
                 <p css={labelStyle}>성별</p>
@@ -215,6 +235,7 @@ const inputButton = css`
     margin: 10px;
     margin-left: 50px;
     padding: 3px 8px;
+    border-radius: 4px;
 
     :hover {
         background-color: #d2d2d2;
@@ -262,6 +283,65 @@ const PopupContent = styled.div`
 
     border-radius: 8px;
     text-align: right;
+`;
+
+const ImageUploadContainer = styled.div`
+    position: relative;
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+`;
+
+const ImagePreviewContainer = styled.div`
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 10px;
+    margin-left: 50px;
+    margin-right: 10px;
+    pointer-events: none;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+`;
+
+const ImageUploadButton = styled.label`
+    border: 0.5px solid #d2d2d2;
+    background-color: white;
+    text-align: center;
+    cursor: pointer;
+    margin: 10px;
+    margin-left: 50px;
+    padding: 3px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    min-width: 80px;
+    height: 35px;
+
+    span {
+        pointer-events: none; // 클릭 이벤트가 버튼으로 전달되지 않도록 막음
+    }
+
+    input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        pointer-events: none;
+    }
+
+    :hover {
+        background-color: #d2d2d2;
+    }
 `;
 
 const radioButtonStyles = css`
