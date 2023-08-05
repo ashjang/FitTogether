@@ -132,6 +132,68 @@
       "introduction": "3대 500을 누가 못해? 그 사람이 바로 나예요",
       "publicStatus": true,
       "id": 10
+    },
+    {
+      "username": "test7",
+      "password": "",
+      "email": "qwerty1234@gmail.com",
+      "address": "경기 성남시 분당구 백현동 532",
+      "profileImage": null,
+      "gender": true,
+      "favoriteSports": [
+        "WEIGHT"
+      ],
+      "introduction": "3대 500을 누가 못해? 그 사람이 바로 나예요",
+      "publicStatus": true,
+      "id": 11
+    },
+    {
+      "nickname": "test8",
+      "email": "test8@hanmail.net",
+      "password": "test8",
+      "gender": false,
+      "isPublic": true,
+      "id": 12
+    },
+    {
+      "nickname": "gg",
+      "email": "jjj@gmail.com",
+      "password": "1234",
+      "gender": false,
+      "isPublic": true,
+      "id": 13
+    },
+    {
+      "nickname": "gg",
+      "email": "jjj@gmail.com",
+      "password": "1234",
+      "gender": false,
+      "isPublic": true,
+      "id": 14
+    },
+    {
+      "nickname": "gg",
+      "email": "jjj@gmail.com",
+      "password": "1234",
+      "gender": false,
+      "isPublic": true,
+      "id": 15
+    },
+    {
+      "nickname": "ㅇㅇㅇ",
+      "email": "ddd@naver.com",
+      "password": "5555",
+      "gender": true,
+      "isPublic": true,
+      "id": 16
+    },
+    {
+      "nickname": "test10",
+      "email": "ggg@gmail.com",
+      "password": "12345",
+      "gender": false,
+      "isPublic": true,
+      "id": 17
     }
   ]
 }
