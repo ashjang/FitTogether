@@ -138,7 +138,7 @@ function Header() {
                             </Link>
                         </li>
                         <li css={menuLi}>
-                            <Link to="/fineMate">
+                            <Link to="/findMate">
                                 <span>운동 메이트 찾기</span>
                             </Link>
                         </li>

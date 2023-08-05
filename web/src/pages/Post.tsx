@@ -61,24 +61,32 @@ const Post: React.FC = () => {
 
     useEffect(() => {
         getPostData();
+    }, []); // 두 번째 인자로 빈 배열을 전달하여 컴포넌트가 처음 마운트될 때만 실행
+
+    useEffect(() => {
         console.log(postData);
+    }, [postData]);
+
+    useEffect(() => {
         console.log(replyData);
+    }, [replyData]);
+
+    useEffect(() => {
         console.log(childReplyData);
-    }, []);
+    }, [childReplyData]);
 
     return (
         <Page>
             {postData ? (
-                <PostContents key={postData.postId} {...postData} /> // 첫 번째 게시물 데이터를 PostContents 컴포넌트로 넘겨줌
+                <PostContents key={`postId:${postId}`} {...postData} /> // 첫 번째 게시물 데이터를 PostContents 컴포넌트로 넘겨줌
             ) : (
                 <div>Loading...</div>
             )}
-            {/* <Comments /> */}
-            {replyData && childReplyData && (
+            {replyData && replyData.length > 0 && (
                 <Comments
-                    key={replyData[0].postId}
+                    key={`replyInPostId:${replyData[0].postId}`}
                     replyData={replyData}
-                    childReplyData={childReplyData}
+                    childReplyData={childReplyData || []}
                 />
             )}
         </Page>

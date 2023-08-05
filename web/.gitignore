@@ -25,3 +25,6 @@ dist-ssr
 
 # .env 파일 추가
 .env
+
+#packacge-lock.json 파일 추가
+packacge-lock.json

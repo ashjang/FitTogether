@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+// import axios from 'axios';
+// import { useParams } from 'react-router-dom';
 import default_user_image from '../../assets/default-user-image.png';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -36,12 +38,41 @@ const PostContents: React.FC<PostData> = ({
     replyCount,
     viewCount,
 }) => {
+    // const { postId } = useParams<{ postId: string }>();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isLiked, setIsLiked] = useState<boolean>(false);
 
     const handleToggleModal = () => {
         setIsModalOpen(!isModalOpen);
     };
 
+    const handleEditPost = () => {};
+
+    const handleDeletePost = async () => {
+        // try {
+        //     const response = await axios.delete(`/posts/${postId}`, {
+        //         headers,
+        //     });
+        //     console.log(response.data);
+        // } catch (error) {
+        //     console.log(error);
+        // }
+    };
+
+    const handleToggleLikeButton = async () => {
+        try {
+            // const likeForm = {
+            //     like: !isLiked,
+            // };
+            // const response = await axios.delete(`/posts/${postId}/like`, likeForm, {
+            //     headers,
+            // });
+            setIsLiked(!isLiked);
+            // console.log(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
         <PostContentsComponent>
             <CategoryAndHashtag>
@@ -80,8 +111,8 @@ const PostContents: React.FC<PostData> = ({
                         },
                     }}
                 >
-                    <button>수정하기</button>
-                    <button>삭제하기</button>
+                    <button onClick={handleEditPost}>수정하기</button>
+                    <button onClick={handleDeletePost}>삭제하기</button>
                 </Modal>
             </ProfileContainer>
 
@@ -91,7 +122,7 @@ const PostContents: React.FC<PostData> = ({
             </Post>
             <PostDetail>
                 <PostDetailItem>
-                    <FaThumbsUp icon={faThumbsUp} />
+                    <FaThumbsUp icon={faThumbsUp} onClick={handleToggleLikeButton} />
                     <span>{likeCount}</span>
                 </PostDetailItem>
                 <PostDetailItem>
@@ -197,16 +228,3 @@ const FaComment = styled(FontAwesomeIcon)`
 `;
 
 export default PostContents;
-
-// const {
-//   posterImage,
-//   posterNickname,
-//   createAt,
-//   postCategory,
-//   postTitle,
-//   postContents,
-//   likesCounts,
-//   commentsCounts,
-//   hitsCounts,
-//   comments,
-// } = response.data;

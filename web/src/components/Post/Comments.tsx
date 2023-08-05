@@ -30,7 +30,7 @@ interface ReplyAndChildReplyData {
     childReplyData: ChildReplyData[];
 }
 
-const CommentsTest: React.FC<ReplyAndChildReplyData> = (props) => {
+const Comments: React.FC<ReplyAndChildReplyData> = (props) => {
     // const { postId } = useParams<{ postId: string }>();
     const [replyInput, setReplyInput] = useState('');
     const [childReplyInput, setChildReplyInput] = useState('');
@@ -44,11 +44,11 @@ const CommentsTest: React.FC<ReplyAndChildReplyData> = (props) => {
 
     // "댓글 입력" 버튼 눌렀을 때 실행할 함수
     const handleSubmitReply = async () => {
-        // const requestData = {
+        // const replyForm = {
         //     comment: replyInput,
         // };
         // try {
-        //     const response = await axios.post(`/posts/${postId}/comments`, requestData, {
+        //     const response = await axios.post(`/posts/${postId}/comments`, replyForm, {
         //         headers,
         //     });
         //     console.log(response.data);
@@ -66,6 +66,7 @@ const CommentsTest: React.FC<ReplyAndChildReplyData> = (props) => {
         //         const response = await axios.delete(`/posts/${postId}/comments/${replyId}`, {
         //             headers,
         //         });
+        //         console.log(response.data);
         //     } catch (error) {
         //         console.log(error);
         //     }
@@ -103,6 +104,7 @@ const CommentsTest: React.FC<ReplyAndChildReplyData> = (props) => {
         //             `/posts/comments/${replyId}/child-comment/${childReplyId}`, {
         //               headers,
         //           });
+        //           console.log(response.data);
         //     } catch (error) {
         //         console.log(error);
         //     }
@@ -304,4 +306,4 @@ const ToggleChildReplyButton = styled.div`
     color: blue;
 `;
 
-export default CommentsTest;
+export default Comments;
