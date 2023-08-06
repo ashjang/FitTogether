@@ -4,51 +4,22 @@ import { useParams } from 'react-router-dom';
 import PostContents from '../components/Post/PostContents';
 import styled from '@emotion/styled';
 import Comments from '../components/Post/Comments';
-
-interface ReplyData {
-    postId: number;
-    replyId: number;
-    userImage: string;
-    userNickname: string;
-    createdAt: string;
-    comment: string;
-}
-
-interface ChildReplyData {
-    postId: number;
-    replyId: number;
-    childReplyId: number;
-    userImage: string;
-    userNickname: string;
-    createdAt: string;
-    comment: string;
-}
-
-interface PostData {
-    postId: number;
-    userImage: string;
-    userNickname: string;
-    createdAt: string;
-    category: string;
-    hashtag: string[];
-    title: string;
-    description: string;
-    likeCount: number;
-    replyCount: number;
-    viewCount: number;
-    replyList: ReplyData[];
-    childReplyList: ChildReplyData[];
-}
+import { useRecoilState } from 'recoil';
+import { postDataState, replyDataState, childReplyDataState } from '../recoil/community/atoms';
 
 const Post: React.FC = () => {
+    const [update, setUpdate] = useState<boolean>(false);
+
     const { postId } = useParams<{ postId: string }>();
-    const [postData, setPostData] = useState<PostData>();
-    const [replyData, setReplyData] = useState<ReplyData[]>();
-    const [childReplyData, setChildReplyData] = useState<ChildReplyData[]>();
+
+    const [postData, setPostData] = useRecoilState(postDataState);
+    const [replyData, setReplyData] = useRecoilState(replyDataState);
+    const [childReplyData, setChildReplyData] = useRecoilState(childReplyDataState);
 
     const getPostData = async () => {
         // const response = await axios.post(`/posts/${postId}`,{postId} , header);
         try {
+            console.log(postId);
             const response = await axios.get(`http://localhost:3001/posts-${postId}`);
             const { replyList, childReplyList, ...rest } = response.data;
             setPostData(rest);
@@ -61,7 +32,8 @@ const Post: React.FC = () => {
 
     useEffect(() => {
         getPostData();
-    }, []); // 두 번째 인자로 빈 배열을 전달하여 컴포넌트가 처음 마운트될 때만 실행
+        console.log('Post Rendering !');
+    }, [update]); // 두 번째 인자로 빈 배열을 전달하여 컴포넌트가 처음 마운트될 때만 실행
 
     useEffect(() => {
         console.log(postData);
@@ -78,7 +50,11 @@ const Post: React.FC = () => {
     return (
         <Page>
             {postData ? (
-                <PostContents key={`postId:${postId}`} {...postData} /> // 첫 번째 게시물 데이터를 PostContents 컴포넌트로 넘겨줌
+                <PostContents
+                    key={`postId:${postId}`}
+                    postData={postData}
+                    onUpdate={() => setUpdate(!update)}
+                />
             ) : (
                 <div>Loading...</div>
             )}
@@ -87,6 +63,7 @@ const Post: React.FC = () => {
                     key={`replyInPostId:${replyData[0].postId}`}
                     replyData={replyData}
                     childReplyData={childReplyData || []}
+                    onUpdate={() => setUpdate(!update)}
                 />
             )}
         </Page>

@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { RecoilRoot } from 'recoil';
 
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
@@ -29,25 +30,27 @@ const queryClient = new QueryClient();
 function App() {
     return (
         <QueryClientProvider client={queryClient}>
-            <BrowserRouter>
-                <Header />
-                <Routes>
-                    <Route path="/" element={<MainPage />} />
-                    <Route path="/signin" element={<SignIn />} />
-                    <Route path="/signup" element={<SignUp />} />
-                    <Route path="/messenger" element={<Messenger />} />
-                    <Route path="/bookmark" element={<Bookmark />} />
-                    <Route path="/exerciseInfo" element={<ExerciseInfo />} />
-                    <Route path="/findmate" element={<FindMate />} />
-                    <Route path="/community" element={<Community />} />
-                    <Route path="/community/post" element={<Post />} />
-                    <Route path="/community/createpost" element={<CreatePost />} />
-                    <Route path="/mypage" element={<MyPage />} />
-                    <Route path="/mypage/myvideos" element={<MyVideos />} />
-                </Routes>
-                <Footer />
-                <ScrollTopButton />
-            </BrowserRouter>
+            <RecoilRoot>
+                <BrowserRouter>
+                    <Header />
+                    <Routes>
+                        <Route path="/" element={<MainPage />} />
+                        <Route path="/signin" element={<SignIn />} />
+                        <Route path="/signup" element={<SignUp />} />
+                        <Route path="/messenger" element={<Messenger />} />
+                        <Route path="/bookmark" element={<Bookmark />} />
+                        <Route path="/exerciseInfo" element={<ExerciseInfo />} />
+                        <Route path="/findmate" element={<FindMate />} />
+                        <Route path="/community" element={<Community />} />
+                        <Route path="/community/:postId" element={<Post />} />
+                        <Route path="/community/createpost" element={<CreatePost />} />
+                        <Route path="/mypage" element={<MyPage />} />
+                        <Route path="/mypage/myvideos" element={<MyVideos />} />
+                    </Routes>
+                    <Footer />
+                    <ScrollTopButton />
+                </BrowserRouter>
+            </RecoilRoot>
         </QueryClientProvider>
     );
 }

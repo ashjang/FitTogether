@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 // import axios from 'axios';
-// import { useParams } from 'react-router-dom';
+// import { useNavigate, useParams } from 'react-router-dom';
 import default_user_image from '../../assets/default-user-image.png';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -25,59 +25,83 @@ interface PostData {
     viewCount: number;
 }
 
-const PostContents: React.FC<PostData> = ({
-    // postId,
-    // userImage,
-    userNickname,
-    createdAt,
-    category,
-    hashtag,
-    title,
-    description,
-    likeCount,
-    replyCount,
-    viewCount,
-}) => {
-    // const { postId } = useParams<{ postId: string }>();
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isLiked, setIsLiked] = useState<boolean>(false);
+interface PostContentsProps {
+    postData: PostData;
+    onUpdate: () => void;
+}
 
+const PostContents: React.FC<PostContentsProps> = (
+    //     {
+    //     // postId,
+    //     // userImage,
+    //     userNickname,
+    //     createdAt,
+    //     category,
+    //     hashtag,
+    //     title,
+    //     description,
+    //     likeCount,
+    //     replyCount,
+    //     viewCount,
+    // }
+    props
+) => {
+    // const { postId } = useParams<{ postId: string }>();
+    // const [isLikedState, setIsLikedState] = useState(isliked);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    // 모달 토글 함수
     const handleToggleModal = () => {
         setIsModalOpen(!isModalOpen);
     };
 
+    // 전체 게시글을 보여주는 Community 페이지로 이동하는 함수
+    // const handleGoBackToCommunity = () => {
+    //     const navigate = useNavigate();
+    //     navigate('/community');
+    // };
+
+    // 게시글 수정 눌렀을 때 실행할 함수
     const handleEditPost = () => {};
 
+    // 게시글 삭제 눌렀을 때 실행할 함수
     const handleDeletePost = async () => {
         // try {
         //     const response = await axios.delete(`/posts/${postId}`, {
         //         headers,
         //     });
         //     console.log(response.data);
+        //     if (response.data.status === 'success') {
+        //         handleGoBackToCommunity();
+        //     }
         // } catch (error) {
         //     console.log(error);
         // }
     };
 
+    // 좋아요 눌렀을 때
     const handleToggleLikeButton = async () => {
-        try {
-            // const likeForm = {
-            //     like: !isLiked,
-            // };
-            // const response = await axios.delete(`/posts/${postId}/like`, likeForm, {
-            //     headers,
-            // });
-            setIsLiked(!isLiked);
-            // console.log(response.data);
-        } catch (error) {
-            console.log(error);
-        }
+        // try {
+        //     const likeForm = {
+        //         like: !isLikedState,
+        //     };
+        //     const response = await axios.post(`/posts/${postId}/like`, likeForm, {
+        //         headers,
+        //     });
+        //     if (response.data.status === 'success') {
+        //         setIsLikedState(!IsLikedState);
+        //         props.onUpdate();
+        //     }
+        // } catch (error) {
+        //     console.log(error);
+        // }
+        props.onUpdate();
     };
     return (
         <PostContentsComponent>
             <CategoryAndHashtag>
-                <PostCategory>{category}</PostCategory>
-                {hashtag.map((hashtag) => {
+                <PostCategory>{props.postData.category}</PostCategory>
+                {props.postData.hashtag.map((hashtag) => {
                     return <PostHashtag>{hashtag}</PostHashtag>;
                 })}
             </CategoryAndHashtag>
@@ -86,9 +110,9 @@ const PostContents: React.FC<PostData> = ({
                 <ProfileImageContainer>
                     <ProfileImage src={imageSrc} />
                 </ProfileImageContainer>
-                <ProfileNickname>{userNickname}</ProfileNickname>
-                <CreatedAt>{createdAt}</CreatedAt>
-                {/* 해당 포스트의 작성자만 아이콘이 보이도록하는 로직 추가해야!! */}
+                <ProfileNickname>{props.postData.userNickname}</ProfileNickname>
+                <CreatedAt>{props.postData.createdAt}</CreatedAt>
+                {/* ❗해당 포스트의 작성자만 아이콘이 보이도록하는 로직 */}
                 <FaEllipsis icon={faEllipsis} onClick={handleToggleModal} />
                 <Modal
                     isOpen={isModalOpen}
@@ -115,22 +139,21 @@ const PostContents: React.FC<PostData> = ({
                     <button onClick={handleDeletePost}>삭제하기</button>
                 </Modal>
             </ProfileContainer>
-
             <Post>
-                <h1>{title}</h1>
-                <p>{description}</p>
+                <h1>{props.postData.title}</h1>
+                <p>{props.postData.description}</p>
             </Post>
             <PostDetail>
                 <PostDetailItem>
                     <FaThumbsUp icon={faThumbsUp} onClick={handleToggleLikeButton} />
-                    <span>{likeCount}</span>
+                    <span>{props.postData.likeCount}</span>
                 </PostDetailItem>
                 <PostDetailItem>
                     <FaComment icon={faComment} />
-                    <span>{replyCount}</span>
+                    <span>{props.postData.replyCount}</span>
                 </PostDetailItem>
                 <PostDetailItem>
-                    <span>조회수: {viewCount}</span>
+                    <span>조회수: {props.postData.viewCount}</span>
                 </PostDetailItem>
             </PostDetail>
         </PostContentsComponent>
@@ -215,16 +238,8 @@ const PostDetailItem = styled.div`
     margin-right: 15px;
 `;
 
-const FaThumbsUp = styled(FontAwesomeIcon)`
-    // position: absolute;
-    // margin: 0 30px;
-    // right: 0px;
-`;
+const FaThumbsUp = styled(FontAwesomeIcon)``;
 
-const FaComment = styled(FontAwesomeIcon)`
-    // position: absolute;
-    // margin: 0 30px;
-    // right: 0px;
-`;
+const FaComment = styled(FontAwesomeIcon)``;
 
 export default PostContents;

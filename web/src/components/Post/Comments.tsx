@@ -25,15 +25,16 @@ interface ChildReplyData {
     comment: string;
 }
 
-interface ReplyAndChildReplyData {
+interface CommentsProps {
     replyData: ReplyData[];
     childReplyData: ChildReplyData[];
+    onUpdate: () => void;
 }
 
-const Comments: React.FC<ReplyAndChildReplyData> = (props) => {
+const Comments: React.FC<CommentsProps> = (props) => {
     // const { postId } = useParams<{ postId: string }>();
-    const [replyInput, setReplyInput] = useState('');
-    const [childReplyInput, setChildReplyInput] = useState('');
+    const [replyInput, setReplyInput] = useState<string>('');
+    const [childReplyInput, setChildReplyInput] = useState<string>('');
     const [showChildReplyInput, setShowChildReplyInput] = useState<boolean>(false);
     const [currentReplyId, setCurrentReplyId] = useState<number | null>(null);
 
@@ -52,9 +53,13 @@ const Comments: React.FC<ReplyAndChildReplyData> = (props) => {
         //         headers,
         //     });
         //     console.log(response.data);
+        //     if (response.data.status === 'success') {
+        //         props.onUpdate();
+        //     }
         // } catch (error) {
         //     console.log(error);
         // }
+        props.onUpdate();
     };
 
     // 댓글 "삭제하기" 버튼 눌렀을 때 실행할 함수
@@ -67,10 +72,14 @@ const Comments: React.FC<ReplyAndChildReplyData> = (props) => {
         //             headers,
         //         });
         //         console.log(response.data);
+        //         if (response.data.status === 'success') {
+        //             props.onUpdate();
+        //         }
         //     } catch (error) {
         //         console.log(error);
         //     }
         // }
+        props.onUpdate();
     };
 
     // 대댓글 입력란에서 입력받을 때 실행할 함수
@@ -88,10 +97,14 @@ const Comments: React.FC<ReplyAndChildReplyData> = (props) => {
         //     const response = await axios.post(`/posts/comments/${replyId}`, requestData, {
         //         headers,
         //     });
+        //     if (response.data.status === 'success') {
+        //         props.onUpdate();
+        //     }
         //     console.log(response.data);
         // } catch (error) {
         //     console.log(error);
         // }
+        props.onUpdate();
     };
 
     // 대댓글 "삭제하기" 버튼 눌렀을 때 실행할 함수
@@ -101,14 +114,20 @@ const Comments: React.FC<ReplyAndChildReplyData> = (props) => {
         // if (confirmDelete) {
         //     try {
         //         const response = await axios.delete(
-        //             `/posts/comments/${replyId}/child-comment/${childReplyId}`, {
-        //               headers,
-        //           });
-        //           console.log(response.data);
+        //             `/posts/comments/${replyId}/child-comment/${childReplyId}`,
+        //             {
+        //                 headers,
+        //             }
+        //         );
+        //         console.log(response.data);
+        //         if (response.data.status === 'success') {
+        //             props.onUpdate();
+        //         }
         //     } catch (error) {
         //         console.log(error);
         //     }
         // }
+        props.onUpdate();
     };
 
     // 대댓글 입력창을 토글하는 함수
@@ -147,6 +166,7 @@ const Comments: React.FC<ReplyAndChildReplyData> = (props) => {
                                         </ProfileImageContainer>
                                         <UserId>{childReply.userNickname}</UserId>
                                         <PostTime>{childReply.createdAt}</PostTime>
+                                        {/* ❗해당 댓글의 작성자만 아이콘이 보이도록하는 로직 */}
                                         <FaTrashCan
                                             icon={faTrashCan}
                                             onClick={() => {
