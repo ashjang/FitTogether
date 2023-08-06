@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
-const SignUp: React.FC = () => {
+const SignUpSetting: React.FC = () => {
     const [nickname, setNickname] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -354,4 +354,4 @@ const BackButtonText = styled.p`
     font-size: 14px;
     border-bottom: 1px solid black;
 `;
-export default SignUp;
+export default SignUpSetting;

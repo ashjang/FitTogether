@@ -3,6 +3,8 @@
 import React, { useState, useRef } from 'react';
 import DaumPostcode, { Address } from 'react-daum-postcode';
 import axios from 'axios';
+// import { useRecoilState } from 'recoil';
+// import { emailState } from '../../recoil/AuthState/atoms';
 
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
@@ -18,6 +20,7 @@ const MyInformation: React.FC = () => {
     const [publicStatus, setPublicStatus] = useState(true);
     const [favoriteSports, setFavoriteSports] = useState<string[]>([]);
     const [introduction, setIntroduction] = useState<string>('');
+    // const [email, setEmail] = useRecoilState(emailState);
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -89,7 +92,8 @@ const MyInformation: React.FC = () => {
         const userInfo = {
             username: inputIdValue,
             password: '',
-            email: 'qwerty1234@gmail.com',
+            // email: email,
+            email: '',
             address: selectedAddress,
             profileImage: imagePreview || null,
             gender: true,
@@ -100,7 +104,7 @@ const MyInformation: React.FC = () => {
 
         // 서버에 POST 요청을 보내서 데이터 저장
         axios
-            .post('http://localhost:5001/users', userInfo)
+            .post('/users/my', userInfo)
             .then((response) => {
                 alert('저장되었습니다.');
             })
@@ -167,6 +171,8 @@ const MyInformation: React.FC = () => {
                     name="email"
                     css={inputStyles}
                     value={'qwerty1234@gmail.com'}
+                    // value={email}
+                    // onChange={(e) => setEmail(e.target.value)}
                     readOnly
                 />
             </InputContainer>
@@ -316,7 +322,6 @@ const MyInformation: React.FC = () => {
 };
 
 const labelStyle = css`
-    font-weight: bold;
     width: 108px;
     margin-right: 10px;
 `;
@@ -325,11 +330,13 @@ const inputStyles = css`
     margin: 10px;
     margin-left: 50px;
     padding: 8px;
+    padding-left: 10px;
     border: none;
-    border-bottom: 1px solid black;
     outline: none;
     width: 430px;
-    background-color: rgba(0, 0, 0, 0);
+    height: 40px;
+    border-radius: 10px;
+    background-color: rgb(222, 222, 222);
 `;
 
 const inputButton = css`
