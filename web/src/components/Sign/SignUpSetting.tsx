@@ -8,29 +8,44 @@ const SignUpSetting: React.FC = () => {
     const [nickname, setNickname] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [confirmPassword, setConfirmPassword] = useState<string>('');
+    const [isPasswordMatch, setIsPasswordMatch] = useState<boolean>(true);
     const [gender, setGender] = useState<boolean>(false);
     const [isPublic, setIsPublic] = useState<boolean>(true);
-    const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [isNicknameAvailable, setIsNicknameAvailable] = useState<boolean>(true);
     const [isEmailAvailable, setIsEmailAvailable] = useState<boolean>(true);
-    const [isPasswordMatch, setIsPasswordMatch] = useState<boolean>(true);
 
     const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setNickname(event.target.value);
+        const value = event.target.value;
+
+        // 아이디(닉네임) 입력 조건
+        const regex = /^[A-Za-z0-9]*$/;
+
+        if (regex.test(value) && value.length <= 10) {
+            setNickname(value);
+        }
     };
 
     const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(event.target.value);
     };
 
+    // 비밀번호 입력 조건
+    const validatePassword = (value: string) => {
+        const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/;
+        return regex.test(value);
+    };
+
     const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setPassword(event.target.value);
+        const value = event.target.value;
+        setPassword(value);
+        setIsPasswordMatch(value === confirmPassword || (value === '' && confirmPassword === ''));
     };
 
     const handleConfirmPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         setConfirmPassword(value);
-        setIsPasswordMatch(password === value); // 비밀번호와 비밀번호 확인 일치 여부 설정
+        setIsPasswordMatch(password === value || (password === '' && value === ''));
     };
 
     const handleGenderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,10 +92,17 @@ const SignUpSetting: React.FC = () => {
     const handleSignUp = async (event: React.FormEvent) => {
         event.preventDefault();
 
+        // 비밀번호 유효성 검사
+        if (!validatePassword(password)) {
+            alert(
+                '비밀번호는 영문 대소문자, 숫자, 특수문자 중 2가지 이상 조합되고 8~16자여야 합니다.'
+            );
+            return;
+        }
+
         // 폼 유효성 검사
         if (isNicknameAvailable && isEmailAvailable && isPasswordMatch) {
             if (password !== confirmPassword) {
-                // alert('비밀번호가 일치하지 않습니다.');
                 return;
             }
 
@@ -94,12 +116,13 @@ const SignUpSetting: React.FC = () => {
             };
 
             try {
-                //   const response = await axios.post('/users/signup', formData);
-                //   console.log('회원가입 성공:', response.data);
-                //   // 회원 가입 성공 처리 로직 추가
+                //     const response = await axios.post('/users/signup', formData);
+                //     console.log('회원가입 성공:', response.data);
+                //     // 회원 가입 성공 처리 로직 추가
                 // } catch (error) {
-                //   console.error('회원가입 실패:', error);
-                //   // 회원 가입 실패 처리 로직 추가
+                //     console.error('회원가입 실패:', error);
+                //     // 회원 가입 실패 처리 로직 추가
+                //     alert('회원가입 중 오류가 발생했습니다.');
 
                 // JSON 서버에 회원가입 요청 보내기
                 const response = await axios.post('http://localhost:5001/users', formData);
@@ -164,6 +187,8 @@ const SignUpSetting: React.FC = () => {
                         name="password"
                         value={password}
                         onChange={handlePasswordChange}
+                        minLength={8}
+                        maxLength={16}
                         required
                     />
                 </InputTextDiv>
@@ -176,6 +201,8 @@ const SignUpSetting: React.FC = () => {
                         name="confirmPassword"
                         value={confirmPassword}
                         onChange={handleConfirmPasswordChange}
+                        minLength={8}
+                        maxLength={16}
                         required
                     />
                 </InputTextDiv>
@@ -308,6 +335,7 @@ const InputText = styled.input`
     outline: none;
     padding-left: 10px;
     background-color: rgb(222, 222, 222);
+    -webkit-background-color: rgb(222, 222, 222);
 `;
 
 const InputRadioDiv = styled.div`
