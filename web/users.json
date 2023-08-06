@@ -332,6 +332,20 @@
       "lat": null,
       "long": null,
       "id": 27
+    },
+    {
+      "username": "yoonmongjin11",
+      "password": "",
+      "email": "",
+      "address": "경기 성남시 분당구 대왕판교로 372",
+      "profileImage": null,
+      "gender": true,
+      "favoriteSports": [],
+      "introduction": "드디어 되나요???!",
+      "publicStatus": true,
+      "lat": 37.376779623762,
+      "long": 127.102170974365,
+      "id": 28
     }
   ]
 }

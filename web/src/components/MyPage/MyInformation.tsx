@@ -45,7 +45,7 @@ const MyInformation: React.FC = () => {
         setSelectedAddress(userAddress);
         handleAddressModalToggle();
 
-        // 주소를 좌표로 변환하여 위도와 경도 값을 얻음
+        // 주소를 좌표로 변환해서 값 얻어내기
         getGeocodeFromAddress(userAddress)
             .then((geocode) => {
                 if (geocode) {
@@ -123,39 +123,13 @@ const MyInformation: React.FC = () => {
             favoriteSports: favoriteSports,
             introduction: introduction,
             publicStatus: true,
-            lat: null,
-            long: null,
+            lat: latitude,
+            long: longitude,
         };
-
-        // const userInfo: {
-        //     username: string;
-        //     password: string;
-        //     email: string;
-        //     address: string;
-        //     profileImage: string | null;
-        //     gender: boolean;
-        //     favoriteSports: string[];
-        //     introduction: string;
-        //     publicStatus: boolean;
-        //     lat: number | null;
-        //     long: number | null;
-        // } = {
-        //     username: '',
-        //     password: '',
-        //     email: '',
-        //     address: '',
-        //     profileImage: null,
-        //     gender: false,
-        //     favoriteSports: [],
-        //     introduction: '',
-        //     publicStatus: true,
-        //     lat: null,
-        //     long: null,
-        // };
 
         // 서버에 POST 요청을 보내서 데이터 저장
         axios
-            .post('http://localhost:5001/users', userInfo)
+            .post('http://localhost:3001/users', userInfo)
             .then(() => {
                 alert('저장되었습니다.');
             })
