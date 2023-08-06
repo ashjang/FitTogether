@@ -335,7 +335,6 @@ const InputText = styled.input`
     outline: none;
     padding-left: 10px;
     background-color: rgb(222, 222, 222);
-    -webkit-background-color: rgb(222, 222, 222);
 `;
 
 const InputRadioDiv = styled.div`
