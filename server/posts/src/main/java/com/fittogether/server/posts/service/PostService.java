@@ -11,6 +11,7 @@ import com.fittogether.server.posts.domain.model.PostHashtag;
 import com.fittogether.server.posts.domain.model.Reply;
 import com.fittogether.server.posts.domain.repository.ChildReplyRepository;
 import com.fittogether.server.posts.domain.repository.HashtagRepository;
+import com.fittogether.server.posts.domain.repository.LikeRepository;
 import com.fittogether.server.posts.domain.repository.PostHashtagRepository;
 import com.fittogether.server.posts.domain.repository.PostRepository;
 import com.fittogether.server.posts.domain.repository.ReplyRepository;
@@ -20,15 +21,23 @@ import com.fittogether.server.user.domain.model.User;
 import com.fittogether.server.user.domain.repository.UserRepository;
 import com.fittogether.server.user.exception.UserCustomException;
 import com.fittogether.server.user.exception.UserErrorCode;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PostService {
 
   private final PostRepository postRepository;
@@ -37,7 +46,9 @@ public class PostService {
   private final HashtagRepository hashtagRepository;
   private final ReplyRepository replyRepository;
   private final ChildReplyRepository childReplyRepository;
+  private final LikeRepository likeRepository;
   private final JwtProvider provider;
+  private final RedisTemplate<String, String> redisTemplate;
   private final AuthenticationService authenticationService;
 
   /**
@@ -179,11 +190,66 @@ public class PostService {
 
     List<ChildReply> childReplies = childReplyRepository.findByReplyIdIn(replyIds);
 
+    boolean isLike = likeRepository.existsByPost(post);
+
+    Long incrementWatchedCount = incrementWatchedCount(postId);
+    Long totalReplyCount = getTotalReplyCount(postId);
+
+    return PostInfo.from(post, replyList, childReplies, totalReplyCount, isLike,
+        incrementWatchedCount);
+  }
+
+  @Transactional
+  public Long getTotalReplyCount(Long postId) {
     Long replyCount = replyRepository.countByPostId(postId);
     Long childReplyCount = childReplyRepository.countByPostId(postId);
 
-    Long totalCount = replyCount+childReplyCount;
+    return replyCount + childReplyCount;
+  }
 
-    return PostInfo.from(post, replyList, childReplies, totalCount);
+  @Transactional
+  public Long incrementWatchedCount(Long postId) {
+    String key = "postWatchedCount::" + postId;
+
+    ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+
+    if (valueOperations.get(key) == null) {
+      Post post = postRepository.findById(postId)
+          .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
+
+      valueOperations.set(key, String.valueOf(post.getWatched()), Duration.ofMinutes(5));
+      valueOperations.increment(key);
+      return Long.parseLong(valueOperations.get(key));
+
+    } else {
+      valueOperations.increment(key);
+      return Long.parseLong(valueOperations.get(key));
+    }
+  }
+
+  @Scheduled(cron = "0 0/3 * * * *")
+  public void syncWatchedCountToDatabase() {
+    log.info("DB 조회수 갱신");
+
+    Set<String> keys = redisTemplate.keys("postWatchedCount::*");
+    Iterator<String> it = keys.iterator();
+
+    while (it.hasNext()) {
+      String data = it.next();
+      Long postId = Long.parseLong(data.split("::")[1]);
+      Long viewCnt = Long.parseLong((String) redisTemplate.opsForValue().get(data));
+
+      updateWatchedCountInDatabase(postId, viewCnt);
+      redisTemplate.delete("postWatchedCount::" + postId);
+    }
+  }
+
+  @Transactional
+  public void updateWatchedCountInDatabase(Long postId, Long watchedCount) {
+    Post post = postRepository.findById(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
+
+    post.setWatched(watchedCount);
+    postRepository.save(post);
   }
 }

@@ -26,11 +26,12 @@ public class PostInfo {
   private Long likeCount;
   private Long viewCount;
   private Long replyCount;
+  private boolean isLike;
   private List<ReplyDto> replyList;
   private List<ReplyDto> childReplyList;
   private LocalDateTime createdAt;
 
-  public static PostInfo from(Post post, List<Reply> replyList, List<ChildReply> childReplyList, Long totalCount) {
+  public static PostInfo from(Post post, List<Reply> replyList, List<ChildReply> childReplyList, Long totalCount, boolean isLike, Long incrementWatchedCount) {
 
     return PostInfo.builder()
         .userId(post.getUser().getUserId())
@@ -39,8 +40,9 @@ public class PostInfo {
         .description(post.getDescription())
         .image(post.getImage())
         .likeCount(post.getLikes())
-        .viewCount(post.getWatched())
+        .viewCount(incrementWatchedCount)
         .replyCount(totalCount)
+        .isLike(isLike)
         .replyList(replyList.stream().map(ReplyDto::from).collect(Collectors.toList()))
         .childReplyList(childReplyList.stream().map(ReplyDto::fromChild).collect(Collectors.toList()))
         .createdAt(post.getCreatedAt())
