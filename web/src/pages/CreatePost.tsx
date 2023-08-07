@@ -3,24 +3,40 @@ import styled from '@emotion/styled';
 import QuillEditor from '../components/CreatePost,EditPost/QuillEditor';
 import PostSetting from '../components/CreatePost,EditPost/PostSetting';
 
-interface Props {}
+const CreatePost: React.FC = () => {
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        // formData에 필요한 추가 작업 수행
+        // 예를 들면 axios 또는 fetch API를 사용하여 데이터 전송 등
+        console.log('Form Data:', formData);
+    };
 
-const CreatePost: React.FC<Props> = () => {
     return (
-        <Page>
+        <PostDataForm onSubmit={handleSubmit}>
             <QuillEditor />
             <PostSetting />
-        </Page>
+            <SubmitButton type="submit">등록</SubmitButton>
+        </PostDataForm>
     );
 };
 
-const Page = styled.div`
+const PostDataForm = styled.form`
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    position: relative;
     // min-height는 삭제 예정
     min-height: calc(100vh - 300px);
+`;
+
+const SubmitButton = styled.button`
+    position: relative;
+    left: 400px;
+    padding: 3px 12px;
+    border-radius: 12px;
+    border-style: none;
 `;
 
 export default CreatePost;

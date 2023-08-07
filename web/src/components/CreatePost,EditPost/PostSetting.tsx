@@ -28,6 +28,12 @@ const PostSetting: React.FC = () => {
         }
     };
 
+    const handleRemoveHashtag = (index: number) => {
+        const updatedHashtagList = [...hashtagList];
+        updatedHashtagList.splice(index, 1);
+        setHashtagList(updatedHashtagList);
+    };
+
     const handleCategoryClick = (newCategory: string) => {
         // 이전 선택과 다른 카테고리를 선택했을 때만 업데이트
         if (category !== newCategory) {
@@ -49,7 +55,12 @@ const PostSetting: React.FC = () => {
                 />
                 <HashtagList>
                     {hashtagList.map((keyword, index) => (
-                        <HashtagItem key={index}>{keyword}</HashtagItem>
+                        <HashtagItem key={index}>
+                            {keyword}
+                            <RemoveButton type="button" onClick={() => handleRemoveHashtag(index)}>
+                                X
+                            </RemoveButton>
+                        </HashtagItem>
                     ))}
                 </HashtagList>
             </SettingItem>
@@ -57,18 +68,21 @@ const PostSetting: React.FC = () => {
                 <About>카테고리</About>
                 <CategoryTab>
                     <CategoryButton
+                        type="button"
                         active={category === '러닝'}
                         onClick={() => handleCategoryClick('러닝')}
                     >
                         러닝
                     </CategoryButton>
                     <CategoryButton
+                        type="button"
                         active={category === '등산'}
                         onClick={() => handleCategoryClick('등산')}
                     >
                         등산
                     </CategoryButton>
                     <CategoryButton
+                        type="button"
                         active={category === '헬스'}
                         onClick={() => handleCategoryClick('헬스')}
                     >
@@ -80,12 +94,14 @@ const PostSetting: React.FC = () => {
                 <About>공개 범위</About>
                 <PublicTab>
                     <PublicButton
+                        type="button"
                         active={accessLevel === true}
                         onClick={() => setAccessLevel(true)}
                     >
                         전체
                     </PublicButton>
                     <PublicButton
+                        type="button"
                         active={accessLevel === false}
                         onClick={() => setAccessLevel(false)}
                     >
@@ -93,12 +109,11 @@ const PostSetting: React.FC = () => {
                     </PublicButton>
                 </PublicTab>
             </SettingItem>
-            <SubmitButton>등록</SubmitButton>
         </PostSettingComponent>
     );
 };
 
-const PostSettingComponent = styled.form`
+const PostSettingComponent = styled.div`
     position: relative;
     width: 850px;
 `;
@@ -131,6 +146,15 @@ const HashtagItem = styled.span`
     margin: 0 10px;
 `;
 
+const RemoveButton = styled.button`
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    margin-left: 5px;
+    font-size: 12px;
+    color: red;
+`;
+
 const CategoryTab = styled.div`
     display: flex;
 `;
@@ -159,11 +183,6 @@ const PublicButton = styled.button<ButtonProps>`
         border: 2px dashed #b7b7b7;
     }
     background-color: ${(props) => (props.active ? '#d7d7d7' : 'white')};
-`;
-
-const SubmitButton = styled.button`
-    position: absolute;
-    right: 0;
 `;
 
 export default PostSetting;

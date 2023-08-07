@@ -27,20 +27,27 @@ interface Props {}
 
 const EditPost: React.FC<Props> = () => {
     return (
-        <Page>
+        <PostDataForm>
             <QuillEditor />
             <PostSetting />
-        </Page>
+            <SubmitButton type="submit">수정</SubmitButton>
+        </PostDataForm>
     );
 };
 
-const Page = styled.div`
+const PostDataForm = styled.form`
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    position: relative;
     // min-height는 삭제 예정
     min-height: calc(100vh - 300px);
+`;
+
+const SubmitButton = styled.button`
+    position: absolute;
+    right: 0;
 `;
 
 export default EditPost;
