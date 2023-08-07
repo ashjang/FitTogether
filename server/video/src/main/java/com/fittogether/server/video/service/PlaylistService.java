@@ -65,6 +65,11 @@ public class PlaylistService {
       throw new VideoCustomException(VideoErrorCode.SAME_PLAYLIST_NAME);
     }
 
+    if (playlistRepository.findByUser_UserIdAndPlaylistName(user.getUserId(), form.getPlaylistName())
+        .isPresent()){
+      throw new VideoCustomException(VideoErrorCode.ALREADY_EXIST_PLAYLIST_NAME);
+    }
+
     playlist.setPlaylistName(form.getPlaylistName());
 
     return playlist;
