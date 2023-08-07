@@ -12,7 +12,7 @@ public enum UserErrorCode {
     ALREADY_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다."),
 
     // 로그인
-    NOT_FOUND_USER(HttpStatus.BAD_REQUEST, "닉네임과 비밀번호를 다시 확인해주세요."),
+    NOT_FOUND_USER(HttpStatus.BAD_REQUEST, "일치하는 회원이 없습니다."),
     NOT_FOR_FITTOGETHER(HttpStatus.BAD_REQUEST, "소셜 로그인으로 다시 로그인해주세요."),
 
     NEED_TO_SIGNIN(HttpStatus.BAD_REQUEST, "로그인이 필요합니다."),
