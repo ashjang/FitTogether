@@ -32,9 +32,11 @@ public class PlaylistService {
     User user = userRepository.findById(userVo.getUserId())
         .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
-    if (isPlaylistExist(user.getUserId(), form.getPlaylistName())) {
+
+    if(playlistRepository.findByUser_UserIdAndPlaylistName(user.getUserId(), form.getPlaylistName()).isPresent()){
       throw new VideoCustomException(VideoErrorCode.ALREADY_EXIST_PLAYLIST_NAME);
     }
+
     return playlistRepository.save(Playlist.of(user, form));
   }
 
@@ -54,11 +56,12 @@ public class PlaylistService {
     User user = userRepository.findById(userVo.getUserId())
         .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
-    Playlist playlist = playlistRepository.findByUser_UserIdAndPlaylistName(user.getUserId(), targetName)
+    Playlist playlist = playlistRepository.findByUser_UserIdAndPlaylistName(user.getUserId(),
+            targetName)
         .orElseThrow(() -> new VideoCustomException(VideoErrorCode.NOT_FOUND_PLAYLIST));
 
     // 바꾸려고 하는 Playlist 이름이 바꿀 Playlist 이름과 같으면 에러 처리
-    if(playlist.getPlaylistName().equals(form.getPlaylistName())){
+    if (playlist.getPlaylistName().equals(form.getPlaylistName())) {
       throw new VideoCustomException(VideoErrorCode.SAME_PLAYLIST_NAME);
     }
 
@@ -67,18 +70,19 @@ public class PlaylistService {
     return playlist;
   }
 
-  public boolean isPlaylistExist(Long userId, String playlistName) {
-    // userId로 playlist 찾았을 때 존재하지 않는 경우, 즉 플레이리스트가 없을 때
-    if (!playlistRepository.findByUser_UserId(userId).stream().findFirst().isPresent()) {
-      return false;
+  @Transactional
+  public void deletePlaylist(String token, String targetName) {
+    UserVo userVo = provider.getUserVo(token);
+
+    User user = userRepository.findById(userVo.getUserId())
+        .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+    if (!playlistRepository.findByUser_UserIdAndPlaylistName(userVo.getUserId(), targetName)
+        .isPresent()) {
+      throw new VideoCustomException(VideoErrorCode.NOT_FOUND_PLAYLIST);
     }
 
-    // userId로 playlist 찾았을 때, 만드려고 하는 playlist의 이름이 존재하는 경우
-    if (playlistRepository.findByUser_UserIdAndPlaylistName(userId, playlistName).isPresent()) {
-      return true;
-    } else {
-      return false;
-    }
+    playlistRepository.deleteByUser_UserIdAndPlaylistName(user.getUserId(), targetName);
   }
 
 }

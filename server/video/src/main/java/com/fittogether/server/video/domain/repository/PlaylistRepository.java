@@ -13,4 +13,6 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
   List<Playlist> findByUser_UserId(Long userId);
 
   Optional<Playlist> findByUser_UserIdAndPlaylistName(Long userId, String playlistName);
+
+  Optional<Playlist> deleteByUser_UserIdAndPlaylistName(Long userId, String playlistName);
 }
