@@ -1,5 +1,24 @@
 import { atom } from 'recoil';
 
+// 전체 포스트 리스트 불러올 때 관련 상태
+interface PostDataListItem {
+    postId: number;
+    category: string;
+    title: string;
+    firstParagraph: string;
+    firstImage: string;
+    likeCount: number;
+    replyCount: number;
+    viewCount: number;
+}
+
+export const postListDataState = atom<PostDataListItem[] | null>({
+    key: 'postListDataState',
+    default: null,
+});
+
+// 게시글 보기 눌렀을 때 관련 상태
+
 interface ReplyData {
     postId: number;
     replyId: number;

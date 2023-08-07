@@ -114,7 +114,7 @@ const Comments: React.FC<CommentsProps> = (props) => {
         // if (confirmDelete) {
         //     try {
         //         const response = await axios.delete(
-        //             `/posts/comments/${replyId}/child-comment/${childReplyId}`,
+        //             `/posts/{postId}/comments/{replyId}/child-comment/{childReplyId}`,
         //             {
         //                 headers,
         //             }

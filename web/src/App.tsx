@@ -15,7 +15,7 @@ import Bookmark from './pages/Bookmark';
 //하단 4개 카테고리 해당페이지
 import ExerciseInfo from './pages/ExerciseInfo';
 import FindMate from './pages/FindMate';
-import Community from './pages/Community';
+import Posts from './pages/Posts';
 import Post from './pages/Post';
 import CreatePost from './pages/CreatePost';
 import MyPage from './pages/MyPage';
@@ -41,9 +41,9 @@ function App() {
                         <Route path="/bookmark" element={<Bookmark />} />
                         <Route path="/exerciseInfo" element={<ExerciseInfo />} />
                         <Route path="/findmate" element={<FindMate />} />
-                        <Route path="/community" element={<Community />} />
-                        <Route path="/community/:postId" element={<Post />} />
-                        <Route path="/community/createpost" element={<CreatePost />} />
+                        <Route path="/posts" element={<Posts />} />
+                        <Route path="/posts/:postId" element={<Post />} />
+                        <Route path="/posts/createpost" element={<CreatePost />} />
                         <Route path="/mypage" element={<MyPage />} />
                         <Route path="/mypage/myvideos" element={<MyVideos />} />
                     </Routes>

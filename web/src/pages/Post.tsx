@@ -5,7 +5,7 @@ import PostContents from '../components/Post/PostContents';
 import styled from '@emotion/styled';
 import Comments from '../components/Post/Comments';
 import { useRecoilState } from 'recoil';
-import { postDataState, replyDataState, childReplyDataState } from '../recoil/community/atoms';
+import { postDataState, replyDataState, childReplyDataState } from '../recoil/posts/atoms';
 
 const Post: React.FC = () => {
     const [update, setUpdate] = useState<boolean>(false);

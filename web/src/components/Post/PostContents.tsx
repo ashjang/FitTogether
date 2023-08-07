@@ -55,10 +55,10 @@ const PostContents: React.FC<PostContentsProps> = (
         setIsModalOpen(!isModalOpen);
     };
 
-    // 전체 게시글을 보여주는 Community 페이지로 이동하는 함수
+    // 전체 게시글을 보여주는 posts 페이지로 이동하는 함수
     // const handleGoBackToCommunity = () => {
     //     const navigate = useNavigate();
-    //     navigate('/community');
+    //     navigate('/posts');
     // };
 
     // 게시글 수정 눌렀을 때 실행할 함수

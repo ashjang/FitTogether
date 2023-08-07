@@ -28,7 +28,7 @@ const PostListItem: React.FC<Props> = ({
     return (
         <PostListItemComponent>
             {/* ShowPost: postId를 사용하여 해당 postId를 가진 post의 내용을 불러와 렌더링하도록 수정해야!! */}
-            <ShowPost to={`/community/${postId}`}>
+            <ShowPost to={`/posts/${postId}`}>
                 <PostInfo>
                     <PostCategory>{category}</PostCategory>
                     <PostTitle>{title}</PostTitle>

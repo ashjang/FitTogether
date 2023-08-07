@@ -143,7 +143,7 @@ function Header() {
                             </Link>
                         </li>
                         <li css={menuLi}>
-                            <Link to="/community">
+                            <Link to="/posts">
                                 <span>커뮤니티</span>
                             </Link>
                         </li>

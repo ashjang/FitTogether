@@ -4,32 +4,29 @@ import { css } from '@emotion/react';
 import PostListItem from '../common/PostListItem';
 import styled from '@emotion/styled';
 import axios from 'axios';
-
-interface PostDataItem {
-    postId: number;
-    category: string;
-    title: string;
-    firstParagraph: string;
-    firstImage: string;
-    likeCount: number;
-    replyCount: number;
-    viewCount: number;
-}
+import { useRecoilState } from 'recoil';
+import { postListDataState } from '../../recoil/posts/atoms';
 
 const PostList: React.FC = () => {
     const [page, setPage] = useState<number>(1); // 현재 페이지
-    const [postData, setPostData] = useState<PostDataItem[]>([]); // 게시글 데이터
+    const [postListData, setPostListData] = useRecoilState(postListDataState); // 게시글 데이터
     const limit: number = 5; // 한 페이지에 담길 수 있는 최대 PostListItem
 
+    const getPostListData = async () => {
+        try {
+            // 실제 구현시에는 axios.get('/posts/') !!
+            const response = await axios.get('http://localhost:3001/posts');
+            setPostListData(response.data);
+        } catch (error) {
+            console.error;
+        }
+    };
+
     useEffect(() => {
-        // axios를 사용하여 posts.json에서 데이터를 가져옴
-        // 실제로는 이렇게 요청해야 axios.get('/posts/')
-        axios.get('http://localhost:3001/posts').then((response) => {
-            setPostData(response.data);
-        });
+        getPostListData();
     }, []);
 
-    const dataArrayLength: number = postData.length; // 데이터 배열의 길이. 즉, 총 PostListItem 수
+    const dataArrayLength: number = postListData ? postListData.length : 0; // 데이터 배열의 길이. 즉, 총 PostListItem 수
     const offset: number = (page - 1) * limit; // 각 페이지의 첫번째 PostlistItem의 Index
     const numPages: number = Math.ceil(dataArrayLength / limit); // 총 페이지 수
 
@@ -40,9 +37,13 @@ const PostList: React.FC = () => {
     return (
         <PostListComponent>
             <PostListItems>
-                {postData.slice(offset, offset + limit).map((post) => (
-                    <PostListItem key={post.postId} {...post} />
-                ))}
+                {postListData ? (
+                    postListData
+                        .slice(offset, offset + limit)
+                        .map((post) => <PostListItem key={post.postId} {...post} />)
+                ) : (
+                    <div>There is no post yet</div>
+                )}
             </PostListItems>
             <ButtonGroup>
                 <PaginationButton onClick={() => setPage(page - 1)} disabled={page === 1}>
