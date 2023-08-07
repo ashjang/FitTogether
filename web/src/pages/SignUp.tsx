@@ -11,7 +11,7 @@ const SignUp: React.FC = () => {
 };
 
 const Container = styled.div`
-    margin-top: 120px;
+    margin-top: 150px;
 `;
 
 export default SignUp;
