@@ -17,6 +17,7 @@ import ExerciseInfo from './pages/ExerciseInfo';
 import FindMate from './pages/FindMate';
 import Posts from './pages/Posts';
 import Post from './pages/Post';
+import EditPost from './pages/EditPost';
 import CreatePost from './pages/CreatePost';
 import MyPage from './pages/MyPage';
 import MyVideos from './pages/MyVideos';
@@ -43,6 +44,7 @@ function App() {
                         <Route path="/findmate" element={<FindMate />} />
                         <Route path="/posts" element={<Posts />} />
                         <Route path="/posts/:postId" element={<Post />} />
+                        <Route path="/posts/:postId/editpost" element={<EditPost />} />
                         <Route path="/posts/createpost" element={<CreatePost />} />
                         <Route path="/mypage" element={<MyPage />} />
                         <Route path="/mypage/myvideos" element={<MyVideos />} />

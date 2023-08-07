@@ -7,8 +7,26 @@ interface ButtonProps {
 }
 
 const PostSetting: React.FC = () => {
+    const [hashtag, setHashtag] = useState<string>('');
+    const [hashtagList, setHashtagList] = useState<string[]>([]);
     const [category, setCategory] = useState<string>('');
     const [accessLevel, setAccessLevel] = useState(true);
+
+    const handleHashtagInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        // 해시태그 입력 필드가 변경될 때 호출되는 함수
+        const hashtags = event.target.value.split(' ');
+        const hashtagString = hashtags.join('');
+        setHashtag(hashtagString);
+    };
+
+    const handleHashtagInputKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        // Enter 키 누를 때 호출되는 함수
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            setHashtagList([...hashtagList, `#${hashtag}`]);
+            event.currentTarget.value = ''; // 입력 필드를 비웁니다.
+        }
+    };
 
     const handleCategoryClick = (newCategory: string) => {
         // 이전 선택과 다른 카테고리를 선택했을 때만 업데이트
@@ -24,7 +42,16 @@ const PostSetting: React.FC = () => {
         <PostSettingComponent>
             <SettingItem>
                 <About>해시태그</About>
-                <input />
+                <HashtagInput
+                    type="text"
+                    onChange={handleHashtagInputChange}
+                    onKeyPress={handleHashtagInputKeyPress}
+                />
+                <HashtagList>
+                    {hashtagList.map((keyword, index) => (
+                        <HashtagItem key={index}>{keyword}</HashtagItem>
+                    ))}
+                </HashtagList>
             </SettingItem>
             <SettingItem>
                 <About>카테고리</About>
@@ -71,7 +98,7 @@ const PostSetting: React.FC = () => {
     );
 };
 
-const PostSettingComponent = styled.div`
+const PostSettingComponent = styled.form`
     position: relative;
     width: 850px;
 `;
@@ -83,6 +110,25 @@ const SettingItem = styled.div`
 
 const About = styled.p`
     width: 100px;
+`;
+
+const HashtagInput = styled.input`
+    border-style: none;
+    &:focus {
+        outline: none;
+    }
+`;
+
+const HashtagList = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+`;
+
+const HashtagItem = styled.span`
+    background-color: #f0f0f0;
+    padding: 0 5px;
+    border-radius: 12px;
+    margin: 0 10px;
 `;
 
 const CategoryTab = styled.div`

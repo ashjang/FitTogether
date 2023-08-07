@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 // import axios from 'axios';
-// import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import default_user_image from '../../assets/default-user-image.png';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -46,7 +46,7 @@ const PostContents: React.FC<PostContentsProps> = (
     // }
     props
 ) => {
-    // const { postId } = useParams<{ postId: string }>();
+    const { postId } = useParams<{ postId: string }>();
     // const [isLikedState, setIsLikedState] = useState(isliked);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -135,7 +135,9 @@ const PostContents: React.FC<PostContentsProps> = (
                         },
                     }}
                 >
-                    <button onClick={handleEditPost}>수정하기</button>
+                    <Link to={`/posts/${postId}/editpost`}>
+                        <button onClick={handleEditPost}>수정하기</button>
+                    </Link>
                     <button onClick={handleDeletePost}>삭제하기</button>
                 </Modal>
             </ProfileContainer>
