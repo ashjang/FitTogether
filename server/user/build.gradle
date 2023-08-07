@@ -31,6 +31,8 @@ dependencies {
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'org.springframework.data:spring-data-envers'
 
+    implementation 'com.google.code.gson:gson:2.8.5'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
