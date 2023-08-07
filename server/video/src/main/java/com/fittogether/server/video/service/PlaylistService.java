@@ -12,6 +12,7 @@ import com.fittogether.server.video.domain.repository.PlaylistRepository;
 import com.fittogether.server.video.exception.VideoCustomException;
 import com.fittogether.server.video.exception.VideoErrorCode;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,7 @@ public class PlaylistService {
         .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
     if (isPlaylistExist(user.getUserId(), form.getPlaylistName())) {
-      throw new VideoCustomException(VideoErrorCode.SAME_PLAYLIST_NAME);
+      throw new VideoCustomException(VideoErrorCode.ALREADY_EXIST_PLAYLIST_NAME);
     }
     return playlistRepository.save(Playlist.of(user, form));
   }
@@ -44,6 +45,26 @@ public class PlaylistService {
         .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
     return playlistRepository.findByUser_UserId(user.getUserId());
+  }
+
+  @Transactional
+  public Playlist updatePlaylist(String token, String targetName, PlaylistForm form) {
+    UserVo userVo = provider.getUserVo(token);
+
+    User user = userRepository.findById(userVo.getUserId())
+        .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+    Playlist playlist = playlistRepository.findByUser_UserIdAndPlaylistName(user.getUserId(), targetName)
+        .orElseThrow(() -> new VideoCustomException(VideoErrorCode.NOT_FOUND_PLAYLIST));
+
+    // 바꾸려고 하는 Playlist 이름이 바꿀 Playlist 이름과 같으면 에러 처리
+    if(playlist.getPlaylistName().equals(form.getPlaylistName())){
+      throw new VideoCustomException(VideoErrorCode.SAME_PLAYLIST_NAME);
+    }
+
+    playlist.setPlaylistName(form.getPlaylistName());
+
+    return playlist;
   }
 
   public boolean isPlaylistExist(Long userId, String playlistName) {
