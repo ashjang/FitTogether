@@ -8,8 +8,11 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +26,7 @@ public class PlaylistController {
   private final PlaylistService playlistService;
 
   @PostMapping
-  public ResponseEntity<?> createPlaylist(
+  public ResponseEntity<PlaylistDto> createPlaylist(
       @RequestHeader(name = "X-AUTH-TOKEN") String token,
       @RequestBody PlaylistForm form) {
 
@@ -39,4 +42,22 @@ public class PlaylistController {
         .map(PlaylistDto::from).collect(Collectors.toList()));
   }
 
+  @PutMapping("/{name}")
+  public ResponseEntity<PlaylistDto> updatePlaylist(
+      @RequestHeader(name = "X-AUTH-TOKEN") String token,
+      @RequestBody PlaylistForm form,
+      @PathVariable(name = "name") String targetName) {
+
+    return ResponseEntity.ok(
+        PlaylistDto.from(playlistService.updatePlaylist(token, targetName, form)));
+  }
+
+  @DeleteMapping("/{name}")
+  public ResponseEntity deletePlaylist(
+      @RequestHeader(name = "X-AUTH-TOKEN") String token,
+      @PathVariable(name = "name") String targetName) {
+
+    playlistService.deletePlaylist(token, targetName);
+    return ResponseEntity.ok().body("삭제가 완료되었습니다.");
+  }
 }

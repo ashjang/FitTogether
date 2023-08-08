@@ -12,6 +12,7 @@ import com.fittogether.server.video.domain.repository.PlaylistRepository;
 import com.fittogether.server.video.exception.VideoCustomException;
 import com.fittogether.server.video.exception.VideoErrorCode;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,9 +32,11 @@ public class PlaylistService {
     User user = userRepository.findById(userVo.getUserId())
         .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
-    if (isPlaylistExist(user.getUserId(), form.getPlaylistName())) {
-      throw new VideoCustomException(VideoErrorCode.SAME_PLAYLIST_NAME);
+
+    if(playlistRepository.findByUser_UserIdAndPlaylistName(user.getUserId(), form.getPlaylistName()).isPresent()){
+      throw new VideoCustomException(VideoErrorCode.ALREADY_EXIST_PLAYLIST_NAME);
     }
+
     return playlistRepository.save(Playlist.of(user, form));
   }
 
@@ -46,18 +49,40 @@ public class PlaylistService {
     return playlistRepository.findByUser_UserId(user.getUserId());
   }
 
-  public boolean isPlaylistExist(Long userId, String playlistName) {
-    // userId로 playlist 찾았을 때 존재하지 않는 경우, 즉 플레이리스트가 없을 때
-    if (!playlistRepository.findByUser_UserId(userId).stream().findFirst().isPresent()) {
-      return false;
+  @Transactional
+  public Playlist updatePlaylist(String token, String targetName, PlaylistForm form) {
+    UserVo userVo = provider.getUserVo(token);
+
+    User user = userRepository.findById(userVo.getUserId())
+        .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+    Playlist playlist = playlistRepository.findByUser_UserIdAndPlaylistName(user.getUserId(),
+            targetName)
+        .orElseThrow(() -> new VideoCustomException(VideoErrorCode.NOT_FOUND_PLAYLIST));
+
+    if (playlistRepository.findByUser_UserIdAndPlaylistName(user.getUserId(), form.getPlaylistName())
+        .isPresent()){
+      throw new VideoCustomException(VideoErrorCode.ALREADY_EXIST_PLAYLIST_NAME);
     }
 
-    // userId로 playlist 찾았을 때, 만드려고 하는 playlist의 이름이 존재하는 경우
-    if (playlistRepository.findByUser_UserIdAndPlaylistName(userId, playlistName).isPresent()) {
-      return true;
-    } else {
-      return false;
+    playlist.setPlaylistName(form.getPlaylistName());
+
+    return playlist;
+  }
+
+  @Transactional
+  public void deletePlaylist(String token, String targetName) {
+    UserVo userVo = provider.getUserVo(token);
+
+    User user = userRepository.findById(userVo.getUserId())
+        .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+    if (!playlistRepository.findByUser_UserIdAndPlaylistName(userVo.getUserId(), targetName)
+        .isPresent()) {
+      throw new VideoCustomException(VideoErrorCode.NOT_FOUND_PLAYLIST);
     }
+
+    playlistRepository.deleteByUser_UserIdAndPlaylistName(user.getUserId(), targetName);
   }
 
 }
