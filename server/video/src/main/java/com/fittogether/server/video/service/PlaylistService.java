@@ -60,11 +60,6 @@ public class PlaylistService {
             targetName)
         .orElseThrow(() -> new VideoCustomException(VideoErrorCode.NOT_FOUND_PLAYLIST));
 
-    // 바꾸려고 하는 Playlist 이름이 바꿀 Playlist 이름과 같으면 에러 처리
-    if (playlist.getPlaylistName().equals(form.getPlaylistName())) {
-      throw new VideoCustomException(VideoErrorCode.SAME_PLAYLIST_NAME);
-    }
-
     if (playlistRepository.findByUser_UserIdAndPlaylistName(user.getUserId(), form.getPlaylistName())
         .isPresent()){
       throw new VideoCustomException(VideoErrorCode.ALREADY_EXIST_PLAYLIST_NAME);
