@@ -46,6 +46,7 @@ public class MateService {
         Request request = Request.builder()
                 .senderId(senderId)
                 .receiverId(receiverId)
+                .isAccepted(false)
                 .build();
 
 
