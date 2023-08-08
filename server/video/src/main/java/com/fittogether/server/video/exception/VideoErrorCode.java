@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 public enum VideoErrorCode {
   ALREADY_EXIST_PLAYLIST_NAME(HttpStatus.BAD_REQUEST, "같은 이름의 플레이리스트가 존재합니다."),
   SAME_PLAYLIST_NAME(HttpStatus.BAD_REQUEST, "이전과 같은 이름입니다."),
-  NOT_FOUND_PLAYLIST(HttpStatus.BAD_REQUEST, "해당 이름의 플레이리스트가 존재하지 않습니다.")
+  NOT_FOUND_PLAYLIST(HttpStatus.BAD_REQUEST, "해당 이름의 플레이리스트가 존재하지 않습니다."),
+  ALREADY_EXIST_VIDEO(HttpStatus.BAD_REQUEST, "같은 영상이 존재합니다.")
 
   ;
 
