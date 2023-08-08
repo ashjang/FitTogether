@@ -7,9 +7,7 @@ const CreatePost: React.FC = () => {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
-        // formData에 필요한 추가 작업 수행
-        // 예를 들면 axios 또는 fetch API를 사용하여 데이터 전송 등
-        console.log('Form Data:', formData);
+        console.log(formData);
     };
 
     return (

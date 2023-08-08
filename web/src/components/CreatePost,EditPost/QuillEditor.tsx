@@ -48,7 +48,7 @@ const QuillEditor = () => {
 
     return (
         <EditorComponent>
-            <TitleComponet placeholder=" title" />
+            <TitleComponet name="title" placeholder=" title" />
             <ReactQuillComponent
                 ref={(element) => {
                     if (element !== null) {

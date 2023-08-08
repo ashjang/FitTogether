@@ -49,6 +49,7 @@ const PostSetting: React.FC = () => {
             <SettingItem>
                 <About>해시태그</About>
                 <HashtagInput
+                    name="hashtag"
                     type="text"
                     onChange={handleHashtagInputChange}
                     onKeyPress={handleHashtagInputKeyPress}
