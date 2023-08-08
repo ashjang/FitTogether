@@ -25,7 +25,7 @@ public class Request {
     @ManyToOne
     @JoinColumn(name = "receiver_id")
     private User receiverId;
-    private boolean isAccepted = false;
+    private boolean isAccepted;
 
 
 
