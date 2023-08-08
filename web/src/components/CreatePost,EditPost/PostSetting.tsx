@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
+import { useRecoilState } from 'recoil';
+import { hastagListState, categoryState, accessLevelState } from '../../recoil/posts/atoms';
 
 interface ButtonProps {
     active: boolean;
@@ -8,9 +10,9 @@ interface ButtonProps {
 
 const PostSetting: React.FC = () => {
     const [hashtag, setHashtag] = useState<string>('');
-    const [hashtagList, setHashtagList] = useState<string[]>([]);
-    const [category, setCategory] = useState<string>('');
-    const [accessLevel, setAccessLevel] = useState(true);
+    const [hashtagList, setHashtagList] = useRecoilState(hastagListState);
+    const [category, setCategory] = useRecoilState(categoryState);
+    const [accessLevel, setAccessLevel] = useRecoilState(accessLevelState);
 
     const handleHashtagInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         // 해시태그 입력 필드가 변경될 때 호출되는 함수

@@ -1,14 +1,60 @@
 import React from 'react';
+// import axios from 'axios';
+// import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import QuillEditor from '../components/CreatePost,EditPost/QuillEditor';
 import PostSetting from '../components/CreatePost,EditPost/PostSetting';
+import { useRecoilState } from 'recoil';
+import {
+    titleState,
+    descriptionState,
+    hastagListState,
+    categoryState,
+    accessLevelState,
+} from '../recoil/posts/atoms';
 
 const CreatePost: React.FC = () => {
+    const [title, setTitle] = useRecoilState(titleState);
+    const [description, setDescription] = useRecoilState(descriptionState);
+    const [hastagList, setHastagList] = useRecoilState(hastagListState);
+    const [category, setCategory] = useRecoilState(categoryState);
+    const [accessLevel, setAccessLevel] = useRecoilState(accessLevelState);
+
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const formData = new FormData(event.currentTarget);
-        console.log(formData);
+
+        const postForm = {
+            title: title,
+            description: description,
+            hastag: hastagList,
+            category: category,
+            accessLevel: accessLevel,
+        };
+        console.log(postForm);
+
+        setTitle('');
+        setDescription('');
+        setHastagList([]);
+        setCategory('');
+        setAccessLevel(true);
+
+        // submitPostForm();
     };
+
+    // const submitPostForm = async () => {
+    // try {
+    //     const response = await axios.post('/posts', postForm, {
+    //         headers,
+    //     });
+    //     if (response.data.status === 'success') {
+    //         const navigate = useNavigate();
+    //         navigate(`/posts/${response.data.postId}`);
+    //     }
+    // } catch (error) {
+    //     console.log(error);
+    //     throw error;
+    // }
+    // };
 
     return (
         <PostDataForm onSubmit={handleSubmit}>

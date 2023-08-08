@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 // import axios from 'axios';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import default_user_image from '../../assets/default-user-image.png';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

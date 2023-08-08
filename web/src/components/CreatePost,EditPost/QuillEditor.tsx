@@ -1,7 +1,9 @@
-import { useRef, useState, useMemo } from 'react';
+import { useRef, useMemo } from 'react';
 import ReactQuill from 'react-quill';
 import styled from '@emotion/styled';
 import 'react-quill/dist/quill.snow.css';
+import { useRecoilState } from 'recoil';
+import { titleState, descriptionState } from '../../recoil/posts/atoms';
 
 export const formats = [
     'header',
@@ -26,8 +28,8 @@ export const formats = [
 
 const QuillEditor = () => {
     const QuillRef = useRef<ReactQuill>();
-    const [contents, setContents] = useState('');
-    console.log(contents);
+    const [title, setTitle] = useRecoilState(titleState);
+    const [description, setDescription] = useRecoilState(descriptionState);
 
     const modules = useMemo(
         () => ({
@@ -48,15 +50,20 @@ const QuillEditor = () => {
 
     return (
         <EditorComponent>
-            <TitleComponet name="title" placeholder=" title" />
+            <TitleComponet
+                name="title"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                placeholder=" title"
+            />
             <ReactQuillComponent
                 ref={(element) => {
                     if (element !== null) {
                         QuillRef.current = element;
                     }
                 }}
-                value={contents}
-                onChange={setContents}
+                value={description}
+                onChange={setDescription}
                 modules={modules}
                 formats={formats}
                 theme="snow"

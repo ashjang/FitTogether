@@ -68,3 +68,30 @@ export const childReplyDataState = atom<ChildReplyData[] | null>({
     key: 'childReplyDataState',
     default: null,
 });
+
+// 게시글 작성/수정 시 관련 상태
+
+export const titleState = atom<string>({
+    key: 'titleState',
+    default: '',
+});
+
+export const descriptionState = atom<string>({
+    key: 'descriptionState',
+    default: '',
+});
+
+export const hastagListState = atom<string[]>({
+    key: 'hastagListState',
+    default: [],
+});
+
+export const categoryState = atom<string>({
+    key: 'categoryState',
+    default: '',
+});
+
+export const accessLevelState = atom<boolean>({
+    key: 'accessLevelState',
+    default: true,
+});
