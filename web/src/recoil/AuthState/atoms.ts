@@ -6,7 +6,13 @@ export const loggedInState = atom({
     default: '',
 });
 
-export const signInState = atom({
+// signInState atom 정의 (타입 정보 추가)
+export interface SignInState {
+    nickname: string;
+    password: string;
+}
+
+export const signInState = atom<SignInState>({
     key: 'signInState',
     default: {
         nickname: '',

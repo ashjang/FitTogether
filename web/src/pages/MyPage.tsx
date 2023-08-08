@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-// import { useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
+import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 
-// import { authState } from '../recoil/AuthState/atoms';
+import { loggedInState, SignInState } from '../recoil/AuthState/atoms';
 import MyInformation from '../components/MyPage/MyInformation';
 import MyPostList from '../components/MyPage/MyPostList';
 
@@ -12,7 +13,12 @@ interface ButtonProps {
 
 const MyPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState('MyInformation');
-    // const auth = useRecoilValue(authState); // 로그인 정보 가져오기
+    const isLoggedIn = useRecoilValue(loggedInState);
+    const navigate = useNavigate();
+
+    if (!isLoggedIn) {
+        navigate('/signin');
+    }
 
     const handleTabClick = (tabName: string) => {
         setActiveTab(tabName);
@@ -38,7 +44,7 @@ const MyPage: React.FC = () => {
                 {activeTab === 'MyInformation' && <MyInformation />}
                 {activeTab === 'MyPostList' && (
                     <MyPostList
-                    // userId={auth.userId}
+                    // userId={}
                     />
                 )}
             </Content>
