@@ -11,6 +11,8 @@ import styled from '@emotion/styled';
 
 import { LiaWindowClose } from 'react-icons/lia';
 
+import getGeocodeFromAddress from './getGeocodeFromAddress';
+
 const MyInformation: React.FC = () => {
     const [isAddressModalOpen, setAddressModalOpen] = useState(false);
     const [selectedAddress, setSelectedAddress] = useState<string>('');
@@ -21,6 +23,9 @@ const MyInformation: React.FC = () => {
     const [favoriteSports, setFavoriteSports] = useState<string[]>([]);
     const [introduction, setIntroduction] = useState<string>('');
     // const [email, setEmail] = useRecoilState(emailState);
+
+    const [latitude, setLatitude] = useState<number | null>(null);
+    const [longitude, setLongitude] = useState<number | null>(null);
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -33,12 +38,30 @@ const MyInformation: React.FC = () => {
     };
 
     // 찾은 주소를 거주지 Value값으로 입력
-    const handleComplete = (data: Address) => {
+    const handleComplete = (data: Address): void => {
         // console.log(data); // Address data 확인
         const userAddress = data.address;
         // data.address.length > 3 ? data.address.split(' ').splice(0, 3).join(' ') : data.address;
         setSelectedAddress(userAddress);
-        handleAddressModalToggle(); //
+        handleAddressModalToggle();
+
+        // 주소를 좌표로 변환해서 값 얻어내기
+        getGeocodeFromAddress(userAddress)
+            .then((geocode) => {
+                if (geocode) {
+                    const { lat, long } = geocode;
+
+                    console.log('위도:', lat);
+                    console.log('경도:', long);
+
+                    // 위도와 경도 값을 숫자로 변환하여 상태에 저장
+                    setLatitude(Number(lat));
+                    setLongitude(Number(long));
+                }
+            })
+            .catch((error) => {
+                console.error('Geocoding API 호출 오류:', error);
+            });
     };
 
     // 프로필 이미지 업로드
@@ -100,12 +123,14 @@ const MyInformation: React.FC = () => {
             favoriteSports: favoriteSports,
             introduction: introduction,
             publicStatus: true,
+            lat: latitude,
+            long: longitude,
         };
 
         // 서버에 POST 요청을 보내서 데이터 저장
         axios
-            .post('/users/my', userInfo)
-            .then((response) => {
+            .post('http://localhost:3001/users', userInfo)
+            .then(() => {
                 alert('저장되었습니다.');
             })
             .catch((error) => {

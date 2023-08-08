@@ -4,5 +4,8 @@ declare global {
         kakao: any;
     }
 }
+interface ImportMetaEnv {
+    VITE_APP_GEO_CODE_API_KEY: string;
+}
 
 export {};
