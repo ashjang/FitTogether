@@ -129,7 +129,7 @@ const MyInformation: React.FC = () => {
 
         // 서버에 POST 요청을 보내서 데이터 저장
         axios
-            .post('http://localhost:3001/users', userInfo)
+            .post('http://localhost:3001/usersInfo', userInfo)
             .then(() => {
                 alert('저장되었습니다.');
             })
