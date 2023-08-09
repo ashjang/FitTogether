@@ -1,323 +1,329 @@
-/** @jsxImportSource @emotion/react */
-import React, { useState } from "react";
-import styled from "@emotion/styled";
-import imgSrc from "../../assets/default-user-image.png";
-import { nanoid } from "nanoid";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
-import Modal from "react-modal";
+import React, { useState } from 'react';
+// import { useParams } from 'react-router-dom';
+// import axios from 'axios';
+import styled from '@emotion/styled';
+import imgSrc from '../../assets/default-user-image.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 
-interface Comment {
-  commentId: string; // 댓글의 고유 ID
-  userId: string;
-  postedAt: string;
-  content: string;
-  likes: number;
-  replies: Comment[];
+interface ReplyData {
+    postId: number;
+    replyId: number;
+    userImage: string;
+    userNickname: string;
+    createdAt: string;
+    comment: string;
 }
 
-const Comments: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState("");
-  const [newReply, setNewReply] = useState("");
-  const [showReplyInputs, setShowReplyInputs] = useState<{
-    [key: string]: boolean;
-  }>({});
+interface ChildReplyData {
+    postId: number;
+    replyId: number;
+    childReplyId: number;
+    userImage: string;
+    userNickname: string;
+    createdAt: string;
+    comment: string;
+}
 
-  const handleAddComment = () => {
-    const newCommentItem: Comment = {
-      commentId: nanoid(),
-      userId: "ehhdrud",
-      postedAt: "23-07-31",
-      content: newComment,
-      likes: 0,
-      replies: [],
+interface CommentsProps {
+    replyData: ReplyData[];
+    childReplyData: ChildReplyData[];
+    onUpdate: () => void;
+}
+
+const Comments: React.FC<CommentsProps> = (props) => {
+    // const { postId } = useParams<{ postId: string }>();
+    const [replyInput, setReplyInput] = useState<string>('');
+    const [childReplyInput, setChildReplyInput] = useState<string>('');
+    const [showChildReplyInput, setShowChildReplyInput] = useState<boolean>(false);
+    const [currentReplyId, setCurrentReplyId] = useState<number | null>(null);
+
+    // 댓글 입력란에서 입력받을 때 실행할 함수
+    const handleReplyInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setReplyInput(event.target.value);
     };
 
-    setComments([...comments, newCommentItem]);
-    setNewComment("");
-  };
-
-  const handleAddReply = (targetCommentId: string) => {
-    // 새로운 대댓글 객체 생성
-    const newReplyItem: Comment = {
-      commentId: nanoid(),
-      userId: "ehhdrud",
-      postedAt: "23-07-31",
-      content: newReply,
-      likes: 0,
-      replies: [],
+    // "댓글 입력" 버튼 눌렀을 때 실행할 함수
+    const handleSubmitReply = async () => {
+        // const replyForm = {
+        //     comment: replyInput,
+        // };
+        // try {
+        //     const response = await axios.post(`/posts/${postId}/comments`, replyForm, {
+        //         headers,
+        //     });
+        //     console.log(response.data);
+        //     if (response.data.status === 'success') {
+        //         props.onUpdate();
+        //     }
+        // } catch (error) {
+        //     console.log(error);
+        // }
+        props.onUpdate();
     };
 
-    // 대댓글 추가를 위해 기존 댓글 목록을 복사하고, 대상 댓글의 replies 배열에 새로운 대댓글을 추가
-    const updatedComments = comments.map((comment) => {
-      if (comment.commentId === targetCommentId) {
-        return {
-          ...comment,
-          replies: [...comment.replies, newReplyItem],
-        };
-      }
-      return comment;
-    });
+    // 댓글 "삭제하기" 버튼 눌렀을 때 실행할 함수
+    const handleDeleteReply = async (replyId: number) => {
+        console.log(replyId);
+        // const confirmDelete = window.confirm('정말로 댓글을 삭제하시겠습니까?');
+        // if (confirmDelete) {
+        //     try {
+        //         const response = await axios.delete(`/posts/${postId}/comments/${replyId}`, {
+        //             headers,
+        //         });
+        //         console.log(response.data);
+        //         if (response.data.status === 'success') {
+        //             props.onUpdate();
+        //         }
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // }
+        props.onUpdate();
+    };
 
-    // 업데이트된 댓글 목록 적용
-    setComments(updatedComments);
+    // 대댓글 입력란에서 입력받을 때 실행할 함수
+    const handleChildReplyInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChildReplyInput(event.target.value);
+    };
 
-    // 대댓글 입력창 초기화
-    setNewReply("");
+    // "대댓글 입력" 버튼 눌렀을 때 실행할 함수
+    const handleSubmitChildReply = async (replyId: number) => {
+        console.log(replyId);
+        // const requestData = {
+        //     comment: childReplyInput,
+        // };
+        // try {
+        //     const response = await axios.post(`/posts/comments/${replyId}`, requestData, {
+        //         headers,
+        //     });
+        //     if (response.data.status === 'success') {
+        //         props.onUpdate();
+        //     }
+        //     console.log(response.data);
+        // } catch (error) {
+        //     console.log(error);
+        // }
+        props.onUpdate();
+    };
 
-    // 대댓글 입력창 숨기기
-    setShowReplyInputs({ ...showReplyInputs, [targetCommentId]: false });
-  };
+    // 대댓글 "삭제하기" 버튼 눌렀을 때 실행할 함수
+    const handleDeleteChildReply = async (replyId: number, childReplyId: number) => {
+        console.log(replyId, childReplyId);
+        // const confirmDelete = window.confirm('정말로 댓글을 삭제하시겠습니까?');
+        // if (confirmDelete) {
+        //     try {
+        //         const response = await axios.delete(
+        //             `/posts/{postId}/comments/{replyId}/child-comment/{childReplyId}`,
+        //             {
+        //                 headers,
+        //             }
+        //         );
+        //         console.log(response.data);
+        //         if (response.data.status === 'success') {
+        //             props.onUpdate();
+        //         }
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // }
+        props.onUpdate();
+    };
 
-  const toggleReplyInput = (commentId: string) => {
-    setShowReplyInputs({
-      ...showReplyInputs,
-      [commentId]: !showReplyInputs[commentId],
-    });
-  };
+    // 대댓글 입력창을 토글하는 함수
+    const handleToggleChildReplyInput = (replyId: number) => {
+        setCurrentReplyId(replyId);
+        setShowChildReplyInput((prev) => !prev); // 이전 상태의 반대값으로 토글
+    };
 
-  const handleToggleModal = () => {
-    setIsModalOpen(!isModalOpen);
-  };
-
-  // 해당 댓글을 삭제하는 로직 추가해야!!
-  const handleDeleteIconClick = () => {};
-
-  return (
-    <CommentsComponent>
-      <div>
-        {comments.map((comment) => (
-          <div key={comment.commentId}>
-            <CommentContainer>
-              <CommentItem>
-                <TopDiv>
-                  <ProfileImageContainer>
-                    <ProfileImage src={imgSrc} />
-                  </ProfileImageContainer>
-                  <UserId>{comment.userId}</UserId>
-                  <PostTime>{comment.postedAt}</PostTime>
-                  {/* 해당 댓글의 작성자만 아이콘이 보이도록하는 로직 추가해야!! */}
-                  <FaTrashCan icon={faTrashCan} onClick={handleToggleModal} />
-                  <Modal
-                    isOpen={isModalOpen}
-                    onRequestClose={handleToggleModal}
-                    contentLabel="Example Modal"
-                    style={{
-                      overlay: {
-                        backgroundColor: "rgba(0, 0, 0, 0.1)",
-                      },
-                      content: {
-                        width: "max-content",
-                        height: "max-content",
-                        margin: "auto",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        backgroundColor: "white",
-                      },
-                    }}
-                  >
-                    <button onClick={handleDeleteIconClick}>삭제하기</button>
-                    <button>취소하기</button>
-                  </Modal>
-                </TopDiv>
-                <Content>{comment.content}</Content>
-              </CommentItem>
-
-              <ToggleReplyButton
-                onClick={() => toggleReplyInput(comment.commentId)}
-              >
-                {showReplyInputs[comment.commentId] ? "닫기" : "대댓글 작성"}
-              </ToggleReplyButton>
-              {showReplyInputs[comment.commentId] && (
-                <ReplyInputContainer>
-                  <ReplyInput
-                    type="text"
-                    value={newReply}
-                    placeholder="대댓글을 입력하세요"
-                    onChange={(e) => setNewReply(e.target.value)}
-                  />
-                  <ReplyButton
-                    onClick={() => handleAddReply(comment.commentId)}
-                  >
-                    대댓글입력
-                  </ReplyButton>
-                </ReplyInputContainer>
-              )}
-              {comment.replies.map((reply) => (
-                <div key={reply.commentId}>
-                  <ReplyItem>
+    return (
+        <CommentsComponent>
+            {props.replyData.map((reply) => (
+                <ReplyContainer key={reply.replyId}>
                     <TopDiv>
-                      <ProfileImageContainer>
-                        <ProfileImage src={imgSrc} />
-                      </ProfileImageContainer>
-                      <UserId>{reply.userId}</UserId>
-                      <PostTime>{reply.postedAt}</PostTime>
-                      {/* 해당 댓글의 작성자만 아이콘이 보이도록하는 로직 추가해야!! */}
-                      <FaTrashCan
-                        icon={faTrashCan}
-                        onClick={handleToggleModal}
-                      />
-                      <Modal
-                        isOpen={isModalOpen}
-                        onRequestClose={handleToggleModal}
-                        contentLabel="Example Modal"
-                        style={{
-                          overlay: {
-                            backgroundColor: "rgba(0, 0, 0, 0.1)",
-                          },
-                          content: {
-                            width: "max-content",
-                            height: "max-content",
-                            margin: "auto",
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            backgroundColor: "white",
-                          },
-                        }}
-                      >
-                        <button>수정하기</button>
-                        <button>삭제하기</button>
-                      </Modal>
+                        <ProfileImageContainer>
+                            {/* <ProfileImage src={reply.userImage || imgSrc} /> */}
+                            <ProfileImage src={imgSrc} />
+                        </ProfileImageContainer>
+                        <UserId>{reply.userNickname}</UserId>
+                        <PostTime>{reply.createdAt}</PostTime>
+                        <FaTrashCan
+                            icon={faTrashCan}
+                            onClick={() => {
+                                handleDeleteReply(reply.replyId);
+                            }}
+                        />
                     </TopDiv>
-                    <Content>{reply.content}</Content>
-                  </ReplyItem>
-                </div>
-              ))}
-            </CommentContainer>
-          </div>
-        ))}
-      </div>
-      <CommentInputContainer>
-        <CommentInput
-          type="text"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          placeholder="댓글을 입력하세요"
-        />
-        <CommentButton onClick={handleAddComment}>댓글입력</CommentButton>
-      </CommentInputContainer>
-    </CommentsComponent>
-  );
+                    <Comment>{reply.comment}</Comment>
+                    {props.childReplyData.map(
+                        (childReply) =>
+                            childReply.replyId === reply.replyId && (
+                                <ChildReplyItem key={childReply.childReplyId}>
+                                    <TopDiv>
+                                        <ProfileImageContainer>
+                                            {/* <ProfileImage src={childReply.userImage || imgSrc} /> */}
+                                            <ProfileImage src={imgSrc} />
+                                        </ProfileImageContainer>
+                                        <UserId>{childReply.userNickname}</UserId>
+                                        <PostTime>{childReply.createdAt}</PostTime>
+                                        {/* ❗해당 댓글의 작성자만 아이콘이 보이도록하는 로직 */}
+                                        <FaTrashCan
+                                            icon={faTrashCan}
+                                            onClick={() => {
+                                                handleDeleteChildReply(
+                                                    childReply.replyId,
+                                                    childReply.childReplyId
+                                                );
+                                            }}
+                                        />
+                                    </TopDiv>
+                                    <Comment>{childReply.comment}</Comment>
+                                </ChildReplyItem>
+                            )
+                    )}
+                    <ToggleChildReplyButton
+                        onClick={() => handleToggleChildReplyInput(reply.replyId)}
+                    >
+                        대댓글 입력
+                    </ToggleChildReplyButton>
+                    {showChildReplyInput && currentReplyId === reply.replyId && (
+                        <ChildReplyInputContainer>
+                            <ChildReplyInput
+                                type="text"
+                                placeholder="대댓글을 입력하세요 !"
+                                value={childReplyInput}
+                                onChange={handleChildReplyInputChange}
+                            />
+                            <ChildReplyButton onClick={() => handleSubmitChildReply(reply.replyId)}>
+                                대댓글 입력
+                            </ChildReplyButton>
+                        </ChildReplyInputContainer>
+                    )}
+                </ReplyContainer>
+            ))}
+            <ReplyInputContainer>
+                <ReplyInput
+                    type="text"
+                    placeholder="댓글을 입력하세요 !"
+                    value={replyInput}
+                    onChange={handleReplyInputChange}
+                />
+                <ReplyButton onClick={handleSubmitReply}>댓글 입력</ReplyButton>
+            </ReplyInputContainer>
+        </CommentsComponent>
+    );
 };
 
 const CommentsComponent = styled.div`
-  width: 850px;
-  margin: 0 auto;
-  margin-top: 50px;
+    width: 850px;
+    margin: 0 auto;
+    margin-top: 50px;
 `;
 
 const ProfileImageContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 35px;
-  height: 35px;
-  border: 1px transparent solid;
-  border-radius: 50%;
-  overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 35px;
+    height: 35px;
+    border: 1px transparent solid;
+    border-radius: 50%;
+    overflow: hidden;
 `;
 
 const ProfileImage = styled.img`
-  display: block;
-  padding: 0px;
-  width: 35px;
-  height: 35px;
+    display: block;
+    padding: 0px;
+    width: 35px;
+    height: 35px;
 `;
 
-const CommentContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 10px 0;
-  border-bottom: 1px solid #d7d7d7;
+const ReplyContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+    border-bottom: 1px solid #d7d7d7;
 `;
 
-const CommentItem = styled.div`
-  height: 60px;
-`;
-
-const ReplyItem = styled.div`
-  height: 60px;
-  margin-left: 50px;
+const ChildReplyItem = styled.div`
+    height: 60px;
+    margin-left: 50px;
 `;
 
 const TopDiv = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  position: relative;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
 `;
 
 const UserId = styled.p`
-  margin: 0 10px;
-  font-size: 16px;
-  font-weight: bold;
+    margin: 0 10px;
+    font-size: 16px;
+    font-weight: bold;
 `;
 
 const PostTime = styled.p`
-  margin: 5px 0 0 0;
-  font-size: 10px;
+    margin: 5px 0 0 0;
+    font-size: 10px;
 `;
 
 const FaTrashCan = styled(FontAwesomeIcon)`
-  position: absolute;
-  right: 0;
+    position: absolute;
+    right: 0;
 `;
 
-const Content = styled.p`
-  margin: 0;
-  font-size: 14px;
-  margin-left: 45px;
+const Comment = styled.p`
+    height: 40px;
+    margin: 0;
+    font-size: 14px;
+    margin-left: 45px;
 `;
 
-const CommentInputContainer = styled.div`
-  display: flex;
-  align-items: center;
-`;
 const ReplyInputContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+`;
+const ChildReplyInputContainer = styled.div`
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
 `;
 
-const CommentInput = styled.input`
-  border: none;
-  outline: none;
-  width: 400px;
-  padding: 5px;
-  margin: 10px 0;
-`;
 const ReplyInput = styled.input`
-  border: none;
-  outline: none;
-  width: 400px;
-  padding: 5px;
-  margin-left: 45px;
+    border: none;
+    outline: none;
+    width: 400px;
+    padding: 5px;
+    margin: 10px 0;
+`;
+const ChildReplyInput = styled.input`
+    border: none;
+    outline: none;
+    width: 400px;
+    padding: 5px;
+    margin-left: 45px;
 `;
 
-const CommentButton = styled.button`
-  border: none;
-  background-color: #d7d7d7;
-  padding: 5px 30px;
-  cursor: pointer;
-`;
 const ReplyButton = styled.button`
-  border: none;
-  background-color: #d7d7d7;
-  padding: 5px 30px;
-  cursor: pointer;
+    border: none;
+    background-color: #d7d7d7;
+    padding: 5px 30px;
+    cursor: pointer;
+`;
+const ChildReplyButton = styled.button`
+    border: none;
+    background-color: #d7d7d7;
+    padding: 5px 30px;
+    cursor: pointer;
 `;
 
-const ToggleReplyButton = styled.div`
-  margin-left: 45px;
-  padding: 5px 0;
-  cursor: pointer;
-  font-size: 0.7rem;
-  color: blue;
+const ToggleChildReplyButton = styled.div`
+    margin-left: 45px;
+    padding: 5px 0;
+    cursor: pointer;
+    font-size: 0.7rem;
+    color: blue;
 `;
+
 export default Comments;
