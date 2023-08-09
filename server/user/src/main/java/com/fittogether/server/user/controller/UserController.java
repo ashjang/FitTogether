@@ -8,6 +8,7 @@ import com.fittogether.server.user.service.UserSignInService;
 import com.fittogether.server.user.service.UserSignUpService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,24 @@ public class UserController {
         return ResponseEntity.ok(
                 signUpService.signUp(form)
         );
+    }
+
+    @GetMapping("/signup/check/nickname")
+    public ResponseEntity<?> checkNickname(@RequestParam("nickname") String nickname) {
+        if (!signUpService.isExistNickname(nickname)) {
+            return ResponseEntity.status(HttpStatus.OK).body("해당 닉네임은 사용 가능합니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("해당 닉네임은 이미 존재합니다.");
+        }
+    }
+
+    @GetMapping("/signup/check/email")
+    public ResponseEntity<?> checkEmail(@RequestParam("email") String email) {
+        if (!signUpService.isExistEmail(email)) {
+            return ResponseEntity.status(HttpStatus.OK).body("해당 이메일은 사용 가능합니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("해당 이메일은 이미 존재합니다.");
+        }
     }
 
     @ApiOperation(value = "로그인", response = String.class)
