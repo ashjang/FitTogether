@@ -6,7 +6,7 @@ export interface User {
     id: number;
     category: string;
     lat: number;
-    lng: number;
+    long: number;
 }
 interface MapProps {
     category: string;
@@ -16,7 +16,7 @@ const Map = (props: MapProps) => {
     //tab click
     const [category, setCategory] = useState<string>(props.category || '러닝');
     // map
-    const kakaoMapRef = useRef<HTMLDivElement>(null);
+    const kakaoMapRef = useRef<HTMLDivElement | null>(null);
     //user marker
     const [users, setUsers] = useState<User[]>([]);
     // user click
@@ -28,7 +28,7 @@ const Map = (props: MapProps) => {
     };
 
     useEffect(() => {
-        fetch('http://localhost:3000/users')
+        fetch('http://localhost:3001/usersInfo')
             .then((response) => response.json())
             .then((data: User[]) => setUsers(data))
             .catch((error) => {
@@ -39,7 +39,7 @@ const Map = (props: MapProps) => {
     // 마이페이지 내가 설정된 위치라고 가정했을때 (만약 홍대)
     const userLocation = {
         lat: 37.556862,
-        lng: 126.924678,
+        long: 126.924678,
     };
 
     useEffect(() => {
@@ -47,7 +47,8 @@ const Map = (props: MapProps) => {
             return;
         }
         // 내 저장된 위치 기준으로 지도 생성
-        const targetPoint = new kakao.maps.LatLng(userLocation.lat, userLocation.lng);
+        const targetPoint = new kakao.maps.LatLng(userLocation.lat, userLocation.long);
+
         const options = {
             center: targetPoint,
             level: 3,
@@ -57,7 +58,7 @@ const Map = (props: MapProps) => {
         users
             .filter((user) => user.category === category)
             .forEach((user) => {
-                const markerPosition = new kakao.maps.LatLng(user.lat, user.lng);
+                const markerPosition = new kakao.maps.LatLng(user.lat, user.long);
                 const marker = new kakao.maps.Marker({
                     position: markerPosition,
                 });
@@ -67,6 +68,8 @@ const Map = (props: MapProps) => {
                     setSelectedUser(user);
                 });
             });
+
+        console.log('Creating map...');
     }, [users, category]);
 
     const handleClose = () => {
@@ -148,8 +151,11 @@ const MapBox = styled.div<{ isSidebarOpen: boolean }>`
     top: 130px;
     // left: 50%;
     // transform: translateX(-50%);
-    width: ${(props) => (props.isSidebarOpen ? '50%' : '70%')};
+
+    // width: ${(props) => (props.isSidebarOpen ? '50%' : '70%')};
+    width: 70%;
     height: 70%;
+
     border-radius: 10px;
     transition: all 0.3s;
 
@@ -160,10 +166,10 @@ const MapBox = styled.div<{ isSidebarOpen: boolean }>`
 //프로필
 const UserProfileWrapper = styled.div`
     position: absolute;
-    right: 0;
+    right: -120px;
+    top: 200px;
     width: 30%;
     height: 100%;
-    background-color: white;
 `;
 
 export default Map;
