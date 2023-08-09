@@ -1,9 +1,31 @@
-import { atom } from 'recoil';
+import { atom, selector } from 'recoil';
 
 // 초기값: 로그인이 되어 있지 않은 상태
 export const loggedInState = atom({
     key: 'loggedInState',
     default: false,
+});
+
+export const userInfoState = selector({
+    key: 'userInfoState',
+    get: ({ get }) => {
+        const loggedIn = get(loggedInState);
+        if (loggedIn) {
+            // 로그인 상태일 때 유저 정보를 반환
+            return {
+                nickName: '',
+                password: '',
+                email: '',
+                profilePicture: null,
+                gender: true,
+                introduction: '',
+                exerciseChoice: [],
+                publicInfo: true,
+                accessToken: '',
+            };
+        }
+        return null;
+    },
 });
 
 // 로그인하는 유저의 정보
@@ -20,21 +42,6 @@ export const kakaoAccessTokenState = atom<string | undefined | null>({
     key: 'kakaoAccessToken',
     // default: localStorage.getItem('token_for_kakaotalk'),
     default: null,
-});
-
-export const userInfoState = atom({
-    key: 'userInfoState',
-    default: {
-        nickName: '',
-        password: '',
-        email: '',
-        profilePicture: null,
-        gender: '',
-        introduction: '',
-        exerciseChoice: [],
-        publicInfo: true,
-        accessToken: '',
-    },
 });
 
 // export const authState = atom({

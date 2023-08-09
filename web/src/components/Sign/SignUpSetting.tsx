@@ -38,8 +38,6 @@ const SignUpSetting: React.FC = () => {
 
     // 비밀번호 입력 조건
     const validatePassword = (value: string) => {
-        // const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/;
-        // const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/;
         const regex =
             /^(?:(?=.*[A-Za-z])(?=.*\d)|(?=.*[A-Za-z])(?=.*[@$!%*#?&])|(?=.*\d)(?=.*[@$!%*#?&]))[A-Za-z\d@$!%*#?&]{8,16}$/;
         return regex.test(value);
@@ -68,33 +66,30 @@ const SignUpSetting: React.FC = () => {
     // 아이디 및 이메일 중복검사
     const checkDuplicate = async (type: 'nickname' | 'email', value: string): Promise<void> => {
         try {
-            const response = await axios.post(
-                `http://localhost:8080/api/users/type=${type}&value=${value}`
-            );
-            if (response.data.isAvailable) {
-                if (type === 'nickname') {
-                    setIsNicknameAvailable(true);
-                } else {
-                    setIsEmailAvailable(true);
-                }
-                alert('사용 가능한 ' + (type === 'nickname' ? '아이디' : '이메일') + '입니다.');
-            } else {
+            const response = await axios.get(`/api/users/signup/check/${type}?${type}=${value}`);
+            if (response.data.isDuplicate) {
+                alert(`이미 사용 중인 ${type === 'nickname' ? '아이디' : '이메일'}입니다.`);
                 if (type === 'nickname') {
                     setIsNicknameAvailable(false);
                 } else {
                     setIsEmailAvailable(false);
                 }
-                alert('이미 사용 중인 ' + (type === 'nickname' ? '아이디' : '이메일') + '입니다.');
+            } else {
+                alert(`사용 가능한 ${type === 'nickname' ? '아이디' : '이메일'}입니다.`);
+                if (type === 'nickname') {
+                    setIsNicknameAvailable(true);
+                } else {
+                    setIsEmailAvailable(true);
+                }
             }
         } catch (error) {
             console.error('중복 검사 실패:', error);
-            // 중복 검사 실패 시 오류 팝업을 띄우도록 수정
+            // 중복 검사 실패 시 오류 팝업
             if (type === 'nickname') {
                 setIsNicknameAvailable(false);
             } else {
                 setIsEmailAvailable(false);
             }
-            alert('중복 검사 중 오류가 발생했습니다.');
         }
     };
 
@@ -109,11 +104,12 @@ const SignUpSetting: React.FC = () => {
             return;
         }
 
-        // // 폼 유효성 검사
-        // if (isNicknameAvailable && isEmailAvailable && isPasswordMatch) {
-        //     if (password !== confirmPassword) {
-        //         return;
-        //     }
+        // 폼 유효성 검사
+        if (isNicknameAvailable && isEmailAvailable && isPasswordMatch) {
+            if (password !== confirmPassword) {
+                return;
+            }
+        }
 
         // 백엔드로 전송할 데이터
         const formData = {
@@ -125,13 +121,11 @@ const SignUpSetting: React.FC = () => {
         };
 
         try {
-            const response = await axios.post('http://localhost:8080/api/users/signup', formData);
+            const response = await axios.post('/api/users/signup', formData);
             console.log('회원가입 성공:', response.data);
             navigate('/');
-            // 회원 가입 성공 처리 로직 추가
         } catch (error) {
             console.error('회원가입 실패:', error);
-            // 회원 가입 실패 처리 로직 추가
             alert('회원가입 중 오류가 발생했습니다.');
         }
     };

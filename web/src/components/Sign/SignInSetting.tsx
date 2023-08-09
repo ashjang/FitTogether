@@ -14,35 +14,11 @@ const SignInSetting: React.FC = () => {
     const setSignIn = useSetRecoilState(loggedInState); // 값을 변경하고 싶으면 useSetRecoilState
     const [errorMessage, setErrorMessage] = useState<string>('');
 
-    // const handleSignIn = async (event: React.FormEvent) => {
-    //     event.preventDefault();
-
-    //     const formData = {
-    //         nickname: nickname,
-    //         password: password,
-    //     };
-
-    //     try {
-    //         const response = await axios.post<{ token: string }>('/users/signin', formData);
-
-    //         if (response.status === 200) {
-    //             setToken(response.data.token);
-    //             localStorage.setItem('token', token);
-    //             // 로그인 성공 처리
-    //         } else {
-    //             // 로그인 실패 처리
-    //         }
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //     }
-    // };
-
     const handleSignIn = async (event: React.FormEvent) => {
         event.preventDefault();
 
         try {
-            const response = await axios.post('http://localhost:8080/api/users/signin', signInData);
-            console.log('Response:', response);
+            const response = await axios.post('/api/users/signin', signInData);
 
             if (response.status === 200) {
                 const token = response.data.token;
@@ -51,55 +27,13 @@ const SignInSetting: React.FC = () => {
 
                 // 로그인 성공 처리: 메인페이지로 이동
                 navigate('/');
-            } else {
-                // 로그인 실패 처리
-                if (response.status === 401) {
-                    if (signInData.password === '') {
-                        // 비밀번호가 빈칸인 경우
-                        setErrorMessage('비밀번호를 입력하세요.');
-                    } else if (signInData.nickname !== '' && signInData.password !== '') {
-                        // 아이디는 일치하지만 비밀번호가 일치하지 않는 경우
-                        setErrorMessage('비밀번호가 일치하지 않습니다.');
-                    } else {
-                        // 아이디가 불러온 데이터와 일치하지 않는 경우
-                        setErrorMessage('아이디가 존재하지 않습니다.');
-                    }
-                } else if (response.status === 404) {
-                    setErrorMessage('서버 응답에 문제가 발생했습니다.');
-                } else {
-                    setErrorMessage('알 수 없는 서버 응답에 문제가 발생했습니다.');
-                }
+            } else if (response.status === 400) {
+                // 에러 메시지 출력
+                setErrorMessage(response.data.message);
             }
         } catch (error) {
             console.error('Error:', error);
         }
-        // try {
-        //     // 서버 대신에 users.json에서 대조하는 로직
-        //     const response = await axios.get('/users.json');
-        //     const users = response.data.users; // users.json 파일에서 users 배열만 가져오도록 수정
-
-        //     const user = users.find(
-        //         (u: any) => u.nickname === signInData.nickname && u.password === signInData.password
-        //     );
-
-        //     if (user) {
-        //         const token = signInData.nickname; // 임시 토큰: 닉네임 사용
-        //         setToken(token);
-        //         localStorage.setItem('token', token);
-
-        //         // 로그인 성공 처리: 메인페이지로 이동
-        //         navigate('/');
-        //     } else {
-        //         // 로그인 실패 처리
-        //         if (!users.some((u: any) => u.nickname === signInData.nickname)) {
-        //             setErrorMessage('아이디가 존재하지 않습니다.');
-        //         } else {
-        //             setErrorMessage('비밀번호가 일치하지 않습니다.');
-        //         }
-        //     }
-        // } catch (error) {
-        //     console.error('Error:', error);
-        // }
     };
 
     return (
