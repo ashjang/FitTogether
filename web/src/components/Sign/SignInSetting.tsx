@@ -42,6 +42,7 @@ const SignInSetting: React.FC = () => {
 
         try {
             const response = await axios.post('http://localhost:8080/api/users/signin', signInData);
+            console.log('Response:', response);
 
             if (response.status === 200) {
                 const token = response.data.token;
@@ -63,8 +64,10 @@ const SignInSetting: React.FC = () => {
                         // 아이디가 불러온 데이터와 일치하지 않는 경우
                         setErrorMessage('아이디가 존재하지 않습니다.');
                     }
-                } else {
+                } else if (response.status === 404) {
                     setErrorMessage('서버 응답에 문제가 발생했습니다.');
+                } else {
+                    setErrorMessage('알 수 없는 서버 응답에 문제가 발생했습니다.');
                 }
             }
         } catch (error) {

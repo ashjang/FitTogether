@@ -68,8 +68,8 @@ const SignUpSetting: React.FC = () => {
     // 아이디 및 이메일 중복검사
     const checkDuplicate = async (type: 'nickname' | 'email', value: string): Promise<void> => {
         try {
-            const response = await axios.get(
-                `http://localhost:5173/users/type=${type}&value=${value}`
+            const response = await axios.post(
+                `http://localhost:8080/api/users/type=${type}&value=${value}`
             );
             if (response.data.isAvailable) {
                 if (type === 'nickname') {
