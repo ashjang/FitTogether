@@ -104,21 +104,6 @@
             "long": 126.923,
             "id": "제니",
             "category": "헬스"
-        },
-        {
-            "username": "윤몽진",
-            "password": "",
-            "email": "",
-            "address": "서울 서초구 나루터로 15",
-            "profileImage": "./src/assets/default-user-image.png",
-            "gender": true,
-            "favoriteSports": [],
-            "introduction": "",
-            "publicStatus": true,
-            "lat": 37.559,
-            "long": 126.924,
-            "id": "윤몽진",
-            "category": "헬스"
         }
     ]
 }
