@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
+interface DuplicateCheckResponse {
+    isDuplicate: boolean;
+}
 
 const SignUpSetting: React.FC = () => {
     const [nickname, setNickname] = useState<string>('');
@@ -14,6 +18,8 @@ const SignUpSetting: React.FC = () => {
     const [isPublic, setIsPublic] = useState<boolean>(true);
     const [isNicknameAvailable, setIsNicknameAvailable] = useState<boolean>(true);
     const [isEmailAvailable, setIsEmailAvailable] = useState<boolean>(true);
+
+    const navigate = useNavigate();
 
     const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
@@ -32,7 +38,8 @@ const SignUpSetting: React.FC = () => {
 
     // 비밀번호 입력 조건
     const validatePassword = (value: string) => {
-        const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/;
+        const regex =
+            /^(?:(?=.*[A-Za-z])(?=.*\d)|(?=.*[A-Za-z])(?=.*[@$!%*#?&])|(?=.*\d)(?=.*[@$!%*#?&]))[A-Za-z\d@$!%*#?&]{8,16}$/;
         return regex.test(value);
     };
 
@@ -57,35 +64,32 @@ const SignUpSetting: React.FC = () => {
     };
 
     // 아이디 및 이메일 중복검사
-    const checkDuplicate = async (type: 'nickname' | 'email', value: string) => {
+    const checkDuplicate = async (type: 'nickname' | 'email', value: string): Promise<void> => {
         try {
-            const response = await axios.get(
-                `http://localhost:5001/users/checkDuplicate?type=${type}&value=${value}`
-            );
-            if (response.data.isAvailable) {
-                if (type === 'nickname') {
-                    setIsNicknameAvailable(true);
-                } else {
-                    setIsEmailAvailable(true);
-                }
-                alert('사용 가능한 ' + (type === 'nickname' ? '아이디' : '이메일') + '입니다.');
-            } else {
+            const response = await axios.get(`/api/users/signup/check/${type}?${type}=${value}`);
+            if (response.data.isDuplicate) {
+                alert(`이미 사용 중인 ${type === 'nickname' ? '아이디' : '이메일'}입니다.`);
                 if (type === 'nickname') {
                     setIsNicknameAvailable(false);
                 } else {
                     setIsEmailAvailable(false);
                 }
-                alert('이미 사용 중인 ' + (type === 'nickname' ? '아이디' : '이메일') + '입니다.');
+            } else {
+                alert(`사용 가능한 ${type === 'nickname' ? '아이디' : '이메일'}입니다.`);
+                if (type === 'nickname') {
+                    setIsNicknameAvailable(true);
+                } else {
+                    setIsEmailAvailable(true);
+                }
             }
         } catch (error) {
             console.error('중복 검사 실패:', error);
-            // 중복 검사 실패 시 오류 팝업을 띄우도록 수정
+            // 중복 검사 실패 시 오류 팝업
             if (type === 'nickname') {
                 setIsNicknameAvailable(false);
             } else {
                 setIsEmailAvailable(false);
             }
-            alert('중복 검사 중 오류가 발생했습니다.');
         }
     };
 
@@ -105,35 +109,24 @@ const SignUpSetting: React.FC = () => {
             if (password !== confirmPassword) {
                 return;
             }
+        }
 
-            // 백엔드로 전송할 데이터
-            const formData = {
-                nickname: nickname,
-                email: email,
-                password: password,
-                gender: gender,
-                isPublic: isPublic,
-            };
+        // 백엔드로 전송할 데이터
+        const formData = {
+            nickname: nickname,
+            email: email,
+            password: password,
+            gender: gender,
+            isPublic: isPublic,
+        };
 
-            try {
-                //     const response = await axios.post('/users/signup', formData);
-                //     console.log('회원가입 성공:', response.data);
-                //     // 회원 가입 성공 처리 로직 추가
-                // } catch (error) {
-                //     console.error('회원가입 실패:', error);
-                //     // 회원 가입 실패 처리 로직 추가
-                //     alert('회원가입 중 오류가 발생했습니다.');
-
-                // JSON 서버에 회원가입 요청 보내기
-                const response = await axios.post('http://localhost:5001/users', formData);
-                console.log('회원가입 성공:', response.data);
-                // 회원 가입 성공 시 알림을 띄움
-                alert('회원가입에 성공했습니다.');
-            } catch (error) {
-                console.error('회원가입 실패:', error);
-                // 회원 가입 실패 시 알림을 띄움
-                alert('회원가입 중 오류가 발생했습니다.');
-            }
+        try {
+            const response = await axios.post('/api/users/signup', formData);
+            console.log('회원가입 성공:', response.data);
+            navigate('/');
+        } catch (error) {
+            console.error('회원가입 실패:', error);
+            alert('회원가입 중 오류가 발생했습니다.');
         }
     };
 

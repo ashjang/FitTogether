@@ -1,18 +1,35 @@
-import { atom, useRecoilState } from 'recoil';
+import { atom, selector } from 'recoil';
 
 // 초기값: 로그인이 되어 있지 않은 상태
 export const loggedInState = atom({
     key: 'loggedInState',
-    default: '',
+    default: false,
 });
 
-// signInState atom 정의 (타입 정보 추가)
-export interface SignInState {
-    nickname: string;
-    password: string;
-}
+export const userInfoState = selector({
+    key: 'userInfoState',
+    get: ({ get }) => {
+        const loggedIn = get(loggedInState);
+        if (loggedIn) {
+            // 로그인 상태일 때 유저 정보를 반환
+            return {
+                nickName: '',
+                password: '',
+                email: '',
+                profilePicture: null,
+                gender: true,
+                introduction: '',
+                exerciseChoice: [],
+                publicInfo: true,
+                accessToken: '',
+            };
+        }
+        return null;
+    },
+});
 
-export const signInState = atom<SignInState>({
+// 로그인하는 유저의 정보
+export const signInInfo = atom({
     key: 'signInState',
     default: {
         nickname: '',
@@ -20,15 +37,12 @@ export const signInState = atom<SignInState>({
     },
 });
 
-// 로그인 토큰 설정
-export function useSetTokenState() {
-    const [, setToken] = useRecoilState(loggedInState);
-
-    // 로그인 상태를 업데이트하는 함수를 반환
-    return (token: string) => {
-        setToken(token);
-    };
-}
+// 카카오 로그인 초기상태: 토큰이 없거나 로그아웃 상태임
+export const kakaoAccessTokenState = atom<string | undefined | null>({
+    key: 'kakaoAccessToken',
+    // default: localStorage.getItem('token_for_kakaotalk'),
+    default: null,
+});
 
 // export const authState = atom({
 //     key: 'authState',
