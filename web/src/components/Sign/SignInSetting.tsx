@@ -41,7 +41,7 @@ const SignInSetting: React.FC = () => {
         event.preventDefault();
 
         try {
-            const response = await axios.post<{ token: string }>('/users/signin', signInData);
+            const response = await axios.post('http://localhost:8080/api/users/signin', signInData);
 
             if (response.status === 200) {
                 const token = response.data.token;

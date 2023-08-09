@@ -28,3 +28,6 @@ dist-ssr
 
 #packacge-lock.json 파일 추가
 packacge-lock.json
+
+#server 폴더 추가
+/server/

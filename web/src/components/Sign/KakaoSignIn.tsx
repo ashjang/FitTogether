@@ -26,7 +26,7 @@ const KakaoSignIn: React.FC = () => {
             setKakaoAccessToken(code); //kakaoAccessTokenState 값을 업데이트
             // window.location.reload();
         }
-    }, []);
+    });
 
     // const getKakaoAccessToken = async (code: string) => {
     //     try {
