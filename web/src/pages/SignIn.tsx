@@ -1,5 +1,6 @@
-import React from 'react';
-import SignInSetting from '../components/Sign/SignInSetting';
+import React, { useState } from 'react';
+import axios from 'axios';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import KakaoSignIn from '../components/Sign/KakaoSignIn';
 
@@ -12,6 +13,14 @@ const SignIn: React.FC = () => {
         </Container>
     );
 };
+
+const Page = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // min-height는 삭제 예정
+    min-height: calc(100vh - 300px);
+`;
 
 const Container = styled.div`
     margin-top: 150px;

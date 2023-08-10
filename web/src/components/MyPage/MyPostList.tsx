@@ -49,34 +49,11 @@ const MyPostList: React.FC<MyPostListProps> = ({ userId }) => {
     const startPage: number = (currentPageGroup - 1) * 5 + 1;
     const endPage: number = Math.min(currentPageGroup * 5, numPages);
 
+const MyPostList:React.FC = () => {
     return (
-        <PostListComponent>
-            <PostListItems>
-                {postData.slice(offset, offset + limit).map((post) => (
-                    <PostListItem key={post.postId} {...post} />
-                ))}
-            </PostListItems>
-            <ButtonGroup>
-                <PaginationButton onClick={() => setPage(page - 1)} disabled={page === 1}>
-                    &lt;
-                </PaginationButton>
-                {Array.from(
-                    { length: endPage - startPage + 1 },
-                    (_, index) => startPage + index
-                ).map((item) => (
-                    <PaginationButton
-                        key={item}
-                        onClick={() => setPage(item)}
-                        css={item === page ? selectedButton : unselectedButton}
-                    >
-                        {item}
-                    </PaginationButton>
-                ))}
-                <PaginationButton onClick={() => setPage(page + 1)} disabled={page === numPages}>
-                    &gt;
-                </PaginationButton>
-            </ButtonGroup>
-        </PostListComponent>
+        <div>
+            나의 게시글
+        </div>
     );
 };
 

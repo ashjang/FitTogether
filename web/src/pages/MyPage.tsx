@@ -7,10 +7,6 @@ import { loggedInState, SignInState } from '../recoil/AuthState/atoms';
 import MyInformation from '../components/MyPage/MyInformation';
 import MyPostList from '../components/MyPage/MyPostList';
 
-interface ButtonProps {
-    isActive: boolean;
-}
-
 const MyPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState('MyInformation');
     const isLoggedIn = useRecoilValue(loggedInState);
@@ -76,12 +72,11 @@ const Button = styled.button<ButtonProps>`
     }
 `;
 
-const TabArea = styled.div`
-    width: 80%;
+const Tab = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    // margin-top: 50px;
+    margin-top: 90px;
     margin-bottom: 70px;
 `;
 
