@@ -105,6 +105,7 @@ const MyInformation: React.FC = () => {
         setIntroduction(event.target.value);
     };
 
+    // 중복검사
     const duplicationCheck = () => {
         alert('중복검사');
     };
@@ -138,7 +139,10 @@ const MyInformation: React.FC = () => {
             });
     };
 
+    // 아이디(닉네임) 형식 제한
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setInputIdValue(event.target.value);
+
         const value = event.target.value;
 
         const regex = /^[A-Za-z0-9]*$/;
@@ -361,13 +365,18 @@ const inputStyles = css`
 `;
 
 const inputButton = css`
-    border: 1px solid black;
+    border: 0.5px solid #d2d2d2;
     background-color: white;
     text-align: center;
-    box-shadow: 4px 4px 4px rgba(0, 0, 0, 25%);
     cursor: pointer;
+    margin: 10px;
     margin-left: 50px;
-    padding: 5px 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+
+    :hover {
+        background-color: #d2d2d2;
+    }
 `;
 
 const formArea = css`
@@ -380,12 +389,96 @@ const containerStyles = css`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-bottom: 10px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 `;
 
 const InputContainer = styled.div`
     display: flex;
     align-items: center;
     margin-bottom: 10px;
+`;
+
+const AddressPopup = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+`;
+
+const PopupContent = styled.div`
+    width: 500px;
+    background-color: white;
+    padding: 20px;
+
+    border-radius: 8px;
+    text-align: right;
+`;
+
+const ImageUploadContainer = styled.div`
+    position: relative;
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+`;
+
+const ImagePreviewContainer = styled.div`
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 10px;
+    margin-left: 50px;
+    margin-right: 10px;
+    pointer-events: none;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+`;
+
+const ImageUploadButton = styled.label`
+    border: 0.5px solid #d2d2d2;
+    background-color: white;
+    text-align: center;
+    cursor: pointer;
+    margin: 10px;
+    margin-left: 50px;
+    padding: 3px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    min-width: 80px;
+    height: 35px;
+
+    span {
+        pointer-events: none; // 클릭 이벤트가 버튼으로 전달되지 않도록 막음
+    }
+
+    input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        pointer-events: none;
+    }
+
+    :hover {
+        background-color: #d2d2d2;
+    }
 `;
 
 const radioButtonStyles = css`

@@ -3,9 +3,13 @@ import { useRecoilValue } from 'recoil';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 
-import { loggedInState, SignInState } from '../recoil/AuthState/atoms';
+import { loggedInState } from '../recoil/AuthState/atoms';
 import MyInformation from '../components/MyPage/MyInformation';
 import MyPostList from '../components/MyPage/MyPostList';
+
+interface ButtonProps {
+    isActive: boolean;
+}
 
 const MyPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState('MyInformation');
@@ -72,11 +76,12 @@ const Button = styled.button<ButtonProps>`
     }
 `;
 
-const Tab = styled.div`
+const TabArea = styled.div`
+    width: 80%;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 90px;
+    // margin-top: 50px;
     margin-bottom: 70px;
 `;
 

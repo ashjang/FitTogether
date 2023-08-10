@@ -27,12 +27,17 @@ const SignInSetting: React.FC = () => {
 
                 // 로그인 성공 처리: 메인페이지로 이동
                 navigate('/');
-            } else if (response.status === 400) {
+            } else if (response.status === 401) {
                 // 에러 메시지 출력
                 setErrorMessage(response.data.message);
             }
         } catch (error) {
-            console.error('Error:', error);
+            if (axios.isAxiosError(error) && error.response) {
+                const errorMessage = error.response.data.message;
+                setErrorMessage(errorMessage); // 에러 메시지를 상태로 설정하여 화면에 표시
+            } else {
+                console.error('Error:', error);
+            }
         }
     };
 

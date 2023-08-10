@@ -1,4 +1,4 @@
-import { atom, selector } from 'recoil';
+import { atom } from 'recoil';
 
 // 초기값: 로그인이 되어 있지 않은 상태
 export const loggedInState = atom({
@@ -6,29 +6,14 @@ export const loggedInState = atom({
     default: false,
 });
 
-export const userInfoState = selector({
-    key: 'userInfoState',
-    get: ({ get }) => {
-        const loggedIn = get(loggedInState);
-        if (loggedIn) {
-            // 로그인 상태일 때 유저 정보를 반환
-            return {
-                nickName: '',
-                password: '',
-                email: '',
-                profilePicture: null,
-                gender: true,
-                introduction: '',
-                exerciseChoice: [],
-                publicInfo: true,
-                accessToken: '',
-            };
-        }
-        return null;
-    },
+// 카카오 로그인 초기상태: 토큰이 없거나 로그아웃 상태임
+export const kakaoAccessTokenState = atom<string | undefined | null>({
+    key: 'kakaoAccessToken',
+    default: localStorage.getItem('token_for_kakaotalk'),
+    // default: null,
 });
 
-// 로그인하는 유저의 정보
+// 로그인 요청하는 유저의 정보
 export const signInInfo = atom({
     key: 'signInState',
     default: {
@@ -37,23 +22,18 @@ export const signInInfo = atom({
     },
 });
 
-// 카카오 로그인 초기상태: 토큰이 없거나 로그아웃 상태임
-export const kakaoAccessTokenState = atom<string | undefined | null>({
-    key: 'kakaoAccessToken',
-    // default: localStorage.getItem('token_for_kakaotalk'),
-    default: null,
+// 회원가입한 유저의 정보
+export const signUpInfo = atom({
+    key: 'signUpInfo',
+    default: {
+        nickname: '',
+        password: '',
+        email: '',
+        profilePicture: '',
+        gender: '',
+        introduction: '',
+        exerciseChoice: [],
+        publicInfo: '',
+        accessToken: '',
+    },
 });
-
-// export const authState = atom({
-//     key: 'authState',
-//     default: {
-//         isLoggedIn: false,
-//         userId: null as number | null, // 아이디의 타입을 지정합니다
-//         // other user info...
-//     },
-// });
-
-// export const emailState = atom<string>({
-//     key: 'emailState',
-//     default: '', // 초기값은 비어있는 문자열로 설정하거나, 로그인 시에 로그인한 사용자의 이메일 값을 설정합니다.
-// });
