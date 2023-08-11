@@ -1,6 +1,7 @@
 package com.fittogether.server.posts.domain.dto;
 
 import com.fittogether.server.posts.domain.model.ChildReply;
+import com.fittogether.server.posts.domain.model.Image;
 import com.fittogether.server.posts.domain.model.Post;
 import com.fittogether.server.posts.domain.model.Reply;
 import com.fittogether.server.posts.type.Category;
@@ -22,24 +23,24 @@ public class PostInfo {
   private Category category;
   private String title;
   private String description;
-  private String image;
   private Long likeCount;
   private Long viewCount;
   private Long replyCount;
+  private List<String> images;
   private boolean accessLevel;
   private boolean isLike;
   private List<ReplyDto> replyList;
   private List<ReplyDto> childReplyList;
   private LocalDateTime createdAt;
 
-  public static PostInfo from(Post post, List<Reply> replyList, List<ChildReply> childReplyList, Long totalCount, boolean isLike, Long incrementWatchedCount) {
+  public static PostInfo from(Post post, List<Reply> replyList, List<ChildReply> childReplyList, Long totalCount, boolean isLike, Long incrementWatchedCount, List<Image> images) {
 
     return PostInfo.builder()
         .userId(post.getUser().getUserId())
         .category(post.getCategory())
         .title(post.getTitle())
         .description(post.getDescription())
-        .image(post.getImage())
+        .images(images.stream().map(Image::getImageUrl).collect(Collectors.toList()))
         .likeCount(post.getLikes())
         .viewCount(incrementWatchedCount)
         .replyCount(totalCount)

@@ -17,6 +17,7 @@ public class ReplyDto {
   private String comment;
   private LocalDateTime createdAt;
   private String userNickname;
+  private String userImage;
   private Long postId;
 
   public static ReplyDto from(Reply reply) {
@@ -25,6 +26,7 @@ public class ReplyDto {
         .comment(reply.getComment())
         .createdAt(LocalDateTime.now())
         .userNickname(reply.getUser().getNickname())
+        .userImage(reply.getUser().getProfilePicture())
         .postId(reply.getPost().getId())
         .build();
   }
@@ -34,6 +36,7 @@ public class ReplyDto {
         .comment(childReply.getComment())
         .createdAt(LocalDateTime.now())
         .userNickname(childReply.getUser().getNickname())
+        .userImage(childReply.getUser().getProfilePicture())
         .postId(childReply.getReply().getPost().getId())
         .replyId(childReply.getReply().getId())
         .build();

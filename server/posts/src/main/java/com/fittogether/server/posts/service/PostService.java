@@ -7,11 +7,13 @@ import com.fittogether.server.posts.domain.dto.PostInfo;
 import com.fittogether.server.posts.domain.dto.PostListDto;
 import com.fittogether.server.posts.domain.model.ChildReply;
 import com.fittogether.server.posts.domain.model.Hashtag;
+import com.fittogether.server.posts.domain.model.Image;
 import com.fittogether.server.posts.domain.model.Post;
 import com.fittogether.server.posts.domain.model.PostHashtag;
 import com.fittogether.server.posts.domain.model.Reply;
 import com.fittogether.server.posts.domain.repository.ChildReplyRepository;
 import com.fittogether.server.posts.domain.repository.HashtagRepository;
+import com.fittogether.server.posts.domain.repository.ImageRepository;
 import com.fittogether.server.posts.domain.repository.LikeRepository;
 import com.fittogether.server.posts.domain.repository.PostHashtagRepository;
 import com.fittogether.server.posts.domain.repository.PostRepository;
@@ -24,7 +26,6 @@ import com.fittogether.server.user.exception.UserCustomException;
 import com.fittogether.server.user.exception.UserErrorCode;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,6 +44,7 @@ public class PostService {
 
   private final PostRepository postRepository;
   private final UserRepository userRepository;
+  private final ImageRepository imageRepository;
   private final PostHashtagRepository postHashtagRepository;
   private final HashtagRepository hashtagRepository;
   private final ReplyRepository replyRepository;
@@ -70,7 +72,6 @@ public class PostService {
         .user(user)
         .title(postForm.getTitle())
         .description(postForm.getDescription())
-        .image(postForm.getImage())
         .category(postForm.getCategory())
         .accessLevel(postForm.isAccessLevel())
         .likes(0L)
@@ -78,6 +79,8 @@ public class PostService {
         .createdAt(LocalDateTime.now()).build();
 
     List<Hashtag> savedHashtag = addHashtag(postForm);
+
+    addImageForDB(postForm.getImages(), post);
 
     List<PostHashtag> postHashtags = savedHashtag.stream()
         .map(hashtag -> PostHashtag.builder()
@@ -92,13 +95,35 @@ public class PostService {
   }
 
   /**
+   * 이미지 DB 저장
+   */
+  @Transactional
+  public void addImageForDB(List<String> images, Post post) {
+    List<Image> imageList = images.stream()
+        .map(image -> {
+          Image imageUrl = imageRepository.findByImageUrl(image);
+
+          if (imageUrl != null) {
+            return imageUrl;
+          } else {
+            return Image.builder()
+                .post(post)
+                .imageUrl(image)
+                .build();
+          }
+        })
+        .collect(Collectors.toList());
+
+    imageRepository.saveAll(imageList);
+  }
+
+  /**
    * 해시태그 추가
    */
   @Transactional
-  public List<Hashtag> addHashtag(PostForm addPostForm) {
-    List<String> hashtags = addPostForm.getHashtag();
+  public List<Hashtag> addHashtag(PostForm postForm) {
 
-    List<Hashtag> savedHashtag = hashtags.stream()
+    List<Hashtag> savedHashtag = postForm.getHashtag().stream()
         .map(hashtag -> {
           Hashtag existKeyword = hashtagRepository.findByKeyword(hashtag);
           // 해당 해시태그가 이미 존재한다면, 기존의 것을 사용합니다.
@@ -130,10 +155,11 @@ public class PostService {
 
     post.setTitle(postForm.getTitle());
     post.setDescription(postForm.getDescription());
-    post.setImage(postForm.getImage());
     post.setCategory(postForm.getCategory());
     post.setAccessLevel(postForm.isAccessLevel());
     post.setModifiedAt(LocalDateTime.now());
+
+    addImageForDB(postForm.getImages(), post);
 
     List<PostHashtag> currentPostHashtag = postHashtagRepository.findByPostId(postId);
     postHashtagRepository.deleteAll(currentPostHashtag);
@@ -183,6 +209,8 @@ public class PostService {
       throw new PostException(ErrorCode.NO_PERMISSION_TO_VIEW_POST);
     }
 
+    List<Image> images = imageRepository.findByPostId(postId);
+
     List<Reply> replyList = replyRepository.findByPostId(postId);
 
     List<Long> replyIds = replyList.stream()
@@ -197,7 +225,7 @@ public class PostService {
     Long totalReplyCount = getTotalReplyCount(postId);
 
     return PostInfo.from(post, replyList, childReplies, totalReplyCount, isLike,
-        incrementWatchedCount);
+        incrementWatchedCount, images);
   }
 
   /**

@@ -16,7 +16,6 @@ public class PostDto {
   private Long id;
   private String title;
   private String description;
-  private String image;
   private Category category;
   private boolean accessLevel;
   private LocalDateTime createdAt;
@@ -26,7 +25,6 @@ public class PostDto {
         .id(post.getId())
         .title(post.getTitle())
         .description(post.getDescription())
-        .image(post.getImage())
         .category(post.getCategory())
         .accessLevel(post.isAccessLevel())
         .createdAt(LocalDateTime.now())
