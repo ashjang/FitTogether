@@ -3,10 +3,11 @@ import styled from '@emotion/styled';
 import { useLocation } from 'react-router-dom';
 import QuillEditor from '../components/CreatePost,EditPost/QuillEditor';
 import PostSetting from '../components/CreatePost,EditPost/PostSetting';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import {
     titleState,
     descriptionState,
+    imagesUrlListState,
     hastagListState,
     categoryState,
     accessLevelState,
@@ -18,21 +19,29 @@ interface DataForEdit {
     savedHashtag: string[];
     savedCategory: string;
     savedAccessLevel: boolean;
+    savedImages: string[];
 }
 
 const EditPost: React.FC = () => {
-    const [title, setTitle] = useRecoilState(titleState);
-    const [description, setDescription] = useRecoilState(descriptionState);
-    const [hastagList, setHastagList] = useRecoilState(hastagListState);
-    const [category, setCategory] = useRecoilState(categoryState);
-    const [accessLevel, setAccessLevel] = useRecoilState(accessLevelState);
+    const title = useRecoilValue(titleState);
+    const description = useRecoilValue(descriptionState);
+    const images = useRecoilValue(imagesUrlListState);
+    const hastagList = useRecoilValue(hastagListState);
+    const category = useRecoilValue(categoryState);
+    const accessLevel = useRecoilValue(accessLevelState);
 
     const location = useLocation();
     const dataForEdit: DataForEdit = location.state.dataForEdit;
-    const { savedTitle, savedDescription, savedHashtag, savedCategory, savedAccessLevel } =
-        dataForEdit;
+    const {
+        savedTitle,
+        savedDescription,
+        savedImages,
+        savedHashtag,
+        savedCategory,
+        savedAccessLevel,
+    } = dataForEdit;
 
-    const dataForQuillEditorComp = { savedTitle, savedDescription };
+    const dataForQuillEditorComp = { savedTitle, savedDescription, savedImages };
     const dataForPostSettingComp = { savedHashtag, savedCategory, savedAccessLevel };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -41,17 +50,12 @@ const EditPost: React.FC = () => {
         const postForm = {
             title: title,
             description: description,
+            images: images,
             hastag: hastagList,
             category: category,
             accessLevel: accessLevel,
         };
         console.log(postForm);
-
-        setTitle('');
-        setDescription('');
-        setHastagList([]);
-        setCategory('');
-        setAccessLevel(true);
 
         // submitPostForm();
     };

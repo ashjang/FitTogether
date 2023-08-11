@@ -4,11 +4,12 @@ import ReactQuill from 'react-quill';
 import styled from '@emotion/styled';
 import 'react-quill/dist/quill.snow.css';
 import { useRecoilState } from 'recoil';
-import { titleState, descriptionState } from '../../recoil/posts/atoms';
+import { titleState, descriptionState, imagesUrlListState } from '../../recoil/posts/atoms';
 
 interface DataForQuillEditorComp {
     savedTitle: string;
     savedDescription: string;
+    savedImages: string[];
 }
 
 const formats = [
@@ -49,6 +50,7 @@ const modules = {
 const QuillEditor: React.FC<DataForQuillEditorComp | {}> = (props) => {
     const [title, setTitle] = useRecoilState(titleState);
     const [description, setDescription] = useRecoilState(descriptionState);
+    const [images, setImages] = useRecoilState(imagesUrlListState);
     const quillRef = useRef<ReactQuill>(null);
     console.log(description);
 
@@ -75,12 +77,17 @@ const QuillEditor: React.FC<DataForQuillEditorComp | {}> = (props) => {
 
                 try {
                     // 서버에 post 요청을 보내 업로드 한뒤 이미지 태그에 삽입할 url을 반환받도록 구현
-                    const response = await axios.post('/posts/', formData);
+                    const response = await axios.post('/upload/', formData);
                     console.log(response.data.url);
 
                     quillRef.current
                         .getEditor()
-                        .insertEmbed(range.index, 'image', response.data.url);
+                        .insertEmbed(range.index, 'image', response.data.imageUrl);
+                    setImages((prevImagesUrlList) => [
+                        ...prevImagesUrlList,
+                        response.data.imageUrl,
+                    ]);
+                    console.log(images);
                 } catch (error) {
                     console.log(error);
                 }
@@ -93,17 +100,21 @@ const QuillEditor: React.FC<DataForQuillEditorComp | {}> = (props) => {
             toolbar.addHandler('image', handleImage);
         }
 
-        if ('savedTitle' in props && 'savedDescription' in props) {
-            setTitle(props.savedTitle);
-            setDescription(props.savedDescription);
-        } else {
+        console.log(props);
+
+        if ('savedTitle' in props) setTitle(props.savedTitle as string);
+        if ('savedDescription' in props) setDescription(props.savedDescription as string);
+        if ('savedImages' in props) setImages(props.savedImages as string[]);
+        else {
             setTitle('');
             setDescription('');
+            setImages([]);
         }
 
         if (!props) {
             setTitle('');
             setDescription('');
+            setImages([]);
         }
     }, []);
 

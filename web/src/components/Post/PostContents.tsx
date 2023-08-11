@@ -26,11 +26,13 @@ interface PostData {
     replyCount: number;
     viewCount: number;
     accessLevel: boolean;
+    images: string[];
 }
 
 interface DataForEdit {
     savedTitle: string;
     savedDescription: string;
+    savedImages: string[];
     savedHashtag: string[];
     savedCategory: string;
     savedAccessLevel: boolean;
@@ -77,6 +79,7 @@ const PostContents: React.FC<PostContentsProps> = (props) => {
     const dataForEdit: DataForEdit = {
         savedTitle: props.postData.title,
         savedDescription: props.postData.description,
+        savedImages: props.postData.images,
         savedHashtag: props.postData.hashtag,
         savedCategory: props.postData.category,
         savedAccessLevel: props.postData.accessLevel,

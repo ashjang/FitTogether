@@ -53,6 +53,7 @@ interface PostData {
     accessLevel: boolean;
     replyList: ReplyData[];
     childReplyList: ChildReplyData[];
+    images: string[];
 }
 
 export const postDataState = atom<PostData | null>({
@@ -95,4 +96,9 @@ export const categoryState = atom<string>({
 export const accessLevelState = atom<boolean>({
     key: 'accessLevelState',
     default: true,
+});
+
+export const imagesUrlListState = atom<string[]>({
+    key: 'imagesUrlArray',
+    default: [],
 });

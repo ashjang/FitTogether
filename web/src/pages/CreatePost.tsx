@@ -8,6 +8,7 @@ import { useRecoilState } from 'recoil';
 import {
     titleState,
     descriptionState,
+    imagesUrlListState,
     hastagListState,
     categoryState,
     accessLevelState,
@@ -19,6 +20,7 @@ const CreatePost: React.FC = () => {
     const [hastagList, setHastagList] = useRecoilState(hastagListState);
     const [category, setCategory] = useRecoilState(categoryState);
     const [accessLevel, setAccessLevel] = useRecoilState(accessLevelState);
+    const [images, setImages] = useRecoilState(imagesUrlListState);
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -26,6 +28,7 @@ const CreatePost: React.FC = () => {
         const postForm = {
             title: title,
             description: description,
+            images: images,
             hastag: hastagList,
             category: category,
             accessLevel: accessLevel,
@@ -37,6 +40,7 @@ const CreatePost: React.FC = () => {
         setHastagList([]);
         setCategory('');
         setAccessLevel(true);
+        setImages([]);
 
         // submitPostForm();
     };
