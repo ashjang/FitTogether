@@ -1,10 +1,15 @@
-import { useRef } from 'react';
-// import { useMemo, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import axios from 'axios';
 import ReactQuill from 'react-quill';
 import styled from '@emotion/styled';
 import 'react-quill/dist/quill.snow.css';
 import { useRecoilState } from 'recoil';
 import { titleState, descriptionState } from '../../recoil/posts/atoms';
+
+interface DataForQuillEditorComp {
+    savedTitle: string;
+    savedDescription: string;
+}
 
 const formats = [
     'header',
@@ -41,47 +46,66 @@ const modules = {
     },
 };
 
-const QuillEditor = () => {
+const QuillEditor: React.FC<DataForQuillEditorComp | {}> = (props) => {
     const [title, setTitle] = useRecoilState(titleState);
     const [description, setDescription] = useRecoilState(descriptionState);
     const quillRef = useRef<ReactQuill>(null);
     console.log(description);
 
-    // useEffect(() => {
-    //     const handleImage = () => {
-    //         const input = document.createElement('input');
-    //         input.setAttribute('type', 'file');
-    //         input.setAttribute('accept', 'image/*');
-    //         input.click();
-    //         input.onchange = async () => {
-    //             if (!input.files || !quillRef.current) return;
-    //             const file = input.files[0];
+    useEffect(() => {
+        const handleImage = () => {
+            const input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.click();
+            input.onchange = async () => {
+                if (!input.files || !quillRef.current) return;
 
-    //             const { getEditor } = quillRef.current;
-    //             const range = getEditor().getSelection(true);
+                // 선택된 파일을 변수에 file 변수에 넣어줌
+                const file = input.files[0];
 
-    //             try {
-    //                 // 서버에 업로드 한뒤 이미지 태그에 삽입할 url을 반환받도록 구현
-    //                 const filePath = `contents/temp/${Date.now()}`;
-    //                 const url = await uploadImage(file, filePath);
+                const formData = new FormData();
+                formData.append('file', file);
+                for (const entry of formData.entries()) {
+                    console.log(entry);
+                }
 
-    //                 // 받아온 url을 이미지 태그에 삽입
-    //                 quillRef.current.getEditor().insertEmbed(range.index, 'image', url);
+                // range는 '이미지 업로드 버튼'을 눌렀을 때의 위치입니다
+                const range = quillRef.current.getEditor().getSelection(true);
 
-    //                 // 사용자 편의를 위해 커서 이미지 오른쪽으로 이동
-    //                 // quillRef.current.getEditor().setSelection(range.index + 1);
-    //             } catch (error) {
-    //                 console.log(error);
-    //             }
-    //         };
-    //     };
+                try {
+                    // 서버에 post 요청을 보내 업로드 한뒤 이미지 태그에 삽입할 url을 반환받도록 구현
+                    const response = await axios.post('/posts/', formData);
+                    console.log(response.data.url);
 
-    //     if (quillRef.current) {
-    //         const { getEditor } = quillRef.current;
-    //         const toolbar = getEditor().getModule('toolbar');
-    //         toolbar.addHandler('image', handleImage);
-    //     }
-    // }, []);
+                    quillRef.current
+                        .getEditor()
+                        .insertEmbed(range.index, 'image', response.data.url);
+                } catch (error) {
+                    console.log(error);
+                }
+            };
+        };
+
+        if (quillRef.current) {
+            // const { getEditor } = quillRef.current;
+            const toolbar = quillRef.current.getEditor().getModule('toolbar');
+            toolbar.addHandler('image', handleImage);
+        }
+
+        if ('savedTitle' in props && 'savedDescription' in props) {
+            setTitle(props.savedTitle);
+            setDescription(props.savedDescription);
+        } else {
+            setTitle('');
+            setDescription('');
+        }
+
+        if (!props) {
+            setTitle('');
+            setDescription('');
+        }
+    }, []);
 
     return (
         <EditorComponent>
@@ -103,6 +127,7 @@ const QuillEditor = () => {
         </EditorComponent>
     );
 };
+
 const EditorComponent = styled.div`
     margin: 50px 0;
 `;

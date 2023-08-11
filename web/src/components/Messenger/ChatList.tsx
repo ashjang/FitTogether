@@ -84,7 +84,7 @@ const data: ChatData = {
     },
 };
 
-const ChatList: React.FC<Props> = () => {
+const ChatList: React.FC = () => {
     const [isMateListOpen, setIsMateListOpen] = useState(false);
 
     // "운동 메이트 리스트" 클릭 이벤트를 처리하는 함수를 추가합니다.

@@ -31,6 +31,21 @@ interface CommentsProps {
     onUpdate: () => void;
 }
 
+const formatDateString = (createdAt: string) => {
+    const dateObject = new Date(createdAt);
+
+    const formattedDate = dateObject.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+    });
+
+    return formattedDate;
+};
+
 const Comments: React.FC<CommentsProps> = (props) => {
     // const { postId } = useParams<{ postId: string }>();
     const [replyInput, setReplyInput] = useState<string>('');
@@ -146,7 +161,7 @@ const Comments: React.FC<CommentsProps> = (props) => {
                             <ProfileImage src={imgSrc} />
                         </ProfileImageContainer>
                         <UserId>{reply.userNickname}</UserId>
-                        <PostTime>{reply.createdAt}</PostTime>
+                        <PostTime>{formatDateString(reply.createdAt)}</PostTime>
                         <FaTrashCan
                             icon={faTrashCan}
                             onClick={() => {
@@ -165,7 +180,9 @@ const Comments: React.FC<CommentsProps> = (props) => {
                                             <ProfileImage src={imgSrc} />
                                         </ProfileImageContainer>
                                         <UserId>{childReply.userNickname}</UserId>
-                                        <PostTime>{childReply.createdAt}</PostTime>
+                                        <PostTime>
+                                            {formatDateString(childReply.createdAt)}
+                                        </PostTime>
                                         {/* ❗해당 댓글의 작성자만 아이콘이 보이도록하는 로직 */}
                                         <FaTrashCan
                                             icon={faTrashCan}
@@ -217,7 +234,7 @@ const Comments: React.FC<CommentsProps> = (props) => {
 const CommentsComponent = styled.div`
     width: 850px;
     margin: 0 auto;
-    margin-top: 50px;
+    margin-top: 20px;
 `;
 
 const ProfileImageContainer = styled.div`

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useRecoilState } from 'recoil';
 import { hastagListState, categoryState, accessLevelState } from '../../recoil/posts/atoms';
@@ -8,7 +8,13 @@ interface ButtonProps {
     onClick: () => void;
 }
 
-const PostSetting: React.FC = () => {
+interface DataForPostSettingComp {
+    savedHashtag: string[];
+    savedCategory: string;
+    savedAccessLevel: boolean;
+}
+
+const PostSetting: React.FC<DataForPostSettingComp | {}> = (props) => {
     const [hashtag, setHashtag] = useState<string>('');
     const [hashtagList, setHashtagList] = useRecoilState(hastagListState);
     const [category, setCategory] = useRecoilState(categoryState);
@@ -25,7 +31,7 @@ const PostSetting: React.FC = () => {
         // Enter 키 누를 때 호출되는 함수
         if (event.key === 'Enter') {
             event.preventDefault();
-            setHashtagList([...hashtagList, `#${hashtag}`]);
+            setHashtagList([...hashtagList, hashtag]);
             event.currentTarget.value = ''; // 입력 필드를 비웁니다.
         }
     };
@@ -46,6 +52,18 @@ const PostSetting: React.FC = () => {
         }
     };
 
+    useEffect(() => {
+        if ('savedHashtag' in props && 'savedCategory' in props && 'savedAccessLevel' in props) {
+            setHashtagList(props.savedHashtag);
+            setCategory(props.savedCategory);
+            setAccessLevel(props.savedAccessLevel);
+        } else {
+            setHashtagList([]);
+            setCategory('');
+            setAccessLevel(true);
+        }
+    }, []);
+
     return (
         <PostSettingComponent>
             <SettingItem>
@@ -57,14 +75,18 @@ const PostSetting: React.FC = () => {
                     onKeyPress={handleHashtagInputKeyPress}
                 />
                 <HashtagList>
-                    {hashtagList.map((keyword, index) => (
-                        <HashtagItem key={index}>
-                            {keyword}
-                            <RemoveButton type="button" onClick={() => handleRemoveHashtag(index)}>
-                                X
-                            </RemoveButton>
-                        </HashtagItem>
-                    ))}
+                    {hashtagList &&
+                        hashtagList.map((keyword, index) => (
+                            <HashtagItem key={index}>
+                                {keyword}
+                                <RemoveButton
+                                    type="button"
+                                    onClick={() => handleRemoveHashtag(index)}
+                                >
+                                    X
+                                </RemoveButton>
+                            </HashtagItem>
+                        ))}
                 </HashtagList>
             </SettingItem>
             <SettingItem>
@@ -72,22 +94,22 @@ const PostSetting: React.FC = () => {
                 <CategoryTab>
                     <CategoryButton
                         type="button"
-                        active={category === '러닝'}
-                        onClick={() => handleCategoryClick('러닝')}
+                        active={category === 'RUNNING'}
+                        onClick={() => handleCategoryClick('RUNNING')}
                     >
                         러닝
                     </CategoryButton>
                     <CategoryButton
                         type="button"
-                        active={category === '등산'}
-                        onClick={() => handleCategoryClick('등산')}
+                        active={category === 'HIKING'}
+                        onClick={() => handleCategoryClick('HIKING')}
                     >
                         등산
                     </CategoryButton>
                     <CategoryButton
                         type="button"
-                        active={category === '헬스'}
-                        onClick={() => handleCategoryClick('헬스')}
+                        active={category === 'WEIGHT'}
+                        onClick={() => handleCategoryClick('WEIGHT')}
                     >
                         헬스
                     </CategoryButton>

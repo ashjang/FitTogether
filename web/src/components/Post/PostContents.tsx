@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { faThumbsUp } from '@fortawesome/free-regular-svg-icons';
 import { faComment } from '@fortawesome/free-regular-svg-icons';
+import { faEye } from '@fortawesome/free-regular-svg-icons';
 import Modal from 'react-modal';
 
 const imageSrc: string = default_user_image;
@@ -24,6 +25,15 @@ interface PostData {
     likeCount: number;
     replyCount: number;
     viewCount: number;
+    accessLevel: boolean;
+}
+
+interface DataForEdit {
+    savedTitle: string;
+    savedDescription: string;
+    savedHashtag: string[];
+    savedCategory: string;
+    savedAccessLevel: boolean;
 }
 
 interface PostContentsProps {
@@ -31,25 +41,46 @@ interface PostContentsProps {
     onUpdate: () => void;
 }
 
-const PostContents: React.FC<PostContentsProps> = (
-    //     {
-    //     // postId,
-    //     // userImage,
-    //     userNickname,
-    //     createdAt,
-    //     category,
-    //     hashtag,
-    //     title,
-    //     description,
-    //     likeCount,
-    //     replyCount,
-    //     viewCount,
-    // }
-    props
-) => {
+const getCategoryName = (categoryEng: string) => {
+    switch (categoryEng) {
+        case 'RUNNING':
+            return '러닝';
+        case 'HIKING':
+            return '등산';
+        case 'WEIGHT':
+            return '헬스';
+        default:
+            return '';
+    }
+};
+
+const formatDateString = (createdAt: string) => {
+    const dateObject = new Date(createdAt);
+
+    const formattedDate = dateObject.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+    });
+
+    return formattedDate;
+};
+
+const PostContents: React.FC<PostContentsProps> = (props) => {
     const { postId } = useParams<{ postId: string }>();
     // const [isLikedState, setIsLikedState] = useState(isliked);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const dataForEdit: DataForEdit = {
+        savedTitle: props.postData.title,
+        savedDescription: props.postData.description,
+        savedHashtag: props.postData.hashtag,
+        savedCategory: props.postData.category,
+        savedAccessLevel: props.postData.accessLevel,
+    };
 
     // 모달 토글 함수
     const handleToggleModal = () => {
@@ -57,7 +88,7 @@ const PostContents: React.FC<PostContentsProps> = (
     };
 
     // 전체 게시글을 보여주는 posts 페이지로 이동하는 함수
-    // const handleGoBackToCommunity = () => {
+    // const handleGoBackToPosts = () => {
     //     const navigate = useNavigate();
     //     navigate('/posts');
     // };
@@ -73,7 +104,7 @@ const PostContents: React.FC<PostContentsProps> = (
         //     });
         //     console.log(response.data);
         //     if (response.data.status === 'success') {
-        //         handleGoBackToCommunity();
+        //         handleGoBackToPosts();
         //     }
         // } catch (error) {
         //     console.log(error);
@@ -101,7 +132,7 @@ const PostContents: React.FC<PostContentsProps> = (
     return (
         <PostContentsComponent>
             <CategoryAndHashtag>
-                <PostCategory>{props.postData.category}</PostCategory>
+                <PostCategory>{getCategoryName(props.postData.category)}</PostCategory>
                 {props.postData.hashtag.map((hashtag) => {
                     return <PostHashtag>{hashtag}</PostHashtag>;
                 })}
@@ -112,8 +143,8 @@ const PostContents: React.FC<PostContentsProps> = (
                     <ProfileImage src={imageSrc} />
                 </ProfileImageContainer>
                 <ProfileNickname>{props.postData.userNickname}</ProfileNickname>
-                <CreatedAt>{props.postData.createdAt}</CreatedAt>
-                {/* ❗해당 포스트의 작성자만 아이콘이 보이도록하는 로직 */}
+                <CreatedAt>{formatDateString(props.postData.createdAt)}</CreatedAt>
+                {/* ❗ 해당 포스트의 작성자만 아이콘이 보이도록하는 로직 */}
                 <FaEllipsis icon={faEllipsis} onClick={handleToggleModal} />
                 <Modal
                     isOpen={isModalOpen}
@@ -136,15 +167,15 @@ const PostContents: React.FC<PostContentsProps> = (
                         },
                     }}
                 >
-                    <Link to={`/posts/${postId}/editpost`}>
+                    <Link to={`/posts/${postId}/editpost`} state={{ dataForEdit }}>
                         <button onClick={handleEditPost}>수정하기</button>
                     </Link>
                     <button onClick={handleDeletePost}>삭제하기</button>
                 </Modal>
             </ProfileContainer>
             <Post>
-                <h1>{props.postData.title}</h1>
-                <p>{props.postData.description}</p>
+                <PostTitle>{props.postData.title}</PostTitle>
+                <PostDescription dangerouslySetInnerHTML={{ __html: props.postData.description }} />
             </Post>
             <PostDetail>
                 <PostDetailItem>
@@ -156,7 +187,8 @@ const PostContents: React.FC<PostContentsProps> = (
                     <span>{props.postData.replyCount}</span>
                 </PostDetailItem>
                 <PostDetailItem>
-                    <span>조회수: {props.postData.viewCount}</span>
+                    <FaEye icon={faEye} />
+                    <span>{props.postData.viewCount}</span>
                 </PostDetailItem>
             </PostDetail>
         </PostContentsComponent>
@@ -171,16 +203,24 @@ const PostContentsComponent = styled.div`
 `;
 const CategoryAndHashtag = styled.div`
     display: flex;
+    justify-contents: flex-start;
+    align-items: center;
     width: 850px;
 `;
 
 const PostCategory = styled.p`
-    margin-right: 15px;
-    font-weight: bold;
+    padding: 0 10px;
+    margin-right: 20px;
+    border-radius: 7.5px;
+    background-color: #c7c7c7;
 `;
 
 const PostHashtag = styled.p`
+    padding: 0 10px;
     margin-right: 15px;
+    border-radius: 15px;
+    background-color: #e1e1e1;
+    font-size: 13px;
 `;
 
 const ProfileContainer = styled.div`
@@ -188,7 +228,7 @@ const ProfileContainer = styled.div`
     justify-content: flex-start;
     align-items: center;
     position: relative;
-    width: 900px;
+    width: 850px;
 `;
 
 const ProfileImageContainer = styled.div`
@@ -199,7 +239,7 @@ const ProfileImageContainer = styled.div`
     height: 35px;
     border: 1px transparent solid;
     border-radius: 50%;
-    margin: 10px;
+    margin: 20px 10px 20px 0;
     overflow: hidden;
 `;
 
@@ -230,19 +270,39 @@ const Post = styled.div`
     width: 850px;
 `;
 
+const PostTitle = styled.h1`
+    margin-bottom: 20px;
+`;
+
+const PostDescription = styled.div`
+    width: 850px;
+`;
+
 const PostDetail = styled.div`
     display: flex;
     justify-content: flex-start;
     align-items: center;
     width: 850px;
+    margin-top: 30px;
+    border-top: 1px solid #d7d7d7;
+    border-bottom: 1px solid #d7d7d7;
 `;
 
 const PostDetailItem = styled.div`
-    margin-right: 15px;
+    margin-right: 20px;
 `;
 
-const FaThumbsUp = styled(FontAwesomeIcon)``;
+const FaThumbsUp = styled(FontAwesomeIcon)`
+    margin-left: 10px;
+    margin-right: 5px;
+`;
 
-const FaComment = styled(FontAwesomeIcon)``;
+const FaComment = styled(FontAwesomeIcon)`
+    margin-right: 5px;
+`;
+
+const FaEye = styled(FontAwesomeIcon)`
+    margin-right: 5px;
+`;
 
 export default PostContents;

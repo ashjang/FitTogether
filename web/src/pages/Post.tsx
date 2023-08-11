@@ -9,7 +9,6 @@ import { postDataState, replyDataState, childReplyDataState } from '../recoil/po
 
 const Post: React.FC = () => {
     const [update, setUpdate] = useState<boolean>(false);
-
     const { postId } = useParams<{ postId: string }>();
 
     const [postData, setPostData] = useRecoilState(postDataState);
@@ -17,9 +16,9 @@ const Post: React.FC = () => {
     const [childReplyData, setChildReplyData] = useRecoilState(childReplyDataState);
 
     const getPostData = async () => {
-        // const response = await axios.post(`/posts/${postId}`,{postId} , header);
         try {
             console.log(postId);
+            // const response = await axios.post(`/posts/${postId}`, { postId }, { headers });
             const response = await axios.get(`http://localhost:3001/posts-${postId}`);
             const { replyList, childReplyList, ...rest } = response.data;
             setPostData(rest);
@@ -33,7 +32,7 @@ const Post: React.FC = () => {
     useEffect(() => {
         getPostData();
         console.log('Post Rendering !');
-    }, [update]); // 두 번째 인자로 빈 배열을 전달하여 컴포넌트가 처음 마운트될 때만 실행
+    }, [update]); // 렌더링될 때, update 상태가 변할 때 실행
 
     useEffect(() => {
         console.log(postData);

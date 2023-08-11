@@ -34,7 +34,7 @@ const Page = styled.div`
     // margin -> 150px auto로 변경해야.
     margin: 40px auto;
     // // min-height는 삭제 예정
-    // min-height: calc(100vh - 300px);
+    min-height: calc(100vh - 300px);
 `;
 
 const Title = styled.h1`

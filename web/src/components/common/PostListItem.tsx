@@ -2,27 +2,36 @@ import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp } from '@fortawesome/free-regular-svg-icons';
-import { faComment } from '@fortawesome/free-regular-svg-icons';
-import imgSrc from '../../assets/post_image_example.jpg';
+import { faEye } from '@fortawesome/free-regular-svg-icons';
+import imgSrc from '../../assets/default-user-image.png';
 
 interface Props {
     postId: number;
     category: string;
     title: string;
-    firstParagraph: string;
-    firstImage: string;
     likeCount: number;
-    replyCount: number;
     viewCount: number;
+    userNickname: string;
+    userImage: string;
 }
+
+const getCategoryName = (categoryEng: string) => {
+    switch (categoryEng) {
+        case 'RUNNING':
+            return '러닝';
+        case 'HIKING':
+            return '등산';
+        case 'WEIGHT':
+            return '헬스';
+    }
+};
 const PostListItem: React.FC<Props> = ({
     postId,
     category,
     title,
-    firstParagraph,
-    // firstImage, // json-server에서 이미지 경로를 가져와 사용하는 것이 까다로워 임시로 import하여 사용
+    userNickname,
+    // userImage,
     likeCount,
-    replyCount,
     viewCount,
 }) => {
     return (
@@ -30,26 +39,26 @@ const PostListItem: React.FC<Props> = ({
             {/* ShowPost: postId를 사용하여 해당 postId를 가진 post의 내용을 불러와 렌더링하도록 수정해야!! */}
             <ShowPost to={`/posts/${postId}`}>
                 <PostInfo>
-                    <PostCategory>{category}</PostCategory>
+                    <PostCategory>{getCategoryName(category)}</PostCategory>
                     <PostTitle>{title}</PostTitle>
-                    <PostFirstParagraph>{firstParagraph}</PostFirstParagraph>
                     <PostDetail>
                         <PostDetailItem>
                             <FaThumbsUp icon={faThumbsUp} />
                             <span>{likeCount}</span>
                         </PostDetailItem>
                         <PostDetailItem>
-                            <FaComment icon={faComment} />
-                            <span>{replyCount}</span>
-                        </PostDetailItem>
-                        <PostDetailItem>
-                            <span>조회수: {viewCount}</span>
+                            <FaEye icon={faEye} />
+                            <span>{viewCount}</span>
                         </PostDetailItem>
                     </PostDetail>
                 </PostInfo>
-                <PostImageContainer>
-                    <PostImage src={imgSrc} />
-                </PostImageContainer>
+                <PosterInfo>
+                    <ProfileImageContainer>
+                        {/* <ProfileImage src={userImage} /> */}
+                        <ProfileImage src={imgSrc} />
+                    </ProfileImageContainer>
+                    <PosterNickname>{userNickname}</PosterNickname>
+                </PosterInfo>
             </ShowPost>
         </PostListItemComponent>
     );
@@ -57,44 +66,36 @@ const PostListItem: React.FC<Props> = ({
 
 const PostListItemComponent = styled.div`
     width: 750px;
-    height: 150px;
-    margin: 25px 0;
+    margin: 50px 0;
+    border-top: 1px solid #d7d7d7;
+    padding: 5px 0;
+    border-bottom: 1px solid #d7d7d7;
 `;
 
 const ShowPost = styled(Link)`
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
 `;
 
 const PostInfo = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    height: 150px;
 `;
 
 const PostCategory = styled.p`
-    height: 25px;
+    padding: 5px;
+    margin-right: 20px;
+    border-radius: 10px;
+    font-size: 12px;
+    background-color: #c7c7c7;
 `;
 const PostTitle = styled.h2`
     height: 30px;
     font-size: 18px;
     white-space: nowrap;
     text-overflow: ellipsis;
-`;
-const PostFirstParagraph = styled.p`
-    display: -webkit-box;
-    word-wrap: break-word;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 14px;
-    line-height: 1.2;
-    height: 70px;
-    color: #444;
-    text-decoration: none;
 `;
 
 const PostDetail = styled.div`
@@ -107,19 +108,45 @@ const PostDetailItem = styled.div`
     margin-right: 15px;
 `;
 
-const FaThumbsUp = styled(FontAwesomeIcon)``;
-
-const FaComment = styled(FontAwesomeIcon)``;
-
-const PostImageContainer = styled.div`
-    width: 150px;
-    height: 150px;
+const FaThumbsUp = styled(FontAwesomeIcon)`
+    margin-right: 5px;
 `;
 
-const PostImage = styled.img`
+const FaEye = styled(FontAwesomeIcon)`
+    margin-right: 5px;
+`;
+
+const PosterInfo = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+`;
+
+const ProfileImageContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 25px;
+    height: 25px;
+    border: 1px transparent solid;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 10px;
+`;
+
+const ProfileImage = styled.img`
     display: block;
     padding: 0px;
-    width: 150px;
-    height: 150px;
+    width: 25px;
+    height: 25px;
 `;
+
+const PosterNickname = styled.p`
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+`;
+
 export default PostListItem;

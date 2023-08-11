@@ -5,11 +5,11 @@ interface PostDataListItem {
     postId: number;
     category: string;
     title: string;
-    firstParagraph: string;
-    firstImage: string;
+    userImage: string;
+    userNickname: string;
     likeCount: number;
-    replyCount: number;
     viewCount: number;
+    accessLevel: boolean;
 }
 
 export const postListDataState = atom<PostDataListItem[] | null>({
@@ -50,6 +50,7 @@ interface PostData {
     likeCount: number;
     replyCount: number;
     viewCount: number;
+    accessLevel: boolean;
     replyList: ReplyData[];
     childReplyList: ChildReplyData[];
 }

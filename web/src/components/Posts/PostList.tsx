@@ -42,7 +42,7 @@ const PostList: React.FC = () => {
                         .slice(offset, offset + limit)
                         .map((post) => <PostListItem key={post.postId} {...post} />)
                 ) : (
-                    <div>There is no post yet</div>
+                    <div>Loading...</div>
                 )}
             </PostListItems>
             <ButtonGroup>
@@ -73,7 +73,6 @@ const PostListComponent = styled.div``;
 
 const PostListItems = styled.div`
     width: 750px;
-    height: 875px;
 `;
 
 const ButtonGroup = styled.div`

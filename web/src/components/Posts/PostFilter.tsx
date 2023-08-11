@@ -84,20 +84,20 @@ const PostFilter: React.FC = () => {
         <PostFilterComponent>
             <CategoryField>
                 <CategoryButton
-                    active={category === '러닝'}
-                    onClick={() => handleCategoryClick('러닝')}
+                    active={category === 'RUNNING'}
+                    onClick={() => handleCategoryClick('RUNNING')}
                 >
                     러닝
                 </CategoryButton>
                 <CategoryButton
-                    active={category === '등산'}
-                    onClick={() => handleCategoryClick('등산')}
+                    active={category === 'HIKING'}
+                    onClick={() => handleCategoryClick('HIKING')}
                 >
                     등산
                 </CategoryButton>
                 <CategoryButton
-                    active={category === '헬스'}
-                    onClick={() => handleCategoryClick('헬스')}
+                    active={category === 'WEIGHT'}
+                    onClick={() => handleCategoryClick('WEIGHT')}
                 >
                     헬스
                 </CategoryButton>
