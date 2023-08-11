@@ -27,6 +27,9 @@ public class RedisConfig extends CachingConfigurerSupport {
   @Value("${spring.redis.port}")
   private int port;
 
+  @Value("${spring.redis.password}")
+  private String password;
+
   @Value("${spring.redis.ttl-duration}")
   private Long duration;
 
@@ -44,6 +47,7 @@ public class RedisConfig extends CachingConfigurerSupport {
     RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
     redisStandaloneConfiguration.setHostName(host);
     redisStandaloneConfiguration.setPort(port);
+    redisStandaloneConfiguration.setPassword(password);
     return new LettuceConnectionFactory(redisStandaloneConfiguration);
   }
 
