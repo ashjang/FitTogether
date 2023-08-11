@@ -1,5 +1,6 @@
 /.DS_Store
 /web/node_modules/
+/web/package-lock.json
 /.vscode/
 /server/.gradle/
 /server/bin/
