@@ -26,6 +26,7 @@ public class PostInfo {
   private Long likeCount;
   private Long viewCount;
   private Long replyCount;
+  private boolean accessLevel;
   private boolean isLike;
   private List<ReplyDto> replyList;
   private List<ReplyDto> childReplyList;
@@ -42,6 +43,7 @@ public class PostInfo {
         .likeCount(post.getLikes())
         .viewCount(incrementWatchedCount)
         .replyCount(totalCount)
+        .accessLevel(post.isAccessLevel())
         .isLike(isLike)
         .replyList(replyList.stream().map(ReplyDto::from).collect(Collectors.toList()))
         .childReplyList(childReplyList.stream().map(ReplyDto::fromChild).collect(Collectors.toList()))

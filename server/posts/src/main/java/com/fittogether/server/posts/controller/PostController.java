@@ -4,8 +4,10 @@ import com.fittogether.server.posts.domain.dto.LikeDto;
 import com.fittogether.server.posts.domain.dto.PostDto;
 import com.fittogether.server.posts.domain.dto.PostForm;
 import com.fittogether.server.posts.domain.dto.PostInfo;
+import com.fittogether.server.posts.domain.dto.PostListDto;
 import com.fittogether.server.posts.service.LikeService;
 import com.fittogether.server.posts.service.PostService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,6 +36,7 @@ public class PostController {
         postService.createPost(token, postForm)));
 
   }
+
   @GetMapping("/{postId}")
   public ResponseEntity<PostInfo> clickPost(@PathVariable Long postId) {
 
@@ -63,5 +66,18 @@ public class PostController {
                                           @PathVariable Long postId) {
     return ResponseEntity.ok(LikeDto.from(
         likeService.likePost(token, postId)));
+  }
+
+  @GetMapping
+  public ResponseEntity<List<PostListDto>> allPost() {
+    return ResponseEntity.ok(
+        postService.allPost());
+  }
+
+  @GetMapping("/my")
+  public ResponseEntity<List<PostListDto>> myPost(
+      @RequestHeader(name = "X-AUTH-TOKEN") String token) {
+    return ResponseEntity.ok(
+        postService.myPost(token));
   }
 }

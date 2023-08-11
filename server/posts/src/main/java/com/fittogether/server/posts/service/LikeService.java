@@ -12,7 +12,6 @@ import com.fittogether.server.user.domain.model.User;
 import com.fittogether.server.user.domain.repository.UserRepository;
 import com.fittogether.server.user.exception.UserCustomException;
 import com.fittogether.server.user.exception.UserErrorCode;
-import java.util.Iterator;
 import java.util.Set;
 import javax.persistence.LockModeType;
 import lombok.RequiredArgsConstructor;
@@ -97,9 +96,7 @@ public class LikeService {
   public void updateLikeCountRedis() {
     log.info("DB 좋아요 수 갱신");
     Set<String> keys = redisTemplate.keys("postLikeCount::*");
-    Iterator<String> it = keys.iterator();
-    while (it.hasNext()) {
-      String data = it.next();
+    for (String data : keys) {
       Long postId = Long.parseLong(data.split("::")[1]);
       Long likeCount = Long.parseLong(redisTemplate.opsForValue().get(data));
       updateLikeCountDB(postId, likeCount);
