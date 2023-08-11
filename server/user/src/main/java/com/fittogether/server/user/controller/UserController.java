@@ -62,4 +62,11 @@ public class UserController {
                 kakao.signIn(userDto)
         );
     }
+
+    @ApiOperation(value = "로그아웃")
+    @PostMapping("/signout")
+    public ResponseEntity<?> signOut(@RequestHeader(name = "X-AUTH-TOKEN") String token) {
+        signInService.signOut(token);
+        return ResponseEntity.ok().body("로그아웃 완료");
+    }
 }

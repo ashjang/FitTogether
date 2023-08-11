@@ -28,4 +28,11 @@ public class UserSignInService {
 
         return jwtProvider.createToken(user.getNickname(), user.getUserId());
     }
+
+    // 로그아웃
+    public void signOut(String token) {
+        if (jwtProvider.invalidateToken(token)) {
+            throw new UserCustomException(UserErrorCode.CANNOT_LOGOUT);
+        }
+    }
 }
