@@ -15,6 +15,8 @@ import com.fittogether.server.video.domain.repository.PlaylistVideoRepository;
 import com.fittogether.server.video.domain.repository.VideoRepository;
 import com.fittogether.server.video.exception.VideoCustomException;
 import com.fittogether.server.video.exception.VideoErrorCode;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +54,19 @@ public class VideoService {
 //    playlist.addVideo(playlistVideo);
 
     return playlistVideoRepository.save(playlistVideo);
+  }
+
+  public List<PlaylistVideo> getVideoInPlaylist(String token, String targetName) {
+    UserVo userVo = provider.getUserVo(token);
+
+    User user = userRepository.findById(userVo.getUserId())
+        .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+    Playlist playlist = playlistRepository.findByUser_UserIdAndPlaylistName(user.getUserId(),
+        targetName).orElseThrow(() -> new VideoCustomException(VideoErrorCode.NOT_FOUND_PLAYLIST));
+
+    return playlistVideoRepository.findByPlaylistId(playlist.getPlaylistId());
+
   }
 
 }
