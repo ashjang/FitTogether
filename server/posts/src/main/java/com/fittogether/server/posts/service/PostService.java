@@ -4,6 +4,7 @@ import com.fittogether.server.domain.token.JwtProvider;
 import com.fittogether.server.domain.token.UserVo;
 import com.fittogether.server.posts.domain.dto.PostForm;
 import com.fittogether.server.posts.domain.dto.PostInfo;
+import com.fittogether.server.posts.domain.dto.PostListDto;
 import com.fittogether.server.posts.domain.model.ChildReply;
 import com.fittogether.server.posts.domain.model.Hashtag;
 import com.fittogether.server.posts.domain.model.Post;
@@ -199,6 +200,9 @@ public class PostService {
         incrementWatchedCount);
   }
 
+  /**
+   * 댓글 수
+   */
   @Transactional
   public Long getTotalReplyCount(Long postId) {
     Long replyCount = replyRepository.countByPostId(postId);
@@ -207,6 +211,9 @@ public class PostService {
     return replyCount + childReplyCount;
   }
 
+  /**
+   * 조회수 캐싱
+   */
   @Transactional
   public Long incrementWatchedCount(Long postId) {
     String key = "postWatchedCount::" + postId;
@@ -227,23 +234,27 @@ public class PostService {
     }
   }
 
+  /**
+   * 스케줄링으로 업데이트 호출 및 캐시 삭제
+   */
   @Scheduled(cron = "0 0/3 * * * *")
   public void syncWatchedCountToDatabase() {
     log.info("DB 조회수 갱신");
 
     Set<String> keys = redisTemplate.keys("postWatchedCount::*");
-    Iterator<String> it = keys.iterator();
 
-    while (it.hasNext()) {
-      String data = it.next();
+    for (String data : keys) {
       Long postId = Long.parseLong(data.split("::")[1]);
-      Long viewCnt = Long.parseLong((String) redisTemplate.opsForValue().get(data));
+      Long viewCnt = Long.parseLong(redisTemplate.opsForValue().get(data));
 
       updateWatchedCountInDatabase(postId, viewCnt);
       redisTemplate.delete("postWatchedCount::" + postId);
     }
   }
 
+  /**
+   * 조회수 DB 업데이트
+   */
   @Transactional
   public void updateWatchedCountInDatabase(Long postId, Long watchedCount) {
     Post post = postRepository.findById(postId)
@@ -251,5 +262,35 @@ public class PostService {
 
     post.setWatched(watchedCount);
     postRepository.save(post);
+  }
+
+  /**
+   * 전체 게시글 보기
+   */
+  public List<PostListDto> allPost() {
+
+    List<Post> allPost = postRepository.findAll();
+
+    return allPost.stream().map(PostListDto::from)
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * 내 게시글 보기
+   */
+  public List<PostListDto> myPost(String token) {
+    if (!provider.validateToken(token)) {
+      throw new RuntimeException("Invalid or expired token.");
+    }
+
+    UserVo userVo = provider.getUserVo(token);
+
+    User user = userRepository.findById(userVo.getUserId())
+        .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+    List<Post> allPostByUser = postRepository.findAllByUser(user);
+
+    return allPostByUser.stream().map(PostListDto::from)
+        .collect(Collectors.toList());
   }
 }
