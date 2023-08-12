@@ -26,14 +26,14 @@ export const signInInfo = atom({
 export const signUpInfo = atom({
     key: 'signUpInfo',
     default: {
-        nickname: '',
+        nickname: 'HEY_1234',
         password: '',
         email: '',
         profilePicture: '',
-        gender: '',
+        gender: true,
         introduction: '',
-        exerciseChoice: [],
-        publicInfo: '',
+        exerciseChoice: [''],
+        publicInfo: true,
         accessToken: '',
     },
 });
