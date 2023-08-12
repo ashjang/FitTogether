@@ -1,4 +1,6 @@
 import React from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { useLocation } from 'react-router-dom';
 import QuillEditor from '../components/CreatePost,EditPost/QuillEditor';
@@ -12,6 +14,12 @@ import {
     categoryState,
     accessLevelState,
 } from '../recoil/posts/atoms';
+
+const token = localStorage.getItem('token');
+
+const headers = {
+    Authorization: token,
+};
 
 interface DataForEdit {
     savedTitle: string;
@@ -44,36 +52,35 @@ const EditPost: React.FC = () => {
     const dataForQuillEditorComp = { savedTitle, savedDescription, savedImages };
     const dataForPostSettingComp = { savedHashtag, savedCategory, savedAccessLevel };
 
+    const postForm = {
+        title: title,
+        description: description,
+        images: images,
+        hastag: hastagList,
+        category: category,
+        accessLevel: accessLevel,
+    };
+    console.log(postForm);
+
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const postForm = {
-            title: title,
-            description: description,
-            images: images,
-            hastag: hastagList,
-            category: category,
-            accessLevel: accessLevel,
-        };
-        console.log(postForm);
-
-        // submitPostForm();
+        submitPostForm();
     };
 
-    // const submitPostForm = async () => {
-    // try {
-    //     const response = await axios.post('/posts', postForm, {
-    //         headers,
-    //     });
-    //     if (response.data.status === 'success') {
-    //         const navigate = useNavigate();
-    //         navigate(`/posts/${response.data.postId}`);
-    //     }
-    // } catch (error) {
-    //     console.log(error);
-    //     throw error;
-    // }
-    // };
+    const submitPostForm = async () => {
+        try {
+            const response = await axios.post('/api/posts', postForm, {
+                headers,
+            });
+            if (response.data.status === 'success') {
+                const navigate = useNavigate();
+                navigate(`/posts/${response.data.postId}`);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (
         <PostDataForm onSubmit={handleSubmit}>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-// import axios from 'axios';
-// import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useParams, Link } from 'react-router-dom';
 import default_user_image from '../../assets/default-user-image.png';
 import styled from '@emotion/styled';
@@ -10,6 +10,12 @@ import { faThumbsUp } from '@fortawesome/free-regular-svg-icons';
 import { faComment } from '@fortawesome/free-regular-svg-icons';
 import { faEye } from '@fortawesome/free-regular-svg-icons';
 import Modal from 'react-modal';
+
+const token = localStorage.getItem('token');
+
+const headers = {
+    Authorization: token,
+};
 
 const imageSrc: string = default_user_image;
 
@@ -91,27 +97,27 @@ const PostContents: React.FC<PostContentsProps> = (props) => {
     };
 
     // 전체 게시글을 보여주는 posts 페이지로 이동하는 함수
-    // const handleGoBackToPosts = () => {
-    //     const navigate = useNavigate();
-    //     navigate('/posts');
-    // };
+    const handleGoBackToPosts = () => {
+        const navigate = useNavigate();
+        navigate('/posts');
+    };
 
     // 게시글 수정 눌렀을 때 실행할 함수
     const handleEditPost = () => {};
 
     // 게시글 삭제 눌렀을 때 실행할 함수
     const handleDeletePost = async () => {
-        // try {
-        //     const response = await axios.delete(`/posts/${postId}`, {
-        //         headers,
-        //     });
-        //     console.log(response.data);
-        //     if (response.data.status === 'success') {
-        //         handleGoBackToPosts();
-        //     }
-        // } catch (error) {
-        //     console.log(error);
-        // }
+        try {
+            const response = await axios.delete(`/api/posts/${postId}`, {
+                headers,
+            });
+            console.log(response.data);
+            if (response.data.status === 'success') {
+                handleGoBackToPosts();
+            }
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     // 좋아요 눌렀을 때
@@ -128,7 +134,7 @@ const PostContents: React.FC<PostContentsProps> = (props) => {
         //         props.onUpdate();
         //     }
         // } catch (error) {
-        //     console.log(error);
+        //     console.error(error);
         // }
         props.onUpdate();
     };

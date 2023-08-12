@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
-// import { useParams } from 'react-router-dom';
-// import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import styled from '@emotion/styled';
 import imgSrc from '../../assets/default-user-image.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
+
+const token = localStorage.getItem('token');
+
+const headers = {
+    Authorization: token,
+};
 
 interface ReplyData {
     postId: number;
@@ -47,7 +53,7 @@ const formatDateString = (createdAt: string) => {
 };
 
 const Comments: React.FC<CommentsProps> = (props) => {
-    // const { postId } = useParams<{ postId: string }>();
+    const { postId } = useParams<{ postId: string }>();
     const [replyInput, setReplyInput] = useState<string>('');
     const [childReplyInput, setChildReplyInput] = useState<string>('');
     const [showChildReplyInput, setShowChildReplyInput] = useState<boolean>(false);
@@ -60,40 +66,40 @@ const Comments: React.FC<CommentsProps> = (props) => {
 
     // "댓글 입력" 버튼 눌렀을 때 실행할 함수
     const handleSubmitReply = async () => {
-        // const replyForm = {
-        //     comment: replyInput,
-        // };
-        // try {
-        //     const response = await axios.post(`/posts/${postId}/comments`, replyForm, {
-        //         headers,
-        //     });
-        //     console.log(response.data);
-        //     if (response.data.status === 'success') {
-        //         props.onUpdate();
-        //     }
-        // } catch (error) {
-        //     console.log(error);
-        // }
+        const replyForm = {
+            comment: replyInput,
+        };
+        try {
+            const response = await axios.post(`/api/posts/${postId}/comments`, replyForm, {
+                headers,
+            });
+            console.log(response.data);
+            if (response.data.status === 'success') {
+                props.onUpdate();
+            }
+        } catch (error) {
+            console.error(error);
+        }
         props.onUpdate();
     };
 
     // 댓글 "삭제하기" 버튼 눌렀을 때 실행할 함수
     const handleDeleteReply = async (replyId: number) => {
         console.log(replyId);
-        // const confirmDelete = window.confirm('정말로 댓글을 삭제하시겠습니까?');
-        // if (confirmDelete) {
-        //     try {
-        //         const response = await axios.delete(`/posts/${postId}/comments/${replyId}`, {
-        //             headers,
-        //         });
-        //         console.log(response.data);
-        //         if (response.data.status === 'success') {
-        //             props.onUpdate();
-        //         }
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
-        // }
+        const confirmDelete = window.confirm('정말로 댓글을 삭제하시겠습니까?');
+        if (confirmDelete) {
+            try {
+                const response = await axios.delete(`/api/posts/${postId}/comments/${replyId}`, {
+                    headers,
+                });
+                console.log(response.data);
+                if (response.data.status === 'success') {
+                    props.onUpdate();
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
         props.onUpdate();
     };
 
@@ -105,43 +111,43 @@ const Comments: React.FC<CommentsProps> = (props) => {
     // "대댓글 입력" 버튼 눌렀을 때 실행할 함수
     const handleSubmitChildReply = async (replyId: number) => {
         console.log(replyId);
-        // const requestData = {
-        //     comment: childReplyInput,
-        // };
-        // try {
-        //     const response = await axios.post(`/posts/comments/${replyId}`, requestData, {
-        //         headers,
-        //     });
-        //     if (response.data.status === 'success') {
-        //         props.onUpdate();
-        //     }
-        //     console.log(response.data);
-        // } catch (error) {
-        //     console.log(error);
-        // }
+        const requestData = {
+            comment: childReplyInput,
+        };
+        try {
+            const response = await axios.post(`/api/posts/comments/${replyId}`, requestData, {
+                headers,
+            });
+            if (response.data.status === 'success') {
+                props.onUpdate();
+            }
+            console.log(response.data);
+        } catch (error) {
+            console.error(error);
+        }
         props.onUpdate();
     };
 
     // 대댓글 "삭제하기" 버튼 눌렀을 때 실행할 함수
     const handleDeleteChildReply = async (replyId: number, childReplyId: number) => {
         console.log(replyId, childReplyId);
-        // const confirmDelete = window.confirm('정말로 댓글을 삭제하시겠습니까?');
-        // if (confirmDelete) {
-        //     try {
-        //         const response = await axios.delete(
-        //             `/posts/{postId}/comments/{replyId}/child-comment/{childReplyId}`,
-        //             {
-        //                 headers,
-        //             }
-        //         );
-        //         console.log(response.data);
-        //         if (response.data.status === 'success') {
-        //             props.onUpdate();
-        //         }
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
-        // }
+        const confirmDelete = window.confirm('정말로 댓글을 삭제하시겠습니까?');
+        if (confirmDelete) {
+            try {
+                const response = await axios.delete(
+                    `/api/posts/{postId}/comments/{replyId}/child-comment/{childReplyId}`,
+                    {
+                        headers,
+                    }
+                );
+                console.log(response.data);
+                if (response.data.status === 'success') {
+                    props.onUpdate();
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
         props.onUpdate();
     };
 

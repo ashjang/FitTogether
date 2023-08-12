@@ -1,6 +1,6 @@
 import React from 'react';
-// import axios from 'axios';
-// import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import QuillEditor from '../components/CreatePost,EditPost/QuillEditor';
 import PostSetting from '../components/CreatePost,EditPost/PostSetting';
@@ -14,6 +14,12 @@ import {
     accessLevelState,
 } from '../recoil/posts/atoms';
 
+const token = localStorage.getItem('token');
+
+const headers = {
+    Authorization: token,
+};
+
 const CreatePost: React.FC = () => {
     const [title, setTitle] = useRecoilState(titleState);
     const [description, setDescription] = useRecoilState(descriptionState);
@@ -22,18 +28,18 @@ const CreatePost: React.FC = () => {
     const [accessLevel, setAccessLevel] = useRecoilState(accessLevelState);
     const [images, setImages] = useRecoilState(imagesUrlListState);
 
+    const postForm = {
+        title: title,
+        description: description,
+        images: images,
+        hastag: hastagList,
+        category: category,
+        accessLevel: accessLevel,
+    };
+    console.log(postForm);
+
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-
-        const postForm = {
-            title: title,
-            description: description,
-            images: images,
-            hastag: hastagList,
-            category: category,
-            accessLevel: accessLevel,
-        };
-        console.log(postForm);
 
         setTitle('');
         setDescription('');
@@ -42,23 +48,22 @@ const CreatePost: React.FC = () => {
         setAccessLevel(true);
         setImages([]);
 
-        // submitPostForm();
+        submitPostForm();
     };
 
-    // const submitPostForm = async () => {
-    // try {
-    //     const response = await axios.post('/posts', postForm, {
-    //         headers,
-    //     });
-    //     if (response.data.status === 'success') {
-    //         const navigate = useNavigate();
-    //         navigate(`/posts/${response.data.postId}`);
-    //     }
-    // } catch (error) {
-    //     console.log(error);
-    //     throw error;
-    // }
-    // };
+    const submitPostForm = async () => {
+        try {
+            const response = await axios.post('/api/posts', postForm, {
+                headers,
+            });
+            if (response.data.status === 'success') {
+                const navigate = useNavigate();
+                navigate(`/posts/${response.data.postId}`);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (
         <PostDataForm onSubmit={handleSubmit}>
