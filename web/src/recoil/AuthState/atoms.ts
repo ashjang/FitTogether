@@ -26,7 +26,7 @@ export const signInInfo = atom({
 export const signUpInfo = atom({
     key: 'signUpInfo',
     default: {
-        nickname: 'HEY_1234',
+        nickname: '',
         password: '',
         email: '',
         profilePicture: '',

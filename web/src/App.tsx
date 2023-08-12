@@ -25,7 +25,6 @@ import MyVideos from './pages/MyVideos';
 import ScrollTopButton from './components/common/ScrollTopButton';
 
 import './index.css';
-import MateRequest from './components/common/MateRequest';
 
 const queryClient = new QueryClient();
 
@@ -35,7 +34,6 @@ function App() {
             <RecoilRoot>
                 <BrowserRouter>
                     <Header />
-                    <MateRequest />
                     <Routes>
                         <Route path="/" element={<MainPage />} />
                         <Route path="/signin" element={<SignIn />} />
