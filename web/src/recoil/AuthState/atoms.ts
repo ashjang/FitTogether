@@ -30,10 +30,10 @@ export const signUpInfo = atom({
         password: '',
         email: '',
         profilePicture: '',
-        gender: '',
+        gender: true,
         introduction: '',
-        exerciseChoice: [],
-        publicInfo: '',
+        exerciseChoice: [''],
+        publicInfo: true,
         accessToken: '',
     },
 });
