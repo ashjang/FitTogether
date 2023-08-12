@@ -136,9 +136,10 @@ const PostContents: React.FC<PostContentsProps> = (props) => {
         <PostContentsComponent>
             <CategoryAndHashtag>
                 <PostCategory>{getCategoryName(props.postData.category)}</PostCategory>
-                {props.postData.hashtag.map((hashtag) => {
-                    return <PostHashtag>{hashtag}</PostHashtag>;
-                })}
+                {props.postData.hashtag &&
+                    props.postData.hashtag.map((hashtag) => {
+                        return <PostHashtag>{hashtag}</PostHashtag>;
+                    })}
             </CategoryAndHashtag>
 
             <ProfileContainer>

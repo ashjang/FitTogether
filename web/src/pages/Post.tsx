@@ -18,8 +18,7 @@ const Post: React.FC = () => {
     const getPostData = async () => {
         try {
             console.log(postId);
-            // const response = await axios.post(`/posts/${postId}`, { postId }, { headers });
-            const response = await axios.get(`http://localhost:3001/posts-${postId}`);
+            const response = await axios.get(`/api/posts/${postId}`);
             const { replyList, childReplyList, ...rest } = response.data;
             setPostData(rest);
             setReplyData(replyList);

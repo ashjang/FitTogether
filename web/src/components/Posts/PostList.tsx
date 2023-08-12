@@ -14,8 +14,7 @@ const PostList: React.FC = () => {
 
     const getPostListData = async () => {
         try {
-            // 실제 구현시에는 axios.get('/posts/') !!
-            const response = await axios.get('http://localhost:3001/posts');
+            const response = await axios.get('/api/posts');
             setPostListData(response.data);
         } catch (error) {
             console.error;

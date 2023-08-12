@@ -3,8 +3,14 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import PostFilter from '../components/Posts/PostFilter';
 import PostList from '../components/Posts/PostList';
 import styled from '@emotion/styled';
+import { useRecoilValue } from 'recoil';
+import { loggedInState, kakaoAccessTokenState } from '../recoil/AuthState/atoms';
 
 const Posts: React.FC = () => {
+    const loggedIn = useRecoilValue(loggedInState);
+    const kakaoAccessToken = useRecoilValue(kakaoAccessTokenState);
+    console.log(loggedIn, kakaoAccessToken);
+
     const navigate = useNavigate();
     const location = useLocation();
 
