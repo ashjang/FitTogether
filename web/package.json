@@ -20,8 +20,6 @@
         "@fortawesome/react-fontawesome": "^0.2.0",
         "@yaireo/tagify": "^4.17.8",
         "axios": "^1.4.0",
-        "firebase": "^10.1.0",
-        "firebase-tools": "^12.4.7",
         "nanoid": "^4.0.2",
         "react": "^18.2.0",
         "react-daum-postcode": "^3.1.3",
