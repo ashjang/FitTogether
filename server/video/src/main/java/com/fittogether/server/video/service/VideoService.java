@@ -70,7 +70,7 @@ public class VideoService {
   }
 
   @Transactional
-  public void deleteVideoInPlaylist(String token, String targetName, Long videoId){
+  public void deleteVideoInPlaylist(String token, String targetName, Long videoId) {
     UserVo userVo = provider.getUserVo(token);
 
     User user = userRepository.findById(userVo.getUserId())
@@ -79,7 +79,13 @@ public class VideoService {
     Playlist playlist = playlistRepository.findByUser_UserIdAndPlaylistName(user.getUserId(),
         targetName).orElseThrow(() -> new VideoCustomException(VideoErrorCode.NOT_FOUND_PLAYLIST));
 
-    playlistVideoRepository.deleteByPlaylist_PlaylistIdAndVideo_VideoId(playlist.getPlaylistId(), videoId);
+    if (!videoRepository.findById(videoId).isPresent()) {
+      throw new VideoCustomException(VideoErrorCode.NOT_FOUND_VIDEO);
+    }
+
+    playlistVideoRepository.deleteByPlaylist_PlaylistIdAndVideo_VideoId(
+        playlist.getPlaylistId(), videoId
+    );
   }
 
 }
