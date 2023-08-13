@@ -1,5 +1,11 @@
 import { atom } from 'recoil';
 
+// 초기값: token이 없는 상태(비로그인)
+export const TokenAtom = atom({
+    key: 'TokenAtom',
+    default: undefined,
+});
+
 // 초기값: 로그인이 되어 있지 않은 상태
 export const loggedInState = atom({
     key: 'loggedInState',
