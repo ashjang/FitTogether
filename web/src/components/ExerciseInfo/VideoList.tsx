@@ -187,7 +187,7 @@ const VideoGridContainer = styled.div`
     grid-template-columns: repeat(1, 1fr);
     gap: 20px;
     margin: 150px auto 0;
-    width: 600px;
+    max-width: 800px;
     text-align: center;
 `;
 const PageTitle = styled.h2`
@@ -245,19 +245,19 @@ const VideoThumb = styled.div`
     margin-bottom: 50px;
 
     h4 {
-        font-size: 18px;
-        text-align: left;
-        padding: 8px;
-        border: 1px solid #000;
-
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        color: #fff;
+        text-align: left;
+        text-shadow: 2px 2px 4px #000;
+        padding: 8px 15px;
+        background-color: #888;
     }
     .star-icon {
         font-size: 20px;
         color: #fff;
-        stroke: black;
         stroke-width: 30px;
     }
     .star-icon.opened {
