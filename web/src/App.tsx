@@ -24,6 +24,7 @@ import MyVideos from './pages/MyVideos';
 
 import ScrollTopButton from './components/common/ScrollTopButton';
 import ProtectedRoute from './components/Sign/ProtectedRoute';
+import KakaoAuth from './components/Sign/KakaoAuth';
 
 import './index.css';
 
@@ -38,6 +39,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<MainPage />} />
                         <Route path="/signin" element={<SignIn />} />
+                        <Route path="/kakao/callback" element={<KakaoAuth />} />
                         <Route path="/signup" element={<SignUp />} />
                         <Route path="/messenger" element={<Messenger />} />
                         <Route element={<ProtectedRoute />}>
