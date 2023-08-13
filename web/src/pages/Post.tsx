@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import PostContents from '../components/Post/PostContents';
@@ -8,7 +8,6 @@ import { useRecoilState } from 'recoil';
 import { postDataState, replyDataState, childReplyDataState } from '../recoil/posts/atoms';
 
 const Post: React.FC = () => {
-    const [update, setUpdate] = useState<boolean>(false);
     const { postId } = useParams<{ postId: string }>();
 
     const [postData, setPostData] = useRecoilState(postDataState);
@@ -31,7 +30,7 @@ const Post: React.FC = () => {
     useEffect(() => {
         getPostData();
         console.log('Post Rendering !');
-    }, [update]); // 렌더링될 때, update 상태가 변할 때 실행
+    }, []);
 
     useEffect(() => {
         console.log(postData);
@@ -48,11 +47,7 @@ const Post: React.FC = () => {
     return (
         <Page>
             {postData ? (
-                <PostContents
-                    key={`postId:${postId}`}
-                    postData={postData}
-                    onUpdate={() => setUpdate(!update)}
-                />
+                <PostContents key={`postId:${postId}`} postData={postData} />
             ) : (
                 <div>Loading...</div>
             )}
@@ -61,7 +56,6 @@ const Post: React.FC = () => {
                     key={`replyInPostId:${replyData[0].postId}`}
                     replyData={replyData}
                     childReplyData={childReplyData || []}
-                    onUpdate={() => setUpdate(!update)}
                 />
             )}
         </Page>

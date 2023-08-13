@@ -8,12 +8,6 @@ import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { useRecoilValue } from 'recoil';
 import { signInInfo } from '../../recoil/AuthState/atoms';
 
-const token = localStorage.getItem('token');
-
-const headers = {
-    Authorization: token,
-};
-
 interface ReplyData {
     postId: number;
     replyId: number;
@@ -36,7 +30,6 @@ interface ChildReplyData {
 interface CommentsProps {
     replyData: ReplyData[];
     childReplyData: ChildReplyData[];
-    onUpdate: () => void;
 }
 
 const formatDateString = (createdAt: string) => {
@@ -59,6 +52,8 @@ const formatDateString = (createdAt: string) => {
 };
 
 const Comments: React.FC<CommentsProps> = (props) => {
+    const token = sessionStorage.getItem('token');
+
     const { nickname } = useRecoilValue(signInInfo);
     const myNickname = nickname;
 
@@ -80,16 +75,16 @@ const Comments: React.FC<CommentsProps> = (props) => {
         };
         try {
             const response = await axios.post(`/api/posts/${postId}/comments`, replyForm, {
-                headers,
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
             });
             console.log(response.data);
             if (response.data.status === 'success') {
-                props.onUpdate();
             }
         } catch (error) {
             console.error(error);
         }
-        props.onUpdate();
     };
 
     // 댓글 "삭제하기" 버튼 눌렀을 때 실행할 함수
@@ -99,17 +94,17 @@ const Comments: React.FC<CommentsProps> = (props) => {
         if (confirmDelete) {
             try {
                 const response = await axios.delete(`/api/posts/${postId}/comments/${replyId}`, {
-                    headers,
+                    headers: {
+                        'X-AUTH-TOKEN': token,
+                    },
                 });
                 console.log(response.data);
                 if (response.data.status === 'success') {
-                    props.onUpdate();
                 }
             } catch (error) {
                 console.error(error);
             }
         }
-        props.onUpdate();
     };
 
     // 대댓글 입력란에서 입력받을 때 실행할 함수
@@ -125,16 +120,16 @@ const Comments: React.FC<CommentsProps> = (props) => {
         };
         try {
             const response = await axios.post(`/api/posts/comments/${replyId}`, requestData, {
-                headers,
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
             });
             if (response.data.status === 'success') {
-                props.onUpdate();
             }
             console.log(response.data);
         } catch (error) {
             console.error(error);
         }
-        props.onUpdate();
     };
 
     // 대댓글 "삭제하기" 버튼 눌렀을 때 실행할 함수
@@ -146,18 +141,18 @@ const Comments: React.FC<CommentsProps> = (props) => {
                 const response = await axios.delete(
                     `/api/posts/{postId}/comments/{replyId}/child-comment/{childReplyId}`,
                     {
-                        headers,
+                        headers: {
+                            'X-AUTH-TOKEN': token,
+                        },
                     }
                 );
                 console.log(response.data);
                 if (response.data.status === 'success') {
-                    props.onUpdate();
                 }
             } catch (error) {
                 console.error(error);
             }
         }
-        props.onUpdate();
     };
 
     // 대댓글 입력창을 토글하는 함수

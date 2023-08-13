@@ -13,11 +13,7 @@ import Modal from 'react-modal';
 import { useRecoilValue } from 'recoil';
 import { signInInfo } from '../../recoil/AuthState/atoms';
 
-const token = localStorage.getItem('token');
-
-const headers = {
-    Authorization: token,
-};
+const token = sessionStorage.getItem('token');
 
 const imageSrc: string = default_user_image;
 
@@ -48,7 +44,6 @@ interface DataForEdit {
 
 interface PostContentsProps {
     postData: PostData;
-    onUpdate: () => void;
 }
 
 const getCategoryName = (categoryEng: string) => {
@@ -118,7 +113,9 @@ const PostContents: React.FC<PostContentsProps> = (props) => {
     const handleDeletePost = async () => {
         try {
             const response = await axios.delete(`/api/posts/${postId}`, {
-                headers,
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
             });
             console.log(response.data);
             if (response.data.status === 'success') {
@@ -135,17 +132,17 @@ const PostContents: React.FC<PostContentsProps> = (props) => {
         //     const likeForm = {
         //         like: !isLikedState,
         //     };
-        //     const response = await axios.post(`/posts/${postId}/like`, likeForm, {
-        //         headers,
+        //     const response = await axios.post(`api/posts/${postId}/like`, likeForm, {
+        //         headers: {
+        //             'X-AUTH-TOKEN': token,
+        //         },
         //     });
         //     if (response.data.status === 'success') {
         //         setIsLikedState(!IsLikedState);
-        //         props.onUpdate();
         //     }
         // } catch (error) {
         //     console.error(error);
         // }
-        props.onUpdate();
     };
     return (
         <PostContentsComponent>

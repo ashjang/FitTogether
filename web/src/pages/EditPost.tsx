@@ -15,11 +15,7 @@ import {
     accessLevelState,
 } from '../recoil/posts/atoms';
 
-const token = localStorage.getItem('token');
-
-const headers = {
-    Authorization: token,
-};
+const token = sessionStorage.getItem('token');
 
 interface DataForEdit {
     savedTitle: string;
@@ -71,7 +67,9 @@ const EditPost: React.FC = () => {
     const submitPostForm = async () => {
         try {
             const response = await axios.post('/api/posts', postForm, {
-                headers,
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
             });
             if (response.data.status === 'success') {
                 const navigate = useNavigate();
