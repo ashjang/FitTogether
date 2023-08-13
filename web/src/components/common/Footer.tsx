@@ -92,7 +92,7 @@ const FooterMainBar = styled.div`
     bottom: 0;
     max-width: 1440px;
     margin: 100px auto 0;
-    padding: 20px 60px;
+    padding: 40px 60px;
 `;
 const FooterLogo = styled.h1`
     margin-bottom: 10px;
