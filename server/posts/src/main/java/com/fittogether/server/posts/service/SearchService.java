@@ -98,7 +98,7 @@ public class SearchService {
    * 제목 별 검색
    */
   public List<PostListDto> getPostByTitle(String title) {
-    List<Post> postList = postRepository.findByTitleOrderByCreatedAtDesc(title);
+    List<Post> postList = postRepository.findByTitleContainingOrderByCreatedAtDesc(title);
 
     return postList.stream().map(PostListDto::from)
         .collect(Collectors.toList());

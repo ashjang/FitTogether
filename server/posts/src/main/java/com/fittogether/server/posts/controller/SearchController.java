@@ -58,7 +58,7 @@ public class SearchController {
   /**
    * 제목 별 검색
    */
-  @GetMapping("/search/title")
+  @GetMapping("/title")
   public ResponseEntity<List<PostListDto>> getPostByTitle(@RequestParam("title") String title) {
     return ResponseEntity.ok(
         searchService.getPostByTitle(title));
