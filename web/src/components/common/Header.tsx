@@ -9,13 +9,15 @@ import {
     faBell,
     faComment,
     faBookmark,
-    faTimes,
     faBars,
+    // faSignOutAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import Modal from 'react-modal';
 Modal.setAppElement('#root');
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { loggedInState } from '../../recoil/AuthState/atoms';
 
 import AlertList from './AlertList';
 import MateList from './MateList';
@@ -28,13 +30,17 @@ type HeaderProps = {
 
 // headerMainBar
 function Header({ onToggleDarkMode }: HeaderProps) {
+    // const loggedIn = useRecoilValue(loggedInState); // 로그인 상태 가져오는 부분
+    const loggedIn = useRecoilValue(loggedInState); // loggedInState 상태 가져오기
+    const setLoggedIn = useSetRecoilState(loggedInState); // 상태를 업데이트하는 setLoggedIn 함수 가져오기
+
     const [isDarkMode, setDarkMode] = useState(false);
-    const [isMateListOpen, setIsMateListOpen] = useState(false);
+    const [isMateListOpen, setIsMateListOpen] = useState(false); // 메이트리스트창
 
     const [isPopupOpen, setPopupOpen] = useState(false);
     const bellPopupRef = useRef<HTMLDivElement | null>(null); //알림창
 
-    const [isScrolled, setScrolled] = useState(false);
+    const [isScrolled, setScrolled] = useState(false); // 스크롤 내릴때 배경색
 
     // dark light Mode
     const handleToggleDarkMode = () => {
@@ -79,6 +85,10 @@ function Header({ onToggleDarkMode }: HeaderProps) {
         setIsMateListOpen(false);
     };
 
+    // 로그아웃일때 로직
+    const handleSignOut = () => {
+        setLoggedIn(false);
+    };
     return (
         <HeaderWrap css={[isScrolled && scrolledHeader]}>
             <div css={headerInn}>
@@ -97,38 +107,52 @@ function Header({ onToggleDarkMode }: HeaderProps) {
                                     <FontAwesomeIcon icon={isDarkMode ? faSun : faMoon} />
                                 </ThemeBtn>
                             </ThemeLi>
-                            <li>
-                                <MateBtn onClick={handleShowMateListClick}>
-                                    <span className="blind">운동 메이트 리스트</span>
-                                    <FontAwesomeIcon icon={faUserGroup} />
-                                </MateBtn>
-                                {isMateListOpen && (
-                                    <MateList isOpen={true} onClose={handleCloseMateList} />
-                                )}
-                            </li>
-                            <li>
-                                <span className="blind">알림창</span>
-                                <BellBtn onClick={handleOpenPopup}>
-                                    <FontAwesomeIcon icon={faBell} />
-                                </BellBtn>
-                            </li>
-                            <li>
-                                <span className="blind">DM</span>
-                                <DmBtn to="/messenger">
-                                    <FontAwesomeIcon icon={faComment} />
-                                </DmBtn>
-                            </li>
-                            <li>
-                                <span className="blind">즐겨찾기</span>
-                                <LikeBtn to="/bookmark">
-                                    <FontAwesomeIcon icon={faBookmark} />
-                                </LikeBtn>
-                            </li>
+                            {loggedIn ? (
+                                // 로그인 상태일때
+                                <>
+                                    <li>
+                                        <MateBtn onClick={handleShowMateListClick}>
+                                            <span className="blind">운동 메이트 리스트</span>
+                                            <FontAwesomeIcon icon={faUserGroup} />
+                                        </MateBtn>
+                                        {isMateListOpen && (
+                                            <MateList isOpen={true} onClose={handleCloseMateList} />
+                                        )}
+                                    </li>
+                                    <li>
+                                        <span className="blind">알림창</span>
+                                        <BellBtn onClick={handleOpenPopup}>
+                                            <FontAwesomeIcon icon={faBell} />
+                                        </BellBtn>
+                                    </li>
+                                    <li>
+                                        <span className="blind">DM</span>
+                                        <DmBtn to="/messenger">
+                                            <FontAwesomeIcon icon={faComment} />
+                                        </DmBtn>
+                                    </li>
+                                    <li>
+                                        <span className="blind">즐겨찾기</span>
+                                        <LikeBtn to="/bookmark">
+                                            <FontAwesomeIcon icon={faBookmark} />
+                                        </LikeBtn>
+                                    </li>
+                                    <li>
+                                        <SignOutLink onClick={handleSignOut}>로그아웃</SignOutLink>
+                                    </li>
+                                </>
+                            ) : (
+                                //로그인 전 상태
+                                <div css={signinSection}>
+                                    <SignInLink to="/signin">로그인</SignInLink>
+                                    <span>|</span>
+                                    <SignUpLink to="/signup">회원가입</SignUpLink>
+                                </div>
+                            )}
                         </IconList>
-                        {isPopupOpen && (
+                        {loggedIn && isPopupOpen && (
                             <BellPop className="popup" ref={bellPopupRef}>
                                 <AlertList />
-
                                 {/* <BellPopBtn onClick={handleClosePopup}>
                                     <span className="blind">닫기</span>
                                     <FontAwesomeIcon icon={faTimes} />
@@ -136,34 +160,17 @@ function Header({ onToggleDarkMode }: HeaderProps) {
                             </BellPop>
                         )}
                     </IconSection>
-                    <div className="signin-section" css={signinSection}>
-                        <SignInLink
-                            to="/signin"
-                            id="header-btn-signin"
-                            className="btn btn-signin-link"
-                        >
-                            로그인
-                        </SignInLink>
-                        <span>|</span>
-                        <SignUpLink
-                            to="/signup"
-                            id="header-btn-signup"
-                            className="btn btn-signup-link"
-                        >
-                            회원가입
-                        </SignUpLink>
-                    </div>
                 </div>
 
                 <div css={headerMainBar}>
                     <nav>
-                        <MenuBtn type="button" className="btn btn-menu">
+                        <MenuBtn type="button">
                             <strong className="blind">메뉴 오픈</strong>
                             <span className="open">
                                 <FontAwesomeIcon icon={faBars} />
                             </span>
                         </MenuBtn>
-                        <ul className="menu" css={Menu}>
+                        <ul css={Menu}>
                             <li css={menuLi}>
                                 <Link to="/exerciseInfo">
                                     <span>운동 정보</span>
@@ -265,7 +272,11 @@ const SignInLink = styled(Link)`
 const SignUpLink = styled(Link)`
     display: block;
 `;
-
+const SignOutLink = styled.button`
+    border: none;
+    background: none;
+    margin-left: 10px;
+`;
 // bellBtn 클릭 시 팝업
 const BellPop = styled.div`
     position: absolute;
