@@ -5,10 +5,12 @@ import axios from 'axios';
 
 import styled from '@emotion/styled';
 
-import { kakaoAccessTokenState } from '../../recoil/AuthState/atoms';
+import { canEditInfo, loggedInState } from '../../recoil/AuthState/atoms';
 
 const KakaoAuth: React.FC = () => {
-    const setKakaoAccessToken = useSetRecoilState<string | undefined | null>(kakaoAccessTokenState);
+    const setCanEditUserInfo = useSetRecoilState(canEditInfo);
+    const setLoggedIn = useSetRecoilState(loggedInState);
+    // const setKakaoAccessToken = useSetRecoilState(canEditInfo);
     const navigate = useNavigate();
 
     const [error, setError] = useState<string>('');
@@ -37,9 +39,11 @@ const KakaoAuth: React.FC = () => {
                 })
                 .then((response) => {
                     const data = response.data;
-                    setKakaoAccessToken(data.access_token);
-                    localStorage.setItem('token_for_kakaotalk', data.access_token);
+                    // setKakaoAccessToken(data.access_token);
+                    sessionStorage.setItem('token_for_kakaotalk', data.access_token);
                     // console.log('토큰을 받아오는데 성공했습니다.');
+                    setLoggedIn(true);
+                    setCanEditUserInfo(false);
                     navigate('/');
                 })
                 .catch((error) => {
@@ -47,7 +51,7 @@ const KakaoAuth: React.FC = () => {
                     setError('카카오 로그인 중 오류가 발생했습니다.');
                 });
         }
-    }, [setKakaoAccessToken, navigate]);
+    }, [setLoggedIn, setCanEditUserInfo, navigate]);
 
     if (error) {
         return (

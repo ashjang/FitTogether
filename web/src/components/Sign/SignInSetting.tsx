@@ -4,14 +4,13 @@ import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { loggedInState, signInInfo } from '../../recoil/AuthState/atoms';
-
-// interface Props {}
+import { loggedInState, canEditInfo, signInInfo } from '../../recoil/AuthState/atoms';
 
 const SignInSetting: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [signInData, setSignInData] = useRecoilState(signInInfo); // 값을 받아와서 변경하고 싶으면 useRecoilState
-    const setSignIn = useSetRecoilState(loggedInState); // 값을 변경하고 싶으면 useSetRecoilState
+    const setLoggedIn = useSetRecoilState(loggedInState); // 값을 변경하고 싶으면 useSetRecoilState
+    const setCanEditInfo = useSetRecoilState(canEditInfo);
     const navigate = useNavigate();
     const location = useLocation();
     const from = location?.state?.redirectFrom || '/';
@@ -24,8 +23,9 @@ const SignInSetting: React.FC = () => {
 
             if (response.status === 200) {
                 const token = response.data;
-                setSignIn(true);
-                localStorage.setItem('token', token);
+                setLoggedIn(true);
+                setCanEditInfo(true);
+                sessionStorage.setItem('token', token);
                 navigate(from);
             } else if (response.status === 400) {
                 // 에러 메시지 출력
