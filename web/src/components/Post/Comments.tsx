@@ -5,6 +5,8 @@ import styled from '@emotion/styled';
 import imgSrc from '../../assets/default-user-image.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
+import { useRecoilValue } from 'recoil';
+import { signInInfo } from '../../recoil/AuthState/atoms';
 
 const token = localStorage.getItem('token');
 
@@ -42,17 +44,24 @@ const formatDateString = (createdAt: string) => {
 
     const formattedDate = dateObject.toLocaleString('en-US', {
         year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false, // 24-hour format
     });
 
-    return formattedDate;
+    const [date, time] = formattedDate.split(', ');
+    const [month, day, year] = date.split('/');
+    const [hour, minute] = time.split(':');
+
+    return `${year}/${month}/${day} ${hour}:${minute}`;
 };
 
 const Comments: React.FC<CommentsProps> = (props) => {
+    const { nickname } = useRecoilValue(signInInfo);
+    const myNickname = nickname;
+
     const { postId } = useParams<{ postId: string }>();
     const [replyInput, setReplyInput] = useState<string>('');
     const [childReplyInput, setChildReplyInput] = useState<string>('');
@@ -168,12 +177,14 @@ const Comments: React.FC<CommentsProps> = (props) => {
                         </ProfileImageContainer>
                         <UserId>{reply.userNickname}</UserId>
                         <PostTime>{formatDateString(reply.createdAt)}</PostTime>
-                        <FaTrashCan
-                            icon={faTrashCan}
-                            onClick={() => {
-                                handleDeleteReply(reply.replyId);
-                            }}
-                        />
+                        {myNickname === reply.userNickname && (
+                            <FaTrashCan
+                                icon={faTrashCan}
+                                onClick={() => {
+                                    handleDeleteReply(reply.replyId);
+                                }}
+                            />
+                        )}
                     </TopDiv>
                     <Comment>{reply.comment}</Comment>
                     {props.childReplyData.map(
@@ -189,16 +200,17 @@ const Comments: React.FC<CommentsProps> = (props) => {
                                         <PostTime>
                                             {formatDateString(childReply.createdAt)}
                                         </PostTime>
-                                        {/* ❗해당 댓글의 작성자만 아이콘이 보이도록하는 로직 */}
-                                        <FaTrashCan
-                                            icon={faTrashCan}
-                                            onClick={() => {
-                                                handleDeleteChildReply(
-                                                    childReply.replyId,
-                                                    childReply.childReplyId
-                                                );
-                                            }}
-                                        />
+                                        {myNickname === childReply.userNickname && (
+                                            <FaTrashCan
+                                                icon={faTrashCan}
+                                                onClick={() => {
+                                                    handleDeleteChildReply(
+                                                        childReply.replyId,
+                                                        childReply.childReplyId
+                                                    );
+                                                }}
+                                            />
+                                        )}
                                     </TopDiv>
                                     <Comment>{childReply.comment}</Comment>
                                 </ChildReplyItem>

@@ -10,6 +10,8 @@ import { faThumbsUp } from '@fortawesome/free-regular-svg-icons';
 import { faComment } from '@fortawesome/free-regular-svg-icons';
 import { faEye } from '@fortawesome/free-regular-svg-icons';
 import Modal from 'react-modal';
+import { useRecoilValue } from 'recoil';
+import { signInInfo } from '../../recoil/AuthState/atoms';
 
 const token = localStorage.getItem('token');
 
@@ -67,17 +69,24 @@ const formatDateString = (createdAt: string) => {
 
     const formattedDate = dateObject.toLocaleString('en-US', {
         year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false, // 24-hour format
     });
 
-    return formattedDate;
+    const [date, time] = formattedDate.split(', ');
+    const [month, day, year] = date.split('/');
+    const [hour, minute] = time.split(':');
+
+    return `${year}/${month}/${day} ${hour}:${minute}`;
 };
 
 const PostContents: React.FC<PostContentsProps> = (props) => {
+    const { nickname } = useRecoilValue(signInInfo);
+    const myNickname = nickname;
+
     const { postId } = useParams<{ postId: string }>();
     // const [isLikedState, setIsLikedState] = useState(isliked);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -152,10 +161,13 @@ const PostContents: React.FC<PostContentsProps> = (props) => {
                 <ProfileImageContainer>
                     <ProfileImage src={imageSrc} />
                 </ProfileImageContainer>
+
                 <ProfileNickname>{props.postData.userNickname}</ProfileNickname>
                 <CreatedAt>{formatDateString(props.postData.createdAt)}</CreatedAt>
-                {/* ❗ 해당 포스트의 작성자만 아이콘이 보이도록하는 로직 */}
-                <FaEllipsis icon={faEllipsis} onClick={handleToggleModal} />
+                {myNickname === props.postData.userNickname && (
+                    <FaEllipsis icon={faEllipsis} onClick={handleToggleModal} />
+                )}
+
                 <Modal
                     isOpen={isModalOpen}
                     onRequestClose={handleToggleModal}
