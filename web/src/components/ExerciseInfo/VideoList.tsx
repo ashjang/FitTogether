@@ -10,6 +10,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { fetchVideos, resetTotalResults, VideosResponse, Video } from './YoutubeApi';
 import VideoPopup from './VideoPopup';
+import PlayListPopup from '../common/PlayListPopup';
 
 import loadingGif from '../../assets/ball-triangle.svg';
 
@@ -17,6 +18,7 @@ const VideoList: React.FC = () => {
     const [category, setCategory] = useState<string>('러닝');
     const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
     const [favoriteStatus, setFavoriteStatus] = useState<Record<string, boolean>>({});
+    const [showPlaylistPopup, setShowPlaylistPopup] = useState(false);
 
     useEffect(() => {
         resetTotalResults();
@@ -67,13 +69,18 @@ const VideoList: React.FC = () => {
     }, []);
 
     //즐겨찾기
-    //즐겨찾기 리스트에 관한
+    //즐겨찾기 추가 별모양 토클 버튼
     const toggleFavoriteStatus = useCallback((videoId: string) => {
         setFavoriteStatus((prevStatus) => ({
             ...prevStatus,
             [videoId]: !prevStatus[videoId],
         }));
     }, []);
+
+    const handleStarClick = (video: Video) => {
+        toggleFavoriteStatus(video.id.videoId);
+        setShowPlaylistPopup(true);
+    };
 
     return (
         <VideoListInn>
