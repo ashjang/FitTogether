@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PostInfo {
 
-  private Long userId;
+  private String userNickname;
   private Category category;
   private String title;
   private String description;
@@ -36,7 +36,7 @@ public class PostInfo {
   public static PostInfo from(Post post, List<Reply> replyList, List<ChildReply> childReplyList, Long totalCount, boolean isLike, Long incrementWatchedCount, List<Image> images) {
 
     return PostInfo.builder()
-        .userId(post.getUser().getUserId())
+        .userNickname(post.getUser().getNickname())
         .category(post.getCategory())
         .title(post.getTitle())
         .description(post.getDescription())

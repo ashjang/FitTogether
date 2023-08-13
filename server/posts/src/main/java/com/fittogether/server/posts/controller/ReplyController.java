@@ -20,6 +20,9 @@ public class ReplyController {
 
   private final ReplyService replyService;
 
+  /**
+   * 댓글 작성
+   */
   @PostMapping("{postId}/comment")
   public ResponseEntity<ReplyDto> createReply(@RequestHeader(name = "X-AUTH-TOKEN") String token,
       @PathVariable Long postId, @RequestBody ReplyForm replyForm) {
@@ -27,6 +30,9 @@ public class ReplyController {
         replyService.createReply(token, postId, replyForm)));
   }
 
+  /**
+   * 댓글 삭제
+   */
   @DeleteMapping("/{postId}/comments/{replyId}")
   public ResponseEntity<?> deleteReply(@RequestHeader(name = "X-AUTH-TOKEN") String token,
                                        @PathVariable Long postId,
@@ -36,6 +42,9 @@ public class ReplyController {
     return ResponseEntity.ok().body("댓글 삭제 완료");
   }
 
+  /**
+   * 대댓글 작성
+   */
   @PostMapping("/{postId}/comments/{replyId}")
   public ResponseEntity<ReplyDto> createChildReply(
       @RequestHeader(name = "X-AUTH-TOKEN") String token,
@@ -46,6 +55,9 @@ public class ReplyController {
         replyService.createChildReply(token, postId, replyId, replyForm)));
   }
 
+  /**
+   * 대댓글 삭제
+   */
   @DeleteMapping("/{postId}/comments/{replyId}/child-comment/{childReplyId}")
   public ResponseEntity<?> deleteChildReply(@RequestHeader(name = "X-AUTH-TOKEN") String token,
       @PathVariable Long postId,

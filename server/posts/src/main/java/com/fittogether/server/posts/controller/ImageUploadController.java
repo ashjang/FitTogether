@@ -23,6 +23,9 @@ public class ImageUploadController {
   @Value("${cloud.aws.s3.bucket}")
   private String bucket;
 
+  /**
+   * 이미지 업로드
+   */
   @PostMapping("/upload")
   public ResponseEntity<List<String>> uploadImage(@RequestParam("image") List<MultipartFile> images) {
     List<String> imageUrls = new ArrayList<>();
