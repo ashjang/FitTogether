@@ -3,6 +3,9 @@ package com.fittogether.server.dm.domain.dto;
 import com.fittogether.server.dm.domain.entity.Request;
 import lombok.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @NoArgsConstructor
 @ToString
@@ -18,13 +21,22 @@ public class RequestDto {
     private boolean isAccept; //매칭 수락여부
 
 
-    public static RequestDto from(Request request){
+    public static RequestDto from(Request request) {
         return RequestDto.builder()
-                .senderNickname(request.getSenderId().getNickname())
-                .receiverNickname(request.getReceiverId().getNickname())
+                .senderNickname(request.getSenderNickname())
+                .receiverNickname(request.getReceiverNickname())
                 .isAccept(request.isAccepted())
                 .build();
     }
 
+    public static List<RequestDto> fromList(List<Request> mateList) {
 
+        return mateList.stream()
+                .map(request -> RequestDto.builder()
+                        .senderNickname(request.getSenderNickname())
+                        .receiverNickname(request.getReceiverNickname())
+                        .isAccept(request.isAccepted())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
