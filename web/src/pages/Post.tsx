@@ -4,24 +4,55 @@ import { useParams } from 'react-router-dom';
 import PostContents from '../components/Post/PostContents';
 import styled from '@emotion/styled';
 import Comments from '../components/Post/Comments';
-import { useRecoilState } from 'recoil';
-import { postDataState, replyDataState, childReplyDataState } from '../recoil/posts/atoms';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import {
+    postDataRecoil,
+    postContentsDataRecoil,
+    conmentsDataRecoil,
+    isLikedState,
+} from '../recoil/posts/atoms';
 
 const Post: React.FC = () => {
+    const token = sessionStorage.getItem('token') || '';
+
     const { postId } = useParams<{ postId: string }>();
 
-    const [postData, setPostData] = useRecoilState(postDataState);
-    const [replyData, setReplyData] = useRecoilState(replyDataState);
-    const [childReplyData, setChildReplyData] = useRecoilState(childReplyDataState);
+    const [postData, setPostData] = useRecoilState(postDataRecoil);
+    const [postContentsData, setPostContentsData] = useRecoilState(postContentsDataRecoil);
+    const [commentsData, setCommentsData] = useRecoilState(conmentsDataRecoil);
+    const setLikeState = useSetRecoilState(isLikedState);
 
     const getPostData = async () => {
         try {
             console.log(postId);
-            const response = await axios.get(`/api/posts/${postId}`);
-            const { replyList, childReplyList, ...rest } = response.data;
-            setPostData(rest);
-            setReplyData(replyList);
-            setChildReplyData(childReplyList);
+            const response = await axios.get(`/api/posts/${postId}`, {
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
+            });
+            setPostData(response.data);
+            console.log(postData);
+            setPostContentsData({
+                ...postContentsData,
+                userImage: response.data.userImage,
+                userNickname: response.data.userNickname,
+                createdAt: response.data.createdAt,
+                category: response.data.category,
+                hashtag: response.data.hashtag,
+                title: response.data.title,
+                description: response.data.description,
+                likeCount: response.data.likeCount,
+                replyCount: response.data.replyCount,
+                viewCount: response.data.viewCount,
+                like: response.data.like,
+                accessLevel: response.data.accessLevel,
+            });
+            setCommentsData({
+                ...commentsData,
+                replyList: response.data.replyList,
+                childReplyList: response.data.replyList,
+            });
+            setLikeState(response.data.like);
         } catch (error) {
             console.error(error);
         }
@@ -32,31 +63,11 @@ const Post: React.FC = () => {
         console.log('Post Rendering !');
     }, []);
 
-    useEffect(() => {
-        console.log(postData);
-    }, [postData]);
-
-    useEffect(() => {
-        console.log(replyData);
-    }, [replyData]);
-
-    useEffect(() => {
-        console.log(childReplyData);
-    }, [childReplyData]);
-
     return (
         <Page>
-            {postData ? (
-                <PostContents key={`postId:${postId}`} postData={postData} />
-            ) : (
-                <div>Loading...</div>
-            )}
-            {replyData && replyData.length > 0 && (
-                <Comments
-                    key={`replyInPostId:${replyData[0].postId}`}
-                    replyData={replyData}
-                    childReplyData={childReplyData || []}
-                />
+            {postData ? <PostContents key={`postId:${postId}`} /> : <div>Loading...</div>}
+            {commentsData && commentsData.replyList.length > 0 && (
+                <Comments key={`replyInPostId:${commentsData.replyList[0].postId}`} />
             )}
         </Page>
     );

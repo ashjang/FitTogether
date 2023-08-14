@@ -14,9 +14,9 @@ import {
     accessLevelState,
 } from '../recoil/posts/atoms';
 
-const token = sessionStorage.getItem('token');
-
 const CreatePost: React.FC = () => {
+    const token = sessionStorage.getItem('token');
+
     const [title, setTitle] = useRecoilState(titleState);
     const [description, setDescription] = useRecoilState(descriptionState);
     const [hastagList, setHastagList] = useRecoilState(hastagListState);
@@ -24,39 +24,35 @@ const CreatePost: React.FC = () => {
     const [accessLevel, setAccessLevel] = useRecoilState(accessLevelState);
     const [images, setImages] = useRecoilState(imagesUrlListState);
 
-    const postForm = {
-        title: title,
-        description: description,
-        images: images,
-        hastag: hastagList,
-        category: category,
-        accessLevel: accessLevel,
-    };
-    console.log(postForm);
-
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const submitPostForm = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        setTitle('');
-        setDescription('');
-        setHastagList([]);
-        setCategory('');
-        setAccessLevel(true);
-        setImages([]);
+        const postForm = {
+            title: title,
+            description: description,
+            images: images,
+            hastag: hastagList,
+            category: category,
+            accessLevel: accessLevel,
+        };
+        console.log(postForm);
 
-        submitPostForm();
-    };
-
-    const submitPostForm = async () => {
         try {
             const response = await axios.post('/api/posts', postForm, {
                 headers: {
                     'X-AUTH-TOKEN': token,
                 },
             });
-            if (response.data.status === 'success') {
+            if (response.status === 200) {
                 const navigate = useNavigate();
                 navigate(`/posts/${response.data.postId}`);
+
+                setTitle('');
+                setDescription('');
+                setHastagList([]);
+                setCategory('');
+                setAccessLevel(true);
+                setImages([]);
             }
         } catch (error) {
             console.error(error);
@@ -64,7 +60,7 @@ const CreatePost: React.FC = () => {
     };
 
     return (
-        <PostDataForm onSubmit={handleSubmit}>
+        <PostDataForm onSubmit={submitPostForm}>
             <QuillEditor />
             <PostSetting />
             <SubmitButton type="submit">등록</SubmitButton>

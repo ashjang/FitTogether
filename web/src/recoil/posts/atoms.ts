@@ -38,7 +38,7 @@ interface ChildReplyData {
     comment: string;
 }
 
-interface PostData {
+interface PostDataType {
     postId: number;
     userImage: string;
     userNickname: string;
@@ -54,21 +54,75 @@ interface PostData {
     replyList: ReplyData[];
     childReplyList: ChildReplyData[];
     images: string[];
+    like: boolean;
 }
 
-export const postDataState = atom<PostData | null>({
-    key: 'postDataState',
-    default: null,
+interface PostContentsDataType {
+    userImage: string;
+    userNickname: string;
+    createdAt: string;
+    category: string;
+    hashtag: string[];
+    title: string;
+    description: string;
+    likeCount: number;
+    replyCount: number;
+    viewCount: number;
+    like: boolean;
+    accessLevel: boolean;
+}
+
+interface ConmentsDataType {
+    replyList: ReplyData[];
+    childReplyList: ChildReplyData[];
+}
+
+export const postDataRecoil = atom<PostDataType>({
+    key: 'postDataRecoil',
+    default: {
+        postId: 0,
+        userImage: '',
+        userNickname: '',
+        createdAt: '',
+        category: '',
+        hashtag: [],
+        title: '',
+        description: '',
+        likeCount: 0,
+        replyCount: 0,
+        viewCount: 0,
+        accessLevel: true,
+        replyList: [],
+        childReplyList: [],
+        images: [],
+        like: false,
+    },
 });
 
-export const replyDataState = atom<ReplyData[] | null>({
-    key: 'replyDataState',
-    default: null,
+export const postContentsDataRecoil = atom<PostContentsDataType>({
+    key: 'postContentsDataRecoil',
+    default: {
+        userImage: '',
+        userNickname: '',
+        createdAt: '',
+        category: '',
+        hashtag: [],
+        title: '',
+        description: '',
+        likeCount: 0,
+        replyCount: 0,
+        viewCount: 0,
+        like: false,
+        accessLevel: true,
+    },
 });
 
-export const childReplyDataState = atom<ChildReplyData[] | null>({
-    key: 'childReplyDataState',
-    default: null,
+export const conmentsDataRecoil = atom<ConmentsDataType | null>({
+    key: 'conmentsDataRecoil',
+    default: {
+        replyList: [],
+        childReplyList: [],
+    },
 });
 
 // 게시글 작성/수정 시 관련 상태
@@ -101,4 +155,9 @@ export const accessLevelState = atom<boolean>({
 export const imagesUrlListState = atom<string[]>({
     key: 'imagesUrlArray',
     default: [],
+});
+
+export const isLikedState = atom<boolean>({
+    key: 'isLikedState',
+    default: false,
 });

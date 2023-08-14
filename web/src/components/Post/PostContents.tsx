@@ -10,28 +10,11 @@ import { faThumbsUp } from '@fortawesome/free-regular-svg-icons';
 import { faComment } from '@fortawesome/free-regular-svg-icons';
 import { faEye } from '@fortawesome/free-regular-svg-icons';
 import Modal from 'react-modal';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import { signInInfo } from '../../recoil/AuthState/atoms';
-
-const token = sessionStorage.getItem('token');
+import { postDataRecoil, postContentsDataRecoil, isLikedState } from '../../recoil/posts/atoms';
 
 const imageSrc: string = default_user_image;
-
-interface PostData {
-    postId: number;
-    userImage: string;
-    userNickname: string;
-    createdAt: string;
-    category: string;
-    hashtag: string[];
-    title: string;
-    description: string;
-    likeCount: number;
-    replyCount: number;
-    viewCount: number;
-    accessLevel: boolean;
-    images: string[];
-}
 
 interface DataForEdit {
     savedTitle: string;
@@ -42,8 +25,8 @@ interface DataForEdit {
     savedAccessLevel: boolean;
 }
 
-interface PostContentsProps {
-    postData: PostData;
+interface PostDetailLikeProps {
+    active: boolean;
 }
 
 const getCategoryName = (categoryEng: string) => {
@@ -60,6 +43,10 @@ const getCategoryName = (categoryEng: string) => {
 };
 
 const formatDateString = (createdAt: string) => {
+    if (!createdAt) {
+        return '';
+    }
+
     const dateObject = new Date(createdAt);
 
     const formattedDate = dateObject.toLocaleString('en-US', {
@@ -78,21 +65,28 @@ const formatDateString = (createdAt: string) => {
     return `${year}/${month}/${day} ${hour}:${minute}`;
 };
 
-const PostContents: React.FC<PostContentsProps> = (props) => {
+const PostContents: React.FC = () => {
+    const token = sessionStorage.getItem('token');
+
+    const [postData, setPostData] = useRecoilState(postDataRecoil);
+    const [postContentsData, setPostContentsData] = useRecoilState(postContentsDataRecoil);
+    console.log('postContentsData', postContentsData);
+    const [likeState, setLikeState] = useRecoilState(isLikedState);
+
     const { nickname } = useRecoilValue(signInInfo);
     const myNickname = nickname;
 
     const { postId } = useParams<{ postId: string }>();
-    // const [isLikedState, setIsLikedState] = useState(isliked);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const dataForEdit: DataForEdit = {
-        savedTitle: props.postData.title,
-        savedDescription: props.postData.description,
-        savedImages: props.postData.images,
-        savedHashtag: props.postData.hashtag,
-        savedCategory: props.postData.category,
-        savedAccessLevel: props.postData.accessLevel,
+        savedTitle: postData.title,
+        savedDescription: postData.description,
+        savedImages: postData.images,
+        savedHashtag: postData.hashtag,
+        savedCategory: postData.category,
+        savedAccessLevel: postData.accessLevel,
     };
 
     // 모달 토글 함수
@@ -105,9 +99,6 @@ const PostContents: React.FC<PostContentsProps> = (props) => {
         const navigate = useNavigate();
         navigate('/posts');
     };
-
-    // 게시글 수정 눌렀을 때 실행할 함수
-    const handleEditPost = () => {};
 
     // 게시글 삭제 눌렀을 때 실행할 함수
     const handleDeletePost = async () => {
@@ -128,28 +119,26 @@ const PostContents: React.FC<PostContentsProps> = (props) => {
 
     // 좋아요 눌렀을 때
     const handleToggleLikeButton = async () => {
-        // try {
-        //     const likeForm = {
-        //         like: !isLikedState,
-        //     };
-        //     const response = await axios.post(`api/posts/${postId}/like`, likeForm, {
-        //         headers: {
-        //             'X-AUTH-TOKEN': token,
-        //         },
-        //     });
-        //     if (response.data.status === 'success') {
-        //         setIsLikedState(!IsLikedState);
-        //     }
-        // } catch (error) {
-        //     console.error(error);
-        // }
+        try {
+            const response = await axios.post(`api/posts/${postId}/like`, {
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
+            });
+            setPostData({ ...postData, like: response.data.like });
+            setPostContentsData({ ...postContentsData, like: response.data.like });
+            console.log('postContentsData by like', postContentsData);
+            setLikeState(response.data.like);
+        } catch (error) {
+            console.error(error);
+        }
     };
     return (
         <PostContentsComponent>
             <CategoryAndHashtag>
-                <PostCategory>{getCategoryName(props.postData.category)}</PostCategory>
-                {props.postData.hashtag &&
-                    props.postData.hashtag.map((hashtag) => {
+                <PostCategory>{getCategoryName(postContentsData.category)}</PostCategory>
+                {postContentsData.hashtag &&
+                    postContentsData.hashtag.map((hashtag) => {
                         return <PostHashtag>{hashtag}</PostHashtag>;
                     })}
             </CategoryAndHashtag>
@@ -159,9 +148,9 @@ const PostContents: React.FC<PostContentsProps> = (props) => {
                     <ProfileImage src={imageSrc} />
                 </ProfileImageContainer>
 
-                <ProfileNickname>{props.postData.userNickname}</ProfileNickname>
-                <CreatedAt>{formatDateString(props.postData.createdAt)}</CreatedAt>
-                {myNickname === props.postData.userNickname && (
+                <ProfileNickname>{postContentsData.userNickname}</ProfileNickname>
+                <CreatedAt>{formatDateString(postContentsData.createdAt)}</CreatedAt>
+                {myNickname === postContentsData.userNickname && (
                     <FaEllipsis icon={faEllipsis} onClick={handleToggleModal} />
                 )}
 
@@ -187,28 +176,30 @@ const PostContents: React.FC<PostContentsProps> = (props) => {
                     }}
                 >
                     <Link to={`/posts/${postId}/editpost`} state={{ dataForEdit }}>
-                        <button onClick={handleEditPost}>수정하기</button>
+                        <button>수정하기</button>
                     </Link>
                     <button onClick={handleDeletePost}>삭제하기</button>
                 </Modal>
             </ProfileContainer>
             <Post>
-                <PostTitle>{props.postData.title}</PostTitle>
-                <PostDescription dangerouslySetInnerHTML={{ __html: props.postData.description }} />
+                <PostTitle>{postContentsData.title}</PostTitle>
+                <PostDescription
+                    dangerouslySetInnerHTML={{ __html: postContentsData.description }}
+                />
             </Post>
             <PostDetail>
-                <PostDetailItem>
-                    <FaThumbsUp icon={faThumbsUp} onClick={handleToggleLikeButton} />
-                    <span>{props.postData.likeCount}</span>
-                </PostDetailItem>
-                <PostDetailItem>
+                <PostDetailLike active={likeState === true} onClick={handleToggleLikeButton}>
+                    <FaThumbsUp icon={faThumbsUp} />
+                    <LikeCount>{postContentsData.likeCount}</LikeCount>
+                </PostDetailLike>
+                <PostDetailReply>
                     <FaComment icon={faComment} />
-                    <span>{props.postData.replyCount}</span>
-                </PostDetailItem>
-                <PostDetailItem>
+                    <ReplyCount>{postContentsData.replyCount}</ReplyCount>
+                </PostDetailReply>
+                <PostDetailView>
                     <FaEye icon={faEye} />
-                    <span>{props.postData.viewCount}</span>
-                </PostDetailItem>
+                    <ViewCount>{postContentsData.viewCount}</ViewCount>
+                </PostDetailView>
             </PostDetail>
         </PostContentsComponent>
     );
@@ -307,21 +298,44 @@ const PostDetail = styled.div`
     border-bottom: 1px solid #d7d7d7;
 `;
 
-const PostDetailItem = styled.div`
-    margin-right: 20px;
+const PostDetailLike = styled.div<PostDetailLikeProps>`
+    margin-right: 10px;
+    border-radius: 15px;
+    background-color: ${(props) => (props.active ? '#FFE0F8' : 'transparent')};
+    font-weight: ${(props) => (props.active ? 'bold' : 'regular')};
 `;
 
 const FaThumbsUp = styled(FontAwesomeIcon)`
-    margin-left: 10px;
+    margin-left: 15px;
     margin-right: 5px;
+`;
+
+const LikeCount = styled.span`
+    margin-right: 10px;
+`;
+
+const PostDetailReply = styled.div`
+    margin-right: 10px;
 `;
 
 const FaComment = styled(FontAwesomeIcon)`
     margin-right: 5px;
 `;
 
+const ReplyCount = styled.span`
+    margin-right: 10px;
+`;
+
+const PostDetailView = styled.div`
+    margin-right: 10px;
+`;
+
 const FaEye = styled(FontAwesomeIcon)`
     margin-right: 5px;
+`;
+
+const ViewCount = styled.span`
+    margin-right: 10px;
 `;
 
 export default PostContents;

@@ -21,11 +21,11 @@ const Posts: React.FC = () => {
             <Title>커뮤니티</Title>
             <PostFilter />
             <PostList />
-            {loggedIn && (
-                <Link to="/posts/createpost">
-                    <NewPost>게시글 작성</NewPost>
-                </Link>
-            )}
+            {/* {loggedIn && ( */}
+            <Link to="/posts/createpost">
+                <NewPost>게시글 작성</NewPost>
+            </Link>
+            {/* )} */}
         </Page>
     );
 };

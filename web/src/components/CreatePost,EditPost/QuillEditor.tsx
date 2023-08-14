@@ -68,9 +68,9 @@ const QuillEditor: React.FC<DataForQuillEditorComp | {}> = (props) => {
 
                 const formData = new FormData();
                 formData.append('image', file);
-                // for (const entry of formData.entries()) {
-                //     console.log(entry);
-                // }
+                for (const entry of formData.entries()) {
+                    console.log(entry);
+                }
 
                 // range는 '이미지 업로드 버튼'을 눌렀을 때의 위치
                 const range = quillRef.current.getEditor().getSelection(true);
@@ -78,15 +78,14 @@ const QuillEditor: React.FC<DataForQuillEditorComp | {}> = (props) => {
                 try {
                     // 서버에 post 요청을 보내 업로드 한뒤 이미지 태그에 삽입할 url을 반환받도록 구현
                     const response = await axios.post('/api/upload', formData);
+                    console.log(response.data);
+
+                    setImages((prevImagesUrlList) => [...prevImagesUrlList, response.data[0]]);
+                    console.log(images);
 
                     quillRef.current
                         .getEditor()
-                        .insertEmbed(range.index, 'image', response.data.imageUrl);
-                    setImages((prevImagesUrlList) => [
-                        ...prevImagesUrlList,
-                        response.data.imageUrl,
-                    ]);
-                    console.log(images);
+                        .insertEmbed(range.index, 'image', response.data[0]);
                 } catch (error) {
                     console.error(error);
                 }

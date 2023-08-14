@@ -15,8 +15,6 @@ import {
     accessLevelState,
 } from '../recoil/posts/atoms';
 
-const token = sessionStorage.getItem('token');
-
 interface DataForEdit {
     savedTitle: string;
     savedDescription: string;
@@ -27,6 +25,8 @@ interface DataForEdit {
 }
 
 const EditPost: React.FC = () => {
+    const token = sessionStorage.getItem('token');
+
     const title = useRecoilValue(titleState);
     const description = useRecoilValue(descriptionState);
     const images = useRecoilValue(imagesUrlListState);
@@ -58,20 +58,16 @@ const EditPost: React.FC = () => {
     };
     console.log(postForm);
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const submitPostForm = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        submitPostForm();
-    };
-
-    const submitPostForm = async () => {
         try {
             const response = await axios.post('/api/posts', postForm, {
                 headers: {
                     'X-AUTH-TOKEN': token,
                 },
             });
-            if (response.data.status === 'success') {
+            if (response.status === 200) {
                 const navigate = useNavigate();
                 navigate(`/posts/${response.data.postId}`);
             }
@@ -81,7 +77,7 @@ const EditPost: React.FC = () => {
     };
 
     return (
-        <PostDataForm onSubmit={handleSubmit}>
+        <PostDataForm onSubmit={submitPostForm}>
             <QuillEditor {...dataForQuillEditorComp} />
             <PostSetting {...dataForPostSettingComp} />
             <SubmitButton type="submit">수정</SubmitButton>

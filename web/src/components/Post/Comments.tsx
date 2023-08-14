@@ -7,30 +7,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { useRecoilValue } from 'recoil';
 import { signInInfo } from '../../recoil/AuthState/atoms';
-
-interface ReplyData {
-    postId: number;
-    replyId: number;
-    userImage: string;
-    userNickname: string;
-    createdAt: string;
-    comment: string;
-}
-
-interface ChildReplyData {
-    postId: number;
-    replyId: number;
-    childReplyId: number;
-    userImage: string;
-    userNickname: string;
-    createdAt: string;
-    comment: string;
-}
-
-interface CommentsProps {
-    replyData: ReplyData[];
-    childReplyData: ChildReplyData[];
-}
+import { useRecoilState } from 'recoil';
+import {
+    postDataRecoil,
+    postContentsDataRecoil,
+    conmentsDataRecoil,
+} from '../../recoil/posts/atoms';
 
 const formatDateString = (createdAt: string) => {
     const dateObject = new Date(createdAt);
@@ -51,13 +33,18 @@ const formatDateString = (createdAt: string) => {
     return `${year}/${month}/${day} ${hour}:${minute}`;
 };
 
-const Comments: React.FC<CommentsProps> = (props) => {
+const Comments: React.FC = () => {
     const token = sessionStorage.getItem('token');
+
+    const { postId } = useParams<{ postId: string }>();
 
     const { nickname } = useRecoilValue(signInInfo);
     const myNickname = nickname;
 
-    const { postId } = useParams<{ postId: string }>();
+    const [postData, setPostData] = useRecoilState(postDataRecoil);
+    const [postContentsData, setPostContentsData] = useRecoilState(postContentsDataRecoil);
+    const [commentsData, setCommentsData] = useRecoilState(conmentsDataRecoil);
+
     const [replyInput, setReplyInput] = useState<string>('');
     const [childReplyInput, setChildReplyInput] = useState<string>('');
     const [showChildReplyInput, setShowChildReplyInput] = useState<boolean>(false);
@@ -80,8 +67,16 @@ const Comments: React.FC<CommentsProps> = (props) => {
                 },
             });
             console.log(response.data);
-            if (response.data.status === 'success') {
-            }
+            setCommentsData({
+                ...commentsData,
+                replyList: response.data.replyList,
+                childReplyList: response.data.childReplyList,
+            });
+            setPostData({ ...postData, replyCount: response.data.replyCount });
+            setPostContentsData({
+                ...postContentsData,
+                replyCount: response.data.replyCount,
+            });
         } catch (error) {
             console.error(error);
         }
@@ -99,8 +94,16 @@ const Comments: React.FC<CommentsProps> = (props) => {
                     },
                 });
                 console.log(response.data);
-                if (response.data.status === 'success') {
-                }
+                setCommentsData({
+                    ...commentsData,
+                    replyList: response.data.replyList,
+                    childReplyList: response.data.childReplyList,
+                });
+                setPostData({ ...postData, replyCount: response.data.replyCount });
+                setPostContentsData({
+                    ...postContentsData,
+                    replyCount: response.data.replyCount,
+                });
             } catch (error) {
                 console.error(error);
             }
@@ -124,9 +127,17 @@ const Comments: React.FC<CommentsProps> = (props) => {
                     'X-AUTH-TOKEN': token,
                 },
             });
-            if (response.data.status === 'success') {
-            }
             console.log(response.data);
+            setCommentsData({
+                ...commentsData,
+                replyList: response.data.replyList,
+                childReplyList: response.data.childReplyList,
+            });
+            setPostData({ ...postData, replyCount: response.data.replyCount });
+            setPostContentsData({
+                ...postContentsData,
+                replyCount: response.data.replyCount,
+            });
         } catch (error) {
             console.error(error);
         }
@@ -147,8 +158,16 @@ const Comments: React.FC<CommentsProps> = (props) => {
                     }
                 );
                 console.log(response.data);
-                if (response.data.status === 'success') {
-                }
+                setCommentsData({
+                    ...commentsData,
+                    replyList: response.data.replyList,
+                    childReplyList: response.data.childReplyList,
+                });
+                setPostData({ ...postData, replyCount: response.data.replyCount });
+                setPostContentsData({
+                    ...postContentsData,
+                    replyCount: response.data.replyCount,
+                });
             } catch (error) {
                 console.error(error);
             }
@@ -163,7 +182,7 @@ const Comments: React.FC<CommentsProps> = (props) => {
 
     return (
         <CommentsComponent>
-            {props.replyData.map((reply) => (
+            {commentsData?.replyList.map((reply) => (
                 <ReplyContainer key={reply.replyId}>
                     <TopDiv>
                         <ProfileImageContainer>
@@ -182,7 +201,7 @@ const Comments: React.FC<CommentsProps> = (props) => {
                         )}
                     </TopDiv>
                     <Comment>{reply.comment}</Comment>
-                    {props.childReplyData.map(
+                    {commentsData?.childReplyList.map(
                         (childReply) =>
                             childReply.replyId === reply.replyId && (
                                 <ChildReplyItem key={childReply.childReplyId}>
