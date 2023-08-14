@@ -1,21 +1,21 @@
 /** @jsxImportSource @emotion/react */
 
 import React, { useEffect, useState } from 'react';
-import DaumPostcode, { Address } from 'react-daum-postcode';
 import axios from 'axios';
 
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
-import { LiaWindowClose } from 'react-icons/lia';
-
-import getGeocodeFromAddress from './getGeocodeFromAddress';
 import { canEditInfo } from '../../recoil/AuthState/atoms';
 import { useRecoilValue } from 'recoil';
 
+// import { LiaWindowClose } from 'react-icons/lia';
+// import getGeocodeFromAddress from './getGeocodeFromAddress';
+// import DaumPostcode, { Address } from 'react-daum-postcode';
+
 const MyInformation: React.FC = () => {
-    const [isAddressModalOpen, setAddressModalOpen] = useState(false);
-    const [selectedAddress, setSelectedAddress] = useState<string>('');
+    // const [isAddressModalOpen, setAddressModalOpen] = useState(false);
+    // const [selectedAddress, setSelectedAddress] = useState<string>('');
 
     const [userData, setUserData] = useState({});
     const [introduction, setIntroduction] = useState<string>(userData.introduction || ''); // 초기 값 설정
@@ -42,7 +42,8 @@ const MyInformation: React.FC = () => {
         try {
             const response = await axios.get('/api/users/my', {
                 headers: {
-                    'X-AUTH-TOKEN': canInfoEdit ? token : kakaoToken,
+                    // 'X-AUTH-TOKEN': canInfoEdit ? token : kakaoToken,
+                    'X-AUTH-TOKEN': token,
                 },
             });
             setUserData(response.data); // 응답값을 userData 상태에 저장
@@ -58,56 +59,57 @@ const MyInformation: React.FC = () => {
     };
 
     // 주소찾기 모달 토글
-    const handleAddressModalToggle = () => {
-        if (!isAddressModalOpen) {
-            setSelectedAddress(''); // 주소찾기 모달이 닫힐 때 주소 입력 값을 초기화
-            // setSelectedAddress(''); // 주소찾기 모달이 닫힐 때 주소 입력 값을 초기화
-        }
-        setAddressModalOpen((prev) => !prev); // 모달 상태를 토글
-    };
+    // const handleAddressModalToggle = () => {
+    //     if (!isAddressModalOpen) {
+    //         setSelectedAddress(''); // 주소찾기 모달이 닫힐 때 주소 입력 값을 초기화
+    //         // setSelectedAddress(''); // 주소찾기 모달이 닫힐 때 주소 입력 값을 초기화
+    //     }
+    //     setAddressModalOpen((prev) => !prev); // 모달 상태를 토글
+    // };
 
     // 찾은 주소를 거주지 Value값으로 입력
-    const handleComplete = (data: Address): void => {
-        const userAddress = data.address;
-        setSelectedAddress(userAddress);
-        handleAddressModalToggle();
+    // const handleComplete = (data: Address): void => {
+    //     const userAddress = data.address;
+    //     setSelectedAddress(userAddress);
+    //     handleAddressModalToggle();
 
-        // 주소를 좌표로 변환해서 값 얻어내기
-        getGeocodeFromAddress(userAddress)
-            .then((geocode) => {
-                if (geocode) {
-                    const { lat, long } = geocode;
+    // 주소를 좌표로 변환해서 값 얻어내기
+    //     getGeocodeFromAddress(userAddress)
+    //         .then((geocode) => {
+    //             if (geocode) {
+    //                 const { lat, long } = geocode;
 
-                    console.log('위도:', lat);
-                    console.log('경도:', long);
+    //                 console.log('위도:', lat);
+    //                 console.log('경도:', long);
 
-                    // 위도와 경도 값을 숫자로 변환하여 상태에 저장
-                    setLatitude(Number(lat));
-                    setLongitude(Number(long));
+    //                 // 위도와 경도 값을 숫자로 변환하여 상태에 저장
+    //                 setLatitude(Number(lat));
+    //                 setLongitude(Number(long));
 
-                    // 위도와 경도 값을 서버에 PUT 요청
-                    axios
-                        .put(
-                            `/api/location?lat=${lat}&long=${long}`,
-                            {},
-                            {
-                                headers: {
-                                    'X-AUTH-TOKEN': canInfoEdit ? token : kakaoToken,
-                                },
-                            }
-                        )
-                        .then((response) => {
-                            console.log('위도 경도 업데이트 성공:', response.data);
-                        })
-                        .catch((error) => {
-                            console.error('위도 경도 업데이트 실패:', error);
-                        });
-                }
-            })
-            .catch((error) => {
-                console.error('Geocoding API 호출 오류:', error);
-            });
-    };
+    //                 // 위도와 경도 값을 서버에 PUT 요청
+    //                 axios
+    //                     .put(
+    //                         `/api/location?lat=${lat}&long=${long}`,
+    //                         {},
+    //                         {
+    //                             headers: {
+    //                                 // 'X-AUTH-TOKEN': canInfoEdit ? token : kakaoToken,
+    //                                 'X-AUTH-TOKEN': token,
+    //                             },
+    //                         }
+    //                     )
+    //                     .then((response) => {
+    //                         console.log('위도 경도 업데이트 성공:', response.data);
+    //                     })
+    //                     .catch((error) => {
+    //                         console.error('위도 경도 업데이트 실패:', error);
+    //                     });
+    //             }
+    //         })
+    //         .catch((error) => {
+    //             console.error('Geocoding API 호출 오류:', error);
+    //         });
+    // };
 
     // 성별 정보
     const handleGenderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,7 +160,8 @@ const MyInformation: React.FC = () => {
         axios
             .put('/api/users/my', userInfo, {
                 headers: {
-                    'X-AUTH-TOKEN': canInfoEdit ? token : kakaoToken,
+                    // 'X-AUTH-TOKEN': canInfoEdit ? token : kakaoToken,
+                    'X-AUTH-TOKEN': token,
                 },
             })
             .then((response) => {
@@ -194,7 +197,7 @@ const MyInformation: React.FC = () => {
                 />
             </InputContainer>
 
-            <InputContainer>
+            {/* <InputContainer>
                 <label css={labelStyle}>거주지역</label>
                 <input
                     type="text"
@@ -206,15 +209,15 @@ const MyInformation: React.FC = () => {
                 <button onClick={handleAddressModalToggle} css={inputButton}>
                     주소찾기
                 </button>
-            </InputContainer>
-            {isAddressModalOpen && (
+            </InputContainer> */}
+            {/* {isAddressModalOpen && (
                 <AddressPopup>
                     <PopupContent>
                         <DaumPostcode onComplete={handleComplete} />
                         <LiaWindowClose onClick={handleAddressModalToggle} />
                     </PopupContent>
                 </AddressPopup>
-            )}
+            )} */}
             <div css={containerStyles}>
                 <p css={labelStyle}>성별</p>
                 <label css={radioButtonStyles}>
@@ -375,27 +378,27 @@ const InputContainer = styled.div`
     margin-bottom: 10px;
 `;
 
-const AddressPopup = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-`;
+// const AddressPopup = styled.div`
+//     position: fixed;
+//     top: 0;
+//     left: 0;
+//     width: 100%;
+//     height: 100%;
+//     background-color: rgba(0, 0, 0, 0.5);
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     z-index: 9999;
+// `;
 
-const PopupContent = styled.div`
-    width: 500px;
-    background-color: white;
-    padding: 20px;
+// const PopupContent = styled.div`
+//     width: 500px;
+//     background-color: white;
+//     padding: 20px;
 
-    border-radius: 8px;
-    text-align: right;
-`;
+//     border-radius: 8px;
+//     text-align: right;
+// `;
 
 const MessageBox = styled.div`
     display: flex;

@@ -51,6 +51,8 @@ const MyPage: React.FC = () => {
 
 const MypageContainer = styled.div`
     margin-top: 150px;
+
+    min-height: 100vh;
 `;
 
 const Button = styled.button<ButtonProps>`
