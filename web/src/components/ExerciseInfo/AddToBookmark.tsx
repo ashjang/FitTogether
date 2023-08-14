@@ -87,10 +87,30 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
         setShowInput(true);
     };
     const handleAddVideoToPlaylist = (listName: string) => {
-        // 백엔드 요청을 보내는 함수. 예시로 작성.
         addToPlaylistBackend(listName, video);
     };
+    const handleDeletePlaylist = (listName: string) => {
+        if (window.confirm(`${listName} 플레이리스트를 삭제하시겠습니까?`)) {
+            deletePlaylistBackend(listName);
+        }
+    };
 
+    const deletePlaylistBackend = (listName: string) => {
+        axios
+            .delete<ApiResponse>(`/api/playlists/${listName}`)
+            .then((response) => {
+                const { success, message } = response.data;
+                if (success) {
+                    alert('플레이리스트가 삭제되었습니다.');
+                    setPlaylists((oldPlaylists) => oldPlaylists.filter((p) => p !== listName));
+                } else {
+                    alert('에러 발생: ' + (message || '알 수 없는 에러'));
+                }
+            })
+            .catch((error) => {
+                console.error('There was an error!', error);
+            });
+    };
     const addToPlaylistBackend = (listName: string, video: Video) => {
         axios
             .post<ApiResponse>(
@@ -138,12 +158,14 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
                 )}
                 <PlaylistContainer>
                     {playlists.map((listName, index) => (
-                        <PlaylistItem
-                            key={index}
-                            onClick={() => handleAddVideoToPlaylist(listName)}
-                        >
-                            {listName}
-                        </PlaylistItem>
+                        <PlaylistItemWrapper key={index}>
+                            <PlaylistItem onClick={() => handleAddVideoToPlaylist(listName)}>
+                                {listName}
+                            </PlaylistItem>
+                            <DeleteButton onClick={() => handleDeletePlaylist(listName)}>
+                                삭제
+                            </DeleteButton>
+                        </PlaylistItemWrapper>
                     ))}
                 </PlaylistContainer>
             </BookmarkModal>
@@ -191,12 +213,15 @@ const MakeBtn = styled.button`
     border-radius: 10px;
     background: none;
 `;
+const PlaylistItemWrapper = styled.div``;
 const PlusBtn = styled.button`
     padding: 4px 0px;
     margin-left: 10px;
     border: none;
     background: none;
 `;
+const DeleteButton = styled.button``;
+
 const Overlay = styled.div`
     position: fixed;
     top: 0;
