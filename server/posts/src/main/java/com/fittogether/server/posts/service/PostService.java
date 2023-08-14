@@ -142,7 +142,7 @@ public class PostService {
 
     imageService.addImageForDB(postForm.getImages(), post);
 
-    List<PostHashtag> currentPostHashtag = postHashtagRepository.findAllByPostId(postId);
+    List<PostHashtag> currentPostHashtag = postHashtagRepository.findByPostId(postId);
     postHashtagRepository.deleteAll(currentPostHashtag);
 
     List<Hashtag> hashtag = addHashtag(postForm);
@@ -171,7 +171,7 @@ public class PostService {
 
     authenticationService.validate(token, post);
 
-    List<PostHashtag> postIds = postHashtagRepository.findAllByPostId(postId);
+    List<PostHashtag> postIds = postHashtagRepository.findByPostId(postId);
 
     postHashtagRepository.deleteAll(postIds);
 
@@ -195,14 +195,14 @@ public class PostService {
       isLike = likeRepository.existsByPostAndUser(post, user);
 
       if (!user.equals(post.getUser())) {
-        Request request = requestRepository.findBySenderIdAndReceiverId(post.getUser(), user);
+        Request request = requestRepository.findAllBySenderNicknameAndReceiverNickname(post.getUser().getNickname(), user.getNickname());
         if (request == null) {
           throw new PostException(ErrorCode.MATE_ONLY_ACCESS);
         }
       }
     }
 
-    List<PostHashtag> postHashtagList = postHashtagRepository.findAllByPostId(postId);
+    List<PostHashtag> postHashtagList = postHashtagRepository.findByPostId(postId);
 
     List<String> hashtagList = postHashtagList.stream()
         .map(postHashtag -> postHashtag.getHashtag().getKeyword())
