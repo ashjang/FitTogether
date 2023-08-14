@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
-import queryString from 'query-string';
+import axios from 'axios';
 
 import styled from '@emotion/styled';
 
-import { kakaoAccessTokenState } from '../../recoil/AuthState/atoms';
+import { canEditInfo, loggedInState } from '../../recoil/AuthState/atoms';
 
 const KakaoAuth: React.FC = () => {
-    const setKakaoAccessToken = useSetRecoilState<string | undefined | null>(kakaoAccessTokenState);
+    const setCanEditUserInfo = useSetRecoilState(canEditInfo);
+    const setLoggedIn = useSetRecoilState(loggedInState);
+    // const setKakaoAccessToken = useSetRecoilState(canEditInfo);
     const navigate = useNavigate();
 
     const [error, setError] = useState<string>('');
@@ -19,27 +21,29 @@ const KakaoAuth: React.FC = () => {
 
         // 카카오 로그인 성공 시에만 실행
         if (code) {
-            const KAKAO_REST_API_KEY = import.meta.env.VITE_APP_KAKAO_REST_API_KEY;
-            const REDIRECT_URI = import.meta.env.VITE_APP_REDIRECT_URI;
+            const KAKAO_REST_API_KEY = `${import.meta.env.VITE_APP_KAKAO_REST_API_KEY}`;
+            const REDIRECT_URI = `${import.meta.env.VITE_APP_REDIRECT_URI}`;
 
             // AccessToken 요청
-            fetch('https://kauth.kakao.com/oauth/token', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-                },
-                body: queryString.stringify({
-                    grant_type: 'authorization_code',
-                    client_id: KAKAO_REST_API_KEY,
-                    redirect_uri: REDIRECT_URI,
-                    code: code,
-                    // client_secret: CLIENT_SECRET,
-                }),
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    setKakaoAccessToken(data.access_token);
-                    localStorage.setItem('token_for_kakaotalk', data.access_token);
+            axios
+                .post('https://kauth.kakao.com/oauth/token', null, {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+                    },
+                    params: {
+                        grant_type: 'authorization_code',
+                        client_id: KAKAO_REST_API_KEY,
+                        redirect_uri: REDIRECT_URI,
+                        code: code,
+                    },
+                })
+                .then((response) => {
+                    const data = response.data;
+                    // setKakaoAccessToken(data.access_token);
+                    sessionStorage.setItem('token_for_kakaotalk', data.access_token);
+                    // console.log('토큰을 받아오는데 성공했습니다.');
+                    setLoggedIn(true);
+                    setCanEditUserInfo(false);
                     navigate('/');
                 })
                 .catch((error) => {
@@ -47,7 +51,7 @@ const KakaoAuth: React.FC = () => {
                     setError('카카오 로그인 중 오류가 발생했습니다.');
                 });
         }
-    }, [setKakaoAccessToken, navigate]);
+    }, [setLoggedIn, setCanEditUserInfo, navigate]);
 
     if (error) {
         return (
@@ -66,6 +70,8 @@ const KakaoAuth: React.FC = () => {
 
 const MessageContainer = styled.div`
     margin-top: 150px;
+    width: 100%;
+    // height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -74,7 +80,7 @@ const MessageContainer = styled.div`
 const LodingMessage = styled.p`
     color: #007bff;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 18px;
 `;
 
 export default KakaoAuth;

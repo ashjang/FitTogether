@@ -1,33 +1,40 @@
 import React, { useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { loggedInState, signInInfo } from '../../recoil/AuthState/atoms';
-
-// interface Props {}
+import { loggedInState, canEditInfo, signInInfo } from '../../recoil/AuthState/atoms';
 
 const SignInSetting: React.FC = () => {
-    const navigate = useNavigate();
-    const [signInData, setSignInData] = useRecoilState(signInInfo); // 값을 받아와서 변경하고 싶으면 useRecoilState
-    const setSignIn = useSetRecoilState(loggedInState); // 값을 변경하고 싶으면 useSetRecoilState
     const [errorMessage, setErrorMessage] = useState<string>('');
+    const [signInData, setSignInData] = useRecoilState(signInInfo); // 값을 받아와서 변경하고 싶으면 useRecoilState
+    const setLoggedIn = useSetRecoilState(loggedInState); // 값을 변경하고 싶으면 useSetRecoilState
+    const setCanEditInfo = useSetRecoilState(canEditInfo);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location?.state?.redirectFrom || '/';
+
+    const [passwordForRequest, setPasswordForRequest] = useState<string>('');
 
     const handleSignIn = async (event: React.FormEvent) => {
         event.preventDefault();
 
         try {
-            const response = await axios.post('/api/users/signin', signInData);
+            const signInRequestData = {
+                nickname: signInData.nickname,
+                password: passwordForRequest,
+            };
+
+            const response = await axios.post('/api/users/signin', signInRequestData);
 
             if (response.status === 200) {
-                const token = response.data.token;
-                setSignIn(true);
-                localStorage.setItem('token', token);
-
-                // 로그인 성공 처리: 메인페이지로 이동
-                navigate('/');
-            } else if (response.status === 401) {
+                const token = response.data;
+                setLoggedIn(true);
+                setCanEditInfo(true);
+                sessionStorage.setItem('token', token);
+                navigate(from);
+            } else if (response.status === 400) {
                 // 에러 메시지 출력
                 setErrorMessage(response.data.message);
             }
@@ -58,10 +65,8 @@ const SignInSetting: React.FC = () => {
                     <InputField>
                         <input
                             type="password"
-                            value={signInData.password}
-                            onChange={(e) =>
-                                setSignInData({ ...signInData, password: e.target.value })
-                            }
+                            value={passwordForRequest}
+                            onChange={(e) => setPasswordForRequest(e.target.value)}
                             placeholder="비밀번호를 입력하세요"
                         />
                     </InputField>

@@ -23,6 +23,8 @@ import MyPage from './pages/MyPage';
 import MyVideos from './pages/MyVideos';
 
 import ScrollTopButton from './components/common/ScrollTopButton';
+import ProtectedRoute from './components/Sign/ProtectedRoute';
+import KakaoAuth from './components/Sign/KakaoAuth';
 
 import './index.css';
 
@@ -37,17 +39,21 @@ function App() {
                     <Routes>
                         <Route path="/" element={<MainPage />} />
                         <Route path="/signin" element={<SignIn />} />
+                        <Route path="/kakao/callback" element={<KakaoAuth />} />
                         <Route path="/signup" element={<SignUp />} />
                         <Route path="/messenger" element={<Messenger />} />
-                        <Route path="/bookmark" element={<Bookmark />} />
+                        <Route element={<ProtectedRoute />}>
+                            // 비로그인 상태에서는 접근 불가능한 컴포넌트들 모음
+                            <Route path="/mypage" element={<MyPage />} />
+                            <Route path="/bookmark" element={<Bookmark />} />
+                            <Route path="/mypage/myvideos" element={<MyVideos />} />
+                        </Route>
                         <Route path="/exerciseInfo" element={<ExerciseInfo />} />
                         <Route path="/findmate" element={<FindMate />} />
                         <Route path="/posts" element={<Posts />} />
                         <Route path="/posts/:postId" element={<Post />} />
                         <Route path="/posts/:postId/editpost" element={<EditPost />} />
                         <Route path="/posts/createpost" element={<CreatePost />} />
-                        <Route path="/mypage" element={<MyPage />} />
-                        <Route path="/mypage/myvideos" element={<MyVideos />} />
                     </Routes>
                     <Footer />
                     <ScrollTopButton />
