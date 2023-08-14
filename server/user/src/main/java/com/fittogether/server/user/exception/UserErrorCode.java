@@ -15,7 +15,8 @@ public enum UserErrorCode {
     NEED_TO_SIGNIN(HttpStatus.BAD_REQUEST, "로그인이 필요합니다."),
     NOT_FOUND_EXERCISE_TYPE(HttpStatus.BAD_REQUEST, "해당 운동종류는 존재하지 않습니다."),
 
-    PRIVATE_USER(HttpStatus.BAD_REQUEST, "비공개 회원입니다.");;
+    PRIVATE_USER(HttpStatus.BAD_REQUEST, "비공개 회원입니다."),
+    NOT_ALLOW_FOR_USER(HttpStatus.BAD_REQUEST, "접근권한이 없는 사용자입니다.");
 
     private final HttpStatus httpStatus;
     private final String detail;
