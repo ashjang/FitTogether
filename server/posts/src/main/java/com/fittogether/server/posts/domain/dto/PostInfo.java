@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PostInfo {
 
+  private Long postId;
   private String userNickname;
   private Category category;
   private String title;
@@ -27,20 +28,26 @@ public class PostInfo {
   private Long viewCount;
   private Long replyCount;
   private List<String> images;
+  private String userImage;
   private boolean accessLevel;
   private boolean isLike;
   private List<ReplyDto> replyList;
   private List<ReplyDto> childReplyList;
+  private List<String> hashtagList;
   private LocalDateTime createdAt;
 
-  public static PostInfo from(Post post, List<Reply> replyList, List<ChildReply> childReplyList, Long totalCount, boolean isLike, Long incrementWatchedCount, List<Image> images) {
+  public static PostInfo from(Post post, List<Reply> replyList, List<ChildReply> childReplyList,
+      Long totalCount, boolean isLike, Long incrementWatchedCount, List<Image> images,
+      List<String> hashtagList) {
 
     return PostInfo.builder()
+        .postId(post.getId())
         .userNickname(post.getUser().getNickname())
         .category(post.getCategory())
         .title(post.getTitle())
         .description(post.getDescription())
         .images(images.stream().map(Image::getImageUrl).collect(Collectors.toList()))
+        .userImage(post.getUser().getProfilePicture())
         .likeCount(post.getLikes())
         .viewCount(incrementWatchedCount)
         .replyCount(totalCount)
@@ -48,6 +55,7 @@ public class PostInfo {
         .isLike(isLike)
         .replyList(replyList.stream().map(ReplyDto::from).collect(Collectors.toList()))
         .childReplyList(childReplyList.stream().map(ReplyDto::fromChild).collect(Collectors.toList()))
+        .hashtagList(hashtagList)
         .createdAt(post.getCreatedAt())
         .build();
   }

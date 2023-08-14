@@ -78,6 +78,6 @@ public class PostController {
   public ResponseEntity<LikeDto> likePost(@RequestHeader(name = "X-AUTH-TOKEN") String token,
                                           @PathVariable Long postId) {
     return ResponseEntity.ok(LikeDto.from(
-        likeService.likePost(token, postId)));
+        likeService.likePost(token, postId), likeService.getLikeCountByDB(postId)));
   }
 }

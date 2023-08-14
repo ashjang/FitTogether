@@ -23,6 +23,9 @@ public class ImageUploadController {
   @Value("${cloud.aws.s3.bucket}")
   private String bucket;
 
+  @Value("${cloud.aws.region.static}")
+  private String region;
+
   /**
    * 이미지 업로드
    */
@@ -33,7 +36,7 @@ public class ImageUploadController {
     try {
       for (MultipartFile image : images) {
         String fileName = image.getOriginalFilename();
-        String fileUrl = "https://" + bucket + "/test" + fileName;
+        String fileUrl = "https://" + bucket + ".s3." + region +".amazonaws.com/" + fileName;
 
         ObjectMetadata metadata = new ObjectMetadata();
 

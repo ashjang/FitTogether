@@ -81,7 +81,7 @@ public class LikeService {
     ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 
     if (valueOperations.get(likeCountKey) == null) {
-      Long likeCount = likeRepository.countByPostId(postId);
+      Long likeCount = getLikeCountByDB(postId);
       valueOperations.set(likeCountKey, String.valueOf(likeCount));
     } else {
       if (isLiked) {
@@ -92,8 +92,12 @@ public class LikeService {
     }
   }
 
+  public Long getLikeCountByDB(Long postId) {
+    return likeRepository.countByPostId(postId);
+  }
+
   @Scheduled(cron = "0 0/3 * * * *")
-  public void updateLikeCountRedis() {
+  public void updateLikeCountByRedis() {
     log.info("DB 좋아요 수 갱신");
     Set<String> keys = redisTemplate.keys("postLikeCount::*");
     for (String data : keys) {

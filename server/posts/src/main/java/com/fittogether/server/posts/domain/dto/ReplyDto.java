@@ -24,7 +24,7 @@ public class ReplyDto {
     return ReplyDto.builder()
         .replyId(reply.getId())
         .comment(reply.getComment())
-        .createdAt(LocalDateTime.now())
+        .createdAt(reply.getCreatedAt())
         .userNickname(reply.getUser().getNickname())
         .userImage(reply.getUser().getProfilePicture())
         .postId(reply.getPost().getId())
@@ -34,7 +34,7 @@ public class ReplyDto {
   public static ReplyDto fromChild(ChildReply childReply) {
     return ReplyDto.builder()
         .comment(childReply.getComment())
-        .createdAt(LocalDateTime.now())
+        .createdAt(childReply.getCreatedAt())
         .userNickname(childReply.getUser().getNickname())
         .userImage(childReply.getUser().getProfilePicture())
         .postId(childReply.getReply().getPost().getId())

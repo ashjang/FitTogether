@@ -1,7 +1,7 @@
 package com.fittogether.server.posts.controller;
 
-import com.fittogether.server.posts.domain.dto.ReplyDto;
 import com.fittogether.server.posts.domain.dto.ReplyForm;
+import com.fittogether.server.posts.domain.dto.ReplyListDto;
 import com.fittogether.server.posts.service.ReplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +24,12 @@ public class ReplyController {
    * 댓글 작성
    */
   @PostMapping("{postId}/comment")
-  public ResponseEntity<ReplyDto> createReply(@RequestHeader(name = "X-AUTH-TOKEN") String token,
+  public ResponseEntity<ReplyListDto> createReply(
+      @RequestHeader(name = "X-AUTH-TOKEN") String token,
       @PathVariable Long postId, @RequestBody ReplyForm replyForm) {
-    return ResponseEntity.ok(ReplyDto.from(
-        replyService.createReply(token, postId, replyForm)));
+
+    return ResponseEntity.ok(replyService.getReplyListDto(
+        token, postId, null, replyForm, true, false));
   }
 
   /**
@@ -35,24 +37,26 @@ public class ReplyController {
    */
   @DeleteMapping("/{postId}/comments/{replyId}")
   public ResponseEntity<?> deleteReply(@RequestHeader(name = "X-AUTH-TOKEN") String token,
-                                       @PathVariable Long postId,
-                                       @PathVariable Long replyId) {
+      @PathVariable Long postId,
+      @PathVariable Long replyId) {
     replyService.deleteReply(token, postId, replyId);
 
-    return ResponseEntity.ok().body("댓글 삭제 완료");
+    return ResponseEntity.ok(replyService.getReplyListDto(
+        token, postId, null, null, false, false));
   }
 
   /**
    * 대댓글 작성
    */
   @PostMapping("/{postId}/comments/{replyId}")
-  public ResponseEntity<ReplyDto> createChildReply(
+  public ResponseEntity<ReplyListDto> createChildReply(
       @RequestHeader(name = "X-AUTH-TOKEN") String token,
       @PathVariable Long postId,
       @PathVariable Long replyId,
       @RequestBody ReplyForm replyForm) {
-    return ResponseEntity.ok(ReplyDto.fromChild(
-        replyService.createChildReply(token, postId, replyId, replyForm)));
+
+    return ResponseEntity.ok(replyService.getReplyListDto(
+        token, postId, replyId, replyForm, true, true));
   }
 
   /**
@@ -65,7 +69,8 @@ public class ReplyController {
       @PathVariable Long childReplyId) {
     replyService.deleteChildReply(token, childReplyId);
 
-    return ResponseEntity.ok().body("댓글 삭제 완료");
+    return ResponseEntity.ok(replyService.getReplyListDto(
+        token, postId, replyId, null, false, true));
   }
 
 }

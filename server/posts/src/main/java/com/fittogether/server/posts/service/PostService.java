@@ -56,6 +56,7 @@ public class PostService {
   private final RedisTemplate<String, String> redisTemplate;
   private final AuthenticationService authenticationService;
   private final ImageService imageService;
+  private final ReplyService replyService;
 
   /**
    * 게시글 작성
@@ -141,7 +142,7 @@ public class PostService {
 
     imageService.addImageForDB(postForm.getImages(), post);
 
-    List<PostHashtag> currentPostHashtag = postHashtagRepository.findByPostId(postId);
+    List<PostHashtag> currentPostHashtag = postHashtagRepository.findAllByPostId(postId);
     postHashtagRepository.deleteAll(currentPostHashtag);
 
     List<Hashtag> hashtag = addHashtag(postForm);
@@ -170,7 +171,7 @@ public class PostService {
 
     authenticationService.validate(token, post);
 
-    List<PostHashtag> postIds = postHashtagRepository.findByPostId(postId);
+    List<PostHashtag> postIds = postHashtagRepository.findAllByPostId(postId);
 
     postHashtagRepository.deleteAll(postIds);
 
@@ -201,33 +202,24 @@ public class PostService {
       }
     }
 
-    List<Image> images = imageRepository.findByPostId(postId);
+    List<PostHashtag> postHashtagList = postHashtagRepository.findAllByPostId(postId);
 
-    List<Reply> replyList = replyRepository.findByPostId(postId);
-
-    List<Long> replyIds = replyList.stream()
-        .map(Reply::getId)
+    List<String> hashtagList = postHashtagList.stream()
+        .map(postHashtag -> postHashtag.getHashtag().getKeyword())
         .collect(Collectors.toList());
 
-    List<ChildReply> childReplies = childReplyRepository.findByReplyIdIn(replyIds);
+    List<Image> images = imageRepository.findByPostId(postId);
+
+    List<Reply> replyList = replyRepository.findAllByPostId(postId);
+    List<ChildReply> childReplies = childReplyRepository.findAllByPostId(postId);
 
     Long incrementWatchedCount = incrementWatchedCount(postId);
-    Long totalReplyCount = getTotalReplyCount(postId);
+    Long totalReplyCount = replyService.getTotalReplyCount(postId);
 
     return PostInfo.from(post, replyList, childReplies, totalReplyCount, isLike,
-        incrementWatchedCount, images);
+        incrementWatchedCount, images, hashtagList);
   }
 
-  /**
-   * 댓글 수
-   */
-  @Transactional
-  public Long getTotalReplyCount(Long postId) {
-    Long replyCount = replyRepository.countByPostId(postId);
-    Long childReplyCount = childReplyRepository.countByPostId(postId);
-
-    return replyCount + childReplyCount;
-  }
 
   /**
    * 조회수 캐싱
