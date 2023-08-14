@@ -50,9 +50,12 @@ export const signUpInfo = atom({
         email: '',
         profilePicture: '',
         gender: true,
+        address: '',
         introduction: '',
         exerciseChoice: [''],
         publicInfo: true,
-        accessToken: '',
+        latitude: 0,
+        longitude: 0,
+        // accessToken: '',
     },
 });

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useRecoilValue } from 'recoil';
-import { useNavigate } from 'react-router-dom';
+// import { useRecoilValue } from 'recoil';
+// import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 
-import { loggedInState } from '../recoil/AuthState/atoms';
+// import { loggedInState } from '../recoil/AuthState/atoms';
 import MyInformation from '../components/MyPage/MyInformation';
-import MyPostList from '../components/MyPage/MyPostList';
+// import MyPostList from '../components/MyPage/MyPostList';
+import PasswordChange from '../components/MyPage/PasswordChange';
 
 interface ButtonProps {
     isActive: boolean;
@@ -13,12 +14,12 @@ interface ButtonProps {
 
 const MyPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState('MyInformation');
-    const isLoggedIn = useRecoilValue(loggedInState);
-    const navigate = useNavigate();
+    // const isLoggedIn = useRecoilValue(loggedInState);
+    // const navigate = useNavigate();
 
-    if (!isLoggedIn) {
-        navigate('/signin');
-    }
+    // if (!isLoggedIn) {
+    //     navigate('/signin');
+    // }
 
     const handleTabClick = (tabName: string) => {
         setActiveTab(tabName);
@@ -34,19 +35,15 @@ const MyPage: React.FC = () => {
                     나의 정보
                 </Button>
                 <Button
-                    isActive={activeTab === 'MyPostList'}
-                    onClick={() => handleTabClick('MyPostList')}
+                    isActive={activeTab === 'PasswordChange'}
+                    onClick={() => handleTabClick('PasswordChange')}
                 >
-                    작성 게시글
+                    비밀번호 변경
                 </Button>
             </TabArea>
             <Content>
                 {activeTab === 'MyInformation' && <MyInformation />}
-                {activeTab === 'MyPostList' && (
-                    <MyPostList
-                    // userId={}
-                    />
-                )}
+                {activeTab === 'PasswordChange' && <PasswordChange />}
             </Content>
         </MypageContainer>
     );
