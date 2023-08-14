@@ -37,7 +37,6 @@ export const signInInfo = atom({
     key: 'signInState',
     default: {
         nickname: '',
-        password: '',
     },
 });
 
