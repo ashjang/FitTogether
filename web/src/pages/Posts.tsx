@@ -21,11 +21,11 @@ const Posts: React.FC = () => {
             <Title>커뮤니티</Title>
             <PostFilter />
             <PostList />
-            {/* {loggedIn && ( */}
-            <Link to="/posts/createpost">
-                <NewPost>게시글 작성</NewPost>
-            </Link>
-            {/* )} */}
+            {loggedIn && (
+                <Link to="/posts/createpost">
+                    <NewPost>게시글 작성</NewPost>
+                </Link>
+            )}
         </Page>
     );
 };
@@ -37,9 +37,7 @@ const Page = styled.div`
     align-items: center;
     position: relative;
     width: 750px;
-    // margin -> 150px auto로 변경해야.
-    margin: 40px auto;
-    // // min-height는 삭제 예정
+    margin: 150px auto;
     min-height: calc(100vh - 300px);
 `;
 

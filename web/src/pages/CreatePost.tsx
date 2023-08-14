@@ -74,7 +74,7 @@ const PostDataForm = styled.form`
     justify-content: center;
     align-items: center;
     position: relative;
-    // min-height는 삭제 예정
+    margin: 150px auto;
     min-height: calc(100vh - 300px);
 `;
 

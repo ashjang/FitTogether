@@ -78,8 +78,7 @@ const Page = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 40px;
-    // min-height는 삭제 예정
+    margin: 150px auto;
     min-height: calc(100vh - 300px);
 `;
 
