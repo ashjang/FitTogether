@@ -62,6 +62,7 @@ const EditPost: React.FC = () => {
         event.preventDefault();
 
         try {
+            console.log(token);
             const response = await axios.post('/api/posts', postForm, {
                 headers: {
                     'X-AUTH-TOKEN': token,

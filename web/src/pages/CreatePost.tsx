@@ -38,6 +38,7 @@ const CreatePost: React.FC = () => {
         console.log(postForm);
 
         try {
+            console.log(token);
             const response = await axios.post('/api/posts', postForm, {
                 headers: {
                     'X-AUTH-TOKEN': token,

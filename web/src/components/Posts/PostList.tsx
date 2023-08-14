@@ -14,7 +14,7 @@ const PostList: React.FC = () => {
 
     const getPostListData = async () => {
         try {
-            const response = await axios.get('/api/posts');
+            const response = await axios.get('/api/posts/search');
             setPostListData(response.data);
         } catch (error) {
             console.error;

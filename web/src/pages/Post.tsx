@@ -13,8 +13,6 @@ import {
 } from '../recoil/posts/atoms';
 
 const Post: React.FC = () => {
-    const token = sessionStorage.getItem('token') || '';
-
     const { postId } = useParams<{ postId: string }>();
 
     const [postData, setPostData] = useRecoilState(postDataRecoil);
@@ -22,13 +20,22 @@ const Post: React.FC = () => {
     const [commentsData, setCommentsData] = useRecoilState(conmentsDataRecoil);
     const setLikeState = useSetRecoilState(isLikedState);
 
-    const getPostData = async () => {
+    const token = sessionStorage.getItem('token');
+
+    useEffect(() => {
+        if (token) {
+            getPostData(token);
+        }
+        console.log('Post Rendering !');
+    }, []);
+
+    const getPostData = async (token: string | null) => {
         try {
-            console.log(postId);
+            console.log(token);
             const response = await axios.get(`/api/posts/${postId}`, {
-                headers: {
-                    'X-AUTH-TOKEN': token,
-                },
+                // headers: {
+                //     'X-AUTH-TOKEN': token,
+                // },
             });
             setPostData(response.data);
             console.log(postData);
@@ -57,11 +64,6 @@ const Post: React.FC = () => {
             console.error(error);
         }
     };
-
-    useEffect(() => {
-        getPostData();
-        console.log('Post Rendering !');
-    }, []);
 
     return (
         <Page>

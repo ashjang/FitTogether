@@ -103,6 +103,7 @@ const PostContents: React.FC = () => {
     // 게시글 삭제 눌렀을 때 실행할 함수
     const handleDeletePost = async () => {
         try {
+            console.log(token);
             const response = await axios.delete(`/api/posts/${postId}`, {
                 headers: {
                     'X-AUTH-TOKEN': token,
@@ -120,7 +121,8 @@ const PostContents: React.FC = () => {
     // 좋아요 눌렀을 때
     const handleToggleLikeButton = async () => {
         try {
-            const response = await axios.post(`api/posts/${postId}/like`, {
+            console.log(token);
+            const response = await axios.post(`/api/posts/${postId}/like`, {
                 headers: {
                     'X-AUTH-TOKEN': token,
                 },
@@ -150,9 +152,9 @@ const PostContents: React.FC = () => {
 
                 <ProfileNickname>{postContentsData.userNickname}</ProfileNickname>
                 <CreatedAt>{formatDateString(postContentsData.createdAt)}</CreatedAt>
-                {myNickname === postContentsData.userNickname && (
-                    <FaEllipsis icon={faEllipsis} onClick={handleToggleModal} />
-                )}
+                {/* {myNickname === postContentsData.userNickname && ( */}
+                <FaEllipsis icon={faEllipsis} onClick={handleToggleModal} />
+                {/* )} */}
 
                 <Modal
                     isOpen={isModalOpen}

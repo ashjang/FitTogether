@@ -61,6 +61,7 @@ const Comments: React.FC = () => {
             comment: replyInput,
         };
         try {
+            console.log(token);
             const response = await axios.post(`/api/posts/${postId}/comments`, replyForm, {
                 headers: {
                     'X-AUTH-TOKEN': token,
@@ -88,6 +89,7 @@ const Comments: React.FC = () => {
         const confirmDelete = window.confirm('정말로 댓글을 삭제하시겠습니까?');
         if (confirmDelete) {
             try {
+                console.log(token);
                 const response = await axios.delete(`/api/posts/${postId}/comments/${replyId}`, {
                     headers: {
                         'X-AUTH-TOKEN': token,
@@ -122,6 +124,7 @@ const Comments: React.FC = () => {
             comment: childReplyInput,
         };
         try {
+            console.log(token);
             const response = await axios.post(`/api/posts/comments/${replyId}`, requestData, {
                 headers: {
                     'X-AUTH-TOKEN': token,
@@ -149,6 +152,7 @@ const Comments: React.FC = () => {
         const confirmDelete = window.confirm('정말로 댓글을 삭제하시겠습니까?');
         if (confirmDelete) {
             try {
+                console.log(token);
                 const response = await axios.delete(
                     `/api/posts/{postId}/comments/{replyId}/child-comment/{childReplyId}`,
                     {
