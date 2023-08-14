@@ -10,7 +10,6 @@ import { canEditInfo, loggedInState } from '../../recoil/AuthState/atoms';
 const KakaoAuth: React.FC = () => {
     const setCanEditUserInfo = useSetRecoilState(canEditInfo);
     const setLoggedIn = useSetRecoilState(loggedInState);
-    // const setKakaoAccessToken = useSetRecoilState(canEditInfo);
     const navigate = useNavigate();
 
     const [error, setError] = useState<string>('');
