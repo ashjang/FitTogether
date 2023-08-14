@@ -1,4 +1,3 @@
-// components/ExerciseInfo/AddToBookmark.tsx
 import axios from 'axios';
 import React, { useRef, useState, useEffect } from 'react';
 import styled from '@emotion/styled';
@@ -16,6 +15,7 @@ type UserDataResponse = {
     name: string;
     email: string;
 };
+
 type ApiResponse = {
     success: boolean;
     message?: string;
@@ -86,9 +86,40 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
     const handleShowInput = () => {
         setShowInput(true);
     };
+
     const handleAddVideoToPlaylist = (listName: string) => {
-        addToPlaylistBackend(listName, video);
+        const token = sessionStorage.getItem('token');
+
+        if (!token) {
+            alert('로그인 후 이용해주세요.');
+            return;
+        }
+
+        const videoData = {
+            videoUrl: video.id.videoId, // 동영상 URL (videoId)
+            title: video.snippet.title, // 동영상 제목
+        };
+
+        axios
+            .post<ApiResponse>(`/playlist/${listName}`, videoData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-AUTH-TOKEN': token,
+                },
+            })
+            .then((response) => {
+                const { success, message } = response.data;
+                if (success) {
+                    alert('영상이 저장되었습니다.');
+                } else {
+                    alert('에러 발생: ' + (message || '알 수 없는 에러'));
+                }
+            })
+            .catch((error) => {
+                console.error('There was an error!', error);
+            });
     };
+
     const handleDeletePlaylist = (listName: string) => {
         if (window.confirm(`${listName} 플레이리스트를 삭제하시겠습니까?`)) {
             deletePlaylistBackend(listName);
@@ -103,32 +134,6 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
                 if (success) {
                     alert('플레이리스트가 삭제되었습니다.');
                     setPlaylists((oldPlaylists) => oldPlaylists.filter((p) => p !== listName));
-                } else {
-                    alert('에러 발생: ' + (message || '알 수 없는 에러'));
-                }
-            })
-            .catch((error) => {
-                console.error('There was an error!', error);
-            });
-    };
-    const addToPlaylistBackend = (listName: string, video: Video) => {
-        axios
-            .post<ApiResponse>(
-                '/api/playlists',
-                {
-                    playlistName: listName,
-                    video: video,
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            )
-            .then((response) => {
-                const { success, message } = response.data;
-                if (success) {
-                    alert('영상이 저장되었습니다.');
                 } else {
                     alert('에러 발생: ' + (message || '알 수 없는 에러'));
                 }

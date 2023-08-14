@@ -8,8 +8,8 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-import { useRecoilValue } from 'recoil';
-import { loggedInState } from '../../recoil/AuthState/atoms';
+// import { useRecoilValue } from 'recoil';
+// import { loggedInState } from '../../recoil/AuthState/atoms';
 
 import { fetchVideos, resetTotalResults, VideosResponse, Video } from './YoutubeApi';
 import VideoPopup from './VideoPopup';
@@ -25,7 +25,7 @@ const VideoList: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
     const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
 
-    const isLoggedIn = useRecoilValue(loggedInState);
+    // const isLoggedIn = useRecoilValue(loggedInState);
 
     useEffect(() => {
         resetTotalResults();
@@ -79,10 +79,10 @@ const VideoList: React.FC = () => {
     //즐겨찾기 추가 별모양 토클 버튼
     const toggleFavoriteStatus = useCallback(
         (video: Video) => {
-            if (!isLoggedIn) {
-                alert('로그인 후 이용해주세요.');
-                return;
-            }
+            // if (!isLoggedIn) {
+            //     alert('로그인 후 이용해주세요.');
+            //     return;
+            // }
 
             setFavoriteStatus((prevStatus) => ({
                 ...prevStatus,
@@ -92,8 +92,8 @@ const VideoList: React.FC = () => {
             setCurrentVideo(video);
             setShowModal(true);
         },
-        // []
-        [isLoggedIn]
+        []
+        // [isLoggedIn]
     );
 
     return (
