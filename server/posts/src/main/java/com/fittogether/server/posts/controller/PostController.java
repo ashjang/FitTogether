@@ -4,10 +4,8 @@ import com.fittogether.server.posts.domain.dto.LikeDto;
 import com.fittogether.server.posts.domain.dto.PostDto;
 import com.fittogether.server.posts.domain.dto.PostForm;
 import com.fittogether.server.posts.domain.dto.PostInfo;
-import com.fittogether.server.posts.domain.dto.PostListDto;
 import com.fittogether.server.posts.service.LikeService;
 import com.fittogether.server.posts.service.PostService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,6 +26,9 @@ public class PostController {
   private final PostService postService;
   private final LikeService likeService;
 
+  /**
+   * 게시글 작성
+   */
   @PostMapping
   public ResponseEntity<PostDto> createPost(@RequestHeader(name = "X-AUTH-TOKEN") String token,
       @RequestBody PostForm postForm) {
@@ -37,13 +38,20 @@ public class PostController {
 
   }
 
+  /**
+   * 게시글 보기
+   */
   @GetMapping("/{postId}")
-  public ResponseEntity<PostInfo> clickPost(@PathVariable Long postId) {
+  public ResponseEntity<PostInfo> clickPost(@RequestHeader(name = "X-AUTH-TOKEN", required = false) String token,
+                                            @PathVariable Long postId) {
 
     return ResponseEntity.ok(
-        postService.clickPostById(postId));
+        postService.clickPostById(token, postId));
   }
 
+  /**
+   * 게시글 수정
+   */
   @PutMapping("/{postId}")
   public ResponseEntity<PostDto> updatePost(@RequestHeader(name = "X-AUTH-TOKEN") String token,
       @PathVariable Long postId,
@@ -52,6 +60,9 @@ public class PostController {
         postService.updatePost(token, postId, postForm)));
   }
 
+  /**
+   * 게시글 삭제
+   */
   @DeleteMapping("/{postId}")
   public ResponseEntity<?> deletePost(@RequestHeader(name = "X-AUTH-TOKEN") String token,
       @PathVariable Long postId) {
@@ -60,24 +71,13 @@ public class PostController {
     return ResponseEntity.ok().body("게시글 삭제 완료");
   }
 
-
+  /**
+   * 게시글 좋아요
+   */
   @PostMapping("/{postId}/like")
   public ResponseEntity<LikeDto> likePost(@RequestHeader(name = "X-AUTH-TOKEN") String token,
                                           @PathVariable Long postId) {
     return ResponseEntity.ok(LikeDto.from(
-        likeService.likePost(token, postId)));
-  }
-
-  @GetMapping
-  public ResponseEntity<List<PostListDto>> allPost() {
-    return ResponseEntity.ok(
-        postService.allPost());
-  }
-
-  @GetMapping("/my")
-  public ResponseEntity<List<PostListDto>> myPost(
-      @RequestHeader(name = "X-AUTH-TOKEN") String token) {
-    return ResponseEntity.ok(
-        postService.myPost(token));
+        likeService.likePost(token, postId), likeService.getLikeCountByDB(postId)));
   }
 }

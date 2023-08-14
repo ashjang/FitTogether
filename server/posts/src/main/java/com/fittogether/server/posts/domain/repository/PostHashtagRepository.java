@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostHashtagRepository extends JpaRepository<PostHashtag, Long> {
   List<PostHashtag> findByPostId(Long postId);
+
+  List<PostHashtag> findAllByHashtagId(Long hashtagId);
 }
