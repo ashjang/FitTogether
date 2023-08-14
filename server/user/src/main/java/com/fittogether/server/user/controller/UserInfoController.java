@@ -2,6 +2,7 @@ package com.fittogether.server.user.controller;
 
 import com.fittogether.server.user.domain.dto.AnotherUserDto;
 import com.fittogether.server.user.domain.dto.UpdateUserForm;
+import com.fittogether.server.user.domain.dto.UpdateUserPassword;
 import com.fittogether.server.user.domain.dto.UserDto;
 import com.fittogether.server.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +30,15 @@ public class UserInfoController {
                                                 @RequestBody UpdateUserForm form) {
         return ResponseEntity.ok(
                 userService.updateMyInfo(token, form)
+        );
+    }
+
+    @ApiOperation(value = "비밀번호 변경", response = UserDto.class)
+    @PutMapping("/my/password")
+    public ResponseEntity<UserDto> updateMyPassword(@RequestHeader(name = "X-AUTH-TOKEN") String token,
+                                                    @RequestBody UpdateUserPassword form) {
+        return ResponseEntity.ok(
+                userService.updateMyPassword(token, form)
         );
     }
 

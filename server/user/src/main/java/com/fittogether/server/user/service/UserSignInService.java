@@ -1,5 +1,6 @@
 package com.fittogether.server.user.service;
 
+import com.fittogether.server.domain.token.AES256Utils;
 import com.fittogether.server.domain.token.JwtProvider;
 import com.fittogether.server.user.domain.dto.SignInForm;
 import com.fittogether.server.user.domain.dto.UserType;
@@ -18,7 +19,7 @@ public class UserSignInService {
 
     // 로그인
     public String signIn(SignInForm form) {
-        User user = userRepository.findByNicknameAndPassword(form.getNickname(), form.getPassword())
+        User user = userRepository.findByNicknameAndPassword(form.getNickname(), AES256Utils.encrypt(form.getPassword()))
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
         // 소셜 로그인일 경우
