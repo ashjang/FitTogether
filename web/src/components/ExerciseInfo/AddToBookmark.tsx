@@ -90,10 +90,10 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
     const handleAddVideoToPlaylist = (listName: string) => {
         const token = sessionStorage.getItem('token');
 
-        if (!token) {
-            alert('로그인 후 이용해주세요.');
-            return;
-        }
+        // if (!token) {
+        //     alert('로그인 후 이용해주세요.');
+        //     return;
+        // }
 
         const videoData = {
             videoUrl: video.id.videoId, // 동영상 URL (videoId)
@@ -101,7 +101,7 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
         };
 
         axios
-            .post<ApiResponse>(`/playlist/${listName}`, videoData, {
+            .post<ApiResponse>(`/playlist/video/${listName}`, videoData, {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-AUTH-TOKEN': token,
@@ -120,28 +120,28 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
             });
     };
 
-    const handleDeletePlaylist = (listName: string) => {
-        if (window.confirm(`${listName} 플레이리스트를 삭제하시겠습니까?`)) {
-            deletePlaylistBackend(listName);
-        }
-    };
+    // const handleDeletePlaylist = (listName: string) => {
+    //     if (window.confirm(`${listName} 플레이리스트를 삭제하시겠습니까?`)) {
+    //         deletePlaylistBackend(listName);
+    //     }
+    // };
 
-    const deletePlaylistBackend = (listName: string) => {
-        axios
-            .delete<ApiResponse>(`/api/playlists/${listName}`)
-            .then((response) => {
-                const { success, message } = response.data;
-                if (success) {
-                    alert('플레이리스트가 삭제되었습니다.');
-                    setPlaylists((oldPlaylists) => oldPlaylists.filter((p) => p !== listName));
-                } else {
-                    alert('에러 발생: ' + (message || '알 수 없는 에러'));
-                }
-            })
-            .catch((error) => {
-                console.error('There was an error!', error);
-            });
-    };
+    // const deletePlaylistBackend = (listName: string) => {
+    //     axios
+    //         .delete<ApiResponse>(`/api/playlists/${listName}`)
+    //         .then((response) => {
+    //             const { success, message } = response.data;
+    //             if (success) {
+    //                 alert('플레이리스트가 삭제되었습니다.');
+    //                 setPlaylists((oldPlaylists) => oldPlaylists.filter((p) => p !== listName));
+    //             } else {
+    //                 alert('에러 발생: ' + (message || '알 수 없는 에러'));
+    //             }
+    //         })
+    //         .catch((error) => {
+    //             console.error('There was an error!', error);
+    //         });
+    // };
 
     return (
         <ModalWrapper>
@@ -167,9 +167,9 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
                             <PlaylistItem onClick={() => handleAddVideoToPlaylist(listName)}>
                                 {listName}
                             </PlaylistItem>
-                            <DeleteButton onClick={() => handleDeletePlaylist(listName)}>
+                            {/* <DeleteButton onClick={() => handleDeletePlaylist(listName)}>
                                 삭제
-                            </DeleteButton>
+                            </DeleteButton> */}
                         </PlaylistItemWrapper>
                     ))}
                 </PlaylistContainer>
@@ -218,14 +218,22 @@ const MakeBtn = styled.button`
     border-radius: 10px;
     background: none;
 `;
-const PlaylistItemWrapper = styled.div``;
+const PlaylistItemWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
 const PlusBtn = styled.button`
     padding: 4px 0px;
     margin-left: 10px;
     border: none;
     background: none;
 `;
-const DeleteButton = styled.button``;
+// const DeleteButton = styled.button`
+//     padding: 4px 0px;
+//     margin-right: 10px;
+//     border: none;
+//     background: none;
+// `;
 
 const Overlay = styled.div`
     position: fixed;
@@ -257,6 +265,7 @@ const PlaylistContainer = styled.div`
 
 const PlaylistItem = styled.div`
     margin: 5px 0;
+    cursor: pointer;
 `;
 
 export default AddToBookmark;
