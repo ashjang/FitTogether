@@ -15,11 +15,18 @@ const SignInSetting: React.FC = () => {
     const location = useLocation();
     const from = location?.state?.redirectFrom || '/';
 
+    const [passwordForRequest, setPasswordForRequest] = useState<string>('');
+
     const handleSignIn = async (event: React.FormEvent) => {
         event.preventDefault();
 
         try {
-            const response = await axios.post('/api/users/signin', signInData);
+            const signInRequestData = {
+                nickname: signInData.nickname,
+                password: passwordForRequest,
+            };
+
+            const response = await axios.post('/api/users/signin', signInRequestData);
 
             if (response.status === 200) {
                 const token = response.data;
@@ -58,10 +65,8 @@ const SignInSetting: React.FC = () => {
                     <InputField>
                         <input
                             type="password"
-                            value={signInData.password}
-                            onChange={(e) =>
-                                setSignInData({ ...signInData, password: e.target.value })
-                            }
+                            value={passwordForRequest}
+                            onChange={(e) => setPasswordForRequest(e.target.value)}
                             placeholder="비밀번호를 입력하세요"
                         />
                     </InputField>
