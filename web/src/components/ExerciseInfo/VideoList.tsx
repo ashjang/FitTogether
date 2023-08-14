@@ -8,9 +8,12 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
+import { useRecoilValue } from 'recoil';
+import { loggedInState } from '../../recoil/AuthState/atoms';
+
 import { fetchVideos, resetTotalResults, VideosResponse, Video } from './YoutubeApi';
 import VideoPopup from './VideoPopup';
-import PlayListPopup from '../common/PlayListPopup';
+import AddToBookmark from './AddToBookmark';
 
 import loadingGif from '../../assets/ball-triangle.svg';
 
@@ -18,7 +21,11 @@ const VideoList: React.FC = () => {
     const [category, setCategory] = useState<string>('러닝');
     const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
     const [favoriteStatus, setFavoriteStatus] = useState<Record<string, boolean>>({});
-    const [showPlaylistPopup, setShowPlaylistPopup] = useState(false);
+
+    const [showModal, setShowModal] = useState(false);
+    const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
+
+    const isLoggedIn = useRecoilValue(loggedInState);
 
     useEffect(() => {
         resetTotalResults();
@@ -28,7 +35,7 @@ const VideoList: React.FC = () => {
         async ({ pageParam = null }) => {
             const response = await fetchVideos(pageParam, category);
 
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 800));
             return response;
         },
         [category]
@@ -70,17 +77,24 @@ const VideoList: React.FC = () => {
 
     //즐겨찾기
     //즐겨찾기 추가 별모양 토클 버튼
-    const toggleFavoriteStatus = useCallback((videoId: string) => {
-        setFavoriteStatus((prevStatus) => ({
-            ...prevStatus,
-            [videoId]: !prevStatus[videoId],
-        }));
-    }, []);
+    const toggleFavoriteStatus = useCallback(
+        (video: Video) => {
+            if (!isLoggedIn) {
+                alert('로그인 후 이용해주세요.');
+                return;
+            }
 
-    const handleStarClick = (video: Video) => {
-        toggleFavoriteStatus(video.id.videoId);
-        setShowPlaylistPopup(true);
-    };
+            setFavoriteStatus((prevStatus) => ({
+                ...prevStatus,
+                [video.id.videoId]: !prevStatus[video.id.videoId],
+            }));
+
+            setCurrentVideo(video);
+            setShowModal(true);
+        },
+        // []
+        [isLoggedIn]
+    );
 
     return (
         <VideoListInn>
@@ -130,7 +144,9 @@ const VideoList: React.FC = () => {
                                     {page.items.map((video: Video) => (
                                         <VideoThumb
                                             key={video.id.videoId}
-                                            onClick={() => openVideo(video)}
+                                            onClick={() => {
+                                                openVideo(video);
+                                            }}
                                         >
                                             <h4>
                                                 {video.snippet.title.length > 25
@@ -140,7 +156,7 @@ const VideoList: React.FC = () => {
                                                     icon={faStar}
                                                     onClick={(event) => {
                                                         event.stopPropagation();
-                                                        toggleFavoriteStatus(video.id.videoId);
+                                                        toggleFavoriteStatus(video);
                                                     }}
                                                     className={`star-icon ${
                                                         favoriteStatus[video.id.videoId]
@@ -169,6 +185,9 @@ const VideoList: React.FC = () => {
                         video={{ id: selectedVideo.id.videoId, title: selectedVideo.snippet.title }}
                         onClose={closeVideo}
                     />
+                )}
+                {showModal && currentVideo && (
+                    <AddToBookmark video={currentVideo} onClose={() => setShowModal(false)} />
                 )}
             </VideoSection>
         </VideoListInn>
