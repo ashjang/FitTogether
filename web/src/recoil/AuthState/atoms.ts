@@ -39,19 +39,3 @@ export const signInInfo = atom({
         nickname: '',
     },
 });
-
-// 회원가입한 유저의 정보
-export const signUpInfo = atom({
-    key: 'signUpInfo',
-    default: {
-        nickname: '',
-        password: '',
-        email: '',
-        profilePicture: '',
-        gender: true,
-        introduction: '',
-        exerciseChoice: [''],
-        publicInfo: true,
-        accessToken: '',
-    },
-});
