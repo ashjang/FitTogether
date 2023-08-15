@@ -21,7 +21,7 @@ const KakaoAuth: React.FC = () => {
                 console.log(code);
                 const response = await axios.post(`/api/users/signin/kakao?code=${code}`);
                 const kakaoToken = response.data;
-                sessionStorage.setItem('kakaoToken', kakaoToken);
+                sessionStorage.setItem('token', kakaoToken);
 
                 // 토큰이 발급되면 로그인 상태로 변경
                 setLoggedIn(true);
