@@ -1,33 +1,14 @@
 import styled from '@emotion/styled';
 import { useState, useEffect } from 'react';
+
 import Map from './Map';
 
+// KakaoMapScriptLoader.ts
 const KAKAO_MAP_SCRIPT_ID = 'kakao-map-script';
 const APP_KAKAO_MAP_API_KEY = import.meta.env.VITE_APP_KAKAO_MAP_API_KEY as string;
 
 const KakaoMapScriptLoader: React.FC = () => {
-    const [mapScriptLoaded, setMapScriptLoaded] = useState(false);
-    const [initialLocationLoaded, setInitialLocationLoaded] = useState(false);
-    const [userLocation, setUserLocation] = useState<{ lat: number; long: number }>({
-        lat: 0,
-        long: 0,
-    });
-
-    useEffect(() => {
-        if (navigator.geolocation && !initialLocationLoaded) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    setUserLocation({ lat: latitude, long: longitude });
-                    setInitialLocationLoaded(true);
-                },
-                (error) => {
-                    console.error('Error getting current location:', error);
-                    setInitialLocationLoaded(true);
-                }
-            );
-        }
-    }, [initialLocationLoaded]);
+    const [mapScriptLoaded, setmapScriptLoaded] = useState(false);
 
     useEffect(() => {
         const mapScript = document.getElementById(KAKAO_MAP_SCRIPT_ID);
@@ -44,12 +25,12 @@ const KakaoMapScriptLoader: React.FC = () => {
         script.onload = () => {
             window.kakao.maps.load(() => {
                 // TODO: 성공
-                setMapScriptLoaded(true);
+                setmapScriptLoaded(true);
             });
         };
         script.onerror = () => {
             // TODO: 실패
-            setMapScriptLoaded(false);
+            setmapScriptLoaded(false);
         };
         document.getElementById('root')?.appendChild(script);
     }, []);
@@ -58,16 +39,11 @@ const KakaoMapScriptLoader: React.FC = () => {
         <MapInn>
             <PageTitle>운동 메이트 찾기</PageTitle>
             <MapLoad>
-                {mapScriptLoaded && initialLocationLoaded ? (
-                    <Map category="러닝" userLocation={userLocation} />
-                ) : (
-                    <div>지도를 가져오는 중입니다.</div>
-                )}
+                {mapScriptLoaded ? <Map category="러닝" /> : <div>지도를 가져오는 중입니다.</div>}
             </MapLoad>
         </MapInn>
     );
 };
-
 const MapInn = styled.div`
     position: relative;
     max-width: 1440px;
@@ -92,6 +68,7 @@ const PageTitle = styled.h2`
     }
 `;
 
+// MapLoad
 const MapLoad = styled.div`
     position: absolute;
     top: 50px;
@@ -100,5 +77,4 @@ const MapLoad = styled.div`
     width: 100%;
     height: 100%;
 `;
-
 export default KakaoMapScriptLoader;
