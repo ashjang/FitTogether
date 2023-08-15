@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +27,7 @@ public class DmService {
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
 
-
+    //방 생성
     @Transactional
     public ChatRoom createDmRoom(String token, String receiverNickname) {
         if (!jwtProvider.validateToken(token)) {
@@ -51,8 +53,9 @@ public class DmService {
         return chatRoom;
     }
 
+    // 메세지 보내기
     public Message sendMessage(
-          //  String token,
+            //  String token,
             MessageForm messageForm
     ) {
 
@@ -87,6 +90,33 @@ public class DmService {
                 .build();
         messageRepository.save(message);
         return message;
+    }
+
+    // 채팅방 목록 조회
+    public List<ChatRoom> dmLists(String token) {
+        if (!jwtProvider.validateToken(token)) {
+            throw new UserCustomException(UserErrorCode.NOT_FOUND_USER);
+        }
+
+        UserVo userVo = jwtProvider.getUserVo(token);
+
+        User user = userRepository.findByNickname(userVo.getNickname())
+                .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+        // 로그인한 사용자가 먼저 메세지를 보낸 경우
+        List<ChatRoom> sentMessage = chatRoomRepository.findAllBySenderNickname(
+                user.getNickname());
+
+        // 로그인한 사용자가 메세지를 받은 경우
+        List<ChatRoom> receivedMessage = chatRoomRepository.findAllByReceiverNickname(
+                user.getNickname());
+
+        List<ChatRoom> dmList = new ArrayList<>();
+        dmList.addAll(sentMessage);
+        dmList.addAll(receivedMessage);
+
+
+        return dmList;
     }
 
 }

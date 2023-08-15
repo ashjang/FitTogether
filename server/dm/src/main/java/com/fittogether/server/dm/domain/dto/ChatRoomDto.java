@@ -4,6 +4,8 @@ import com.fittogether.server.dm.domain.entity.ChatRoom;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -35,5 +37,14 @@ public class ChatRoomDto {
                 .build();
     }
 
-
+    public static List<ChatRoomDto> listFrom(List<ChatRoom> chatRoomList) {
+        return chatRoomList.stream()
+                .map(chatRoom -> ChatRoomDto.builder()
+                        .chatRoomId(chatRoom.getChatRoomId())
+                        .senderNickname(chatRoom.getSenderNickname())
+                        .receiverNickname(chatRoom.getReceiverNickname())
+                        .chatRoomDt(chatRoom.getChatRoomDt())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
