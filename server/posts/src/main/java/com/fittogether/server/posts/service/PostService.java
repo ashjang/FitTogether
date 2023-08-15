@@ -196,7 +196,7 @@ public class PostService {
 
       if (!user.equals(post.getUser())) {
         Request request = requestRepository.findAllBySenderNicknameAndReceiverNickname(post.getUser().getNickname(), user.getNickname());
-        if (request == null) {
+        if (request == null && !post.isAccessLevel()) {
           throw new PostException(ErrorCode.MATE_ONLY_ACCESS);
         }
       }
