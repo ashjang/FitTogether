@@ -29,7 +29,7 @@ public class ReplyController {
       @PathVariable Long postId, @RequestBody ReplyForm replyForm) {
 
     return ResponseEntity.ok(replyService.getReplyListDto(
-        token, postId, null, replyForm, true, false));
+        token, postId, null, replyForm, true, false, null));
   }
 
   /**
@@ -42,7 +42,7 @@ public class ReplyController {
     replyService.deleteReply(token, postId, replyId);
 
     return ResponseEntity.ok(replyService.getReplyListDto(
-        token, postId, null, null, false, false));
+        token, postId, null, null, false, false, null));
   }
 
   /**
@@ -56,7 +56,7 @@ public class ReplyController {
       @RequestBody ReplyForm replyForm) {
 
     return ResponseEntity.ok(replyService.getReplyListDto(
-        token, postId, replyId, replyForm, true, true));
+        token, postId, replyId, replyForm, true, true, null));
   }
 
   /**
@@ -69,8 +69,9 @@ public class ReplyController {
       @PathVariable Long childReplyId) {
     replyService.deleteChildReply(token, childReplyId);
 
+
     return ResponseEntity.ok(replyService.getReplyListDto(
-        token, postId, replyId, null, false, true));
+        token, postId, replyId, null, false, true, childReplyId));
   }
 
 }

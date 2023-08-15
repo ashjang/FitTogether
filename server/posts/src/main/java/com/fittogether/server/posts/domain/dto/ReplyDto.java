@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ReplyDto {
   private Long replyId;
+  private Long childReplyId;
   private String comment;
   private LocalDateTime createdAt;
   private String userNickname;
@@ -22,12 +23,12 @@ public class ReplyDto {
 
   public static ReplyDto from(Reply reply) {
     return ReplyDto.builder()
-        .replyId(reply.getId())
         .comment(reply.getComment())
         .createdAt(reply.getCreatedAt())
         .userNickname(reply.getUser().getNickname())
         .userImage(reply.getUser().getProfilePicture())
         .postId(reply.getPost().getId())
+        .replyId(reply.getId())
         .build();
   }
 
@@ -39,6 +40,7 @@ public class ReplyDto {
         .userImage(childReply.getUser().getProfilePicture())
         .postId(childReply.getReply().getPost().getId())
         .replyId(childReply.getReply().getId())
+        .childReplyId(childReply.getId())
         .build();
   }
 }
