@@ -26,7 +26,7 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
     const [playlist, setPlaylist] = useState<string>('');
     const [showInput, setShowInput] = useState<boolean>(false);
     const [userData, setUserData] = useState<UserDataResponse | null>(null);
-
+    // const [userData, setUserData] = useState({});
     const modalRef = useRef<HTMLDivElement | null>(null);
 
     const token = sessionStorage.getItem('token');
@@ -44,23 +44,43 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
         };
     }, [onClose]);
 
-    useEffect(() => {
-        getUserData().catch((error) => {
-            console.error('Error fetching user data:', error);
-        });
-    }, []);
+    // useEffect(() => {
+    //     getUserData().catch((error) => {
+    //         console.error('Error fetching user data:', error);
+    //     });
+    // }, []);
 
-    const getUserData = async () => {
+    // const getUserData = async () => {
+    //     try {
+    //         const response = await axios.get<UserDataResponse>('/api/users/my', {
+    //             headers: {
+    //                 'X-AUTH-TOKEN': token,
+    //                 // 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5aHlNWDVSVnlSSmVnNG4wVGpJSS9BPT0iLCJpYXQiOjE2OTIwMjM5ODIsImV4cCI6MTY5MjExMDM4Mn0.0ZCbDvNSxwfBNXZmbl-087kjyo0xi7lPz9ZrmSuWtUc', // 실제 토큰 값을 넣어야 함
+    //             },
+    //         });
+    //         setUserData(response.data);
+    //     } catch (error) {
+    //         console.error('Error fetching user data:', error);
+    //     }
+    // };
+
+    useEffect(() => {
+        if (token) {
+            getUserData(token);
+        }
+    }, []);
+    const getUserData = async (token) => {
         try {
-            const response = await axios.get<UserDataResponse>('/api/users/my', {
+            const response = await axios.get('/api/users/my', {
                 headers: {
-                    'X-AUTH-TOKEN':
-                        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5aHlNWDVSVnlSSmVnNG4wVGpJSS9BPT0iLCJpYXQiOjE2OTIwMjM5ODIsImV4cCI6MTY5MjExMDM4Mn0.0ZCbDvNSxwfBNXZmbl-087kjyo0xi7lPz9ZrmSuWtUc', // 실제 토큰 값을 넣어야 함
+                    'X-AUTH-TOKEN': token,
                 },
             });
-            setUserData(response.data);
+            setUserData(response.data); // 응답값을 userData 상태에 저장
+            console.log(response.data);
         } catch (error) {
-            console.error('Error fetching user data:', error);
+            console.error('Error fetching data:', error);
+            alert('회원정보를 받아오는데 실패했습니다.');
         }
     };
 
@@ -82,15 +102,19 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
         setPlaylist('');
         setShowInput(false);
 
+        const dataToSend = {
+            playlistName: playlist,
+        };
         try {
             const response = await axios.post<ApiResponse>(
                 '/api/playlist', // 실제 플레이리스트 생성 엔드포인트
-                { playlistName: playlist },
+                // { playlistName: playlist },
+                dataToSend,
                 {
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-AUTH-TOKEN':
-                            'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5aHlNWDVSVnlSSmVnNG4wVGpJSS9BPT0iLCJpYXQiOjE2OTIwMjM5ODIsImV4cCI6MTY5MjExMDM4Mn0.0ZCbDvNSxwfBNXZmbl-087kjyo0xi7lPz9ZrmSuWtUc',
+                        'X-AUTH-TOKEN': token,
+                        // 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5aHlNWDVSVnlSSmVnNG4wVGpJSS9BPT0iLCJpYXQiOjE2OTIwMjM5ODIsImV4cCI6MTY5MjExMDM4Mn0.0ZCbDvNSxwfBNXZmbl-087kjyo0xi7lPz9ZrmSuWtUc',
                     },
                 }
             );
@@ -113,7 +137,7 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
     };
 
     const handleAddVideoToPlaylist = async (name: string): Promise<void> => {
-        // const token = sessionStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
 
         const videoData = {
             videoUrl: video.id.videoId, // 동영상 URL (videoId)
@@ -128,8 +152,8 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
                 {
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-AUTH-TOKEN':
-                            'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5aHlNWDVSVnlSSmVnNG4wVGpJSS9BPT0iLCJpYXQiOjE2OTIwMjM5ODIsImV4cCI6MTY5MjExMDM4Mn0.0ZCbDvNSxwfBNXZmbl-087kjyo0xi7lPz9ZrmSuWtUc',
+                        'X-AUTH-TOKEN': token,
+                        // 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5aHlNWDVSVnlSSmVnNG4wVGpJSS9BPT0iLCJpYXQiOjE2OTIwMjM5ODIsImV4cCI6MTY5MjExMDM4Mn0.0ZCbDvNSxwfBNXZmbl-087kjyo0xi7lPz9ZrmSuWtUc',
                     },
                 }
             );
