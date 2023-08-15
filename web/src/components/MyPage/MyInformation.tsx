@@ -5,6 +5,7 @@ import axios from 'axios';
 
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { GiSwordman, GiSwordwoman, GiSnowman } from 'react-icons/gi';
 
 import { canEditInfo } from '../../recoil/AuthState/atoms';
 import { useRecoilValue } from 'recoil';
@@ -20,15 +21,16 @@ const MyInformation: React.FC = () => {
     const [userData, setUserData] = useState({});
     const [introduction, setIntroduction] = useState<string>(userData.introduction || ''); // 초기 값 설정
     const [gender, setGender] = useState(false);
+    const [profilePicture, setProfilePicture] = useState('');
     const [publicStatus, setPublicStatus] = useState(true);
     const [favoriteSports, setFavoriteSports] = useState<string[]>([]);
 
-    const [latitude, setLatitude] = useState<number | null>(null);
-    const [longitude, setLongitude] = useState<number | null>(null);
+    // const [latitude, setLatitude] = useState<number | null>(null);
+    // const [longitude, setLongitude] = useState<number | null>(null);
 
-    const canInfoEdit = useRecoilValue(canEditInfo);
+    // const canInfoEdit = useRecoilValue(canEditInfo);
 
-    const kakaoToken = sessionStorage.getItem('token_for_kakaotalk');
+    // const kakaoToken = sessionStorage.getItem('token_for_kakaotalk');
 
     const token = sessionStorage.getItem('token');
 
@@ -49,6 +51,7 @@ const MyInformation: React.FC = () => {
             setUserData(response.data); // 응답값을 userData 상태에 저장
             setIntroduction(response.data.introduction || '');
             setGender(response.data.gender === '남성');
+            setProfilePicture(response.data.profilePicture);
             setPublicStatus(response.data.publicInfo === true);
             setFavoriteSports(response.data.exerciseChoice);
             console.log(response.data);
@@ -116,6 +119,11 @@ const MyInformation: React.FC = () => {
         setGender(event.target.checked);
     };
 
+    // 프로필 아이콘 선택
+    const handlePictureChange = (event) => {
+        setProfilePicture(event.target.value);
+    };
+
     // 정보 공개 여부
     const handlePublicStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPublicStatus(event.target.value === '공개');
@@ -154,7 +162,7 @@ const MyInformation: React.FC = () => {
             exerciseChoice: favoriteSports,
             introduction: introduction,
             publicInfo: publicStatus,
-            profilePicture: '',
+            profilePicture: profilePicture,
         };
 
         axios
@@ -239,6 +247,45 @@ const MyInformation: React.FC = () => {
                         onChange={handleGenderChange}
                     />
                     여성
+                </label>
+            </div>
+            <div css={containerStyles}>
+                <p css={labelStyle}>프로필 아이콘</p>
+                <label css={radioButtonStyles}>
+                    <input
+                        type="radio"
+                        name="profilePicture"
+                        value="GiSwordman"
+                        checked={profilePicture === 'GiSwordman'}
+                        onChange={handlePictureChange}
+                    />
+                    <div css={IconContainer}>
+                        <GiSwordman />
+                    </div>
+                </label>
+                <label css={radioButtonStyles}>
+                    <input
+                        type="radio"
+                        name="profilePicture"
+                        value="GiSwordwoman"
+                        checked={profilePicture === 'GiSwordwoman'}
+                        onChange={handlePictureChange}
+                    />
+                    <div css={IconContainer}>
+                        <GiSwordwoman />
+                    </div>
+                </label>
+                <label css={radioButtonStyles}>
+                    <input
+                        type="radio"
+                        name="profilePicture"
+                        value="GiSnowman"
+                        checked={profilePicture === 'GiSnowman'}
+                        onChange={handlePictureChange}
+                    />
+                    <div css={IconContainer}>
+                        <GiSnowman />
+                    </div>
                 </label>
             </div>
             <div css={containerStyles}>
@@ -415,7 +462,14 @@ const ErrorMessage = styled.div`
 `;
 
 const radioButtonStyles = css`
+    display: flex;
     margin-right: 70px;
+`;
+
+const IconContainer = css`
+    margin-left: 5px;
+    font-size: 35px;
+    color: #ffaea5;
 `;
 
 export default MyInformation;
