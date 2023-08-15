@@ -144,7 +144,7 @@ public class ReplyService {
 
 
   public ReplyListDto getReplyListDto(String token, Long postId, Long replyId, ReplyForm replyForm,
-      boolean isCreate, boolean isChild) {
+      boolean isCreate, boolean isChild, Long childReplyId) {
 
     if (isCreate) {
       if (!isChild) {
