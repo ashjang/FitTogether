@@ -5,7 +5,6 @@ import UserProfile from './UserProfile';
 export interface User {
     id: number;
     category: string;
-    gender: boolean;
     lat: number;
     long: number;
 }
@@ -37,47 +36,40 @@ const Map = (props: MapProps) => {
             });
     }, []);
 
+    // 마이페이지 내가 설정된 위치라고 가정했을때 (만약 홍대)
+    const userLocation = {
+        lat: 37.556862,
+        long: 126.924678,
+    };
+
     useEffect(() => {
         if (!kakaoMapRef.current) {
             return;
         }
+        // 내 저장된 위치 기준으로 지도 생성
+        const targetPoint = new kakao.maps.LatLng(userLocation.lat, userLocation.long);
 
-        // 현재 위치 가져오기
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const userLat = position.coords.latitude;
-                    const userLong = position.coords.longitude;
+        const options = {
+            center: targetPoint,
+            level: 3,
+        };
+        const map = new window.kakao.maps.Map(kakaoMapRef.current, options);
 
-                    const targetPoint = new kakao.maps.LatLng(userLat, userLong);
+        users
+            .filter((user) => user.category === category)
+            .forEach((user) => {
+                const markerPosition = new kakao.maps.LatLng(user.lat, user.long);
+                const marker = new kakao.maps.Marker({
+                    position: markerPosition,
+                });
+                marker.setMap(map);
 
-                    const options = {
-                        center: targetPoint,
-                        level: 3,
-                    };
-                    const map = new window.kakao.maps.Map(kakaoMapRef.current, options);
+                kakao.maps.event.addListener(marker, 'click', function () {
+                    setSelectedUser(user);
+                });
+            });
 
-                    users
-                        .filter((user) => user.category === category)
-                        .forEach((user) => {
-                            const markerPosition = new kakao.maps.LatLng(user.lat, user.long);
-                            const marker = new kakao.maps.Marker({
-                                position: markerPosition,
-                            });
-                            marker.setMap(map);
-
-                            kakao.maps.event.addListener(marker, 'click', function () {
-                                setSelectedUser(user);
-                            });
-                        });
-
-                    console.log('Creating map...');
-                },
-                (error) => {
-                    console.error('Error getting current position:', error);
-                }
-            );
-        }
+        console.log('Creating map...');
     }, [users, category]);
 
     const handleClose = () => {
