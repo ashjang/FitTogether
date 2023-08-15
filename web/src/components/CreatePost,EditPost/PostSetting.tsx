@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useRecoilState } from 'recoil';
-import { hastagListState, categoryState, accessLevelState } from '../../recoil/posts/atoms';
+import { hashtagListState, categoryState, accessLevelState } from '../../recoil/posts/atoms';
 
 interface ButtonProps {
     active: boolean;
@@ -16,7 +16,7 @@ interface DataForPostSettingComp {
 
 const PostSetting: React.FC<DataForPostSettingComp | {}> = (props) => {
     const [hashtag, setHashtag] = useState<string>('');
-    const [hashtagList, setHashtagList] = useRecoilState(hastagListState);
+    const [hashtagList, setHashtagList] = useRecoilState(hashtagListState);
     const [category, setCategory] = useRecoilState(categoryState);
     const [accessLevel, setAccessLevel] = useRecoilState(accessLevelState);
 

@@ -137,8 +137,8 @@ export const descriptionState = atom<string>({
     default: '',
 });
 
-export const hastagListState = atom<string[]>({
-    key: 'hastagListState',
+export const hashtagListState = atom<string[]>({
+    key: 'hashtagListState',
     default: [],
 });
 

@@ -9,17 +9,19 @@ import {
     titleState,
     descriptionState,
     imagesUrlListState,
-    hastagListState,
+    hashtagListState,
     categoryState,
     accessLevelState,
 } from '../recoil/posts/atoms';
 
 const CreatePost: React.FC = () => {
+    const navigate = useNavigate();
+
     const token = sessionStorage.getItem('token');
 
     const [title, setTitle] = useRecoilState(titleState);
     const [description, setDescription] = useRecoilState(descriptionState);
-    const [hastagList, setHastagList] = useRecoilState(hastagListState);
+    const [hashtagList, setHashtagList] = useRecoilState(hashtagListState);
     const [category, setCategory] = useRecoilState(categoryState);
     const [accessLevel, setAccessLevel] = useRecoilState(accessLevelState);
     const [images, setImages] = useRecoilState(imagesUrlListState);
@@ -31,7 +33,7 @@ const CreatePost: React.FC = () => {
             title: title,
             description: description,
             images: images,
-            hastag: hastagList,
+            hashtag: hashtagList,
             category: category,
             accessLevel: accessLevel,
         };
@@ -45,12 +47,10 @@ const CreatePost: React.FC = () => {
                 },
             });
             if (response.status === 200) {
-                const navigate = useNavigate();
                 navigate(`/posts/${response.data.postId}`);
-
                 setTitle('');
                 setDescription('');
-                setHastagList([]);
+                setHashtagList([]);
                 setCategory('');
                 setAccessLevel(true);
                 setImages([]);

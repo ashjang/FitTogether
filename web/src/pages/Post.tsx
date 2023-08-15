@@ -33,9 +33,9 @@ const Post: React.FC = () => {
         try {
             console.log(token);
             const response = await axios.get(`/api/posts/${postId}`, {
-                // headers: {
-                //     'X-AUTH-TOKEN': token,
-                // },
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
             });
             setPostData(response.data);
             console.log(postData);
@@ -68,9 +68,7 @@ const Post: React.FC = () => {
     return (
         <Page>
             {postData ? <PostContents key={`postId:${postId}`} /> : <div>Loading...</div>}
-            {commentsData && commentsData.replyList.length > 0 && (
-                <Comments key={`replyInPostId:${commentsData.replyList[0].postId}`} />
-            )}
+            <Comments />
         </Page>
     );
 };

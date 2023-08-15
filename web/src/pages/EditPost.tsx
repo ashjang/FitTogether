@@ -10,7 +10,7 @@ import {
     titleState,
     descriptionState,
     imagesUrlListState,
-    hastagListState,
+    hashtagListState,
     categoryState,
     accessLevelState,
 } from '../recoil/posts/atoms';
@@ -30,7 +30,7 @@ const EditPost: React.FC = () => {
     const title = useRecoilValue(titleState);
     const description = useRecoilValue(descriptionState);
     const images = useRecoilValue(imagesUrlListState);
-    const hastagList = useRecoilValue(hastagListState);
+    const hashtagList = useRecoilValue(hashtagListState);
     const category = useRecoilValue(categoryState);
     const accessLevel = useRecoilValue(accessLevelState);
 
@@ -52,7 +52,7 @@ const EditPost: React.FC = () => {
         title: title,
         description: description,
         images: images,
-        hastag: hastagList,
+        hashtag: hashtagList,
         category: category,
         accessLevel: accessLevel,
     };
