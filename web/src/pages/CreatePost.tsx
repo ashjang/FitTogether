@@ -47,7 +47,7 @@ const CreatePost: React.FC = () => {
                 },
             });
             if (response.status === 200) {
-                navigate(`/posts/${response.data.postId}`);
+                navigate(`/posts/${response.data.id}`);
                 setTitle('');
                 setDescription('');
                 setHashtagList([]);
@@ -57,6 +57,7 @@ const CreatePost: React.FC = () => {
             }
         } catch (error) {
             console.error(error);
+            window.alert('카테고리를 설정하세요');
         }
     };
 

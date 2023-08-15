@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import styled from '@emotion/styled';
 import { useRecoilState } from 'recoil';
-import { conmentsDataRecoil, postListDataState } from '../../recoil/posts/atoms';
+import { postListDataState } from '../../recoil/posts/atoms';
 
 interface CategoryButtonProps {
     active: boolean;

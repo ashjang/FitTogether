@@ -20,13 +20,9 @@ const Post: React.FC = () => {
     const [commentsData, setCommentsData] = useRecoilState(conmentsDataRecoil);
     const setLikeState = useSetRecoilState(isLikedState);
 
-    const token = sessionStorage.getItem('token');
-
     useEffect(() => {
-        if (token) {
-            getPostData(token);
-        }
-        console.log('Post Rendering !');
+        const token = sessionStorage.getItem('token');
+        getPostData(token);
     }, []);
 
     const getPostData = async (token: string | null) => {
@@ -37,15 +33,18 @@ const Post: React.FC = () => {
                     'X-AUTH-TOKEN': token,
                 },
             });
+
+            console.log('response.data: ', response.data);
             setPostData(response.data);
-            console.log(postData);
+
+            console.log('postData :', postData);
             setPostContentsData({
                 ...postContentsData,
                 userImage: response.data.userImage,
                 userNickname: response.data.userNickname,
                 createdAt: response.data.createdAt,
                 category: response.data.category,
-                hashtag: response.data.hashtag,
+                hashtagList: response.data.hashtagList,
                 title: response.data.title,
                 description: response.data.description,
                 likeCount: response.data.likeCount,

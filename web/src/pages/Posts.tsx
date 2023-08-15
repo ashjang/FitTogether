@@ -49,6 +49,11 @@ const NewPost = styled.button`
     position: absolute;
     right: 0px;
     bottom: 0px;
+    padding: 0 10px;
+    border-style: none;
+    border-radius: 15px;
+    background-color: #d7d7d7;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
 `;
 
 export default Posts;

@@ -44,7 +44,7 @@ interface PostDataType {
     userNickname: string;
     createdAt: string;
     category: string;
-    hashtag: string[];
+    hashtagList: string[];
     title: string;
     description: string;
     likeCount: number;
@@ -62,7 +62,7 @@ interface PostContentsDataType {
     userNickname: string;
     createdAt: string;
     category: string;
-    hashtag: string[];
+    hashtagList: string[];
     title: string;
     description: string;
     likeCount: number;
@@ -85,7 +85,7 @@ export const postDataRecoil = atom<PostDataType>({
         userNickname: '',
         createdAt: '',
         category: '',
-        hashtag: [],
+        hashtagList: [],
         title: '',
         description: '',
         likeCount: 0,
@@ -106,7 +106,7 @@ export const postContentsDataRecoil = atom<PostContentsDataType>({
         userNickname: '',
         createdAt: '',
         category: '',
-        hashtag: [],
+        hashtagList: [],
         title: '',
         description: '',
         likeCount: 0,

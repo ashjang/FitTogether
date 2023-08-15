@@ -38,8 +38,8 @@ const Comments: React.FC = () => {
 
     const { postId } = useParams<{ postId: string }>();
 
-    const { nickname } = useRecoilValue(signInInfo);
-    const myNickname = nickname;
+    // const myInfo = useRecoilValue(signInInfo);
+    const myInfo = useRecoilValue(signInInfo);
 
     const [postData, setPostData] = useRecoilState(postDataRecoil);
     const [postContentsData, setPostContentsData] = useRecoilState(postContentsDataRecoil);
@@ -62,7 +62,7 @@ const Comments: React.FC = () => {
         };
         try {
             console.log(token);
-            const response = await axios.post(`/api/posts/${postId}/comments`, replyForm, {
+            const response = await axios.post(`/api/posts/${postId}/comment`, replyForm, {
                 headers: {
                     'X-AUTH-TOKEN': token,
                 },
@@ -78,6 +78,7 @@ const Comments: React.FC = () => {
                 ...postContentsData,
                 replyCount: response.data.replyCount,
             });
+            setReplyInput('');
         } catch (error) {
             console.error(error);
         }
@@ -125,11 +126,15 @@ const Comments: React.FC = () => {
         };
         try {
             console.log(token);
-            const response = await axios.post(`/api/posts/comments/${replyId}`, requestData, {
-                headers: {
-                    'X-AUTH-TOKEN': token,
-                },
-            });
+            const response = await axios.post(
+                `/api/posts/${postId}/comments/${replyId}`,
+                requestData,
+                {
+                    headers: {
+                        'X-AUTH-TOKEN': token,
+                    },
+                }
+            );
             console.log(response.data);
             setCommentsData({
                 ...commentsData,
@@ -141,6 +146,8 @@ const Comments: React.FC = () => {
                 ...postContentsData,
                 replyCount: response.data.replyCount,
             });
+
+            setChildReplyInput('');
         } catch (error) {
             console.error(error);
         }
@@ -154,7 +161,7 @@ const Comments: React.FC = () => {
             try {
                 console.log(token);
                 const response = await axios.delete(
-                    `/api/posts/{postId}/comments/{replyId}/child-comment/{childReplyId}`,
+                    `/api/posts/${postId}/comments/${replyId}/child-comment/${childReplyId}`,
                     {
                         headers: {
                             'X-AUTH-TOKEN': token,
@@ -195,7 +202,7 @@ const Comments: React.FC = () => {
                         </ProfileImageContainer>
                         <UserId>{reply.userNickname}</UserId>
                         <PostTime>{formatDateString(reply.createdAt)}</PostTime>
-                        {myNickname === reply.userNickname && (
+                        {myInfo.nickname === reply.userNickname && (
                             <FaTrashCan
                                 icon={faTrashCan}
                                 onClick={() => {
@@ -218,7 +225,7 @@ const Comments: React.FC = () => {
                                         <PostTime>
                                             {formatDateString(childReply.createdAt)}
                                         </PostTime>
-                                        {myNickname === childReply.userNickname && (
+                                        {myInfo.nickname === childReply.userNickname && (
                                             <FaTrashCan
                                                 icon={faTrashCan}
                                                 onClick={() => {
@@ -336,39 +343,67 @@ const Comment = styled.p`
 const ReplyInputContainer = styled.div`
     display: flex;
     align-items: center;
+    position: relative;
 `;
 const ChildReplyInputContainer = styled.div`
     display: flex;
     align-items: center;
+    position: relative;
     margin-bottom: 15px;
 `;
 
 const ReplyInput = styled.input`
-    border: none;
-    outline: none;
     width: 400px;
     padding: 5px;
     margin: 10px 0;
+    padding-right: 100px;
+    border: 0;
+    border-radius: 10px;
+    outline: none;
+    padding-left: 10px;
+    background-color: rgb(222, 222, 222);
 `;
 const ChildReplyInput = styled.input`
-    border: none;
-    outline: none;
     width: 400px;
     padding: 5px;
     margin-left: 45px;
+    padding-right: 100px;
+    border: 0;
+    border-radius: 10px;
+    outline: none;
+    padding-left: 10px;
+    background-color: rgb(222, 222, 222);
 `;
 
 const ReplyButton = styled.button`
-    border: none;
-    background-color: #d7d7d7;
-    padding: 5px 30px;
-    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 315px;
+    height: 27px;
+    padding: 3px 10px 0px;
+    border: 0;
+    border-radius: 7px;
+    margin-right: 3px;
+    outline: none;
+    background-color: #c7c7c7;
+    font-size: 14px;
 `;
 const ChildReplyButton = styled.button`
-    border: none;
-    background-color: #d7d7d7;
-    padding: 5px 30px;
-    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 345px;
+    height: 27px;
+    padding: 3px 10px 0px;
+    border: 0;
+    border-radius: 7px;
+    margin-right: 3px;
+    outline: none;
+    background-color: #c7c7c7;
+    font-size: 14px;
 `;
 
 const ToggleChildReplyButton = styled.div`

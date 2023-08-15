@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { useLocation } from 'react-router-dom';
 import QuillEditor from '../components/CreatePost,EditPost/QuillEditor';
@@ -18,13 +18,15 @@ import {
 interface DataForEdit {
     savedTitle: string;
     savedDescription: string;
-    savedHashtag: string[];
+    savedHashtagList: string[];
     savedCategory: string;
     savedAccessLevel: boolean;
     savedImages: string[];
 }
 
 const EditPost: React.FC = () => {
+    const { postId } = useParams<{ postId: string }>();
+    const navigate = useNavigate();
     const token = sessionStorage.getItem('token');
 
     const title = useRecoilValue(titleState);
@@ -36,17 +38,18 @@ const EditPost: React.FC = () => {
 
     const location = useLocation();
     const dataForEdit: DataForEdit = location.state.dataForEdit;
+    console.log('dataForEdit', dataForEdit);
     const {
         savedTitle,
         savedDescription,
         savedImages,
-        savedHashtag,
+        savedHashtagList,
         savedCategory,
         savedAccessLevel,
     } = dataForEdit;
 
     const dataForQuillEditorComp = { savedTitle, savedDescription, savedImages };
-    const dataForPostSettingComp = { savedHashtag, savedCategory, savedAccessLevel };
+    const dataForPostSettingComp = { savedHashtagList, savedCategory, savedAccessLevel };
 
     const postForm = {
         title: title,
@@ -63,17 +66,17 @@ const EditPost: React.FC = () => {
 
         try {
             console.log(token);
-            const response = await axios.post('/api/posts', postForm, {
+            const response = await axios.put(`/api/posts/${postId}`, postForm, {
                 headers: {
                     'X-AUTH-TOKEN': token,
                 },
             });
             if (response.status === 200) {
-                const navigate = useNavigate();
-                navigate(`/posts/${response.data.postId}`);
+                navigate(`/posts/${postId}`);
             }
         } catch (error) {
             console.error(error);
+            window.alert('카테고리를 설정하세요');
         }
     };
 

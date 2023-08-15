@@ -20,7 +20,7 @@ interface DataForEdit {
     savedTitle: string;
     savedDescription: string;
     savedImages: string[];
-    savedHashtag: string[];
+    savedHashtagList: string[];
     savedCategory: string;
     savedAccessLevel: boolean;
 }
@@ -67,14 +67,14 @@ const formatDateString = (createdAt: string) => {
 
 const PostContents: React.FC = () => {
     const token = sessionStorage.getItem('token');
+    const navigate = useNavigate();
 
     const [postData, setPostData] = useRecoilState(postDataRecoil);
     const [postContentsData, setPostContentsData] = useRecoilState(postContentsDataRecoil);
     console.log('postContentsData', postContentsData);
     const [likeState, setLikeState] = useRecoilState(isLikedState);
 
-    const { nickname } = useRecoilValue(signInInfo);
-    const myNickname = nickname;
+    const myInfo = useRecoilValue(signInInfo);
 
     const { postId } = useParams<{ postId: string }>();
 
@@ -84,7 +84,7 @@ const PostContents: React.FC = () => {
         savedTitle: postData.title,
         savedDescription: postData.description,
         savedImages: postData.images,
-        savedHashtag: postData.hashtag,
+        savedHashtagList: postData.hashtagList,
         savedCategory: postData.category,
         savedAccessLevel: postData.accessLevel,
     };
@@ -96,7 +96,6 @@ const PostContents: React.FC = () => {
 
     // 전체 게시글을 보여주는 posts 페이지로 이동하는 함수
     const handleGoBackToPosts = () => {
-        const navigate = useNavigate();
         navigate('/posts');
     };
 
@@ -110,7 +109,7 @@ const PostContents: React.FC = () => {
                 },
             });
             console.log(response.data);
-            if (response.data.status === 'success') {
+            if (response.status === 200) {
                 handleGoBackToPosts();
             }
         } catch (error) {
@@ -118,17 +117,26 @@ const PostContents: React.FC = () => {
         }
     };
 
-    // 좋아요 눌렀을 때
+    // 좋아요 눌렀을 때 실행할 함수
     const handleToggleLikeButton = async () => {
         try {
             console.log(token);
-            const response = await axios.post(`/api/posts/${postId}/like`, {
+            const response = await axios.post(`/api/posts/${postId}/like`, null, {
                 headers: {
                     'X-AUTH-TOKEN': token,
                 },
             });
-            setPostData({ ...postData, like: response.data.like });
-            setPostContentsData({ ...postContentsData, like: response.data.like });
+            setPostData({
+                ...postData,
+                like: response.data.like,
+                likeCount: response.data.likeCount,
+            });
+            setPostContentsData({
+                ...postContentsData,
+                like: response.data.like,
+                likeCount: response.data.likeCount,
+            });
+            console.log(response.data);
             console.log('postContentsData by like', postContentsData);
             setLikeState(response.data.like);
         } catch (error) {
@@ -139,8 +147,8 @@ const PostContents: React.FC = () => {
         <PostContentsComponent>
             <CategoryAndHashtag>
                 <PostCategory>{getCategoryName(postContentsData.category)}</PostCategory>
-                {postContentsData.hashtag &&
-                    postContentsData.hashtag.map((hashtag) => {
+                {postContentsData.hashtagList &&
+                    postContentsData.hashtagList.map((hashtag) => {
                         return <PostHashtag>{hashtag}</PostHashtag>;
                     })}
             </CategoryAndHashtag>
@@ -152,9 +160,9 @@ const PostContents: React.FC = () => {
 
                 <ProfileNickname>{postContentsData.userNickname}</ProfileNickname>
                 <CreatedAt>{formatDateString(postContentsData.createdAt)}</CreatedAt>
-                {/* {myNickname === postContentsData.userNickname && ( */}
-                <FaEllipsis icon={faEllipsis} onClick={handleToggleModal} />
-                {/* )} */}
+                {myInfo.nickname === postContentsData.userNickname && (
+                    <FaEllipsis icon={faEllipsis} onClick={handleToggleModal} />
+                )}
 
                 <Modal
                     isOpen={isModalOpen}
@@ -302,8 +310,8 @@ const PostDetail = styled.div`
 
 const PostDetailLike = styled.div<PostDetailLikeProps>`
     margin-right: 10px;
-    border-radius: 15px;
-    background-color: ${(props) => (props.active ? '#FFE0F8' : 'transparent')};
+    border-radius: 10px;
+    background-color: ${(props) => (props.active ? 'skyblue' : 'transparent')};
     font-weight: ${(props) => (props.active ? 'bold' : 'regular')};
 `;
 
