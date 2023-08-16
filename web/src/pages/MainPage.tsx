@@ -1,11 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+// import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+import writing from '../assets/writing 1.png';
+import posts from '../assets/post01 1.png';
+import fineMate from '../assets/fineMate01.png';
+import dmChat from '../assets/dm_chat.png';
 type BtnTabProps = {
     isActive: boolean;
 };
@@ -17,7 +21,7 @@ const MainPage: React.FC = () => {
     const slideDuration = 3000;
 
     //tab
-    const [activeTab, setActiveTab] = useState('동영상');
+    const [activeTab, setActiveTab] = useState('커뮤니티');
 
     //slide
     useEffect(() => {
@@ -63,7 +67,7 @@ const MainPage: React.FC = () => {
                                 {/* <Link
                                     to={`/slide${((activeSlide + 1) % totalSlides) + 1}`}
                                     className="btn btn-more"
-                                > */}
+                                > */}{' '}
                                 <Link to="/" className="btn btn-more">
                                     <span>More</span>
                                 </Link>
@@ -129,13 +133,13 @@ const MainPage: React.FC = () => {
                             <BtnTab
                                 type="button"
                                 className="btn btn-menu"
-                                isActive={activeTab === '동영상'}
-                                onClick={() => handleTabClick('동영상')}
+                                isActive={activeTab === '커뮤니티'}
+                                onClick={() => handleTabClick('커뮤니티')}
                             >
-                                동영상
+                                커뮤니티
                             </BtnTab>
                         </Category01>
-                        {activeTab === '동영상' && (
+                        {activeTab === '커뮤니티' && (
                             <TabSectionList>
                                 <div className="link-move">
                                     <Link to="/" className="btn btn-more">
@@ -143,29 +147,29 @@ const MainPage: React.FC = () => {
                                         <i className="fa-solid fa-arrow-right-long"></i>
                                     </Link>
                                 </div>
-                                <ul className="section-content">
+                                <ul className="section-content one">
                                     <li>
                                         <div className="thumb">
-                                            {/* <img src="" alt="이미지" /> */}
+                                            <img src={writing} alt="logo" css={writing} />
                                         </div>
                                         <div className="content">
-                                            <h3 className="title">운동 종류별 영상 시청</h3>
+                                            <h3 className="title">글쓰기</h3>
                                             <p className="txt">
                                                 러닝, 등산, 헬스 다양한 종목으로 <br />
-                                                운동 관련영상들을 시청하세요!
+                                                운동후기를 남겨보세요!
                                             </p>
                                         </div>
                                     </li>
                                     <li>
                                         <div className="thumb">
-                                            {/* <img src="" alt="이미지" /> */}
+                                            <img src={posts} alt="logo" css={posts} />
                                         </div>
                                         <div className="content">
-                                            <h3 className="title">나만의 플레이리스트</h3>
+                                            <h3 className="title">정보공유</h3>
                                             <p className="txt">
-                                                맘에드는 영상들은
+                                                회원들과 다양한
                                                 <br />
-                                                즐겨찾기에 담을 수 있어요 📘
+                                                운동 정보를 공유할 수 있어요
                                             </p>
                                         </div>
                                     </li>
@@ -200,10 +204,10 @@ const MainPage: React.FC = () => {
                                         <i className="fa-solid fa-arrow-right-long"></i>
                                     </Link>
                                 </div>
-                                <ul className="section-content">
+                                <ul className="section-content two">
                                     <li>
                                         <div className="thumb">
-                                            {/* <img src="" alt="이미지" /> */}
+                                            <img src={fineMate} alt="logo" css={fineMate} />
                                         </div>
                                         <div className="content">
                                             <h3 className="title">운동메이트 찾기</h3>
@@ -215,7 +219,7 @@ const MainPage: React.FC = () => {
                                     </li>
                                     <li>
                                         <div className="thumb">
-                                            {/* <img src="" alt="이미지" /> */}
+                                            <img src={dmChat} alt="logo" css={dmChat} />
                                         </div>
                                         <div className="content">
                                             <h3 className="title">채팅</h3>
@@ -286,6 +290,25 @@ const Slide = styled.div`
     opacity: 0;
     z-index: 1;
     transition: opacity 0.5s ease-in-out;
+
+    &.slide.active:nth-of-type(1) {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-image: url(../assets/runing01.jpeg);
+    }
+    &.slide.active:nth-of-type(2) {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-image: url(../assets/runing01.jpeg);
+    }
+    &.slide.active:nth-of-type(3) {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-image: url(../assets/runing01.jpeg);
+    }
 
     &.active {
         opacity: 1;
@@ -434,8 +457,17 @@ const TabSectionList = styled.dd`
         justify-content: center;
         margin-top: 120px;
     }
+    ul.section-content.one .thumb {
+        margin: 0 auto;
+        text-align: center;
+        overflow: hidden;
+    }
+    ul.section-content.one .thumb img {
+        width: 70%;
+        height: 150%;
+    }
     li {
-        width: 260px;
+        width: 300px;
         height: 300px;
         margin: 0 50px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
@@ -444,7 +476,7 @@ const TabSectionList = styled.dd`
         background-color: #fff;
     }
     .thumb {
-        width: 280px;
+        width: 300px;
         height: 180px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     }
