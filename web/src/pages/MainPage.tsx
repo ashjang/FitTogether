@@ -17,7 +17,7 @@ const MainPage: React.FC = () => {
     const slideDuration = 3000;
 
     //tab
-    const [activeTab, setActiveTab] = useState('탭버튼01');
+    const [activeTab, setActiveTab] = useState('동영상');
 
     //slide
     useEffect(() => {
@@ -54,42 +54,48 @@ const MainPage: React.FC = () => {
                     <SlideArea>
                         <Slide className={`slide ${activeSlide === 0 ? 'active' : ''}`}>
                             <SlideContent>
-                                <h2 className="title">슬라이드 01 타이틀 넣기</h2>
+                                <h2 className="title">러닝, 등산, 헬스 다양한 유튜브 영상 제공!</h2>
                                 <p className="txt">
-                                    첫 번째 슬라이드
-                                    <br />첫 번째 슬라이드
+                                    다양한 유튜브 영상을
+                                    <br />
+                                    플레이 리스트에 담을 수 있어요 😎
                                 </p>
-                                <Link
+                                {/* <Link
                                     to={`/slide${((activeSlide + 1) % totalSlides) + 1}`}
                                     className="btn btn-more"
-                                >
+                                > */}
+                                <Link to="/" className="btn btn-more">
                                     <span>More</span>
                                 </Link>
                             </SlideContent>
                         </Slide>
                         <Slide className={`slide ${activeSlide === 1 ? 'active' : ''}`}>
                             <SlideContent>
-                                <h2 className="title">슬라이드 02 타이틀 넣기</h2>
+                                <h2 className="title">운동메이트 매칭!</h2>
                                 <p className="txt">
-                                    두 번째 슬라이드
-                                    <br />두 번째 슬라이드
+                                    내 주변에서 함께할
+                                    <br />
+                                    운동메이트를 찾아보세요 🤼‍♂️
                                 </p>
-                                <Link
+                                {/* <Link
                                     to={`/slide${((activeSlide + 2) % totalSlides) + 1}`}
                                     className="btn btn-more"
-                                >
+                                > */}
+                                <Link to="/" className="btn btn-more">
                                     <span>More</span>
                                 </Link>
                             </SlideContent>
                         </Slide>
                         <Slide className={`slide ${activeSlide === 2 ? 'active' : ''}`}>
                             <SlideContent>
-                                <h2 className="title">슬라이드 03 타이틀 넣기</h2>
+                                <h2 className="title">채팅을 통해 대화해요!</h2>
                                 <p className="txt">
-                                    세 번째 슬라이드
-                                    <br />세 번째 슬라이드
+                                    매칭된 운동메이트와
+                                    <br />
+                                    채팅을 통해 운동계획을 세워보세요 👩‍💻
                                 </p>
-                                <Link to={`/slide${activeSlide + 1}`} className="btn btn-more">
+                                {/* <Link to={`/slide${activeSlide + 1}`} className="btn btn-more"> */}
+                                <Link to="/" className="btn btn-more">
                                     <span>More</span>
                                 </Link>
                             </SlideContent>
@@ -117,19 +123,19 @@ const MainPage: React.FC = () => {
                 </Carousel>
 
                 <MainTabSection>
-                    <h2 className="main-title">섹션 타이틀명 넣기</h2>
+                    <h2 className="main-title">다양한 콘텐츠를 즐기세요!</h2>
                     <dl className="tab-category">
                         <Category01>
                             <BtnTab
                                 type="button"
                                 className="btn btn-menu"
-                                isActive={activeTab === '탭버튼01'}
-                                onClick={() => handleTabClick('탭버튼01')}
+                                isActive={activeTab === '동영상'}
+                                onClick={() => handleTabClick('동영상')}
                             >
-                                탭버튼01
+                                동영상
                             </BtnTab>
                         </Category01>
-                        {activeTab === '탭버튼01' && (
+                        {activeTab === '동영상' && (
                             <TabSectionList>
                                 <div className="link-move">
                                     <Link to="/" className="btn btn-more">
@@ -140,14 +146,30 @@ const MainPage: React.FC = () => {
                                 <ul className="section-content">
                                     <li>
                                         <div className="thumb">
-                                            <img src="" alt="이미지" />
+                                            {/* <img src="" alt="이미지" /> */}
                                         </div>
                                         <div className="content">
-                                            <h3 className="title">타이틀 넣기</h3>
-                                            <p className="txt">텍스트 넣기</p>
+                                            <h3 className="title">운동 종류별 영상 시청</h3>
+                                            <p className="txt">
+                                                러닝, 등산, 헬스 다양한 종목으로 <br />
+                                                운동 관련영상들을 시청하세요!
+                                            </p>
                                         </div>
                                     </li>
                                     <li>
+                                        <div className="thumb">
+                                            {/* <img src="" alt="이미지" /> */}
+                                        </div>
+                                        <div className="content">
+                                            <h3 className="title">나만의 플레이리스트</h3>
+                                            <p className="txt">
+                                                맘에드는 영상들은
+                                                <br />
+                                                즐겨찾기에 담을 수 있어요 📘
+                                            </p>
+                                        </div>
+                                    </li>
+                                    {/* <li>
                                         <div className="thumb">
                                             <img src="" alt="이미지" />
                                         </div>
@@ -155,16 +177,7 @@ const MainPage: React.FC = () => {
                                             <h3 className="title">타이틀 넣기</h3>
                                             <p className="txt">텍스트 넣기</p>
                                         </div>
-                                    </li>
-                                    <li>
-                                        <div className="thumb">
-                                            <img src="" alt="이미지" />
-                                        </div>
-                                        <div className="content">
-                                            <h3 className="title">타이틀 넣기</h3>
-                                            <p className="txt">텍스트 넣기</p>
-                                        </div>
-                                    </li>
+                                    </li> */}
                                 </ul>
                             </TabSectionList>
                         )}
@@ -173,13 +186,13 @@ const MainPage: React.FC = () => {
                             <BtnTab
                                 type="button"
                                 className="btn btn-menu"
-                                isActive={activeTab === '탭버튼02'}
-                                onClick={() => handleTabClick('탭버튼02')}
+                                isActive={activeTab === '운동 메이트'}
+                                onClick={() => handleTabClick('운동 메이트')}
                             >
-                                탭버튼02
+                                운동 메이트
                             </BtnTab>
                         </Category02>
-                        {activeTab === '탭버튼02' && (
+                        {activeTab === '운동 메이트' && (
                             <TabSectionList>
                                 <div className="link-move">
                                     <Link to="/" className="btn btn-more">
@@ -190,14 +203,30 @@ const MainPage: React.FC = () => {
                                 <ul className="section-content">
                                     <li>
                                         <div className="thumb">
-                                            <img src="" alt="이미지" />
+                                            {/* <img src="" alt="이미지" /> */}
                                         </div>
                                         <div className="content">
-                                            <h3 className="title">타이틀 넣기</h3>
-                                            <p className="txt">텍스트 넣기</p>
+                                            <h3 className="title">운동메이트 찾기</h3>
+                                            <p className="txt">
+                                                지도에서 내 주변 <br />
+                                                운동메이트를 찾아보세요
+                                            </p>
                                         </div>
                                     </li>
                                     <li>
+                                        <div className="thumb">
+                                            {/* <img src="" alt="이미지" /> */}
+                                        </div>
+                                        <div className="content">
+                                            <h3 className="title">채팅</h3>
+                                            <p className="txt">
+                                                매칭된 운동메이트와 채팅으로
+                                                <br />
+                                                운동플랜을 만들어보세요!
+                                            </p>
+                                        </div>
+                                    </li>
+                                    {/* <li>
                                         <div className="thumb">
                                             <img src="" alt="이미지" />
                                         </div>
@@ -205,23 +234,14 @@ const MainPage: React.FC = () => {
                                             <h3 className="title">타이틀 넣기</h3>
                                             <p className="txt">텍스트 넣기</p>
                                         </div>
-                                    </li>
-                                    <li>
-                                        <div className="thumb">
-                                            <img src="" alt="이미지" />
-                                        </div>
-                                        <div className="content">
-                                            <h3 className="title">타이틀 넣기</h3>
-                                            <p className="txt">텍스트 넣기</p>
-                                        </div>
-                                    </li>
+                                    </li> */}
                                 </ul>
                             </TabSectionList>
                         )}
                     </dl>
                 </MainTabSection>
 
-                <section className="sectionTwo" css={sectionTwo}>
+                {/* <section className="sectionTwo" css={sectionTwo}>
                     <h2 className="main-title">섹션 타이틀 넣기</h2>
                     <div className="content">
                         <div className="inn">
@@ -236,7 +256,7 @@ const MainPage: React.FC = () => {
                             </Link>
                         </div>
                     </div>
-                </section>
+                </section> */}
             </Container>
         </>
     );
@@ -440,16 +460,16 @@ const TabSectionList = styled.dd`
     }
 `;
 
-const sectionTwo = css`
-    position: relative;
-    max-width: 1440px;
-    margin: 60px auto 0;
-    padding: 24px;
+// const sectionTwo = css`
+//     position: relative;
+//     max-width: 1440px;
+//     margin: 60px auto 0;
+//     padding: 24px;
 
-    .main-title {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-`;
+//     .main-title {
+//         text-align: center;
+//         margin-bottom: 20px;
+//     }
+//     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+// `;
 export default MainPage;
