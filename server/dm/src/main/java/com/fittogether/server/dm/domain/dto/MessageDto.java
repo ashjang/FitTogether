@@ -4,6 +4,8 @@ import com.fittogether.server.dm.domain.entity.Message;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -31,6 +33,18 @@ public class MessageDto {
                 .contents(message.getContents())
                 .sendDt(message.getSendDt())
                 .build();
+    }
+
+    public static List<MessageDto> listFrom(List<Message> messageList) {
+        return messageList.stream()
+                .map(message -> MessageDto.builder()
+                        .chatRoomId(message.getChatRoomId().getChatRoomId())
+                        .senderId(message.getSenderId().getUserId())
+                        .senderNickname(message.getSenderNickname())
+                        .contents(message.getContents())
+                        .sendDt(message.getSendDt())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }

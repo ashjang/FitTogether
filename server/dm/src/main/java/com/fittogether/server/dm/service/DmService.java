@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -118,5 +119,23 @@ public class DmService {
 
         return dmList;
     }
+
+
+    //해당 채팅방 메세지 조회
+    public List<Message> messageLists(String token,Long chatRoomId){
+        if (!jwtProvider.validateToken(token)) {
+            throw new UserCustomException(UserErrorCode.NOT_FOUND_USER);
+        }
+
+
+        //message 의 chatRoomId는 ChatRoom의 Id값을 참조하기때문에 따로 값을 추출
+        Optional<ChatRoom> room=chatRoomRepository.findById(chatRoomId);
+
+        List<Message> roomId=messageRepository.findAllByChatRoomId(room);
+
+        return roomId;
+
+    }
+
 
 }

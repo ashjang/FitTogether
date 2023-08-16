@@ -2,6 +2,7 @@ package com.fittogether.server.dm.mate.controller;
 
 
 import com.fittogether.server.dm.domain.dto.ChatRoomDto;
+import com.fittogether.server.dm.domain.dto.MessageDto;
 import com.fittogether.server.dm.service.DmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,15 @@ public class DmController {
             @RequestHeader("X-AUTH-TOKEN") String token
     ) {
         return ChatRoomDto.listFrom(dmService.dmLists(token));
+    }
+
+    //채팅방 메세지 조회
+    @GetMapping("/dm")
+    public List<MessageDto> messageLists(
+            @RequestHeader("X-AUTH-TOKEN") String token,
+            @RequestParam Long chatRoomId
+    ){
+        return MessageDto.listFrom(dmService.messageLists(token,chatRoomId));
     }
 
 
