@@ -1,144 +1,174 @@
-// import React from 'react';
-// import styled from '@emotion/styled';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faTimes } from '@fortawesome/free-solid-svg-icons';
-// import { useState } from 'react';
+import React from 'react';
+import axios from 'axios';
+import styled from '@emotion/styled';
 
-// import { User } from './Map';
+interface User {
+    userId: number;
+    nickname: string;
+    gender: boolean;
+    introduction: string;
+    exerciseChoice: string[];
+    latitude: number;
+    longitude: number;
+}
 
-// interface UserProfileProps {
-//     user: User;
-//     onClose: () => void;
-// }
+const UserProfile: React.FC<{ selectedUser: User | null }> = (props) => {
+    const token = sessionStorage.getItem('token');
 
-// <UserProfile user={selectedUser} onClose={handleClose} />;
+    const postMateRequest = async () => {
+        try {
+            const response = await axios.post(
+                `/api/matching/request?receiverNickname=${props.selectedUser?.nickname}`,
+                {},
+                {
+                    headers: {
+                        'X-AUTH-TOKEN': token,
+                    },
+                }
+            );
+            console.log(response.data);
+            if (response.status === 200) {
+                alert('운동 메이트 신청 완료 !');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    return (
+        <UserProfileComponent>
+            <UserNickname> {props.selectedUser?.nickname}</UserNickname>
+            <InfoContainer>
+                <UserGenderContainer>
+                    <UserGender>성별</UserGender>
+                    <UserGenderItem>
+                        {props.selectedUser?.gender === true ? '남성' : '여성'}
+                    </UserGenderItem>
+                </UserGenderContainer>
+                <UserIntroductionContainer>
+                    <UserIntroduction>소개</UserIntroduction>
+                    <UserIntroductionItem>
+                        {props.selectedUser?.introduction
+                            ? props.selectedUser?.introduction
+                            : '소개글이 없습니다.'}
+                    </UserIntroductionItem>
+                </UserIntroductionContainer>
+                <UserExerciseChoiceContainer>
+                    <UserExerciseChoice>좋아하는 운동</UserExerciseChoice>
+                    <UserExerciseChoiceItem>
+                        <ExerciseChoiceBox
+                            isActive={props.selectedUser?.exerciseChoice.includes('RUNNING')}
+                        >
+                            러닝
+                        </ExerciseChoiceBox>
+                        <ExerciseChoiceBox
+                            isActive={props.selectedUser?.exerciseChoice.includes('HIKING')}
+                        >
+                            등산
+                        </ExerciseChoiceBox>
+                        <ExerciseChoiceBox
+                            isActive={props.selectedUser?.exerciseChoice.includes('WEIGHT')}
+                        >
+                            헬스
+                        </ExerciseChoiceBox>
+                    </UserExerciseChoiceItem>
+                </UserExerciseChoiceContainer>
+            </InfoContainer>
+            <RequestBtn onClick={postMateRequest}>운동 같이 하실래요?</RequestBtn>
+        </UserProfileComponent>
+    );
+};
 
-// const UserProfile: React.FC<UserProfileProps> = ({ user, onClose }) => {
-//     const [showConfirmation, setShowConfirmation] = useState(false);
+const UserProfileComponent = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    width: 200px;
+    height: 300px;
+    background-color: white;
+    border: 2px solid #444;
+    border-radius: 30px;
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.75);
+`;
 
-//     const handleFriendRequest = () => {
-//         setShowConfirmation(true);
-//     };
+const UserNickname = styled.h2``;
 
-//     const handleConfirmationClose = () => {
-//         setShowConfirmation(false);
-//     };
-//     const handleFriendRequestConfirmation = () => {
-//         // 여기에서 백엔드쪽 니증에 연결될때 친구 신청을 보내고 처리하는 로직 만들기
-//         // 실제로는 백엔드 API를 호출하여 처리해야 하고, 일단은 alert으로 대체
-//         alert('신청을 보냈습니다.');
-//         // 팝업을 닫습니다.
-//         setShowConfirmation(false);
-//         onClose();
-//     };
-//     return (
-//         <UserProfileContainer>
-//             <ProfileBox>
-//                 <h2 className="profile-title">User Profile</h2>
-//                 <p className="userId">닉네임: {user.id}</p>
-//                 <p className="userCategory">주로 하는 운동: {user.category}</p>
-//             </ProfileBox>
+const InfoContainer = styled.div`
+    height: 220px;
+`;
 
-//             <CloseButton onClick={onClose}>
-//                 <FontAwesomeIcon icon={faTimes} />
-//             </CloseButton>
-//             <FriendButton onClick={handleFriendRequest}>운동 같이 하실래요?</FriendButton>
+const UserGenderContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 20px;
+`;
 
-//             {showConfirmation && (
-//                 <ConfirmationPopup>
-//                     <h3>운동메이트 신청을 하시겠습니까?</h3>
-//                     <ConfirmationButtons>
-//                         <ConfirmButton onClick={handleConfirmationClose}>취소</ConfirmButton>
-//                         <ConfirmButton onClick={handleFriendRequestConfirmation}>
-//                             확인
-//                         </ConfirmButton>
-//                     </ConfirmationButtons>
-//                 </ConfirmationPopup>
-//             )}
-//         </UserProfileContainer>
-//     );
-// };
-// const UserProfileContainer = styled.div`
-//     position: absolute;
-// `;
-// const ProfileBox = styled.div`
-//     width: 250px;
-//     height: 250px;
-//     padding: 30px 20px;
-//     margin: 0 auto;
-//     border-radius: 10px;
-//     background-color: #61dafbaa;
+const UserGender = styled.p`
+    color: #aaaaaa;
+`;
 
-//     .profile-title {
-//         margin-bottom: 20px;
-//     }
-//     p {
-//         font-size: 18px;
-//         font-weight: 700;
-//         padding-left: 10px;
-//     }
-//     .userId {
-//         margin-bottom: 20px;
-//     }
-// `;
-// const CloseButton = styled.button`
-//     position: absolute;
-//     right: 15px;
-//     top: 10px;
-//     background: none;
-//     border: none;
-//     font-size: 30px;
-//     cursor: pointer;
-//     color: #000;
-// `;
-// const FriendButton = styled.button`
-//     position: absolute;
-//     left: 50%;
-//     bottom: 20px;
-//     width: 180px;
-//     color: #fff;
-//     border: none;
-//     border-radius: 5px;
-//     padding: 8px 16px;
-//     cursor: pointer;
-//     transform: translateX(-50%);
-//     transition: background-color 0.3s ease;
-//     background-color: #4caf50;
+const UserGenderItem = styled.p`
+    font-size: 13px;
+`;
 
-//     &:hover {
-//         background-color: #45a047;
-//     }
-// `;
-// const ConfirmationPopup = styled.div`
-//     position: fixed;
-//     top: 50%;
-//     left: 50%;
-//     transform: translate(-50%, -50%);
-//     padding: 20px;
-//     background-color: #fff;
-//     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-//     border-radius: 5px;
-//     z-index: 999;
-// `;
+const UserIntroductionContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 20px;
+`;
 
-// const ConfirmationButtons = styled.div`
-//     display: flex;
-//     justify-content: flex-end;
-//     margin-top: 20px;
-// `;
+const UserIntroduction = styled.p`
+    color: #aaaaaa;
+`;
 
-// const ConfirmButton = styled.button`
-//     margin-left: 10px;
-//     padding: 6px 12px;
-//     background-color: #4caf50;
-//     color: white;
-//     border: none;
-//     border-radius: 5px;
-//     cursor: pointer;
-//     transition: background-color 0.3s ease;
+const UserIntroductionItem = styled.p`
+    font-size: 13px;
+`;
 
-//     &:hover {
-//         background-color: #45a049;
-//     }
-// `;
-// export default UserProfile;
+const UserExerciseChoiceContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
+
+const UserExerciseChoice = styled.p`
+    color: #aaaaaa;
+`;
+
+const UserExerciseChoiceItem = styled.p`
+    display: flex;
+`;
+
+const RequestBtn = styled.button`
+    position: relative;
+    bottom: 10px;
+    padding: 0px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    border-style: none;
+    border-radius: 10px;
+    box-shadow: 0px 1px 15px 0px rgba(0, 0, 0, 0.5);
+
+    &:hover {
+        background-color: #ffffe7;
+    }
+`;
+
+const ExerciseChoiceBox = styled.div<{ isActive?: boolean }>`
+    padding: 0px 5px;
+    margin: 3px;
+    background-color: ${(props) => (props.isActive ? '#dde4ff' : '#d7d7d7')};
+    border: 1px solid #a6a6a6;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #555;
+    cursor: pointer;
+`;
+
+export default UserProfile;
