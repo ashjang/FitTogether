@@ -31,8 +31,7 @@ const SignUpSetting: React.FC = () => {
         const value = event.target.value;
 
         // 아이디(닉네임) 입력 조건
-        //const regex = /^[A-Za-z0-9]*$/;
-        const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]*$/;
+        const regex = /^[A-Za-z0-9]*$/;
 
         if (regex.test(value) && value.length <= 10) {
             setNickname(value);
@@ -148,6 +147,7 @@ const SignUpSetting: React.FC = () => {
                         id="nickname"
                         name="nickname"
                         value={nickname}
+                        pattern="[a-zA-Z0-9]*"
                         onChange={handleNicknameChange}
                         required
                     />
