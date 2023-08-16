@@ -231,7 +231,7 @@ const CategoryAndHashtag = styled.div`
 const PostCategory = styled.p`
     padding: 0 10px;
     margin-right: 20px;
-    border-radius: 7.5px;
+    border-radius: 15px;
     background-color: #c7c7c7;
 `;
 

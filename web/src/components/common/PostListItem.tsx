@@ -84,14 +84,15 @@ const PostInfo = styled.div`
 `;
 
 const PostCategory = styled.p`
-    padding: 5px;
+    padding: 3px 5px;
     margin-right: 20px;
-    border-radius: 10px;
+    border-radius: 15px;
     font-size: 12px;
     background-color: #c7c7c7;
 `;
 const PostTitle = styled.h2`
     height: 30px;
+    margin: 15px 0;
     font-size: 18px;
     white-space: nowrap;
     text-overflow: ellipsis;

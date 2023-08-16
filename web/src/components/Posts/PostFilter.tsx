@@ -158,10 +158,11 @@ const CategoryButton = styled.button<CategoryButtonProps>`
     border-radius: 12px;
     padding: 0 5px;
     margin: 5px 10px 5px 0px;
+    cursor: pointer;
     &:hover {
-        border: 2px dashed #b7b7b7;
+        background-color: #a1c9e4;
     }
-    background-color: ${(props) => (props.active ? '#d7d7d7' : 'white')};
+    background-color: ${(props) => (props.active ? '#a1c9e4' : '#bbbbbb')};
 `;
 
 const InputField = styled.div`
@@ -188,13 +189,14 @@ const SearchButton = styled.button`
     align-items: center;
     position: absolute;
     right: 0px;
-    height: 34px;
-    padding: 3px 10px 0px;
+    height: 30px;
+    padding: 3px 5px;
     border: 0;
     border-radius: 7px;
     margin-right: 3px;
     outline: none;
-    background-color: #c7c7c7;
+    color: white;
+    background-color: #aaaaaa;
     font-size: 14px;
 `;
 export default PostFilter;
