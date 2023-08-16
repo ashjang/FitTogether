@@ -18,9 +18,19 @@
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true
+        "noFallthroughCasesInSwitch": true,
+
+        "typeRoots": ["./types", "./node_modules/@types"],
+        "types": ["vite/client"]
     },
-    "include": ["./src/**/*.ts", "./src/**/*.tsx", "vite-env.d.ts", "public/**/*.svg"],
+    "include": [
+        "./src/**/*.ts",
+        "./src/**/*.tsx",
+        "vite-env.d.ts",
+        "public/**/*.svg",
+        "src/**/*",
+        "type"
+    ],
     "references": [{ "path": "./tsconfig.node.json" }],
     "assets": [
         {

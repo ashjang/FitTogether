@@ -1,11 +1,13 @@
 import styled from '@emotion/styled';
+import React from 'react';
+
 import { useState, useEffect } from 'react';
 
 import Map from './Map';
 
 // KakaoMapScriptLoader.ts
 const KAKAO_MAP_SCRIPT_ID = 'kakao-map-script';
-const APP_KAKAO_MAP_API_KEY = import.meta.env.VITE_APP_KAKAO_MAP_API_KEY;
+const APP_KAKAO_MAP_API_KEY = import.meta.env.VITE_APP_KAKAO_MAP_API_KEY as string;
 
 const KakaoMapScriptLoader: React.FC = () => {
     const [mapScriptLoaded, setmapScriptLoaded] = useState(false);

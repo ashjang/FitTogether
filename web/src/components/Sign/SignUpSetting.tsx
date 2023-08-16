@@ -3,8 +3,6 @@ import axios from 'axios';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Link, useNavigate } from 'react-router-dom';
-import { signUpInfo } from '../../recoil/AuthState/atoms';
-import { useRecoilState } from 'recoil';
 
 const SignUpSetting: React.FC = () => {
     const [nickname, setNickname] = useState<string>('');
@@ -18,8 +16,6 @@ const SignUpSetting: React.FC = () => {
     const [isEmailAvailable, setIsEmailAvailable] = useState<boolean>(true);
     const [isReadyForSignUp, setIsReadyForSignUp] = useState<boolean>(false);
     const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
-
-    const [signUpData, setSignUpData] = useRecoilState(signUpInfo);
 
     const navigate = useNavigate();
 
@@ -35,7 +31,7 @@ const SignUpSetting: React.FC = () => {
         const value = event.target.value;
 
         // 아이디(닉네임) 입력 조건
-        // const regex = /^[A-Za-z0-9]*$/;
+        //const regex = /^[A-Za-z0-9]*$/;
         const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]*$/;
 
         if (regex.test(value) && value.length <= 10) {
@@ -124,20 +120,12 @@ const SignUpSetting: React.FC = () => {
                 email: email,
                 password: password,
                 gender: gender,
-                publicInfo: isPublic,
+                isPublic: isPublic,
             };
 
             try {
                 const response = await axios.post('/api/users/signup', formData);
                 console.log('회원가입 성공:', response.data);
-                setSignUpData({
-                    ...signUpData,
-                    nickname: nickname,
-                    email: email,
-                    password: password,
-                    gender: gender,
-                    publicInfo: isPublic,
-                });
                 navigate('/');
             } catch (error) {
                 console.error('회원가입 실패:', error);

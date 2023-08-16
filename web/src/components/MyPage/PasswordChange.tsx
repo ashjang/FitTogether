@@ -63,7 +63,7 @@ const PasswordChange: React.FC = () => {
         };
 
         axios
-            .put('/api/users/my', newPasswordData, {
+            .put('/api/users/my/password', newPasswordData, {
                 headers: {
                     'X-AUTH-TOKEN': token,
                 },
@@ -94,6 +94,7 @@ const PasswordChange: React.FC = () => {
                     minLength={8}
                     maxLength={16}
                     onChange={handlePasswordChange}
+                    autoFocus
                 />
             </InputContainer>
             <InputContainer>

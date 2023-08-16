@@ -2,7 +2,7 @@ import { atom } from 'recoil';
 import { recoilPersist } from 'recoil-persist';
 
 const { persistAtom } = recoilPersist({
-    key: 'sessinStorage',
+    key: 'sessionStorage',
     storage: sessionStorage,
 });
 
@@ -37,25 +37,5 @@ export const signInInfo = atom({
     key: 'signInState',
     default: {
         nickname: '',
-        password: '',
-    },
-});
-
-// 회원가입한 유저의 정보
-export const signUpInfo = atom({
-    key: 'signUpInfo',
-    default: {
-        nickname: '',
-        password: '',
-        email: '',
-        profilePicture: '',
-        gender: true,
-        address: '',
-        introduction: '',
-        exerciseChoice: [''],
-        publicInfo: true,
-        latitude: 0,
-        longitude: 0,
-        // accessToken: '',
     },
 });

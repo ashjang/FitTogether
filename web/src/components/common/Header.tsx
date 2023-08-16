@@ -3,8 +3,8 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faSun,
-    faMoon,
+    // faSun,
+    // faMoon,
     faUserGroup,
     faBell,
     faComment,
@@ -24,17 +24,18 @@ import MateList from './MateList';
 import LogoImg from './../../assets/logo.png';
 
 // interface Props {}
-type HeaderProps = {
-    onToggleDarkMode: () => void;
-};
+// type HeaderProps = {
+//     onToggleDarkMode: () => void;
+// };
 
 // headerMainBar
-function Header({ onToggleDarkMode }: HeaderProps) {
+function Header() {
+    // function Header({ onToggleDarkMode }: HeaderProps) {
     // const loggedIn = useRecoilValue(loggedInState); // 로그인 상태 가져오는 부분
     const loggedIn = useRecoilValue(loggedInState); // loggedInState 상태 가져오기
     const setLoggedIn = useSetRecoilState(loggedInState); // 상태를 업데이트하는 setLoggedIn 함수 가져오기
 
-    const [isDarkMode, setDarkMode] = useState(false);
+    // const [isDarkMode, setDarkMode] = useState(false);
     const [isMateListOpen, setIsMateListOpen] = useState(false); // 메이트리스트창
 
     const [isPopupOpen, setPopupOpen] = useState(false);
@@ -43,10 +44,10 @@ function Header({ onToggleDarkMode }: HeaderProps) {
     const [isScrolled, setScrolled] = useState(false); // 스크롤 내릴때 배경색
 
     // dark light Mode
-    const handleToggleDarkMode = () => {
-        setDarkMode((prevMode) => !prevMode);
-        onToggleDarkMode();
-    };
+    // const handleToggleDarkMode = () => {
+    //     setDarkMode((prevMode) => !prevMode);
+    //     onToggleDarkMode();
+    // };
 
     // 스크롤 내렸을때 배경색 #fff
     const handleScroll = () => {
@@ -101,12 +102,12 @@ function Header({ onToggleDarkMode }: HeaderProps) {
                     </Logo>
                     <IconSection>
                         <IconList>
-                            <ThemeLi isDarkMode={isDarkMode}>
+                            {/* <ThemeLi isDarkMode={isDarkMode}>
                                 <span className="blind">다크 라이트 스위치</span>
                                 <ThemeBtn onClick={handleToggleDarkMode} isDarkMode={isDarkMode}>
                                     <FontAwesomeIcon icon={isDarkMode ? faSun : faMoon} />
                                 </ThemeBtn>
-                            </ThemeLi>
+                            </ThemeLi> */}
                             {loggedIn ? (
                                 // 로그인 상태일때
                                 <>
@@ -337,28 +338,28 @@ const MenuBtn = styled.button`
 `;
 
 //dark mode
-const ThemeLi = styled.li<{ isDarkMode: boolean }>`
-    position: relative;
-    width: 50px;
-    margin-right: 10px;
-    border-radius: 20px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    background-color: ${(props) => (props.isDarkMode ? '#fff' : '#181f38')};
-`;
-const ThemeBtn = styled.button<{ isDarkMode: boolean }>`
-    position: absolute;
-    top: 1px;
-    right: 5px;
-    text-align: center;
-    padding: 0 5px;
-    border: none;
-    background: none;
-    transition: transform 0.3s ease;
+// const ThemeLi = styled.li<{ isDarkMode: boolean }>`
+//     position: relative;
+//     width: 50px;
+//     margin-right: 10px;
+//     border-radius: 20px;
+//     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+//     background-color: ${(props) => (props.isDarkMode ? '#fff' : '#181f38')};
+// `;
+// const ThemeBtn = styled.button<{ isDarkMode: boolean }>`
+//     position: absolute;
+//     top: 1px;
+//     right: 5px;
+//     text-align: center;
+//     padding: 0 5px;
+//     border: none;
+//     background: none;
+//     transition: transform 0.3s ease;
 
-    /* 다크모드일 때 버튼 위치 */
-    transform: ${(props) => (props.isDarkMode ? 'translateX(-18px)' : 'translateX(3px)')};
-    /* 다크모드일 때 아이콘 색상 변경 */
-    color: ${(props) => (props.isDarkMode ? '#ffdd55' : '#ffdd55')};
-`;
+//     /* 다크모드일 때 버튼 위치 */
+//     transform: ${(props) => (props.isDarkMode ? 'translateX(-18px)' : 'translateX(3px)')};
+//     /* 다크모드일 때 아이콘 색상 변경 */
+//     color: ${(props) => (props.isDarkMode ? '#ffdd55' : '#ffdd55')};
+// `;
 
 export default Header;
