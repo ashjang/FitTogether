@@ -90,6 +90,8 @@ const PasswordChange: React.FC = () => {
                     value={password || savedPassword} // 비밀번호 값이 비어있을 때 기존 비밀번호 사용
                     css={inputStyles}
                     placeholder="영문 대소문자/숫자/특수문자 중 2가지 이상 조합, 8~16자"
+                    pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,16}$"
+                    title="올바른 형식을 입력하세요."
                     disabled={!canInfoEdit}
                     minLength={8}
                     maxLength={16}
