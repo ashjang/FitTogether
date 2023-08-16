@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
 import MateListItem from './MateListitem';
 import styled from '@emotion/styled';
 import Modal from 'react-modal';
@@ -10,52 +11,48 @@ interface Props {
     isOpen: boolean;
     onClose: () => void;
 }
-
 interface MateDateItem {
     senderProfileImage: string;
     senderNickname: string;
 }
-
 interface MateData {
     [key: string]: MateDateItem;
 }
+interface UserProfile {
+    username: string;
+    profileImage: string | null;
+}
 
-const data: MateData = {
-    mate1: {
-        senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-        senderNickname: 'fittogether',
-    },
-    mate2: {
-        senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-        senderNickname: 'ehhdrud',
-    },
-    mate3: {
-        senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-        senderNickname: 'emfkdlvnem',
-    },
-    mate4: {
-        senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-        senderNickname: 'seonhyo',
-    },
-    mate5: {
-        senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-        senderNickname: 'ashjang',
-    },
-    mate6: {
-        senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-        senderNickname: 'hg051510',
-    },
-    mate7: {
-        senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-        senderNickname: '2gigeum',
-    },
-    mate8: {
-        senderProfileImage: imageSrc, // 실제로는 "URL 또는 파일 경로"
-        senderNickname: 'woojkk',
-    },
-};
+interface UsersProfileData {
+    usersInfo: UserProfile[];
+}
 
 const MateList: React.FC<Props> = ({ isOpen, onClose }) => {
+    const [mateData, setMateData] = useState<MateData>({});
+
+    useEffect(() => {
+        fetch('/data/usersProfile.json')
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+                return response.json();
+            })
+            .then((data: UsersProfileData) => {
+                const mateData: MateData = {};
+                data.usersInfo.forEach((user) => {
+                    mateData[user.username] = {
+                        senderProfileImage: user.profileImage || imageSrc,
+                        senderNickname: user.username,
+                    };
+                });
+                setMateData(mateData);
+            })
+            .catch((error) => {
+                console.error('An error occurred:', error);
+            });
+    }, []);
+
     return (
         <Modal
             isOpen={isOpen}
@@ -64,7 +61,7 @@ const MateList: React.FC<Props> = ({ isOpen, onClose }) => {
             style={{
                 overlay: {
                     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    zIndex: '50',
+                    zIndex: 50,
                 },
                 content: {
                     width: 'max-content',
@@ -82,7 +79,7 @@ const MateList: React.FC<Props> = ({ isOpen, onClose }) => {
             <MateListComponent>
                 <Title>운동 메이트 리스트</Title>
                 <MateListItems>
-                    {Object.entries(data).map(([key, mate]) => (
+                    {Object.entries(mateData).map(([key, mate]) => (
                         <MateListItem key={key} {...mate} />
                     ))}
                 </MateListItems>
