@@ -291,24 +291,24 @@ const Slide = styled.div`
     z-index: 1;
     transition: opacity 0.5s ease-in-out;
 
-    &.slide.active:nth-of-type(1) {
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-image: url(../assets/runing01.jpeg);
-    }
-    &.slide.active:nth-of-type(2) {
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-image: url(../assets/runing01.jpeg);
-    }
-    &.slide.active:nth-of-type(3) {
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-image: url(../assets/runing01.jpeg);
-    }
+    // &.slide.active:nth-of-type(1) {
+    //     background-size: cover;
+    //     background-position: center;
+    //     background-repeat: no-repeat;
+    //     background-image: url(../assets/running01.jpeg);
+    // }
+    // &.slide.active:nth-of-type(2) {
+    //     background-size: cover;
+    //     background-position: center;
+    //     background-repeat: no-repeat;
+    //     background-image: url(../assets/running01.jpeg);
+    // }
+    // &.slide.active:nth-of-type(3) {
+    //     background-size: cover;
+    //     background-position: center;
+    //     background-repeat: no-repeat;
+    //     background-image: url(../assets/running01.jpeg);
+    // }
 
     &.active {
         opacity: 1;
