@@ -7,8 +7,8 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { GiSwordman, GiSwordwoman, GiSnowman } from 'react-icons/gi';
 
-import { canEditInfo } from '../../recoil/AuthState/atoms';
-import { useRecoilValue } from 'recoil';
+// import { canEditInfo } from '../../recoil/AuthState/atoms';
+// import { useRecoilValue } from 'recoil';
 
 // import { LiaWindowClose } from 'react-icons/lia';
 // import getGeocodeFromAddress from './getGeocodeFromAddress';
@@ -44,13 +44,15 @@ const MyInformation: React.FC = () => {
         try {
             const response = await axios.get('/api/users/my', {
                 headers: {
-                    // 'X-AUTH-TOKEN': canInfoEdit ? token : kakaoToken,
                     'X-AUTH-TOKEN': token,
                 },
             });
-            setUserData(response.data); // 응답값을 userData 상태에 저장
+            setUserData({
+                ...response.data,
+                gender: response.data.gender === '남성',
+            });
             setIntroduction(response.data.introduction || '');
-            setGender(response.data.gender === '남성');
+            setGender(response.data.gender === true);
             setProfilePicture(response.data.profilePicture);
             setPublicStatus(response.data.publicInfo === true);
             setFavoriteSports(response.data.exerciseChoice);
@@ -116,7 +118,7 @@ const MyInformation: React.FC = () => {
 
     // 성별 정보
     const handleGenderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setGender(event.target.checked);
+        setGender(event.target.value === '남성');
     };
 
     // 프로필 아이콘 선택
@@ -233,7 +235,7 @@ const MyInformation: React.FC = () => {
                         type="radio"
                         name="gender"
                         value="남성"
-                        checked={gender}
+                        checked={gender === true}
                         onChange={handleGenderChange}
                     />
                     남성
@@ -243,7 +245,7 @@ const MyInformation: React.FC = () => {
                         type="radio"
                         name="gender"
                         value="여성"
-                        checked={!gender}
+                        checked={gender === false}
                         onChange={handleGenderChange}
                     />
                     여성
