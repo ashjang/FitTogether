@@ -54,6 +54,9 @@ const NewPost = styled.button`
     border-radius: 15px;
     background-color: #d7d7d7;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    &: hover {
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    }
 `;
 
 export default Posts;

@@ -149,7 +149,7 @@ const PostContents: React.FC = () => {
                 <PostCategory>{getCategoryName(postContentsData.category)}</PostCategory>
                 {postContentsData.hashtagList &&
                     postContentsData.hashtagList.map((hashtag) => {
-                        return <PostHashtag>{hashtag}</PostHashtag>;
+                        return <PostHashtag>#{hashtag}</PostHashtag>;
                     })}
             </CategoryAndHashtag>
 
@@ -186,9 +186,9 @@ const PostContents: React.FC = () => {
                     }}
                 >
                     <Link to={`/posts/${postId}/editpost`} state={{ dataForEdit }}>
-                        <button>수정하기</button>
+                        <ModalButtonEdit>수정</ModalButtonEdit>
                     </Link>
-                    <button onClick={handleDeletePost}>삭제하기</button>
+                    <ModalButtonDelete onClick={handleDeletePost}>삭제</ModalButtonDelete>
                 </Modal>
             </ProfileContainer>
             <Post>
@@ -233,14 +233,16 @@ const PostCategory = styled.p`
     margin-right: 20px;
     border-radius: 15px;
     background-color: #c7c7c7;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
 `;
 
 const PostHashtag = styled.p`
-    padding: 0 10px;
+    padding: 0 7px;
     margin-right: 15px;
-    border-radius: 15px;
-    background-color: #e1e1e1;
+    border-radius: 5px;
+    background-color: #a1c9e4;
     font-size: 13px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
 `;
 
 const ProfileContainer = styled.div`
@@ -278,12 +280,37 @@ const ProfileNickname = styled.p`
 const CreatedAt = styled.p`
     position: absolute;
     right: 100px;
+    font-size: 10px;
 `;
 
 const FaEllipsis = styled(FontAwesomeIcon)`
     position: absolute;
     margin: 0 30px;
     right: 0px;
+`;
+
+const ModalButtonEdit = styled.button`
+    padding: 0 10px;
+    border-style: none;
+    border-radius: 15px;
+    margin: 5px;
+    background-color: #d7d7d7;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    &: hover {
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    }
+`;
+
+const ModalButtonDelete = styled.button`
+    padding: 0 10px;
+    border-style: none;
+    border-radius: 15px;
+    margin: 5px;
+    background-color: #dc9696;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    &: hover {
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    }
 `;
 
 const Post = styled.div`
@@ -311,12 +338,12 @@ const PostDetail = styled.div`
 const PostDetailLike = styled.div<PostDetailLikeProps>`
     margin-right: 10px;
     border-radius: 10px;
-    background-color: ${(props) => (props.active ? 'skyblue' : 'transparent')};
+    background-color: ${(props) => (props.active ? '#a1c9e4' : 'transparent')};
     font-weight: ${(props) => (props.active ? 'bold' : 'regular')};
 `;
 
 const FaThumbsUp = styled(FontAwesomeIcon)`
-    margin-left: 15px;
+    margin-left: 12px;
     margin-right: 5px;
 `;
 

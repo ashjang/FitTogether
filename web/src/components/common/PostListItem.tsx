@@ -89,6 +89,8 @@ const PostCategory = styled.p`
     border-radius: 15px;
     font-size: 12px;
     background-color: #c7c7c7;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+    font-weight: bold;
 `;
 const PostTitle = styled.h2`
     height: 30px;

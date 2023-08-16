@@ -124,33 +124,41 @@ const QuillEditor: React.FC<DataForQuillEditorComp | {}> = (props) => {
                 onChange={(event) => setTitle(event.target.value)}
                 placeholder=" title"
             />
-            <ReactQuillComponent
-                ref={quillRef}
-                placeholder="contents..."
-                value={description}
-                theme="snow"
-                modules={modules}
-                formats={formats}
-                onChange={setDescription}
-            />
+            <Quill>
+                <ReactQuillComponent
+                    ref={quillRef}
+                    placeholder="contents..."
+                    value={description}
+                    theme="snow"
+                    modules={modules}
+                    formats={formats}
+                    onChange={setDescription}
+                />
+            </Quill>
         </EditorComponent>
     );
 };
 
-const EditorComponent = styled.div`
-    margin: 50px 0;
-`;
+const EditorComponent = styled.div``;
 
 const TitleComponet = styled.input`
     width: 850px;
     font-size: 20px;
+    margin-top: 25px;
     border-style: none;
     &:focus {
         outline: none;
     }
 `;
+
+const Quill = styled.div`
+    margin-bottom: 25px;
+    height: 350px;
+    background-color: white;
+`;
+
 const ReactQuillComponent = styled(ReactQuill)`
     width: 850px;
-    height: 300px;
+    height: 307px;
 `;
 export default QuillEditor;

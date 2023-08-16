@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
@@ -15,6 +15,10 @@ import {
 } from '../recoil/posts/atoms';
 
 const CreatePost: React.FC = () => {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     const navigate = useNavigate();
 
     const token = sessionStorage.getItem('token');
@@ -63,6 +67,7 @@ const CreatePost: React.FC = () => {
 
     return (
         <PostDataForm onSubmit={submitPostForm}>
+            <Title>게시글 작성</Title>
             <QuillEditor />
             <PostSetting />
             <SubmitButton type="submit">등록</SubmitButton>
@@ -80,12 +85,22 @@ const PostDataForm = styled.form`
     min-height: calc(100vh - 300px);
 `;
 
+const Title = styled.h2`
+    width: 850px;
+`;
+
 const SubmitButton = styled.button`
     position: relative;
     left: 400px;
-    padding: 3px 12px;
-    border-radius: 12px;
+    padding: 0 10px;
     border-style: none;
+    border-radius: 15px;
+    margin: 5px;
+    background-color: #d7d7d7;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    &: hover {
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    }
 `;
 
 export default CreatePost;

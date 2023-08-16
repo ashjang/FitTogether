@@ -21,6 +21,7 @@ const Post: React.FC = () => {
     const setLikeState = useSetRecoilState(isLikedState);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         const token = sessionStorage.getItem('token');
         getPostData(token);
     }, []);

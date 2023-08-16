@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { css } from '@emotion/react';
 import PostListItem from '../common/PostListItem';
 import styled from '@emotion/styled';
@@ -8,6 +9,16 @@ import { useRecoilState } from 'recoil';
 import { postListDataState } from '../../recoil/posts/atoms';
 
 const PostList: React.FC = () => {
+    function ScrollToTopOnPageChange() {
+        const { pathname } = useLocation();
+
+        useEffect(() => {
+            window.scrollTo(0, 0); // Scroll to the top on route change
+        }, [pathname]);
+
+        return null;
+    }
+
     const [page, setPage] = useState<number>(1); // 현재 페이지
     const [postListData, setPostListData] = useRecoilState(postListDataState); // 게시글 데이터
     const limit: number = 5; // 한 페이지에 담길 수 있는 최대 PostListItem
@@ -35,6 +46,7 @@ const PostList: React.FC = () => {
 
     return (
         <PostListComponent>
+            <ScrollToTopOnPageChange />
             <PostListItems>
                 {postListData ? (
                     postListData
@@ -92,7 +104,7 @@ const PaginationButtonNumber = styled.button`
     cursor: pointer;
     color: #666666;
     &:hover {
-        background-color: #f3c1c1;
+        background-color: #a1c9e4;
     }
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* 그림자 추가 */
 `;

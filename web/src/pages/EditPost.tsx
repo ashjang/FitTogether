@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
@@ -25,6 +25,10 @@ interface DataForEdit {
 }
 
 const EditPost: React.FC = () => {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     const { postId } = useParams<{ postId: string }>();
     const navigate = useNavigate();
     const token = sessionStorage.getItem('token');
@@ -82,12 +86,17 @@ const EditPost: React.FC = () => {
 
     return (
         <PostDataForm onSubmit={submitPostForm}>
+            <Title>게시글 수정</Title>
             <QuillEditor {...dataForQuillEditorComp} />
             <PostSetting {...dataForPostSettingComp} />
             <SubmitButton type="submit">수정</SubmitButton>
         </PostDataForm>
     );
 };
+
+const Title = styled.h2`
+    width: 850px;
+`;
 
 const PostDataForm = styled.form`
     display: flex;
@@ -102,9 +111,15 @@ const PostDataForm = styled.form`
 const SubmitButton = styled.button`
     position: relative;
     left: 400px;
-    padding: 3px 12px;
-    border-radius: 12px;
+    padding: 0 10px;
     border-style: none;
+    border-radius: 15px;
+    margin: 5px;
+    background-color: #d7d7d7;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    &: hover {
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    }
 `;
 
 export default EditPost;
