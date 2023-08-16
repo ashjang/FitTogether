@@ -20,7 +20,8 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
 
-        "typeRoots": ["./types", "./node_modules/@types"]
+        "typeRoots": ["./types", "./node_modules/@types"],
+        "types": ["vite/client"]
     },
     "include": [
         "./src/**/*.ts",

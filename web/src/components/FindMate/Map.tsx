@@ -21,7 +21,7 @@ interface ApiResponse {
 }
 
 const Map = (props: MapProps) => {
-    const token: string = sessionStorage.getItem('token') || ''; // getItem이 null을 반환하는 경우를 대비하여 기본값을 제공
+    const token: string = sessionStorage.getItem('token') || '';
     const [userData, setUserData] = useState({});
 
     //tab click
@@ -135,7 +135,14 @@ const Map = (props: MapProps) => {
         // 서버에서 사용자 정보 가져오기
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('/api/users?id={userId}');
+                const response = await axios.get(
+                    `/api/location/nearby?lat=${latitude}&long=${longitude}`,
+                    {
+                        headers: {
+                            'X-AUTH-TOKEN': token,
+                        },
+                    }
+                );
                 setUsers(response.data);
             } catch (error) {
                 console.error('Error fetching users:', error);
