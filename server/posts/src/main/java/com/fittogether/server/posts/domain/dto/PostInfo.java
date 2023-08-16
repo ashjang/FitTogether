@@ -38,7 +38,7 @@ public class PostInfo {
 
   public static PostInfo from(Post post, List<Reply> replyList, List<ChildReply> childReplyList,
       Long totalCount, boolean isLike, Long incrementWatchedCount, List<Image> images,
-      List<String> hashtagList) {
+      List<String> hashtagList, Long likeCount) {
 
     return PostInfo.builder()
         .postId(post.getId())
@@ -48,7 +48,7 @@ public class PostInfo {
         .description(post.getDescription())
         .images(images.stream().map(Image::getImageUrl).collect(Collectors.toList()))
         .userImage(post.getUser().getProfilePicture())
-        .likeCount(post.getLikes())
+        .likeCount(likeCount)
         .viewCount(incrementWatchedCount)
         .replyCount(totalCount)
         .accessLevel(post.isAccessLevel())

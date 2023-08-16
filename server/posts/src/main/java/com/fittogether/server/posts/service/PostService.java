@@ -57,6 +57,7 @@ public class PostService {
   private final AuthenticationService authenticationService;
   private final ImageService imageService;
   private final ReplyService replyService;
+  private final LikeService likeService;
 
   /**
    * 게시글 작성
@@ -216,8 +217,10 @@ public class PostService {
     Long incrementWatchedCount = incrementWatchedCount(postId);
     Long totalReplyCount = replyService.getTotalReplyCount(postId);
 
+    Long likeCount = likeService.getLikeCountByRedis(postId); // 캐싱된 조회수 가져오기
+
     return PostInfo.from(post, replyList, childReplies, totalReplyCount, isLike,
-        incrementWatchedCount, images, hashtagList);
+        incrementWatchedCount, images, hashtagList, likeCount);
   }
 
 
