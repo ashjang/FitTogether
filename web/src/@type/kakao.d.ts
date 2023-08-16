@@ -26,7 +26,7 @@ declare const kakao: {
     };
 };
 
-interface Window {
+export interface Window {
     kakao: typeof kakao;
 }
 
