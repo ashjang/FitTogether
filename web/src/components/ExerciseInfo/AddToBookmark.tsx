@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import styled from '@emotion/styled';
 import { useRecoilState } from 'recoil';
 import { playlistState } from '../../recoil/BookMark/atoms';
@@ -27,9 +27,46 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
     const [showInput, setShowInput] = useState<boolean>(false);
     const [userData, setUserData] = useState<UserDataResponse | null>(null);
     // const [userData, setUserData] = useState({});
+    const [parsingdLists, setParsingLists] = useState<string[]>([]);
     const modalRef = useRef<HTMLDivElement | null>(null);
 
     const token = sessionStorage.getItem('token');
+
+    // 서버에 저장된 유저의 재생목록 정보 가져오기
+    useEffect(() => {
+        if (token) {
+            getUserData(token);
+        }
+    }, []);
+    const getUserData = async (token) => {
+        try {
+            const response = await axios.get('/api/playlist', {
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
+            });
+            setUserData(response.data); // 응답값을 userData 상태에 저장
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            alert('재생목록을 불러오는데 실패했습니다.');
+        }
+    };
+
+    const savedLists = userData;
+    const parsedLists: string[] = useMemo(
+        () => (savedLists ? savedLists.map((item) => item.playlistName) : []),
+        [savedLists]
+    );
+
+    useEffect(() => {
+        if (savedLists) {
+            const newList = savedLists.map((item) => item.playlistName);
+            setParsingLists(newList);
+        }
+    }, [savedLists]);
+
+    console.log(parsedLists);
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -63,26 +100,6 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
     //         console.error('Error fetching user data:', error);
     //     }
     // };
-
-    useEffect(() => {
-        if (token) {
-            getUserData(token);
-        }
-    }, []);
-    const getUserData = async (token) => {
-        try {
-            const response = await axios.get('/api/users/my', {
-                headers: {
-                    'X-AUTH-TOKEN': token,
-                },
-            });
-            setUserData(response.data); // 응답값을 userData 상태에 저장
-            console.log(response.data);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            alert('회원정보를 받아오는데 실패했습니다.');
-        }
-    };
 
     const createPlaylistAndAddVideo = async (): Promise<void> => {
         if (!playlist) {
@@ -184,10 +201,15 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
                         <MakeBtn onClick={() => void handleCreateNewPlaylist()}>생성</MakeBtn>
                     </>
                 ) : (
-                    <PlusBtn onClick={handleShowInput}>새 플래이리스트 만들기</PlusBtn>
+                    <PlusBtn onClick={handleShowInput}>새 플레이리스트 만들기</PlusBtn>
                 )}
                 <PlaylistContainer>
-                    {playlists.map((name, index) => (
+                    {/* {playlists.map((name, index) => (
+                        <PlaylistItemWrapper key={index}>
+                            <PlaylistItem onClick={() => void handleAddVideoToPlaylist(name)}>
+                                {name}
+                            </PlaylistItem> */}
+                    {parsedLists.map((name, index) => (
                         <PlaylistItemWrapper key={index}>
                             <PlaylistItem onClick={() => void handleAddVideoToPlaylist(name)}>
                                 {name}
