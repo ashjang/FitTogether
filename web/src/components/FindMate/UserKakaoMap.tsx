@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import React, { useState, useEffect } from 'react';
 
-const UserKakaoMap = ({ map }: { map: window.kakao.maps.Map }) => {
+const UserKakaoMap = ({ map }: { map: any }) => {
     const [clickEventEnabled, setClickEventEnabled] = useState(false);
 
     const handleMapClick = async (mouseEvent: any) => {

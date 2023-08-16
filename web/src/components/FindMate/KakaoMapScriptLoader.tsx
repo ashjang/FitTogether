@@ -10,7 +10,7 @@ const KAKAO_MAP_SCRIPT_ID = 'kakao-map-script';
 const APP_KAKAO_MAP_API_KEY = import.meta.env.VITE_APP_KAKAO_MAP_API_KEY as string;
 
 const KakaoMapScriptLoader: React.FC = () => {
-    const [mapScriptLoaded, setmapScriptLoaded] = useState(false);
+    const [mapScriptLoaded, setmapScriptLoaded] = useState<boolean>(false);
 
     useEffect(() => {
         const mapScript = document.getElementById(KAKAO_MAP_SCRIPT_ID);
@@ -26,12 +26,10 @@ const KakaoMapScriptLoader: React.FC = () => {
 
         script.onload = () => {
             window.kakao.maps.load(() => {
-                // TODO: 성공
                 setmapScriptLoaded(true);
             });
         };
         script.onerror = () => {
-            // TODO: 실패
             setmapScriptLoaded(false);
         };
         document.getElementById('root')?.appendChild(script);
@@ -40,9 +38,7 @@ const KakaoMapScriptLoader: React.FC = () => {
     return (
         <MapInn>
             <PageTitle>운동 메이트 찾기</PageTitle>
-            <MapLoad>
-                {mapScriptLoaded ? <Map category="러닝" /> : <div>지도를 가져오는 중입니다.</div>}
-            </MapLoad>
+            <MapLoad>{mapScriptLoaded ? <Map /> : <div>Loading...</div>}</MapLoad>
         </MapInn>
     );
 };
@@ -53,7 +49,6 @@ const MapInn = styled.div`
     margin: 120px auto 0;
     padding: 20px 60px;
     box-sizing: border-box;
-    background-color: #f8f8f8;
 `;
 const PageTitle = styled.h2`
     position: relative;
