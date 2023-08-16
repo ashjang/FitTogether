@@ -1,11 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
+// import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+import writing from '../assets/writing 1.png';
+import posts from '../assets/post01 1.png';
+import fineMate from '../assets/fineMate01.png';
+import dmChat from '../assets/dm_chat.png';
 type BtnTabProps = {
     isActive: boolean;
 };
@@ -17,7 +21,7 @@ const MainPage: React.FC = () => {
     const slideDuration = 3000;
 
     //tab
-    const [activeTab, setActiveTab] = useState('탭버튼01');
+    const [activeTab, setActiveTab] = useState('커뮤니티');
 
     //slide
     useEffect(() => {
@@ -54,42 +58,48 @@ const MainPage: React.FC = () => {
                     <SlideArea>
                         <Slide className={`slide ${activeSlide === 0 ? 'active' : ''}`}>
                             <SlideContent>
-                                <h2 className="title">슬라이드 01 타이틀 넣기</h2>
+                                <h2 className="title">러닝, 등산, 헬스 다양한 유튜브 영상 제공!</h2>
                                 <p className="txt">
-                                    첫 번째 슬라이드
-                                    <br />첫 번째 슬라이드
+                                    다양한 유튜브 영상을
+                                    <br />
+                                    플레이 리스트에 담을 수 있어요 😎
                                 </p>
-                                <Link
+                                {/* <Link
                                     to={`/slide${((activeSlide + 1) % totalSlides) + 1}`}
                                     className="btn btn-more"
-                                >
+                                > */}{' '}
+                                <Link to="/" className="btn btn-more">
                                     <span>More</span>
                                 </Link>
                             </SlideContent>
                         </Slide>
                         <Slide className={`slide ${activeSlide === 1 ? 'active' : ''}`}>
                             <SlideContent>
-                                <h2 className="title">슬라이드 02 타이틀 넣기</h2>
+                                <h2 className="title">운동메이트 매칭!</h2>
                                 <p className="txt">
-                                    두 번째 슬라이드
-                                    <br />두 번째 슬라이드
+                                    내 주변에서 함께할
+                                    <br />
+                                    운동메이트를 찾아보세요 🤼‍♂️
                                 </p>
-                                <Link
+                                {/* <Link
                                     to={`/slide${((activeSlide + 2) % totalSlides) + 1}`}
                                     className="btn btn-more"
-                                >
+                                > */}
+                                <Link to="/" className="btn btn-more">
                                     <span>More</span>
                                 </Link>
                             </SlideContent>
                         </Slide>
                         <Slide className={`slide ${activeSlide === 2 ? 'active' : ''}`}>
                             <SlideContent>
-                                <h2 className="title">슬라이드 03 타이틀 넣기</h2>
+                                <h2 className="title">채팅을 통해 대화해요!</h2>
                                 <p className="txt">
-                                    세 번째 슬라이드
-                                    <br />세 번째 슬라이드
+                                    매칭된 운동메이트와
+                                    <br />
+                                    채팅을 통해 운동계획을 세워보세요 👩‍💻
                                 </p>
-                                <Link to={`/slide${activeSlide + 1}`} className="btn btn-more">
+                                {/* <Link to={`/slide${activeSlide + 1}`} className="btn btn-more"> */}
+                                <Link to="/" className="btn btn-more">
                                     <span>More</span>
                                 </Link>
                             </SlideContent>
@@ -117,19 +127,19 @@ const MainPage: React.FC = () => {
                 </Carousel>
 
                 <MainTabSection>
-                    <h2 className="main-title">섹션 타이틀명 넣기</h2>
+                    <h2 className="main-title">다양한 콘텐츠를 즐기세요!</h2>
                     <dl className="tab-category">
                         <Category01>
                             <BtnTab
                                 type="button"
                                 className="btn btn-menu"
-                                isActive={activeTab === '탭버튼01'}
-                                onClick={() => handleTabClick('탭버튼01')}
+                                isActive={activeTab === '커뮤니티'}
+                                onClick={() => handleTabClick('커뮤니티')}
                             >
-                                탭버튼01
+                                커뮤니티
                             </BtnTab>
                         </Category01>
-                        {activeTab === '탭버튼01' && (
+                        {activeTab === '커뮤니티' && (
                             <TabSectionList>
                                 <div className="link-move">
                                     <Link to="/" className="btn btn-more">
@@ -137,8 +147,33 @@ const MainPage: React.FC = () => {
                                         <i className="fa-solid fa-arrow-right-long"></i>
                                     </Link>
                                 </div>
-                                <ul className="section-content">
+                                <ul className="section-content one">
                                     <li>
+                                        <div className="thumb">
+                                            <img src={writing} alt="logo" css={writing} />
+                                        </div>
+                                        <div className="content">
+                                            <h3 className="title">글쓰기</h3>
+                                            <p className="txt">
+                                                러닝, 등산, 헬스 다양한 종목으로 <br />
+                                                운동후기를 남겨보세요!
+                                            </p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div className="thumb">
+                                            <img src={posts} alt="logo" css={posts} />
+                                        </div>
+                                        <div className="content">
+                                            <h3 className="title">정보공유</h3>
+                                            <p className="txt">
+                                                회원들과 다양한
+                                                <br />
+                                                운동 정보를 공유할 수 있어요
+                                            </p>
+                                        </div>
+                                    </li>
+                                    {/* <li>
                                         <div className="thumb">
                                             <img src="" alt="이미지" />
                                         </div>
@@ -146,25 +181,7 @@ const MainPage: React.FC = () => {
                                             <h3 className="title">타이틀 넣기</h3>
                                             <p className="txt">텍스트 넣기</p>
                                         </div>
-                                    </li>
-                                    <li>
-                                        <div className="thumb">
-                                            <img src="" alt="이미지" />
-                                        </div>
-                                        <div className="content">
-                                            <h3 className="title">타이틀 넣기</h3>
-                                            <p className="txt">텍스트 넣기</p>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div className="thumb">
-                                            <img src="" alt="이미지" />
-                                        </div>
-                                        <div className="content">
-                                            <h3 className="title">타이틀 넣기</h3>
-                                            <p className="txt">텍스트 넣기</p>
-                                        </div>
-                                    </li>
+                                    </li> */}
                                 </ul>
                             </TabSectionList>
                         )}
@@ -173,13 +190,13 @@ const MainPage: React.FC = () => {
                             <BtnTab
                                 type="button"
                                 className="btn btn-menu"
-                                isActive={activeTab === '탭버튼02'}
-                                onClick={() => handleTabClick('탭버튼02')}
+                                isActive={activeTab === '운동 메이트'}
+                                onClick={() => handleTabClick('운동 메이트')}
                             >
-                                탭버튼02
+                                운동 메이트
                             </BtnTab>
                         </Category02>
-                        {activeTab === '탭버튼02' && (
+                        {activeTab === '운동 메이트' && (
                             <TabSectionList>
                                 <div className="link-move">
                                     <Link to="/" className="btn btn-more">
@@ -187,8 +204,33 @@ const MainPage: React.FC = () => {
                                         <i className="fa-solid fa-arrow-right-long"></i>
                                     </Link>
                                 </div>
-                                <ul className="section-content">
+                                <ul className="section-content two">
                                     <li>
+                                        <div className="thumb">
+                                            <img src={fineMate} alt="logo" css={fineMate} />
+                                        </div>
+                                        <div className="content">
+                                            <h3 className="title">운동메이트 찾기</h3>
+                                            <p className="txt">
+                                                지도에서 내 주변 <br />
+                                                운동메이트를 찾아보세요
+                                            </p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div className="thumb">
+                                            <img src={dmChat} alt="logo" css={dmChat} />
+                                        </div>
+                                        <div className="content">
+                                            <h3 className="title">채팅</h3>
+                                            <p className="txt">
+                                                매칭된 운동메이트와 채팅으로
+                                                <br />
+                                                운동플랜을 만들어보세요!
+                                            </p>
+                                        </div>
+                                    </li>
+                                    {/* <li>
                                         <div className="thumb">
                                             <img src="" alt="이미지" />
                                         </div>
@@ -196,32 +238,14 @@ const MainPage: React.FC = () => {
                                             <h3 className="title">타이틀 넣기</h3>
                                             <p className="txt">텍스트 넣기</p>
                                         </div>
-                                    </li>
-                                    <li>
-                                        <div className="thumb">
-                                            <img src="" alt="이미지" />
-                                        </div>
-                                        <div className="content">
-                                            <h3 className="title">타이틀 넣기</h3>
-                                            <p className="txt">텍스트 넣기</p>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div className="thumb">
-                                            <img src="" alt="이미지" />
-                                        </div>
-                                        <div className="content">
-                                            <h3 className="title">타이틀 넣기</h3>
-                                            <p className="txt">텍스트 넣기</p>
-                                        </div>
-                                    </li>
+                                    </li> */}
                                 </ul>
                             </TabSectionList>
                         )}
                     </dl>
                 </MainTabSection>
 
-                <section className="sectionTwo" css={sectionTwo}>
+                {/* <section className="sectionTwo" css={sectionTwo}>
                     <h2 className="main-title">섹션 타이틀 넣기</h2>
                     <div className="content">
                         <div className="inn">
@@ -236,7 +260,7 @@ const MainPage: React.FC = () => {
                             </Link>
                         </div>
                     </div>
-                </section>
+                </section> */}
             </Container>
         </>
     );
@@ -266,6 +290,25 @@ const Slide = styled.div`
     opacity: 0;
     z-index: 1;
     transition: opacity 0.5s ease-in-out;
+
+    // &.slide.active:nth-of-type(1) {
+    //     background-size: cover;
+    //     background-position: center;
+    //     background-repeat: no-repeat;
+    //     background-image: url(../assets/running01.jpeg);
+    // }
+    // &.slide.active:nth-of-type(2) {
+    //     background-size: cover;
+    //     background-position: center;
+    //     background-repeat: no-repeat;
+    //     background-image: url(../assets/running01.jpeg);
+    // }
+    // &.slide.active:nth-of-type(3) {
+    //     background-size: cover;
+    //     background-position: center;
+    //     background-repeat: no-repeat;
+    //     background-image: url(../assets/running01.jpeg);
+    // }
 
     &.active {
         opacity: 1;
@@ -414,8 +457,17 @@ const TabSectionList = styled.dd`
         justify-content: center;
         margin-top: 120px;
     }
+    ul.section-content.one .thumb {
+        margin: 0 auto;
+        text-align: center;
+        overflow: hidden;
+    }
+    ul.section-content.one .thumb img {
+        width: 70%;
+        height: 150%;
+    }
     li {
-        width: 260px;
+        width: 300px;
         height: 300px;
         margin: 0 50px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
@@ -424,7 +476,7 @@ const TabSectionList = styled.dd`
         background-color: #fff;
     }
     .thumb {
-        width: 280px;
+        width: 300px;
         height: 180px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     }
@@ -440,16 +492,16 @@ const TabSectionList = styled.dd`
     }
 `;
 
-const sectionTwo = css`
-    position: relative;
-    max-width: 1440px;
-    margin: 60px auto 0;
-    padding: 24px;
+// const sectionTwo = css`
+//     position: relative;
+//     max-width: 1440px;
+//     margin: 60px auto 0;
+//     padding: 24px;
 
-    .main-title {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-`;
+//     .main-title {
+//         text-align: center;
+//         margin-bottom: 20px;
+//     }
+//     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+// `;
 export default MainPage;
