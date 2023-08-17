@@ -32,7 +32,7 @@ import LogoImg from './../../assets/logo.png';
 function Header() {
     // function Header({ onToggleDarkMode }: HeaderProps) {
     // const loggedIn = useRecoilValue(loggedInState); // 로그인 상태 가져오는 부분
-    const loggedIn = useRecoilValue(loggedInState); // loggedInState 상태 가져오기
+    // const loggedIn = useRecoilValue(loggedInState); // loggedInState 상태 가져오기
     const setLoggedIn = useSetRecoilState(loggedInState); // 상태를 업데이트하는 setLoggedIn 함수 가져오기
 
     // const [isDarkMode, setDarkMode] = useState(false);
@@ -108,50 +108,51 @@ function Header() {
                                     <FontAwesomeIcon icon={isDarkMode ? faSun : faMoon} />
                                 </ThemeBtn>
                             </ThemeLi> */}
-                            {loggedIn ? (
-                                // 로그인 상태일때
-                                <>
-                                    <li>
-                                        <MateBtn onClick={handleShowMateListClick}>
-                                            <span className="blind">운동 메이트 리스트</span>
-                                            <FontAwesomeIcon icon={faUserGroup} />
-                                        </MateBtn>
-                                        {isMateListOpen && (
-                                            <MateList isOpen={true} onClose={handleCloseMateList} />
-                                        )}
-                                    </li>
-                                    <li>
-                                        <span className="blind">알림창</span>
-                                        <BellBtn onClick={handleOpenPopup}>
-                                            <FontAwesomeIcon icon={faBell} />
-                                        </BellBtn>
-                                    </li>
-                                    <li>
-                                        <span className="blind">DM</span>
-                                        <DmBtn to="/messenger">
-                                            <FontAwesomeIcon icon={faComment} />
-                                        </DmBtn>
-                                    </li>
-                                    <li>
-                                        <span className="blind">즐겨찾기</span>
-                                        <LikeBtn to="/bookmark">
-                                            <FontAwesomeIcon icon={faBookmark} />
-                                        </LikeBtn>
-                                    </li>
-                                    <li>
-                                        <SignOutLink onClick={handleSignOut}>로그아웃</SignOutLink>
-                                    </li>
-                                </>
-                            ) : (
-                                //로그인 전 상태
-                                <div css={signinSection}>
-                                    <SignInLink to="/signin">로그인</SignInLink>
-                                    <span>|</span>
-                                    <SignUpLink to="/signup">회원가입</SignUpLink>
-                                </div>
-                            )}
+                            {/* {loggedIn ? ( */}
+                            // 로그인 상태일때
+                            <>
+                                <li>
+                                    <MateBtn onClick={handleShowMateListClick}>
+                                        <span className="blind">운동 메이트 리스트</span>
+                                        <FontAwesomeIcon icon={faUserGroup} />
+                                    </MateBtn>
+                                    {isMateListOpen && (
+                                        <MateList isOpen={true} onClose={handleCloseMateList} />
+                                    )}
+                                </li>
+                                <li>
+                                    <span className="blind">알림창</span>
+                                    <BellBtn onClick={handleOpenPopup}>
+                                        <FontAwesomeIcon icon={faBell} />
+                                    </BellBtn>
+                                </li>
+                                <li>
+                                    <span className="blind">DM</span>
+                                    <DmBtn to="/messenger">
+                                        <FontAwesomeIcon icon={faComment} />
+                                    </DmBtn>
+                                </li>
+                                <li>
+                                    <span className="blind">즐겨찾기</span>
+                                    <LikeBtn to="/bookmark">
+                                        <FontAwesomeIcon icon={faBookmark} />
+                                    </LikeBtn>
+                                </li>
+                                <li>
+                                    <SignOutLink onClick={handleSignOut}>로그아웃</SignOutLink>
+                                </li>
+                            </>
+                            {/* ) : ( */}
+                            //로그인 전 상태
+                            <div css={signinSection}>
+                                <SignInLink to="/signin">로그인</SignInLink>
+                                <span>|</span>
+                                <SignUpLink to="/signup">회원가입</SignUpLink>
+                            </div>
+                            {/* )} */}
                         </IconList>
-                        {loggedIn && isPopupOpen && (
+                        {/* {loggedIn && isPopupOpen && ( */}
+                        {isPopupOpen && (
                             <BellPop className="popup" ref={bellPopupRef}>
                                 <AlertList />
                                 {/* <BellPopBtn onClick={handleClosePopup}>

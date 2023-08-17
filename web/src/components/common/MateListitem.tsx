@@ -11,6 +11,8 @@ interface Props {
 
 const MateListItem: React.FC<Props> = ({ senderProfileImage, senderNickname }) => {
     const handleDMiconClick = () => {};
+    console.log('senderProfileImage:', senderProfileImage);
+    console.log('senderNickname:', senderNickname);
 
     return (
         <MateListItemComponent>

@@ -31,7 +31,7 @@ const ChatApp: React.FC = () => {
     const [inputMessage, setInputMessage] = useState('');
     const [username, setUsername] = useState('');
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    // const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         setUsername('윤몽진');
@@ -68,7 +68,7 @@ const ChatApp: React.FC = () => {
                     setUsername(defaultUserProfile.username);
                 }
 
-                setIsLoading(false);
+                // setIsLoading(false);
             } catch (error) {
                 console.error('Error connecting WebSocket or fetching chat rooms:', error);
             }
