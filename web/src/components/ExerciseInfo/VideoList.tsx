@@ -202,7 +202,7 @@ const VideoListInn = styled.div`
     margin: 120px auto 0;
     padding: 20px 60px;
     box-sizing: border-box;
-    background-color: #f8f8f8;
+    // background-color: #f8f8f8;
 `;
 const VideoSection = styled.section`
     position: relative;
@@ -231,18 +231,20 @@ const PageTitle = styled.h2`
     }
 `;
 const BtnTab = styled.div`
-    margin-top: 30px;
+    margin-top: 10px;
     position: relative;
     top: 60px;
+    z-index: 10;
 
     button {
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        border: 1px solid #000;
-        border-radius: 20px;
-        padding: 4px 20px;
+        border-style: none;
+        border-radius: 15px;
+        padding: 3px 10px;
         background-color: #fff;
+        box-shadow: 2.5px 5px 10px rgba(0, 0, 0, 0.5);
 
         &.active {
             background-color: #000;
@@ -250,11 +252,11 @@ const BtnTab = styled.div`
         }
     }
     .category01 {
-        left: 40%;
+        left: 43.75%;
         transform: translateX(-40%);
     }
     .category03 {
-        left: 60%;
+        left: 56.3%;
         transform: translateX(-60%);
     }
 `;
