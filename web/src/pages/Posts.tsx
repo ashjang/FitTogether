@@ -36,13 +36,26 @@ const Page = styled.div`
     justify-content: center;
     align-items: center;
     position: relative;
+    margin: 120px auto 0;
+    padding: 20px;
     width: 750px;
-    margin: 150px auto;
-    min-height: calc(100vh - 300px);
+    min-height: calc(100vh - 200px);
 `;
 
-const Title = styled.h1`
+const Title = styled.h2`
+    position: relative;
     width: 750px;
+    margin-bottom: 50px;
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -10px;
+        width: 100%;
+        height: 1px;
+        color: #000;
+        background-color: #000;
+    }
 `;
 
 const NewPost = styled.button`

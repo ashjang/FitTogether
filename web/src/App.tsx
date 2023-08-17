@@ -47,9 +47,9 @@ function App() {
                             <Route path="/mypage" element={<MyPage />} />
                             <Route path="/bookmark" element={<Bookmark />} />
                             <Route path="/playlists" element={<MyVideos />} />
+                            <Route path="/findmate" element={<FindMate />} />
                         </Route>
                         <Route path="/exerciseInfo" element={<ExerciseInfo />} />
-                        <Route path="/findmate" element={<FindMate />} />
                         <Route path="/posts" element={<Posts />} />
                         <Route path="/posts/:postId" element={<Post />} />
                         <Route path="/posts/:postId/editpost" element={<EditPost />} />

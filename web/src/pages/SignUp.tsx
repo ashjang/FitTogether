@@ -11,8 +11,8 @@ const SignUp: React.FC = () => {
 };
 
 const Container = styled.div`
-    margin-top: 200px;
-    min-height: 100vh;
+    margin-top: 250px;
+    min-height: calc(100vh - 200px);
 `;
 
 export default SignUp;
