@@ -215,8 +215,8 @@ const headerInn = css`
     padding: 10px 60px;
 `;
 const scrolledHeader = css`
-    background-color: #fff;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    background-color: #ece8e3;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.9);
 `;
 
 // topBar
