@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +24,17 @@ public class VideoController {
 
   private final VideoService videoService;
 
+  @GetMapping("/{name}")
+  public ResponseEntity<List<PlaylistVideoDto>> readVideoInPlaylist(
+      @RequestHeader(name = "X-AUTH-TOKEN") String token,
+      @PathVariable(name = "name") String targetName
+  ) {
+
+    // PlaylistVideoDto(playlist 이름과 video 이름) 반환
+    return ResponseEntity.ok(videoService.getVideoInPlaylist(token, targetName).stream()
+        .map(PlaylistVideoDto::from).collect(Collectors.toList()));
+  }
+
   @PostMapping("/{name}")
   public ResponseEntity<?> addVideoToPlaylist(
       @RequestHeader(name = "X-AUTH-TOKEN") String token,
@@ -33,15 +45,15 @@ public class VideoController {
         PlaylistVideoDto.from(videoService.addVideoToPlaylist(token, targetName, form)));
   }
 
-  @GetMapping("/{name}")
-  public ResponseEntity<List<PlaylistVideoDto>> readVideoInPlaylist(
+  @DeleteMapping("/{name}/video/{videoId}")
+  public ResponseEntity deleteVideoInPlaylist(
       @RequestHeader(name = "X-AUTH-TOKEN") String token,
-      @PathVariable(name = "name") String targetName
+      @PathVariable(name = "name") String targetName,
+      @PathVariable(name = "videoId") Long videoId
   ) {
 
-    // PlaylistVideoDto(playlist 이름과 video 이름) 반환
-    return ResponseEntity.ok(videoService.getVideoInPlaylist(token, targetName).stream()
-        .map(PlaylistVideoDto::from).collect(Collectors.toList()));
+    videoService.deleteVideoInPlaylist(token, targetName, videoId);
+    return ResponseEntity.ok().body("재생목록에서 삭제되었습니다.");
   }
 
 }

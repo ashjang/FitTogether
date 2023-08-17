@@ -15,9 +15,9 @@ public interface PlaylistVideoRepository extends JpaRepository<PlaylistVideo, Lo
 
   Optional<PlaylistVideo> findAllByPlaylist_PlaylistId(Long PlaylistId);
 
-  void deleteByPlaylist_PlaylistIdAndVideo_VideoId(Long playlistId, Long videoId);
-
   void deleteAllByPlaylist_PlaylistId(Long playlistId);
+
+  void deleteByPlaylist_PlaylistIdAndVideo_VideoId(Long playlistId, Long videoId);
 
   // playlistId로 playlist 와 video 받아옴
   @Query("select pv from PlaylistVideo pv "

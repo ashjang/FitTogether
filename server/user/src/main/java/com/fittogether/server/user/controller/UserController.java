@@ -54,7 +54,7 @@ public class UserController {
         );
     }
 
-    @GetMapping("/signin/kakao")
+    @PostMapping("/signin/kakao")
     public ResponseEntity<String> kakaoSignIn(@RequestParam("code") String code) {
         String accessToken = kakao.getAccessToken(code);
         UserDto userDto = kakao.getUserInfo(accessToken);
