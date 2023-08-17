@@ -1,43 +1,49 @@
 /** @jsxImportSource @emotion/react */
 
-import React, { useState } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
-import { FaPlus, FaMinus } from 'react-icons/fa';
+import { FaPlus } from 'react-icons/fa';
 
 import BookmarkFolder from '../components/Bookmark/BookmarkFolder';
-import BookmarkSetting from '../components/Bookmark/BookmarkSetting';
+// import BookmarkSetting from '../components/Bookmark/BookmarkSetting';
 
 const Bookmark: React.FC = () => {
-    const [addedFolders, setAddedFolders] = useState<string[]>([]);
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    // const [addedFolders, setAddedFolders] = useState<string[]>([]);
+    // const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-    const togglePopup = () => {
-        setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
-    };
+    // const togglePopup = () => {
+    //     setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
+    // };
 
-    const handleAddFolder = (folderName: string) => {
-        setAddedFolders((prevFolders) => [...prevFolders, folderName]);
-    };
+    // const handleAddFolder = (folderName: string) => {
+    //     setAddedFolders((prevFolders) => [...prevFolders, folderName]);
+    // };
 
     return (
         <BookmarkPage>
             <div css={Container}>
                 <TitleArea>
                     <p css={centeredTextStyle}>즐겨찾기</p>
-                    {isPopupOpen ? (
+                    <Link to="/exerciseInfo">
+                        <FaPlus />
+                    </Link>
+                    {/* {isPopupOpen ? (
                         <>
                             <BookmarkSetting addFolder={handleAddFolder} />
                             <FaMinus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
                         </>
                     ) : (
                         <FaPlus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
-                    )}
+                    )} */}
                 </TitleArea>
             </div>
             <div css={Container}>
-                <BookmarkFolder folders={addedFolders} />
+                <BookmarkFolder
+                //  folders={addedFolders}
+                />
             </div>
         </BookmarkPage>
     );
@@ -70,13 +76,13 @@ const centeredTextStyle = css`
     font-size: 3rem;
 `;
 
-const rightAlignedStyle = css`
-    flex: 1;
-    text-align: right;
-`;
+// const rightAlignedStyle = css`
+//     flex: 1;
+//     text-align: right;
+// `;
 
-const icon = css`
-    cursor: pointer;
-`;
+// const icon = css`
+//     cursor: pointer;
+// `;
 
 export default Bookmark;

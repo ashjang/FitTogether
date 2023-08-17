@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { json, useNavigate } from 'react-router-dom';
 
 // import { useRecoilState } from 'recoil';
 // import { playlistState } from '../../recoil/BookMark/atoms';
@@ -7,8 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { FaEllipsisV } from 'react-icons/fa';
 import axios from 'axios';
-import BookmarkThumb from './BookmarkThumb';
-import VideoList from '../ExerciseInfo/VideoList';
+// import BookmarkThumb from './BookmarkThumb';
+// import VideoList from '../ExerciseInfo/VideoList';
 
 const BookmarkFolder: React.FC = () => {
     // const [playlists, setPlaylists] = useRecoilState(playlistState);
@@ -65,11 +65,27 @@ const BookmarkFolder: React.FC = () => {
         );
     };
 
+    const deletePlaylist = async (playlistName, token) => {
+        try {
+            await axios.delete(`/api/playlist/${playlistName}`, {
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
+            });
+        } catch (error) {
+            console.error('Error deleting playlist:', error);
+            alert('재생목록을 삭제하는데 실패했습니다.');
+        }
+    };
+
     // 재생목록 삭제
     const handleDeleteClick = (index: number, listName: string) => (e: React.MouseEvent) => {
         e.stopPropagation();
+
+        deletePlaylist(listName, token);
+
         const updatedLists = parsedLists.filter((list) => list !== listName);
-        localStorage.setItem('bookmarkLists', JSON.stringify(updatedLists));
+        // localStorage.setItem('bookmarkLists', JSON.stringify(updatedLists));
         // window.location.reload();
         setContextMenuVisibility((prevState) => prevState.map((_, i) => i !== index));
 
@@ -111,16 +127,40 @@ const BookmarkFolder: React.FC = () => {
         if (editedName !== null) {
             const updatedLists = [...parsedLists];
             updatedLists[index] = editedName;
-            localStorage.setItem('bookmarkLists', JSON.stringify(updatedLists));
+            // localStorage.setItem('bookmarkLists', JSON.stringify(updatedLists));
 
-            // 수정 완료 후 초기화
-            const newListNames = [...editedListNames];
-            newListNames[index] = null;
-            setEditedListNames(newListNames);
+            const listToUpdate = parsedLists[index];
+            axios
+                .put(
+                    `/api/playlist/${listToUpdate}`,
+                    { playlistName: editedName },
+                    {
+                        headers: {
+                            'X-AUTH-TOKEN': token,
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                )
+                .then(() => {
+                    // PUT 요청 성공 시 처리
+                    const newParsedLists = [...parsedLists];
+                    newParsedLists[index] = editedName;
+                    setEditedListNames(newParsedLists);
 
-            // 더보기 아이콘 닫기
-            setContextMenuVisibility((prevState) => prevState.map((_, i) => i !== index));
-            setEditIndex(null);
+                    // 수정 완료 후 초기화
+                    const newListNames = [...editedListNames];
+                    newListNames[index] = null;
+                    setEditedListNames(newListNames);
+
+                    // 더보기 아이콘 닫기
+                    setContextMenuVisibility((prevState) => prevState.map((_, i) => i !== index));
+                    setEditIndex(null);
+                    window.location.reload();
+                })
+                .catch((error) => {
+                    console.error('Error updating playlist:', error);
+                    alert('재생목록을 수정하는데 실패했습니다.');
+                });
         }
     };
 
@@ -175,7 +215,7 @@ const BookmarkFolder: React.FC = () => {
                     ))}
                 </FolderListArea>
             ) : (
-                <ErrorMessage>재생목록이 없습니다.</ErrorMessage>
+                <ErrorMessage>생성된 재생목록이 없습니다.</ErrorMessage>
             )}
         </BookmarkFolderContainer>
     );
@@ -277,9 +317,14 @@ const MoreIcon = styled(FaEllipsisV)`
 `;
 
 const ErrorMessage = styled.p`
-    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -150px;
+    font-size: 2rem;
     font-weight: bold;
-    color: #181f38;
+    color: #102c57;
+    min-height: 100vh;
 `;
 
 export default BookmarkFolder;
