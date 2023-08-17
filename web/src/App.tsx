@@ -46,7 +46,7 @@ function App() {
                             // 비로그인 상태에서는 접근 불가능한 컴포넌트들 모음
                             <Route path="/mypage" element={<MyPage />} />
                             <Route path="/bookmark" element={<Bookmark />} />
-                            <Route path="/mypage/myvideos" element={<MyVideos />} />
+                            <Route path="/playlists" element={<MyVideos />} />
                         </Route>
                         <Route path="/exerciseInfo" element={<ExerciseInfo />} />
                         <Route path="/findmate" element={<FindMate />} />

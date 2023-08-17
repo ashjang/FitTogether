@@ -98,7 +98,7 @@ const VideoList: React.FC = () => {
 
     return (
         <VideoListInn>
-            <PageTitle>운동 메이트 찾기</PageTitle>
+            <PageTitle>운동 정보</PageTitle>
             <BtnTab>
                 <button
                     className={`category01 ${category === '러닝' ? 'active' : ''}`}
@@ -231,6 +231,7 @@ const PageTitle = styled.h2`
     }
 `;
 const BtnTab = styled.div`
+    margin-top: 30px;
     position: relative;
     top: 60px;
 

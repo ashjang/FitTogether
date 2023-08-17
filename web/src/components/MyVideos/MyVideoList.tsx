@@ -7,12 +7,14 @@ import axios from 'axios';
 const MyVideoList: React.FC = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [isStarClicked, setIsStarClicked] = useState(false);
+    const [userData, setUserData] = useState([]);
+    const [videoTitles, setVideoTitles] = useState<string[]>([]);
+
     const token = sessionStorage.getItem('token');
+
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const playlistName = urlParams.get('name');
-    const [userData, setUserData] = useState([]);
-    const [videoTitles, setVideoTitles] = useState<string[]>([]);
 
     useEffect(() => {
         if (token) {
@@ -36,12 +38,13 @@ const MyVideoList: React.FC = () => {
     };
 
     const handleStarClick = () => {
-        setIsStarClicked(true);
-        setShowPopup(true);
-        setTimeout(() => {
-            setShowPopup(false);
-            setIsStarClicked(false);
-        }, 1000); // 1초 후 알림 팝업이 사라짐
+        setIsStarClicked((prevIsStarClicked) => !prevIsStarClicked);
+        if (!isStarClicked) {
+            setShowPopup(true);
+            setTimeout(() => {
+                setShowPopup(false);
+            }, 1000); // 1초 후 알림 팝업이 사라짐
+        }
     };
 
     return (

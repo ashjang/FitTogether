@@ -27,7 +27,7 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
     const [showInput, setShowInput] = useState<boolean>(false);
     const [userData, setUserData] = useState<UserDataResponse | null>(null);
     // const [userData, setUserData] = useState({});
-    const [parsingdLists, setParsingLists] = useState<string[]>([]);
+    const [parsingLists, setParsingLists] = useState<string[]>([]);
     const modalRef = useRef<HTMLDivElement | null>(null);
 
     const token = sessionStorage.getItem('token');
@@ -131,15 +131,15 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
                     headers: {
                         'Content-Type': 'application/json',
                         'X-AUTH-TOKEN': token,
-                        // 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5aHlNWDVSVnlSSmVnNG4wVGpJSS9BPT0iLCJpYXQiOjE2OTIwMjM5ODIsImV4cCI6MTY5MjExMDM4Mn0.0ZCbDvNSxwfBNXZmbl-087kjyo0xi7lPz9ZrmSuWtUc',
                     },
                 }
             );
-            const { success, message } = response.data;
-            if (success) {
+            console.log(response.data);
+            const playListName = response.data;
+            if (playListName) {
                 alert('플레이리스트가 생성되었습니다.');
             } else {
-                alert('에러 발생: ' + (message || '알 수 없는 에러'));
+                alert('플레이리스트 생성에 실패했습니다.');
             }
         } catch (error) {
             console.error('There was an error!', error);
@@ -170,15 +170,15 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
                     headers: {
                         'Content-Type': 'application/json',
                         'X-AUTH-TOKEN': token,
-                        // 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5aHlNWDVSVnlSSmVnNG4wVGpJSS9BPT0iLCJpYXQiOjE2OTIwMjM5ODIsImV4cCI6MTY5MjExMDM4Mn0.0ZCbDvNSxwfBNXZmbl-087kjyo0xi7lPz9ZrmSuWtUc',
                     },
                 }
             );
-            const { success, message } = response.data;
-            if (success) {
+            // const { success, message } = response.data;
+            const title = response.data;
+            if (title) {
                 alert('영상이 저장되었습니다.');
             } else {
-                alert('에러 발생: ' + (message || '알 수 없는 에러'));
+                alert('영상 저장이 실패하였습니다.');
             }
         } catch (error) {
             console.error('There was an error!', error);
@@ -261,7 +261,7 @@ const BookmarkModal = styled.div`
 `;
 const MakeBtn = styled.button`
     padding: 4px 10px;
-    margin-left: 10px;
+    margin-left: 8px;
     border: 1px solid #000;
     border-radius: 10px;
     background: none;
