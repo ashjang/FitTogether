@@ -282,6 +282,9 @@ const SlideArea = styled.div`
     height: 500px;
     overflow: hidden;
 `;
+import slideImage01 from '../assets/videos01.jpg';
+import slideImage02 from '../assets/mounted01.jpeg';
+import slideImage03 from '../assets/running01.jpeg';
 const Slide = styled.div`
     position: absolute;
     width: 100%;
@@ -291,24 +294,15 @@ const Slide = styled.div`
     z-index: 1;
     transition: opacity 0.5s ease-in-out;
 
-    // &.slide.active:nth-of-type(1) {
-    //     background-size: cover;
-    //     background-position: center;
-    //     background-repeat: no-repeat;
-    //     background-image: url(../assets/running01.jpeg);
-    // }
-    // &.slide.active:nth-of-type(2) {
-    //     background-size: cover;
-    //     background-position: center;
-    //     background-repeat: no-repeat;
-    //     background-image: url(../assets/running01.jpeg);
-    // }
-    // &.slide.active:nth-of-type(3) {
-    //     background-size: cover;
-    //     background-position: center;
-    //     background-repeat: no-repeat;
-    //     background-image: url(../assets/running01.jpeg);
-    // }
+    &.slide.active:nth-of-type(1) {
+        background: url(${slideImage01}) no-repeat center 0 / cover;
+    }
+    &.slide.active:nth-of-type(2) {
+        background: url(${slideImage02}) no-repeat center 0 / cover;
+    }
+    &.slide.active:nth-of-type(3) {
+        background: url(${slideImage03}) no-repeat center 0 / cover;
+    }
 
     &.active {
         opacity: 1;
