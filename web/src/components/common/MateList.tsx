@@ -20,18 +20,22 @@ interface MateDateItem {
 interface MateData {
     [key: string]: MateDateItem;
 }
+interface MateDateItem {
+    senderProfileImage: string;
+    senderNickname: string;
+}
 interface UserProfile {
     username: string;
     profileImage: string | null;
 }
 
-interface ApiResponse {
-    data: User[];
-}
-interface User {
-    id: number;
-    nickname: string;
-}
+// interface ApiResponse {
+//     data: User[];
+// }
+// interface User {
+//     id: number;
+//     nickname: string;
+// }
 
 // interface UsersProfileData {
 //     usersInfo: UserProfile[];
@@ -63,98 +67,34 @@ const MateList: React.FC<Props> = ({ isOpen, onClose }) => {
     //         });
     // }, []);
 
-    // useEffect(() => {
-    //     if (token) {
-    //         getUserData(token)
-    //             .then(() => {
-    //                 // 데이터를 처리
-    //             })
-    //             .catch((error) => {
-    //                 console.error('데이터를 불러오는 중 오류 발생:', error);
-    //                 alert('회원정보를 받아오는데 실패했습니다.');
-    //             });
-    //     }
-    // }, []);
-
-    // const getUserData = async (token: string) => {
-    //     try {
-    //         const response = await axios.get<ApiResponse>('/api/users/my', {
-    //             headers: {
-    //                 'X-AUTH-TOKEN': token,
-    //             },
-    //         });
-    //         // setUserData(response.data);
-    //         console.log(response.data);
-    //     } catch (error) {
-    //         console.error('Error fetching data:', error);
-    //         alert('회원정보를 받아오는데 실패했습니다.');
-    //     }
-    // };
-
-    // const userId = sessionStorage.getItem('userId');
-
-    // useEffect(() => {
-    //     if (userId) {
-    //         axios
-    //             .get(`/api/users?id=${userId}`, {
-    //                 headers: {
-    //                     'X-AUTH-TOKEN': token,
-    //                 },
-    //             })
-    //             .then((response) => {
-    //                 const data: UserProfile[] = response.data.usersInfo;
-    //                 const mateData: MateData = {};
-    //                 data.forEach((user) => {
-    //                     mateData[user.username] = {
-    //                         senderProfileImage: user.profileImage || imageSrc,
-    //                         senderNickname: user.nickname,
-    //                     };
-    //                 });
-    //                 setMateData(mateData);
-    //             })
-    //             .catch((error) => {
-    //                 console.error('An error occurred:', error);
-    //             });
-    //     }
-    // }, [userId]);
-
-    const token: string = sessionStorage.getItem('token') || '';
-
+    const token: string | null = sessionStorage.getItem('token');
+    const userId: number | null = parseInt(sessionStorage.getItem('userId') || '');
     useEffect(() => {
         if (token) {
-            getUserData(token)
-                .then(() => {
-                    // 데이터를 처리
+            axios
+                // .get(`/api/matching/requests/lists`, {
+                .get(`/users?id=${userId}`, {
+                    headers: {
+                        'X-AUTH-TOKEN': token,
+                    },
+                })
+                .then((response) => {
+                    const userProfile: UserProfile = response.data;
+                    const mateData: MateData = {
+                        [userProfile.username]: {
+                            senderProfileImage: userProfile.profileImage || imageSrc,
+                            // senderNickname: userProfile.nickname,
+                            senderUserId: userProfile.userId,
+                        },
+                    };
+                    setMateData(mateData);
                 })
                 .catch((error) => {
-                    console.error('데이터를 불러오는 중 오류 발생:', error);
+                    console.error('An error occurred:', error);
                     alert('회원정보를 받아오는데 실패했습니다.');
                 });
         }
-    }, []);
-
-    const getUserData = async (token: string, userId: number) => {
-        try {
-            const response = await axios.get<ApiResponse>(`/api/users?id=${userId}`, {
-                headers: {
-                    'X-AUTH-TOKEN': token,
-                },
-            });
-            const data: UserProfile[] = response.data.data.usersInfo; // Corrected data extraction
-            const mateData: MateData = {};
-            data.forEach((user) => {
-                mateData[user.username] = {
-                    senderProfileImage: user.profileImage || imageSrc,
-                    senderNickname: user.nickname,
-                };
-            });
-            setMateData(mateData);
-            console.log(response.data);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            alert('회원정보를 받아오는데 실패했습니다.');
-        }
-    };
+    }, [token]);
 
     return (
         <Modal
