@@ -24,26 +24,33 @@ const Map: React.FC = () => {
     const token = sessionStorage.getItem('token');
     const [category, setCategory] = useState<string>('RUNNING');
     const kakaoMapRef = useRef<HTMLDivElement | null>(null);
-    const [latitude, setLatitude] = useState<number | null>(null); // 시연용으로 고정 위도 사용
-    const [longitude, setLongitude] = useState<number | null>(null); // 시연용으로 고정 경도 사용
+    const [latitude, setLatitude] = useState<number | null>(null);
+    const [longitude, setLongitude] = useState<number | null>(null);
     const [users, setUsers] = useState<User[] | null>(null);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [map, setMap] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentMarker, setCurrentMarker] = useState<any>(null);
 
-    const testlat = 37.566826;
-    const testlng = 126.9786567;
+    const dafaultLatitude = 37.566826;
+    const dafaultLongitude = 126.9786567;
 
     const handleCategoryClick = (newCategory: string) => {
         setCategory(newCategory);
         setSelectedUser(null);
     };
 
+    const handleMapClick = (mouseEvent: any) => {
+        const clickedLatLng = mouseEvent.latLng;
+        setLatitude(clickedLatLng.getLat());
+        setLongitude(clickedLatLng.getLng());
+    };
+
     // 내 위치 업데이트 함수
     const putCurrentLocation = async () => {
         try {
             const response = await axios.put(
-                `/api/location?lat=${testlat}&long=${testlng}`,
+                `/api/location?lat=${latitude}&long=${longitude}`,
                 {},
                 {
                     headers: { 'X-AUTH-TOKEN': token },
@@ -74,7 +81,10 @@ const Map: React.FC = () => {
     const createCurrentLocationMarker = () => {
         // 저장한 위도,경도 상태를 기반으로 현재 위치를 정의
         if (map) {
-            const currentLatLng = new window.kakao.maps.LatLng(testlat, testlng);
+            if (currentMarker) {
+                currentMarker.setMap(null);
+            }
+            const currentLatLng = new window.kakao.maps.LatLng(latitude, longitude);
             // 지도를 현재 위치로 이동하는 기능 포함
             map.panTo(currentLatLng);
 
@@ -89,20 +99,19 @@ const Map: React.FC = () => {
 
             // 마커 객체를 map에 찍는 메서드
             marker.setMap(map);
+            setCurrentMarker(marker);
         }
         putCurrentLocation();
     };
 
-    // 카테고리 변경 시 실행되는 함수
+    // 마운트 시 & 카테고리 변경 시 실행되는 함수
     useEffect(() => {
         // 현재 위치의 위도, 경도 상태에 저장
         if ('geolocation' in navigator) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    // setLatitude(position.coords.latitude); // 시연용으로 고정 위도 사용
-                    setLatitude(testlat);
-                    // setLongitude(position.coords.longitude); // 시연용으로 고정 경도 사용
-                    setLongitude(testlng);
+                    setLatitude(position.coords.latitude);
+                    setLongitude(position.coords.longitude);
                 },
                 (error) => {
                     console.error('Error getting geolocation:', error);
@@ -119,14 +128,15 @@ const Map: React.FC = () => {
 
         // 카카오맵 초기 위치 설정하여 map 상태에 저장
         const options = {
-            center: new window.kakao.maps.LatLng(37.566826, 126.9786567),
+            center: new window.kakao.maps.LatLng(dafaultLatitude, dafaultLongitude),
             level: 3,
         };
         const map = new window.kakao.maps.Map(kakaoMapRef.current, options);
         setMap(map);
+        window.kakao.maps.event.addListener(map, 'click', handleMapClick);
     }, [category]);
 
-    // users가 존재 && 업데이트 시 실행되는 함수
+    // users가 존재 && users 상태가 업데이트될 때 실행되는 함수
     useEffect(() => {
         users?.forEach((user) => {
             // 좋아하는 운동에 현재 카테고리의 운동이 있는 user만 추출, 내 정보는 무시
