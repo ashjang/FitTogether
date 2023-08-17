@@ -251,11 +251,11 @@ const CategoryBtnTab = styled.div`
         }
     }
     .category01 {
-        left: 45%;
+        left: 44%;
         // transform: translateX(-40%);
     }
     .category03 {
-        left: 55%;
+        left: 56%;
         // transform: translateX(-60%);
     }
 `;
@@ -263,7 +263,7 @@ const CategoryBtn = styled.button``;
 
 const MapBox = styled.div`
     position: absolute;
-    top: 130px;
+    top: 150px;
     left: 10%;
     width: 80%;
     height: 70%;
