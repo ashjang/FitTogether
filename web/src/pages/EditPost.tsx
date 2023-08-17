@@ -78,9 +78,11 @@ const EditPost: React.FC = () => {
             if (response.status === 200) {
                 navigate(`/posts/${postId}`);
             }
+            if (response.status === 400) {
+                ('제목/내용/카테고리는 필수 입력 사항입니다.');
+            }
         } catch (error) {
             console.error(error);
-            window.alert('카테고리를 설정하세요');
         }
     };
 
@@ -105,7 +107,7 @@ const PostDataForm = styled.form`
     align-items: center;
     position: relative;
     margin: 150px auto;
-    min-height: calc(100vh - 300px);
+    min-height: calc(100vh - 200px);
 `;
 
 const SubmitButton = styled.button`

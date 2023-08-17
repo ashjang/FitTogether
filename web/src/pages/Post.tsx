@@ -79,7 +79,7 @@ const Page = styled.div`
     justify-content: center;
     align-items: center;
     margin: 150px auto;
-    min-height: calc(100vh - 300px);
+    min-height: calc(100vh - 200px);
 `;
 
 export default Post;

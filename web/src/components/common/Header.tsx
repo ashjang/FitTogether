@@ -206,6 +206,8 @@ const HeaderWrap = styled.div`
     right: 0;
     top: 0;
     z-index: 30;
+    background-color: #ece8e3;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 `;
 // headerInn
 const headerInn = css`
@@ -215,8 +217,8 @@ const headerInn = css`
     padding: 10px 60px;
 `;
 const scrolledHeader = css`
-    background-color: #ece8e3;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.9);
+    // background-color: #ece8e3;
+    // box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 `;
 
 // topBar

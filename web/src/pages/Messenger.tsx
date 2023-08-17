@@ -12,18 +12,4 @@ const Messenger: React.FC<Props> = () => {
     );
 };
 
-// const Page = styled.div`
-//     // display: flex;
-//     // justify-content: center;
-//     // align-items: center;
-//     // // min-height는 삭제 예정
-//     // min-height: calc(100vh - 300px);
-// `;
-
-// const Component = styled.div`
-//     // display: flex;
-//     // width: 1190 px;
-//     // border: 1px solid rgba(0, 0, 0, 10%);
-// `;
-
 export default Messenger;
