@@ -14,11 +14,12 @@ const SignIn: React.FC = () => {
 };
 
 const Container = styled.div`
-    margin-top: 150px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    min-height: 100vh;
+    margin-top: 100px;
 `;
 
 const Divider = styled.p`
