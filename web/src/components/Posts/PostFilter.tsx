@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-// import axios from 'axios';
+import axios from 'axios';
 import styled from '@emotion/styled';
-// import { useRecoilState } from 'recoil';
-// import { useSetRecoilState } from 'recoil';
-// import { postListDataState } from '../../recoil/posts/atoms';
+import { useRecoilState } from 'recoil';
+import { postListDataState } from '../../recoil/posts/atoms';
 
 interface CategoryButtonProps {
     active: boolean;
@@ -18,29 +17,47 @@ const PostFilter: React.FC = () => {
     const [keyword, setKeyword] = useState<string>('');
     const [hashtag, setHashtag] = useState<string>('');
 
-    // const [postListData, setPostListData] = useRecoilState(postListDataState);
-    // const setPostListData = useSetRecoilState(postListDataState); //postListData 안쓸거면 이 코드 사용하기.
+    const [postListData, setPostListData] = useRecoilState(postListDataState);
 
     // 카테고리로 필터링
     const handleCategoryClick = async (newCategory: string) => {
-        try {
-            if (category !== newCategory) {
-                setCategory(newCategory);
-                navigate(`${location.pathname}?category=${newCategory}`);
-            } else {
-                setCategory('');
-                console.log(location.pathname);
-                navigate(location.pathname);
-            }
-            // const response = await axios.post(`/posts/search?category=${category}`);
-            // console.log(response.data);
-
-            // setPostListData(response.data);
-            // console.log(postListData);
-        } catch (error) {
-            console.log(error);
+        console.log('newCategory', newCategory);
+        if (category !== newCategory) {
+            setCategory(newCategory);
+            navigate(`${location.pathname}?category=${newCategory}`);
+        } else {
+            setCategory('');
+            // console.log('기존이랑 "같아서" 변경된 카테고리 상태', category);
+            console.log(location.pathname);
+            navigate(location.pathname);
         }
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (category !== '') {
+                try {
+                    const response = await axios.get(
+                        `/api/posts/search/category?category=${category}`
+                    );
+                    console.log('Sorted List:', response.data);
+                    setPostListData(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            } else {
+                try {
+                    const response = await axios.get(`/api/posts/search/`);
+                    console.log('Sorted List:', response.data);
+                    setPostListData(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        };
+
+        fetchData();
+    }, [category]);
 
     // 검색으로 필터링
     const handleKeywordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,16 +65,17 @@ const PostFilter: React.FC = () => {
     };
     const handleKeywordSubmit = async () => {
         try {
-            // const response = await axios.post(`/posts/search?title=${keyword}`);
-            // console.log(response.data);
+            console.log(`/api/posts/search?title=${keyword}`);
+            const response = await axios.get(`/api/posts/search/title?title=${keyword}`);
+            console.log('Keyword Submit', response.data);
 
-            // setPostListData(response.data);
-            // console.log(postListData);
+            setPostListData(response.data);
+            console.log(postListData);
 
             navigate(`${location.pathname}?title=${keyword}`);
             setKeyword(''); // 해시태그 추가 후, 해시태그 입력 필드를 비웁니다.
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
 
@@ -67,16 +85,17 @@ const PostFilter: React.FC = () => {
     };
     const handleHashtagSubmit = async () => {
         try {
-            // const response = await axios.post(`/posts/search?${hashtagQueryString}`);
-            // console.log(response.data);
+            console.log(`/api/posts/search?hashtag=${hashtag}`);
+            const response = await axios.get(`/api/posts/search/hashtag?hashtag=${hashtag}`);
+            console.log('Hashtag Submit', response.data);
 
-            // setPostListData(response.data);
-            // console.log(postListData);
+            setPostListData(response.data);
+            console.log(postListData);
 
             navigate(`${location.pathname}?hashtag=${hashtag}`);
             setHashtag('');
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
 
@@ -139,10 +158,11 @@ const CategoryButton = styled.button<CategoryButtonProps>`
     border-radius: 12px;
     padding: 0 5px;
     margin: 5px 10px 5px 0px;
+    cursor: pointer;
     &:hover {
-        border: 2px dashed #b7b7b7;
+        background-color: #a1c9e4;
     }
-    background-color: ${(props) => (props.active ? '#d7d7d7' : 'white')};
+    background-color: ${(props) => (props.active ? '#a1c9e4' : '#bbbbbb')};
 `;
 
 const InputField = styled.div`
@@ -169,13 +189,14 @@ const SearchButton = styled.button`
     align-items: center;
     position: absolute;
     right: 0px;
-    height: 34px;
-    padding: 3px 10px 0px;
+    height: 30px;
+    padding: 3px 5px;
     border: 0;
     border-radius: 7px;
     margin-right: 3px;
     outline: none;
-    background-color: #c7c7c7;
+    color: white;
+    background-color: #aaaaaa;
     font-size: 14px;
 `;
 export default PostFilter;

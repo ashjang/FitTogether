@@ -36,7 +36,6 @@ const PostListItem: React.FC<Props> = ({
 }) => {
     return (
         <PostListItemComponent>
-            {/* ShowPost: postId를 사용하여 해당 postId를 가진 post의 내용을 불러와 렌더링하도록 수정해야!! */}
             <ShowPost to={`/posts/${postId}`}>
                 <PostInfo>
                     <PostCategory>{getCategoryName(category)}</PostCategory>
@@ -85,14 +84,17 @@ const PostInfo = styled.div`
 `;
 
 const PostCategory = styled.p`
-    padding: 5px;
+    padding: 3px 5px;
     margin-right: 20px;
-    border-radius: 10px;
+    border-radius: 15px;
     font-size: 12px;
     background-color: #c7c7c7;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+    font-weight: bold;
 `;
 const PostTitle = styled.h2`
     height: 30px;
+    margin: 15px 0;
     font-size: 18px;
     white-space: nowrap;
     text-overflow: ellipsis;

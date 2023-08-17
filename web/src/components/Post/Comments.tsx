@@ -1,53 +1,50 @@
 import React, { useState } from 'react';
-// import { useParams } from 'react-router-dom';
-// import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import styled from '@emotion/styled';
 import imgSrc from '../../assets/default-user-image.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
-
-interface ReplyData {
-    postId: number;
-    replyId: number;
-    userImage: string;
-    userNickname: string;
-    createdAt: string;
-    comment: string;
-}
-
-interface ChildReplyData {
-    postId: number;
-    replyId: number;
-    childReplyId: number;
-    userImage: string;
-    userNickname: string;
-    createdAt: string;
-    comment: string;
-}
-
-interface CommentsProps {
-    replyData: ReplyData[];
-    childReplyData: ChildReplyData[];
-    onUpdate: () => void;
-}
+import { useRecoilValue } from 'recoil';
+import { signInInfo } from '../../recoil/AuthState/atoms';
+import { useRecoilState } from 'recoil';
+import {
+    postDataRecoil,
+    postContentsDataRecoil,
+    conmentsDataRecoil,
+} from '../../recoil/posts/atoms';
 
 const formatDateString = (createdAt: string) => {
     const dateObject = new Date(createdAt);
 
     const formattedDate = dateObject.toLocaleString('en-US', {
         year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false, // 24-hour format
     });
 
-    return formattedDate;
+    const [date, time] = formattedDate.split(', ');
+    const [month, day, year] = date.split('/');
+    const [hour, minute] = time.split(':');
+
+    return `${year}/${month}/${day} ${hour}:${minute}`;
 };
 
-const Comments: React.FC<CommentsProps> = (props) => {
-    // const { postId } = useParams<{ postId: string }>();
+const Comments: React.FC = () => {
+    const token = sessionStorage.getItem('token');
+
+    const { postId } = useParams<{ postId: string }>();
+
+    // const myInfo = useRecoilValue(signInInfo);
+    const myInfo = useRecoilValue(signInInfo);
+
+    const [postData, setPostData] = useRecoilState(postDataRecoil);
+    const [postContentsData, setPostContentsData] = useRecoilState(postContentsDataRecoil);
+    const [commentsData, setCommentsData] = useRecoilState(conmentsDataRecoil);
+
     const [replyInput, setReplyInput] = useState<string>('');
     const [childReplyInput, setChildReplyInput] = useState<string>('');
     const [showChildReplyInput, setShowChildReplyInput] = useState<boolean>(false);
@@ -60,41 +57,60 @@ const Comments: React.FC<CommentsProps> = (props) => {
 
     // "댓글 입력" 버튼 눌렀을 때 실행할 함수
     const handleSubmitReply = async () => {
-        // const replyForm = {
-        //     comment: replyInput,
-        // };
-        // try {
-        //     const response = await axios.post(`/posts/${postId}/comments`, replyForm, {
-        //         headers,
-        //     });
-        //     console.log(response.data);
-        //     if (response.data.status === 'success') {
-        //         props.onUpdate();
-        //     }
-        // } catch (error) {
-        //     console.log(error);
-        // }
-        props.onUpdate();
+        const replyForm = {
+            comment: replyInput,
+        };
+        try {
+            console.log(token);
+            const response = await axios.post(`/api/posts/${postId}/comment`, replyForm, {
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
+            });
+            console.log(response.data);
+            setCommentsData({
+                ...commentsData,
+                replyList: response.data.replyList,
+                childReplyList: response.data.childReplyList,
+            });
+            setPostData({ ...postData, replyCount: response.data.replyCount });
+            setPostContentsData({
+                ...postContentsData,
+                replyCount: response.data.replyCount,
+            });
+            setReplyInput('');
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     // 댓글 "삭제하기" 버튼 눌렀을 때 실행할 함수
     const handleDeleteReply = async (replyId: number) => {
         console.log(replyId);
-        // const confirmDelete = window.confirm('정말로 댓글을 삭제하시겠습니까?');
-        // if (confirmDelete) {
-        //     try {
-        //         const response = await axios.delete(`/posts/${postId}/comments/${replyId}`, {
-        //             headers,
-        //         });
-        //         console.log(response.data);
-        //         if (response.data.status === 'success') {
-        //             props.onUpdate();
-        //         }
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
-        // }
-        props.onUpdate();
+        const confirmDelete = window.confirm('정말로 댓글을 삭제하시겠습니까?');
+        if (confirmDelete) {
+            try {
+                console.log(token);
+                const response = await axios.delete(`/api/posts/${postId}/comments/${replyId}`, {
+                    headers: {
+                        'X-AUTH-TOKEN': token,
+                    },
+                });
+                console.log(response.data);
+                setCommentsData({
+                    ...commentsData,
+                    replyList: response.data.replyList,
+                    childReplyList: response.data.childReplyList,
+                });
+                setPostData({ ...postData, replyCount: response.data.replyCount });
+                setPostContentsData({
+                    ...postContentsData,
+                    replyCount: response.data.replyCount,
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
     };
 
     // 대댓글 입력란에서 입력받을 때 실행할 함수
@@ -105,44 +121,68 @@ const Comments: React.FC<CommentsProps> = (props) => {
     // "대댓글 입력" 버튼 눌렀을 때 실행할 함수
     const handleSubmitChildReply = async (replyId: number) => {
         console.log(replyId);
-        // const requestData = {
-        //     comment: childReplyInput,
-        // };
-        // try {
-        //     const response = await axios.post(`/posts/comments/${replyId}`, requestData, {
-        //         headers,
-        //     });
-        //     if (response.data.status === 'success') {
-        //         props.onUpdate();
-        //     }
-        //     console.log(response.data);
-        // } catch (error) {
-        //     console.log(error);
-        // }
-        props.onUpdate();
+        const requestData = {
+            comment: childReplyInput,
+        };
+        try {
+            console.log(token);
+            const response = await axios.post(
+                `/api/posts/${postId}/comments/${replyId}`,
+                requestData,
+                {
+                    headers: {
+                        'X-AUTH-TOKEN': token,
+                    },
+                }
+            );
+            console.log(response.data);
+            setCommentsData({
+                ...commentsData,
+                replyList: response.data.replyList,
+                childReplyList: response.data.childReplyList,
+            });
+            setPostData({ ...postData, replyCount: response.data.replyCount });
+            setPostContentsData({
+                ...postContentsData,
+                replyCount: response.data.replyCount,
+            });
+
+            setChildReplyInput('');
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     // 대댓글 "삭제하기" 버튼 눌렀을 때 실행할 함수
     const handleDeleteChildReply = async (replyId: number, childReplyId: number) => {
         console.log(replyId, childReplyId);
-        // const confirmDelete = window.confirm('정말로 댓글을 삭제하시겠습니까?');
-        // if (confirmDelete) {
-        //     try {
-        //         const response = await axios.delete(
-        //             `/posts/{postId}/comments/{replyId}/child-comment/{childReplyId}`,
-        //             {
-        //                 headers,
-        //             }
-        //         );
-        //         console.log(response.data);
-        //         if (response.data.status === 'success') {
-        //             props.onUpdate();
-        //         }
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
-        // }
-        props.onUpdate();
+        const confirmDelete = window.confirm('정말로 댓글을 삭제하시겠습니까?');
+        if (confirmDelete) {
+            try {
+                console.log(token);
+                const response = await axios.delete(
+                    `/api/posts/${postId}/comments/${replyId}/child-comment/${childReplyId}`,
+                    {
+                        headers: {
+                            'X-AUTH-TOKEN': token,
+                        },
+                    }
+                );
+                console.log(response.data);
+                setCommentsData({
+                    ...commentsData,
+                    replyList: response.data.replyList,
+                    childReplyList: response.data.childReplyList,
+                });
+                setPostData({ ...postData, replyCount: response.data.replyCount });
+                setPostContentsData({
+                    ...postContentsData,
+                    replyCount: response.data.replyCount,
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
     };
 
     // 대댓글 입력창을 토글하는 함수
@@ -153,7 +193,7 @@ const Comments: React.FC<CommentsProps> = (props) => {
 
     return (
         <CommentsComponent>
-            {props.replyData.map((reply) => (
+            {commentsData?.replyList.map((reply) => (
                 <ReplyContainer key={reply.replyId}>
                     <TopDiv>
                         <ProfileImageContainer>
@@ -162,15 +202,17 @@ const Comments: React.FC<CommentsProps> = (props) => {
                         </ProfileImageContainer>
                         <UserId>{reply.userNickname}</UserId>
                         <PostTime>{formatDateString(reply.createdAt)}</PostTime>
-                        <FaTrashCan
-                            icon={faTrashCan}
-                            onClick={() => {
-                                handleDeleteReply(reply.replyId);
-                            }}
-                        />
+                        {myInfo.nickname === reply.userNickname && (
+                            <FaTrashCan
+                                icon={faTrashCan}
+                                onClick={() => {
+                                    handleDeleteReply(reply.replyId);
+                                }}
+                            />
+                        )}
                     </TopDiv>
                     <Comment>{reply.comment}</Comment>
-                    {props.childReplyData.map(
+                    {commentsData?.childReplyList.map(
                         (childReply) =>
                             childReply.replyId === reply.replyId && (
                                 <ChildReplyItem key={childReply.childReplyId}>
@@ -183,16 +225,17 @@ const Comments: React.FC<CommentsProps> = (props) => {
                                         <PostTime>
                                             {formatDateString(childReply.createdAt)}
                                         </PostTime>
-                                        {/* ❗해당 댓글의 작성자만 아이콘이 보이도록하는 로직 */}
-                                        <FaTrashCan
-                                            icon={faTrashCan}
-                                            onClick={() => {
-                                                handleDeleteChildReply(
-                                                    childReply.replyId,
-                                                    childReply.childReplyId
-                                                );
-                                            }}
-                                        />
+                                        {myInfo.nickname === childReply.userNickname && (
+                                            <FaTrashCan
+                                                icon={faTrashCan}
+                                                onClick={() => {
+                                                    handleDeleteChildReply(
+                                                        childReply.replyId,
+                                                        childReply.childReplyId
+                                                    );
+                                                }}
+                                            />
+                                        )}
                                     </TopDiv>
                                     <Comment>{childReply.comment}</Comment>
                                 </ChildReplyItem>
@@ -300,39 +343,67 @@ const Comment = styled.p`
 const ReplyInputContainer = styled.div`
     display: flex;
     align-items: center;
+    position: relative;
 `;
 const ChildReplyInputContainer = styled.div`
     display: flex;
     align-items: center;
+    position: relative;
     margin-bottom: 15px;
 `;
 
 const ReplyInput = styled.input`
-    border: none;
-    outline: none;
     width: 400px;
     padding: 5px;
     margin: 10px 0;
+    padding-right: 100px;
+    border: 0;
+    border-radius: 10px;
+    outline: none;
+    padding-left: 10px;
+    background-color: rgb(222, 222, 222);
 `;
 const ChildReplyInput = styled.input`
-    border: none;
-    outline: none;
     width: 400px;
     padding: 5px;
     margin-left: 45px;
+    padding-right: 100px;
+    border: 0;
+    border-radius: 10px;
+    outline: none;
+    padding-left: 10px;
+    background-color: rgb(222, 222, 222);
 `;
 
 const ReplyButton = styled.button`
-    border: none;
-    background-color: #d7d7d7;
-    padding: 5px 30px;
-    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 315px;
+    height: 27px;
+    padding: 3px 10px 0px;
+    border: 0;
+    border-radius: 7px;
+    margin-right: 3px;
+    outline: none;
+    background-color: #c7c7c7;
+    font-size: 14px;
 `;
 const ChildReplyButton = styled.button`
-    border: none;
-    background-color: #d7d7d7;
-    padding: 5px 30px;
-    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 345px;
+    height: 27px;
+    padding: 3px 10px 0px;
+    border: 0;
+    border-radius: 7px;
+    margin-right: 3px;
+    outline: none;
+    background-color: #c7c7c7;
+    font-size: 14px;
 `;
 
 const ToggleChildReplyButton = styled.div`

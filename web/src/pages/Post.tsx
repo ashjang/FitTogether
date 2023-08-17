@@ -1,70 +1,74 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import PostContents from '../components/Post/PostContents';
 import styled from '@emotion/styled';
 import Comments from '../components/Post/Comments';
-import { useRecoilState } from 'recoil';
-import { postDataState, replyDataState, childReplyDataState } from '../recoil/posts/atoms';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import {
+    postDataRecoil,
+    postContentsDataRecoil,
+    conmentsDataRecoil,
+    isLikedState,
+} from '../recoil/posts/atoms';
 
 const Post: React.FC = () => {
-    const [update, setUpdate] = useState<boolean>(false);
     const { postId } = useParams<{ postId: string }>();
 
-    const [postData, setPostData] = useRecoilState(postDataState);
-    const [replyData, setReplyData] = useRecoilState(replyDataState);
-    const [childReplyData, setChildReplyData] = useRecoilState(childReplyDataState);
+    const [postData, setPostData] = useRecoilState(postDataRecoil);
+    const [postContentsData, setPostContentsData] = useRecoilState(postContentsDataRecoil);
+    const [commentsData, setCommentsData] = useRecoilState(conmentsDataRecoil);
+    const setLikeState = useSetRecoilState(isLikedState);
 
-    const getPostData = async () => {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+        const token = sessionStorage.getItem('token');
+        getPostData(token);
+    }, []);
+
+    const getPostData = async (token: string | null) => {
         try {
-            console.log(postId);
-            // const response = await axios.post(`/posts/${postId}`, { postId }, { headers });
-            const response = await axios.get(`http://localhost:3001/posts-${postId}`);
-            const { replyList, childReplyList, ...rest } = response.data;
-            setPostData(rest);
-            setReplyData(replyList);
-            setChildReplyData(childReplyList);
+            console.log(token);
+            const response = await axios.get(`/api/posts/${postId}`, {
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
+            });
+
+            console.log('response.data: ', response.data);
+            setPostData(response.data);
+
+            console.log('postData :', postData);
+            setPostContentsData({
+                ...postContentsData,
+                userImage: response.data.userImage,
+                userNickname: response.data.userNickname,
+                createdAt: response.data.createdAt,
+                category: response.data.category,
+                hashtagList: response.data.hashtagList,
+                title: response.data.title,
+                description: response.data.description,
+                likeCount: response.data.likeCount,
+                replyCount: response.data.replyCount,
+                viewCount: response.data.viewCount,
+                like: response.data.like,
+                accessLevel: response.data.accessLevel,
+            });
+            setCommentsData({
+                ...commentsData,
+                replyList: response.data.replyList,
+                childReplyList: response.data.replyList,
+            });
+            setLikeState(response.data.like);
         } catch (error) {
             console.error(error);
         }
     };
 
-    useEffect(() => {
-        getPostData();
-        console.log('Post Rendering !');
-    }, [update]); // 렌더링될 때, update 상태가 변할 때 실행
-
-    useEffect(() => {
-        console.log(postData);
-    }, [postData]);
-
-    useEffect(() => {
-        console.log(replyData);
-    }, [replyData]);
-
-    useEffect(() => {
-        console.log(childReplyData);
-    }, [childReplyData]);
-
     return (
         <Page>
-            {postData ? (
-                <PostContents
-                    key={`postId:${postId}`}
-                    postData={postData}
-                    onUpdate={() => setUpdate(!update)}
-                />
-            ) : (
-                <div>Loading...</div>
-            )}
-            {replyData && replyData.length > 0 && (
-                <Comments
-                    key={`replyInPostId:${replyData[0].postId}`}
-                    replyData={replyData}
-                    childReplyData={childReplyData || []}
-                    onUpdate={() => setUpdate(!update)}
-                />
-            )}
+            {postData ? <PostContents key={`postId:${postId}`} /> : <div>Loading...</div>}
+            <Comments />
         </Page>
     );
 };
@@ -74,8 +78,7 @@ const Page = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 40px;
-    // min-height는 삭제 예정
+    margin: 150px auto;
     min-height: calc(100vh - 300px);
 `;
 
