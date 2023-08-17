@@ -143,7 +143,9 @@ public class PostService {
 
     imageService.addImageForDB(postForm.getImages(), post);
 
-    List<PostHashtag> currentPostHashtag = postHashtagRepository.findByPostId(postId);
+    List<PostHashtag> currentPostHashtag = postHashtagRepository.findByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_HASHTAG));
+
     postHashtagRepository.deleteAll(currentPostHashtag);
 
     List<Hashtag> hashtag = addHashtag(postForm);
@@ -172,9 +174,24 @@ public class PostService {
 
     authenticationService.validate(token, post);
 
-    List<PostHashtag> postIds = postHashtagRepository.findByPostId(postId);
+    List<PostHashtag> postIds = postHashtagRepository.findByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_HASHTAG));
+
 
     postHashtagRepository.deleteAll(postIds);
+
+    List<Reply> replies = replyRepository.findAllByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
+
+    List<ChildReply> childReplies = childReplyRepository.findAllByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
+
+    childReplyRepository.deleteAll(childReplies);
+    replyRepository.deleteAll(replies);
+
+    likeRepository.deleteByPostAndUser(post, post.getUser());
+
+    imageRepository.deleteByPostId(postId);
 
     postRepository.delete(post);
   }
@@ -193,27 +210,38 @@ public class PostService {
       User user = userRepository.findById(userVo.getUserId())
           .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
+      // 게시글 접근권한
       isLike = likeRepository.existsByPostAndUser(post, user);
 
       if (!user.equals(post.getUser())) {
-        Request request = requestRepository.findAllBySenderNicknameAndReceiverNickname(post.getUser().getNickname(), user.getNickname());
+        Request request = requestRepository.findAllBySenderNicknameAndReceiverNickname(
+            post.getUser().getNickname(), user.getNickname());
         if (request == null && !post.isAccessLevel()) {
           throw new PostException(ErrorCode.MATE_ONLY_ACCESS);
         }
       }
     }
 
-    List<PostHashtag> postHashtagList = postHashtagRepository.findByPostId(postId);
+    // 해시태그
+    List<PostHashtag> postHashtagList = postHashtagRepository.findByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_HASHTAG));
+
 
     List<String> hashtagList = postHashtagList.stream()
         .map(postHashtag -> postHashtag.getHashtag().getKeyword())
         .collect(Collectors.toList());
 
-    List<Image> images = imageRepository.findByPostId(postId);
+    // 이미지
+    List<Image> images = imageRepository.findByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_IMAGE));
 
-    List<Reply> replyList = replyRepository.findAllByPostId(postId);
-    List<ChildReply> childReplies = childReplyRepository.findAllByPostId(postId);
+    // 댓글
+    List<Reply> replyList = replyRepository.findAllByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
+    List<ChildReply> childReplies = childReplyRepository.findAllByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
 
+    //조회수
     Long incrementWatchedCount = incrementWatchedCount(postId);
     Long totalReplyCount = replyService.getTotalReplyCount(postId);
 

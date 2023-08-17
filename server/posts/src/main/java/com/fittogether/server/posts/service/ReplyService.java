@@ -67,7 +67,8 @@ public class ReplyService {
 
     authenticationService.validate(token, post);
 
-    Reply reply = replyRepository.findByPostIdAndId(postId, replyId);
+    Reply reply = replyRepository.findByPostIdAndId(postId, replyId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
 
     replyRepository.delete(reply);
   }
@@ -82,7 +83,7 @@ public class ReplyService {
     User user = userRepository.findById(userVo.getUserId())
         .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
-    Reply postReply = replyRepository.findById(replyId)
+    Reply postReply = replyRepository.findByPostIdAndId(postId, replyId)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
 
     Post post = postRepository.findById(postId)
@@ -121,14 +122,16 @@ public class ReplyService {
    * 댓글 리스트
    */
   public List<Reply> getReplyList(Long postId) {
-    return replyRepository.findAllByPostId(postId);
+    return replyRepository.findAllByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
   }
 
   /**
    * 대댓글 리스트
    */
   public List<ChildReply> getChildReplyList(Long postId) {
-    return childReplyRepository.findAllByPostId(postId);
+    return childReplyRepository.findAllByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
   }
 
   /**
@@ -136,8 +139,10 @@ public class ReplyService {
    */
   @Transactional
   public Long getTotalReplyCount(Long postId) {
-    Long replyCount = replyRepository.countByPostId(postId);
-    Long childReplyCount = childReplyRepository.countByPostId(postId);
+    Long replyCount = replyRepository.countByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
+    Long childReplyCount = childReplyRepository.countByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
 
     return replyCount + childReplyCount;
   }

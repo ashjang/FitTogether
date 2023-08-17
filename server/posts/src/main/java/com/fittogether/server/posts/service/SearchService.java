@@ -9,6 +9,8 @@ import com.fittogether.server.posts.domain.model.PostHashtag;
 import com.fittogether.server.posts.domain.repository.HashtagRepository;
 import com.fittogether.server.posts.domain.repository.PostHashtagRepository;
 import com.fittogether.server.posts.domain.repository.PostRepository;
+import com.fittogether.server.posts.exception.ErrorCode;
+import com.fittogether.server.posts.exception.PostException;
 import com.fittogether.server.posts.type.Category;
 import com.fittogether.server.user.domain.model.User;
 import com.fittogether.server.user.domain.repository.UserRepository;
@@ -38,7 +40,9 @@ public class SearchService {
    */
   public List<PostListDto> allPost() {
 
-    List<Post> allPost = postRepository.findAllByOrderByCreatedAtDesc();
+    List<Post> allPost = postRepository.findAllByOrderByCreatedAtDesc()
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
+
 
     return allPost.stream().map(PostListDto::from)
         .collect(Collectors.toList());
@@ -57,7 +61,8 @@ public class SearchService {
     User user = userRepository.findById(userVo.getUserId())
         .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
-    List<Post> allPostByUser = postRepository.findAllByUserOrderByCreatedAtDesc(user);
+    List<Post> allPostByUser = postRepository.findAllByUserOrderByCreatedAtDesc(user)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
     return allPostByUser.stream().map(PostListDto::from)
         .collect(Collectors.toList());
@@ -70,7 +75,8 @@ public class SearchService {
 
     Category category = Category.valueOf(keyword);
 
-    List<Post> postList = postRepository.findByCategoryOrderByCreatedAtDesc(category);
+    List<Post> postList = postRepository.findByCategoryOrderByCreatedAtDesc(category)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
     return postList.stream().map(PostListDto::from)
         .collect(Collectors.toList());
@@ -85,7 +91,9 @@ public class SearchService {
 
     Long hashtagId = hashtag.getId();
 
-    List<PostHashtag> postHashtagList = postHashtagRepository.findAllByHashtagId(hashtagId);
+    List<PostHashtag> postHashtagList = postHashtagRepository.findAllByHashtagId(hashtagId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_HASHTAG));
+
 
     return postHashtagList.stream()
         .map(PostHashtag::getPost)
@@ -98,7 +106,8 @@ public class SearchService {
    * 제목 별 검색
    */
   public List<PostListDto> getPostByTitle(String title) {
-    List<Post> postList = postRepository.findByTitleContainingOrderByCreatedAtDesc(title);
+    List<Post> postList = postRepository.findByTitleContainingOrderByCreatedAtDesc(title)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
     return postList.stream().map(PostListDto::from)
         .collect(Collectors.toList());
