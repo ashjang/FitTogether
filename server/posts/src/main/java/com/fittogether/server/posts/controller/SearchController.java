@@ -22,9 +22,12 @@ public class SearchController {
    * 전체 게시글 검색
    */
   @GetMapping
-  public ResponseEntity<List<PostListDto>> allPost() {
+  public ResponseEntity<List<PostListDto>> allPost(
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
+
     return ResponseEntity.ok(
-        searchService.allPost());
+        searchService.allPost(page, size));
   }
 
   /**
@@ -32,35 +35,46 @@ public class SearchController {
    */
   @GetMapping("/my")
   public ResponseEntity<List<PostListDto>> myPost(
-      @RequestHeader(name = "X-AUTH-TOKEN") String token) {
+      @RequestHeader(name = "X-AUTH-TOKEN") String token,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
     return ResponseEntity.ok(
-        searchService.myPost(token));
+        searchService.myPost(token,page, size));
   }
 
   /**
    * 운동종목 별 검색
    */
   @GetMapping("/category")
-  public ResponseEntity<List<PostListDto>> getPostByCategory(@RequestParam("category") String keyword) {
+  public ResponseEntity<List<PostListDto>> getPostByCategory(
+      @RequestParam("category") String keyword,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
     return ResponseEntity.ok(
-        searchService.getPostByCategory(keyword));
+        searchService.getPostByCategory(keyword,page, size));
   }
 
   /**
    * 해시태그 별 검색
    */
   @GetMapping("/hashtag")
-  public ResponseEntity<List<PostListDto>> getPostByHashtag(@RequestParam("hashtag") String keyword) {
+  public ResponseEntity<List<PostListDto>> getPostByHashtag(
+      @RequestParam("hashtag") String keyword,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
     return ResponseEntity.ok(
-        searchService.getPostByHashtag(keyword));
+        searchService.getPostByHashtag(keyword,page, size));
   }
 
   /**
    * 제목 별 검색
    */
   @GetMapping("/title")
-  public ResponseEntity<List<PostListDto>> getPostByTitle(@RequestParam("title") String title) {
+  public ResponseEntity<List<PostListDto>> getPostByTitle(
+      @RequestParam("title") String title,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
     return ResponseEntity.ok(
-        searchService.getPostByTitle(title));
+        searchService.getPostByTitle(title,page, size));
   }
 }
