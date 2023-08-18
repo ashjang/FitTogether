@@ -2,6 +2,7 @@ package com.fittogether.server.posts.domain.dto;
 
 import com.fittogether.server.posts.domain.model.Post;
 import com.fittogether.server.posts.type.Category;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,8 +21,9 @@ public class PostListDto {
   private boolean accessLevel;
   private Long likeCount;
   private Long viewCount;
+  private List<String> hashtags;
 
-  public static PostListDto from(Post post) {
+  public static PostListDto from(Post post, List<String> hashtags) {
     return PostListDto.builder()
         .postId(post.getId())
         .title(post.getTitle())
@@ -31,6 +33,7 @@ public class PostListDto {
         .accessLevel(post.isAccessLevel())
         .likeCount(post.getLikes())
         .viewCount(post.getWatched())
+        .hashtags(hashtags)
         .build();
   }
 }
