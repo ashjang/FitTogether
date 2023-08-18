@@ -9,6 +9,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,4 +54,11 @@ public class UserInfoController {
         );
     }
 
+    @PostMapping("/upload")
+    public ResponseEntity<String> updateProfileImage(@RequestHeader(name = "X-AUTH-TOKEN") String token,
+                                              @RequestParam("image") MultipartFile image) throws IOException {
+        return ResponseEntity.ok(
+                userService.updateProfileImage(token, image)
+        );
+    }
 }
