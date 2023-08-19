@@ -36,7 +36,6 @@ const PostListItem: React.FC<Props> = ({
     likeCount,
     viewCount,
 }) => {
-    console.log('PostListItem에서 Props로 넘어간 props.hastag', hashtags);
     return (
         <PostListItemComponent>
             <ShowPost to={`/posts/${postId}`}>
@@ -73,9 +72,8 @@ const PostListItem: React.FC<Props> = ({
 
 const PostListItemComponent = styled.div`
     width: 750px;
-    margin: 50px 0;
     border-top: 1px solid #d7d7d7;
-    padding: 5px 0;
+    padding: 15px 0;
     border-bottom: 1px solid #d7d7d7;
 `;
 
@@ -98,13 +96,12 @@ const CategoryAndHashtag = styled.div`
 `;
 
 const PostCategory = styled.p`
-    padding: 3px 5px;
+    padding: 3px 8px 3px 9px;
     margin-right: 20px;
     border-radius: 15px;
-    font-size: 12px;
+    font-size: 14px;
     background-color: #c7c7c7;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
-    font-weight: bold;
 `;
 
 const PostHashtag = styled.p`
@@ -118,8 +115,8 @@ const PostHashtag = styled.p`
 
 const PostTitle = styled.h2`
     height: 30px;
-    margin: 15px 0;
-    font-size: 18px;
+    margin: 20px 0px 15px;
+    font-size: 20px;
     white-space: nowrap;
     text-overflow: ellipsis;
 `;

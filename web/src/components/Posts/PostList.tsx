@@ -27,6 +27,7 @@ const PostList: React.FC = () => {
         try {
             const response = await axios.get('/api/posts/search');
             setPostListData(response.data);
+            console.log(response.data.length);
         } catch (error) {
             console.error;
         }
@@ -88,11 +89,12 @@ const PostListComponent = styled.div``;
 
 const PostListItems = styled.div`
     width: 750px;
+    margin: 50px 0;
 `;
 
 const ButtonGroup = styled.div`
     width: max-content;
-    margin: 0 auto;
+    margin: 0px auto;
 `;
 
 const PaginationButtonNumber = styled.button`
