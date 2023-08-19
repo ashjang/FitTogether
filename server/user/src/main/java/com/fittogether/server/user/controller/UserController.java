@@ -62,6 +62,13 @@ public class UserController {
         );
     }
 
+    @ApiOperation(value = "비밀번호 찾기")
+    @PutMapping("/findPW")
+    public ResponseEntity<?> findPW(@RequestParam("email") String email) {
+        signInService.findPW(email);
+        return ResponseEntity.ok().body("해당 이메일로 임시 비밀번호를 전송하였습니다.");
+    }
+
     @GetMapping("/signin/kakao")
     public ResponseEntity<String> kakaoSignIn(@RequestParam("code") String code) {
         String accessToken = kakao.getAccessToken(code);
