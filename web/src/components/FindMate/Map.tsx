@@ -31,6 +31,7 @@ const Map: React.FC = () => {
     const [map, setMap] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentMarker, setCurrentMarker] = useState<any>(null);
+    const [locationKeyword, setLocationKeyword] = useState<string | null>(null);
 
     const dafaultLatitude = 37.566826;
     const dafaultLongitude = 126.9786567;
@@ -78,19 +79,21 @@ const Map: React.FC = () => {
     };
 
     // 현재 위치 marker 생성하는 함수
-    const createCurrentLocationMarker = () => {
-        // 저장한 위도,경도 상태를 기반으로 현재 위치를 정의
+    const createLocationMarker = () => {
         if (map) {
+            // 마커 초기화
             if (currentMarker) {
                 currentMarker.setMap(null);
             }
-            const currentLatLng = new window.kakao.maps.LatLng(latitude, longitude);
-            // 지도를 현재 위치로 이동하는 기능 포함
-            map.panTo(currentLatLng);
 
-            // 좌표의 위치를 기반으로 마커를 생성
+            //
+            const newLatLng = new window.kakao.maps.LatLng(latitude, longitude);
+            // 지도를 새로운 위치로 이동
+            map.panTo(newLatLng);
+
+            // 새로운 좌표의 위치를 기반으로 마커를 생성
             const marker = new window.kakao.maps.Marker({
-                position: currentLatLng,
+                position: newLatLng,
                 image: new window.kakao.maps.MarkerImage(
                     'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
                     new window.kakao.maps.Size(30, 45)
@@ -162,6 +165,41 @@ const Map: React.FC = () => {
         });
     }, [users]);
 
+    // 키워드를 상태에 저장하는 함수
+    const handleLocationKeyword = (keyword: string) => {
+        setLocationKeyword(keyword);
+    };
+
+    // 키워드 검색 완료 시 호출되는 콜백함수
+    const placesSearchCB = (data: any, status: any) => {
+        console.log(status);
+        if (status === window.kakao.maps.services.Status.OK) {
+            // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해 LatLngBounds 객체에 좌표를 추가
+            const bounds = new window.kakao.maps.LatLngBounds();
+
+            // 검색된 각 장소의 좌표를 이용하여 지도 범위 재설정
+            for (var i = 0; i < data.length; i++) {
+                bounds.extend(new window.kakao.maps.LatLng(data[i].y, data[i].x));
+            }
+
+            // 해당 범위로 지도 위치 설정
+            map.setBounds(bounds);
+        }
+    };
+
+    // 검색 버튼 눌렀을 때 실행할 함수
+    const handleClickSearchBtn = () => {
+        const ps = new window.kakao.maps.services.Places();
+        ps.keywordSearch(locationKeyword, placesSearchCB);
+    };
+
+    // Enter 눌렀을 때도 handleClickSearchBtn 실행하도록 처리
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            handleClickSearchBtn();
+        }
+    };
+    // 모달 토글 함수
     const handleToggleModal = () => {
         setIsModalOpen(!isModalOpen);
     };
@@ -188,9 +226,21 @@ const Map: React.FC = () => {
                     헬스
                 </CategoryBtn>
             </CategoryBtnTab>
+            <LocationSearchBar>
+                <LocationSearchInput
+                    type="text"
+                    placeholder="검색어로 장소 찾기"
+                    onChange={(event) => {
+                        handleLocationKeyword(event.target.value);
+                    }}
+                    onKeyDown={handleKeyDown}
+                />
+                <LocationSearchBtn onClick={handleClickSearchBtn}>입력</LocationSearchBtn>
+            </LocationSearchBar>
+
             <MapBox ref={kakaoMapRef}>
-                <GoBackButton onClick={createCurrentLocationMarker}>
-                    <span className="blind">현재 위치로 이동</span>
+                <GoBackButton onClick={createLocationMarker}>
+                    <span className="blind">위치 설정 버튼</span>
                     <LightIcon icon={faCrosshairs} />
                 </GoBackButton>
             </MapBox>
@@ -261,6 +311,29 @@ const CategoryBtnTab = styled.div`
 `;
 const CategoryBtn = styled.button``;
 
+const LocationSearchBar = styled.div`
+    position: absolute;
+    z-index: 5;
+    top: 160px;
+    left: 155px;
+    opacity: 0.9;
+    border: 1px solid black;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
+`;
+
+const LocationSearchInput = styled.input`
+    width: max-contents;
+    min-width: 400px;
+    font-size: 20px;
+    padding: 0px 10px;
+    outline: none;
+`;
+
+const LocationSearchBtn = styled.button`
+    font-size: 20px;
+    padding: 0px 5px;
+`;
+
 const MapBox = styled.div`
     position: absolute;
     top: 150px;
@@ -274,10 +347,10 @@ const GoBackButton = styled.button`
     position: absolute;
     right: 10px;
     bottom: 10px;
-    padding: 5px;
+    padding: 10px 10px 5px 10px;
     border: none;
-    border-radius: 100%;
-    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.2);
     z-index: 10;
 `;
 const LightIcon = styled(FontAwesomeIcon)`
