@@ -36,4 +36,11 @@ public class UserSignInService {
             throw new UserCustomException(UserErrorCode.CANNOT_LOGOUT);
         }
     }
+
+    public String findID(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+        return user.getNickname();
+    }
 }

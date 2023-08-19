@@ -54,6 +54,14 @@ public class UserController {
         );
     }
 
+    @ApiOperation(value = "아이디 찾기", response = String.class)
+    @GetMapping("/findID")
+    public ResponseEntity<String> findID(@RequestParam("email") String email) {
+        return ResponseEntity.ok(
+                signInService.findID(email)
+        );
+    }
+
     @GetMapping("/signin/kakao")
     public ResponseEntity<String> kakaoSignIn(@RequestParam("code") String code) {
         String accessToken = kakao.getAccessToken(code);
