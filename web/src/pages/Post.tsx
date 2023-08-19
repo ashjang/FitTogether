@@ -57,7 +57,7 @@ const Post: React.FC = () => {
             setCommentsData({
                 ...commentsData,
                 replyList: response.data.replyList,
-                childReplyList: response.data.replyList,
+                childReplyList: response.data.childReplyList,
             });
             setLikeState(response.data.like);
         } catch (error) {

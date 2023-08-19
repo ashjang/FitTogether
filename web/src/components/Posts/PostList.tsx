@@ -44,6 +44,7 @@ const PostList: React.FC = () => {
     const startPage: number = (currentPageGroup - 1) * 5 + 1; // 현재 페이지 그룹에서 시작페이지
     const endPage: number = Math.min(currentPageGroup * 5, numPages); // 현재 페이지 그룹에서 마지막 페이지
 
+    console.log('PostList에서 프롭스 넘어가기 전 postListData', postListData);
     return (
         <PostListComponent>
             <ScrollToTopOnPageChange />

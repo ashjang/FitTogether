@@ -13,6 +13,7 @@ interface Props {
     viewCount: number;
     userNickname: string;
     userImage: string;
+    hashtags: string[];
 }
 
 const getCategoryName = (categoryEng: string) => {
@@ -28,17 +29,24 @@ const getCategoryName = (categoryEng: string) => {
 const PostListItem: React.FC<Props> = ({
     postId,
     category,
+    hashtags,
     title,
-    userNickname,
     // userImage,
+    userNickname,
     likeCount,
     viewCount,
 }) => {
+    console.log('PostListItem에서 Props로 넘어간 props.hastag', hashtags);
     return (
         <PostListItemComponent>
             <ShowPost to={`/posts/${postId}`}>
                 <PostInfo>
-                    <PostCategory>{getCategoryName(category)}</PostCategory>
+                    <CategoryAndHashtag>
+                        <PostCategory>{getCategoryName(category)}</PostCategory>
+                        {hashtags?.map((hashtag) => {
+                            return <PostHashtag>#{hashtag}</PostHashtag>;
+                        })}
+                    </CategoryAndHashtag>
                     <PostTitle>{title}</PostTitle>
                     <PostDetail>
                         <PostDetailItem>
@@ -83,6 +91,12 @@ const PostInfo = styled.div`
     align-items: flex-start;
 `;
 
+const CategoryAndHashtag = styled.div`
+    display: flex;
+    justify-contents: flex-start;
+    align-items: center;
+`;
+
 const PostCategory = styled.p`
     padding: 3px 5px;
     margin-right: 20px;
@@ -92,6 +106,16 @@ const PostCategory = styled.p`
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
     font-weight: bold;
 `;
+
+const PostHashtag = styled.p`
+    padding: 0 7px;
+    margin-right: 15px;
+    border-radius: 5px;
+    background-color: #a1c9e4;
+    font-size: 13px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+`;
+
 const PostTitle = styled.h2`
     height: 30px;
     margin: 15px 0;
