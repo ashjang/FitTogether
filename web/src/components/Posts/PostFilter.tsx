@@ -159,10 +159,12 @@ const CategoryButton = styled.button<CategoryButtonProps>`
     padding: 0 5px;
     margin: 5px 10px 5px 0px;
     cursor: pointer;
+    background-color: ${(props) => (props.active ? '#888888' : '#bbbbbb')};
     &:hover {
-        background-color: #a1c9e4;
+        background-color: #888888;
+        color: #ffffff;
     }
-    background-color: ${(props) => (props.active ? '#a1c9e4' : '#bbbbbb')};
+    color: ${(props) => (props.active ? '#ffffff' : '#000000')};
 `;
 
 const InputField = styled.div`

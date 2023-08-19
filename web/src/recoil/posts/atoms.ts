@@ -4,6 +4,7 @@ import { atom } from 'recoil';
 interface PostDataListItem {
     postId: number;
     category: string;
+    hashtags: string[];
     title: string;
     userImage: string;
     userNickname: string;

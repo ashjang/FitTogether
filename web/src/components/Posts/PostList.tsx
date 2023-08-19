@@ -27,6 +27,7 @@ const PostList: React.FC = () => {
         try {
             const response = await axios.get('/api/posts/search');
             setPostListData(response.data);
+            console.log(response.data.length);
         } catch (error) {
             console.error;
         }
@@ -44,6 +45,7 @@ const PostList: React.FC = () => {
     const startPage: number = (currentPageGroup - 1) * 5 + 1; // 현재 페이지 그룹에서 시작페이지
     const endPage: number = Math.min(currentPageGroup * 5, numPages); // 현재 페이지 그룹에서 마지막 페이지
 
+    console.log('PostList에서 프롭스 넘어가기 전 postListData', postListData);
     return (
         <PostListComponent>
             <ScrollToTopOnPageChange />
@@ -87,11 +89,12 @@ const PostListComponent = styled.div``;
 
 const PostListItems = styled.div`
     width: 750px;
+    margin: 50px 0;
 `;
 
 const ButtonGroup = styled.div`
     width: max-content;
-    margin: 0 auto;
+    margin: 0px auto;
 `;
 
 const PaginationButtonNumber = styled.button`
