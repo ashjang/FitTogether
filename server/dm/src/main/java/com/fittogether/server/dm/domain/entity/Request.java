@@ -19,12 +19,15 @@ public class Request {
     private Long requestId;
 
 
-    @ManyToOne
+   @ManyToOne
     @JoinColumn( name = "sender_id")
     private User senderId;
     @ManyToOne
     @JoinColumn(name = "receiver_id")
     private User receiverId;
+
+    private String senderNickname;
+    private String receiverNickname;
     private boolean isAccepted;
 
 

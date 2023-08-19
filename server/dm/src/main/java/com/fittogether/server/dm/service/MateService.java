@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -29,23 +30,28 @@ public class MateService {
     @Transactional
     public Request mateRequest(
             String token,
-            Long receiver
+            String receiverNickname
     ) {
+
         if (!jwtProvider.validateToken(token)) {
             throw new UserCustomException(UserErrorCode.NOT_FOUND_USER);
         }
 
+
         UserVo userVo = jwtProvider.getUserVo(token);
 
-        User senderId = userRepository.findById(userVo.getUserId())
+        User sender = userRepository.findByNickname(userVo.getNickname())
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
-        User receiverId = userRepository.findById(receiver)
+        User receiver = userRepository.findByNickname(receiverNickname)
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
 
         Request request = Request.builder()
-                .senderId(senderId)
-                .receiverId(receiverId)
+                .senderId(sender)
+                .receiverId(receiver)
+                .senderNickname(sender.getNickname())
+                .receiverNickname(receiver.getNickname())
                 .isAccepted(false)
                 .build();
 
@@ -61,7 +67,7 @@ public class MateService {
     @Transactional
     public void mateAccept(
             String token,
-            Long senderId
+            String senderNickname
     ) {
         if (!jwtProvider.validateToken(token)) {
             throw new UserCustomException(UserErrorCode.NOT_FOUND_USER);
@@ -70,16 +76,16 @@ public class MateService {
         UserVo userVo = jwtProvider.getUserVo(token);
 
         //사용자
-        User user = userRepository.findById(userVo.getUserId())
+        User user = userRepository.findByNickname(userVo.getNickname())
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
 
         //수락 요청을 보낸사람  (수락한 사람은 현재 사용자)
-        User sender = userRepository.findById(senderId)
+        User sender = userRepository.findByNickname(senderNickname)
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
 
-        Request request = requestRepository.findAllBySenderIdAndReceiverId(sender, user);
+        Request request = requestRepository.findAllBySenderNicknameAndReceiverNickname(sender.getNickname(), user.getNickname());
         if (request == null) {
             throw new RequestNotFoundException("REQUEST_NOT_FOUND_EXCEPTION");
         }
@@ -96,11 +102,24 @@ public class MateService {
         }
 
         UserVo userVo = jwtProvider.getUserVo(token);
-        User senderId = userRepository.findById(userVo.getUserId())
+        User userNickname = userRepository.findByNickname(userVo.getNickname())
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
 
-        List<Request> mateList = requestRepository.findAllBySenderId(senderId);
+        // 로그인한 사용자가 메이트 요청을 보낸 경우
+        List<Request> sentRequests = requestRepository.findAllBySenderNicknameAndIsAccepted(
+                userNickname.getNickname(),
+                true);
+
+        // 로그인한 사용자가 메이트 요청을 받아 수락한 경우
+        List<Request> receivedRequests = requestRepository.findAllByReceiverNicknameAndIsAccepted(
+                userNickname.getNickname(),
+                true);
+
+        // 두 반환값 합침
+        List<Request> mateList = new ArrayList<>();
+        mateList.addAll(sentRequests);
+        mateList.addAll(receivedRequests);
 
 
         return mateList;

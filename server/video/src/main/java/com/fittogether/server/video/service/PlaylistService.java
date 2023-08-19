@@ -8,7 +8,9 @@ import com.fittogether.server.user.exception.UserCustomException;
 import com.fittogether.server.user.exception.UserErrorCode;
 import com.fittogether.server.video.domain.form.PlaylistForm;
 import com.fittogether.server.video.domain.model.Playlist;
+import com.fittogether.server.video.domain.model.PlaylistVideo;
 import com.fittogether.server.video.domain.repository.PlaylistRepository;
+import com.fittogether.server.video.domain.repository.PlaylistVideoRepository;
 import com.fittogether.server.video.exception.VideoCustomException;
 import com.fittogether.server.video.exception.VideoErrorCode;
 import java.util.List;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PlaylistService {
 
+  private final PlaylistVideoRepository playlistVideoRepository;
   private final PlaylistRepository playlistRepository;
   private final UserRepository userRepository;
   private final JwtProvider provider;
@@ -77,10 +80,14 @@ public class PlaylistService {
     User user = userRepository.findById(userVo.getUserId())
         .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
+    Playlist playlist = playlistRepository.findByUser_UserIdAndPlaylistName(user.getUserId(), targetName)
+        .orElseThrow(() -> new VideoCustomException(VideoErrorCode.NOT_FOUND_PLAYLIST));
+
     if (!playlistRepository.findByUser_UserIdAndPlaylistName(userVo.getUserId(), targetName)
         .isPresent()) {
       throw new VideoCustomException(VideoErrorCode.NOT_FOUND_PLAYLIST);
     }
+    playlistVideoRepository.deleteAllByPlaylist_PlaylistId(playlist.getPlaylistId());
 
     playlistRepository.deleteByUser_UserIdAndPlaylistName(user.getUserId(), targetName);
   }

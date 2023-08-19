@@ -11,10 +11,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class LikeDto {
   private boolean like;
+  private Long likeCount;
 
-  public static LikeDto from(boolean like) {
+  public static LikeDto from(boolean like, Long likeCount) {
     return LikeDto.builder()
         .like(like)
+        .likeCount(likeCount)
         .build();
   }
 }

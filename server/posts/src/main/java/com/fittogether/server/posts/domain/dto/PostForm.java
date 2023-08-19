@@ -15,7 +15,7 @@ public class PostForm {
 
   private String title;
   private String description;
-  private String image;
+  private List<String> images;
   private Category category;
   private boolean accessLevel;
   private List<String> hashtag;
