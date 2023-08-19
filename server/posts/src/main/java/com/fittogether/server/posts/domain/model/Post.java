@@ -3,6 +3,7 @@ package com.fittogether.server.posts.domain.model;
 import com.fittogether.server.posts.type.Category;
 import com.fittogether.server.user.domain.model.User;
 import java.time.LocalDateTime;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -34,8 +35,9 @@ public class Post {
   private User user;
 
   private String title;
+
+  @Column(columnDefinition = "TEXT")
   private String description;
-  private String image;
 
   @Enumerated(value = EnumType.STRING)
   private Category category;

@@ -1,17 +1,20 @@
 package com.fittogether.server.posts.service;
 
+import com.fittogether.server.dm.domain.entity.Request;
+import com.fittogether.server.dm.domain.repository.RequestRepository;
 import com.fittogether.server.domain.token.JwtProvider;
 import com.fittogether.server.domain.token.UserVo;
 import com.fittogether.server.posts.domain.dto.PostForm;
 import com.fittogether.server.posts.domain.dto.PostInfo;
-import com.fittogether.server.posts.domain.dto.PostListDto;
 import com.fittogether.server.posts.domain.model.ChildReply;
 import com.fittogether.server.posts.domain.model.Hashtag;
+import com.fittogether.server.posts.domain.model.Image;
 import com.fittogether.server.posts.domain.model.Post;
 import com.fittogether.server.posts.domain.model.PostHashtag;
 import com.fittogether.server.posts.domain.model.Reply;
 import com.fittogether.server.posts.domain.repository.ChildReplyRepository;
 import com.fittogether.server.posts.domain.repository.HashtagRepository;
+import com.fittogether.server.posts.domain.repository.ImageRepository;
 import com.fittogether.server.posts.domain.repository.LikeRepository;
 import com.fittogether.server.posts.domain.repository.PostHashtagRepository;
 import com.fittogether.server.posts.domain.repository.PostRepository;
@@ -24,7 +27,6 @@ import com.fittogether.server.user.exception.UserCustomException;
 import com.fittogether.server.user.exception.UserErrorCode;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,14 +45,19 @@ public class PostService {
 
   private final PostRepository postRepository;
   private final UserRepository userRepository;
+  private final ImageRepository imageRepository;
   private final PostHashtagRepository postHashtagRepository;
   private final HashtagRepository hashtagRepository;
   private final ReplyRepository replyRepository;
   private final ChildReplyRepository childReplyRepository;
   private final LikeRepository likeRepository;
+  private final RequestRepository requestRepository;
   private final JwtProvider provider;
   private final RedisTemplate<String, String> redisTemplate;
   private final AuthenticationService authenticationService;
+  private final ImageService imageService;
+  private final ReplyService replyService;
+  private final LikeService likeService;
 
   /**
    * 게시글 작성
@@ -70,7 +77,6 @@ public class PostService {
         .user(user)
         .title(postForm.getTitle())
         .description(postForm.getDescription())
-        .image(postForm.getImage())
         .category(postForm.getCategory())
         .accessLevel(postForm.isAccessLevel())
         .likes(0L)
@@ -78,6 +84,8 @@ public class PostService {
         .createdAt(LocalDateTime.now()).build();
 
     List<Hashtag> savedHashtag = addHashtag(postForm);
+
+    imageService.addImageForDB(postForm.getImages(), post);
 
     List<PostHashtag> postHashtags = savedHashtag.stream()
         .map(hashtag -> PostHashtag.builder()
@@ -95,10 +103,9 @@ public class PostService {
    * 해시태그 추가
    */
   @Transactional
-  public List<Hashtag> addHashtag(PostForm addPostForm) {
-    List<String> hashtags = addPostForm.getHashtag();
+  public List<Hashtag> addHashtag(PostForm postForm) {
 
-    List<Hashtag> savedHashtag = hashtags.stream()
+    List<Hashtag> savedHashtag = postForm.getHashtag().stream()
         .map(hashtag -> {
           Hashtag existKeyword = hashtagRepository.findByKeyword(hashtag);
           // 해당 해시태그가 이미 존재한다면, 기존의 것을 사용합니다.
@@ -130,12 +137,15 @@ public class PostService {
 
     post.setTitle(postForm.getTitle());
     post.setDescription(postForm.getDescription());
-    post.setImage(postForm.getImage());
     post.setCategory(postForm.getCategory());
     post.setAccessLevel(postForm.isAccessLevel());
     post.setModifiedAt(LocalDateTime.now());
 
-    List<PostHashtag> currentPostHashtag = postHashtagRepository.findByPostId(postId);
+    imageService.addImageForDB(postForm.getImages(), post);
+
+    List<PostHashtag> currentPostHashtag = postHashtagRepository.findByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_HASHTAG));
+
     postHashtagRepository.deleteAll(currentPostHashtag);
 
     List<Hashtag> hashtag = addHashtag(postForm);
@@ -164,9 +174,24 @@ public class PostService {
 
     authenticationService.validate(token, post);
 
-    List<PostHashtag> postIds = postHashtagRepository.findByPostId(postId);
+    List<PostHashtag> postIds = postHashtagRepository.findByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_HASHTAG));
+
 
     postHashtagRepository.deleteAll(postIds);
+
+    List<Reply> replies = replyRepository.findAllByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
+
+    List<ChildReply> childReplies = childReplyRepository.findAllByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
+
+    childReplyRepository.deleteAll(childReplies);
+    replyRepository.deleteAll(replies);
+
+    likeRepository.deleteByPostAndUser(post, post.getUser());
+
+    imageRepository.deleteByPostId(postId);
 
     postRepository.delete(post);
   }
@@ -174,42 +199,58 @@ public class PostService {
   /**
    * 게시글 보기
    */
-  public PostInfo clickPostById(Long postId) {
+  public PostInfo clickPostById(String token, Long postId) {
+    boolean isLike = false;
 
     Post post = postRepository.findById(postId)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
-    if (!post.isAccessLevel()) {
-      throw new PostException(ErrorCode.NO_PERMISSION_TO_VIEW_POST);
+    if (token != null) {
+      UserVo userVo = provider.getUserVo(token);
+      User user = userRepository.findById(userVo.getUserId())
+          .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+      // 게시글 접근권한
+      isLike = likeRepository.existsByPostAndUser(post, user);
+
+      if (!user.equals(post.getUser())) {
+        Request request = requestRepository.findAllBySenderNicknameAndReceiverNickname(
+            post.getUser().getNickname(), user.getNickname());
+        if (request == null && !post.isAccessLevel()) {
+          throw new PostException(ErrorCode.MATE_ONLY_ACCESS);
+        }
+      }
     }
 
-    List<Reply> replyList = replyRepository.findByPostId(postId);
+    // 해시태그
+    List<PostHashtag> postHashtagList = postHashtagRepository.findByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_HASHTAG));
 
-    List<Long> replyIds = replyList.stream()
-        .map(Reply::getId)
+
+    List<String> hashtagList = postHashtagList.stream()
+        .map(postHashtag -> postHashtag.getHashtag().getKeyword())
         .collect(Collectors.toList());
 
-    List<ChildReply> childReplies = childReplyRepository.findByReplyIdIn(replyIds);
+    // 이미지
+    List<Image> images = imageRepository.findByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_IMAGE));
 
-    boolean isLike = likeRepository.existsByPost(post);
+    // 댓글
+    List<Reply> replyList = replyRepository.findAllByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
+    List<ChildReply> childReplies = childReplyRepository.findAllByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
 
+    //조회수
     Long incrementWatchedCount = incrementWatchedCount(postId);
-    Long totalReplyCount = getTotalReplyCount(postId);
+    Long totalReplyCount = replyService.getTotalReplyCount(postId);
+
+    Long likeCount = likeService.getLikeCountByRedis(postId); // 캐싱된 조회수 가져오기
 
     return PostInfo.from(post, replyList, childReplies, totalReplyCount, isLike,
-        incrementWatchedCount);
+        incrementWatchedCount, images, hashtagList, likeCount);
   }
 
-  /**
-   * 댓글 수
-   */
-  @Transactional
-  public Long getTotalReplyCount(Long postId) {
-    Long replyCount = replyRepository.countByPostId(postId);
-    Long childReplyCount = childReplyRepository.countByPostId(postId);
-
-    return replyCount + childReplyCount;
-  }
 
   /**
    * 조회수 캐싱
@@ -262,35 +303,5 @@ public class PostService {
 
     post.setWatched(watchedCount);
     postRepository.save(post);
-  }
-
-  /**
-   * 전체 게시글 보기
-   */
-  public List<PostListDto> allPost() {
-
-    List<Post> allPost = postRepository.findAll();
-
-    return allPost.stream().map(PostListDto::from)
-        .collect(Collectors.toList());
-  }
-
-  /**
-   * 내 게시글 보기
-   */
-  public List<PostListDto> myPost(String token) {
-    if (!provider.validateToken(token)) {
-      throw new RuntimeException("Invalid or expired token.");
-    }
-
-    UserVo userVo = provider.getUserVo(token);
-
-    User user = userRepository.findById(userVo.getUserId())
-        .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
-
-    List<Post> allPostByUser = postRepository.findAllByUser(user);
-
-    return allPostByUser.stream().map(PostListDto::from)
-        .collect(Collectors.toList());
   }
 }
