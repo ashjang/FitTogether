@@ -54,7 +54,22 @@ public class UserController {
         );
     }
 
-    @PostMapping("/signin/kakao")
+    @ApiOperation(value = "아이디 찾기", response = String.class)
+    @GetMapping("/findID")
+    public ResponseEntity<String> findID(@RequestParam("email") String email) {
+        return ResponseEntity.ok(
+                signInService.findID(email)
+        );
+    }
+
+    @ApiOperation(value = "비밀번호 찾기")
+    @PutMapping("/findPW")
+    public ResponseEntity<?> findPW(@RequestParam("email") String email) {
+        signInService.findPW(email);
+        return ResponseEntity.ok().body("해당 이메일로 임시 비밀번호를 전송하였습니다.");
+    }
+
+    @GetMapping("/signin/kakao")
     public ResponseEntity<String> kakaoSignIn(@RequestParam("code") String code) {
         String accessToken = kakao.getAccessToken(code);
         UserDto userDto = kakao.getUserInfo(accessToken);

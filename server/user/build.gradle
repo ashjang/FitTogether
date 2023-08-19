@@ -32,6 +32,9 @@ dependencies {
     implementation 'org.springframework.data:spring-data-envers'
 
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
