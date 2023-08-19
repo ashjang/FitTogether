@@ -12,6 +12,7 @@ import com.fittogether.server.user.exception.UserCustomException;
 import com.fittogether.server.user.exception.UserErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.bouncycastle.jcajce.provider.symmetric.AES;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,8 +56,8 @@ public class UserSignInService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
-        String code = RandomStringUtils.random(10, true, true);
-        user.setPassword(code);
+        String code = RandomStringUtils.random(8, true, true);
+        user.setPassword(AES256Utils.encrypt(code));
         SendMailForm sendMailForm = SendMailForm.builder()
                 .from("fittogether@techtravelers.com")
                 .to(user.getEmail())
