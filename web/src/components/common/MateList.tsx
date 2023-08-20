@@ -24,10 +24,6 @@ interface MateDateItem {
     senderProfileImage: string;
     senderNickname: string;
 }
-interface UserProfile {
-    username: string;
-    profileImage: string | null;
-}
 
 // interface ApiResponse {
 //     data: User[];
@@ -68,33 +64,47 @@ const MateList: React.FC<Props> = ({ isOpen, onClose }) => {
     // }, []);
 
     const token: string | null = sessionStorage.getItem('token');
-    const userId: number | null = parseInt(sessionStorage.getItem('userId') || '');
     useEffect(() => {
         if (token) {
             axios
-                // .get(`/api/matching/requests/lists`, {
-                .get(`/users?id=${userId}`, {
+                .get(`/matching/requests/lists`, {
                     headers: {
                         'X-AUTH-TOKEN': token,
                     },
                 })
                 .then((response) => {
-                    const userProfile: UserProfile = response.data;
-                    const mateData: MateData = {
-                        [userProfile.username]: {
-                            senderProfileImage: userProfile.profileImage || imageSrc,
-                            // senderNickname: userProfile.nickname,
-                            senderUserId: userProfile.userId,
-                        },
-                    };
-                    setMateData(mateData);
+                    console.log(response.data); // 응답 데이터 출력
+
+                    if (response.status === 200) {
+                        // 응답이 성공적일 때 수행할 동작
+                        const mateData = processResponseData(response.data);
+                        setMateData(mateData);
+                    } else {
+                        // 응답이 성공적이지 않을 때 수행할 동작
+                        console.error('API 요청이 실패하였습니다.');
+                        alert('친구 리스트를 가져오는데 실패했습니다.');
+                    }
                 })
                 .catch((error) => {
                     console.error('An error occurred:', error);
-                    alert('회원정보를 받아오는데 실패했습니다.');
+                    alert('친구 리스트를 가져오는데 실패했습니다.');
                 });
         }
     }, [token]);
+
+    // 사용자 닉네임만 추출하는 함수
+    const processResponseData = (responseData: any) => {
+        const mateData: MateData = {};
+
+        responseData.forEach((user: any) => {
+            mateData[user.username] = {
+                senderProfileImage: imageSrc,
+                senderNickname: user.username,
+            };
+        });
+
+        return mateData;
+    };
 
     return (
         <Modal

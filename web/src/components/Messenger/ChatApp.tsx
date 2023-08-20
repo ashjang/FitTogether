@@ -10,12 +10,10 @@ interface ChatRoom {
     name: string;
     profileImage: string | null;
 }
-
 interface UserProfile {
     username: string;
     profileImage: string | null;
 }
-
 interface ChatMessage {
     roomId: string;
     message: string;
