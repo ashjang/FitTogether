@@ -36,7 +36,7 @@ const ChatApp: React.FC = () => {
         const stompSubscription = client.subscribe(
             `/sub/dm/room/${selectedChatRoom}`,
             (message) => {
-                const receivedMessage = JSON.parse(message.body) as ChatMessage; // Use type assertion here
+                const receivedMessage = JSON.parse(message.body) as ChatMessage;
                 setChatMessages((prevMessages) => [...prevMessages, receivedMessage]);
             }
         );
@@ -67,7 +67,6 @@ const ChatApp: React.FC = () => {
 
     return (
         <ChatAppWrapper>
-            <WebsoketTxt>웹소켓 연결 테스트중입니다.</WebsoketTxt>
             <ChatListBox>
                 <ChatList chatRooms={chatRooms} onChatRoomClick={handleChatRoomClick} />
             </ChatListBox>
@@ -101,14 +100,6 @@ const ChatAppWrapper = styled.div`
 
 const ChatListBox = styled.div`
     overflow-y: auto;
-`;
-
-const WebsoketTxt = styled.p`
-    position: absolute;
-    top: 100px;
-    left: 550px;
-    font-size: 30px;
-    z-index: 50;
 `;
 
 export default ChatApp;
