@@ -1,8 +1,7 @@
 package com.fittogether.server.posts.controller;
 
-import com.fittogether.server.posts.domain.dto.PostListDto;
+import com.fittogether.server.posts.domain.dto.PostResponse;
 import com.fittogether.server.posts.service.SearchService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +21,7 @@ public class SearchController {
    * 전체 게시글 검색
    */
   @GetMapping
-  public ResponseEntity<List<PostListDto>> allPost(
+  public ResponseEntity<PostResponse> allPost(
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
 
@@ -34,47 +33,47 @@ public class SearchController {
    * 내 게시글 검색
    */
   @GetMapping("/my")
-  public ResponseEntity<List<PostListDto>> myPost(
+  public ResponseEntity<PostResponse> myPost(
       @RequestHeader(name = "X-AUTH-TOKEN") String token,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
     return ResponseEntity.ok(
-        searchService.myPost(token,page, size));
+        searchService.myPost(token, page, size));
   }
 
   /**
    * 운동종목 별 검색
    */
   @GetMapping("/category")
-  public ResponseEntity<List<PostListDto>> getPostByCategory(
+  public ResponseEntity<PostResponse> getPostByCategory(
       @RequestParam("category") String keyword,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
     return ResponseEntity.ok(
-        searchService.getPostByCategory(keyword,page, size));
+        searchService.getPostByCategory(keyword, page, size));
   }
 
   /**
    * 해시태그 별 검색
    */
   @GetMapping("/hashtag")
-  public ResponseEntity<List<PostListDto>> getPostByHashtag(
+  public ResponseEntity<PostResponse> getPostByHashtag(
       @RequestParam("hashtag") String keyword,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
     return ResponseEntity.ok(
-        searchService.getPostByHashtag(keyword,page, size));
+        searchService.getPostByHashtag(keyword, page, size));
   }
 
   /**
    * 제목 별 검색
    */
   @GetMapping("/title")
-  public ResponseEntity<List<PostListDto>> getPostByTitle(
+  public ResponseEntity<PostResponse> getPostByTitle(
       @RequestParam("title") String title,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
     return ResponseEntity.ok(
-        searchService.getPostByTitle(title,page, size));
+        searchService.getPostByTitle(title, page, size));
   }
 }
