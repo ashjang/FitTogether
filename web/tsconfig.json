@@ -20,7 +20,7 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
 
-        "typeRoots": ["./types", "./node_modules/@types"],
+        "typeRoots": ["./src/types", "./node_modules/@types"],
         "types": ["vite/client"]
     },
     "include": [
@@ -29,7 +29,8 @@
         "vite-env.d.ts",
         "public/**/*.svg",
         "src/**/*",
-        "type"
+        "type",
+        "vite.config.ts"
     ],
     "references": [{ "path": "./tsconfig.node.json" }],
     "assets": [

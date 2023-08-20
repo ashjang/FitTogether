@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import ChatList from './ChatList';
 import ChatWindow from './ChatWindow';
-import client from '../utils/websoket';
+import { stompClient } from '../utils/websoket';
 
 interface ChatRoom {
     id: string;
@@ -22,29 +22,51 @@ interface ChatMessage {
     sentAt: Date;
 }
 
+interface ReceivedMessage {
+    message: string;
+    sentAt: string;
+}
+
 const ChatApp: React.FC = () => {
     const [selectedChatRoom, setSelectedChatRoom] = useState<string | null>(null);
-    const [chatRooms] = useState<ChatRoom[]>([]);
+    const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
     const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
     const [inputMessage, setInputMessage] = useState('');
     const [username, setUsername] = useState('');
-    const [userProfile] = useState<UserProfile | null>(null);
+    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+    // const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        if (!selectedChatRoom) return;
+        const connectWebSocket = () => {
+            stompClient.connect(
+                {},
+                (frame) => {
+                    console.log('웹소켓 연결됨');
+                    console.log('연결된 프레임:', frame);
 
-        const stompSubscription = client.subscribe(
-            `/sub/dm/room/${selectedChatRoom}`,
-            (message) => {
-                const receivedMessage = JSON.parse(message.body) as ChatMessage; // Use type assertion here
-                setChatMessages((prevMessages) => [...prevMessages, receivedMessage]);
-            }
-        );
-
-        return () => {
-            stompSubscription.unsubscribe();
+                    stompClient.subscribe('/sub/dm/room/roomId', (message) => {
+                        const receivedMessage = JSON.parse(message.body) as ReceivedMessage;
+                        console.log('받은 메세지:', receivedMessage);
+                        // 웹소켓으로 받은 메시지를 처리하는 로직 추가
+                    });
+                },
+                (errorFrame: any, error: any) => {
+                    console.error('웹소켓 연결 에러:', error);
+                }
+            );
         };
-    }, [selectedChatRoom]);
+
+        const cleanupWebSocket = () => {
+            if (stompClient.connected) {
+                stompClient.disconnect(() => {
+                    console.log('웹소켓 연결 종료됨');
+                });
+            }
+        };
+
+        connectWebSocket();
+        return cleanupWebSocket;
+    }, []);
 
     const handleChatRoomClick = (chatRoomId: string) => {
         setSelectedChatRoom(chatRoomId);
@@ -52,16 +74,19 @@ const ChatApp: React.FC = () => {
     };
 
     const handleSendMessage = () => {
-        if (inputMessage.trim() === '' || username.trim() === '' || !selectedChatRoom) return;
+        if (inputMessage.trim() === '' || username.trim() === '') return;
 
-        const newMessage = {
-            roomId: selectedChatRoom,
-            message: inputMessage,
-            sentAt: new Date(),
+        const newMessage = `${username}: ${inputMessage}`;
+        const currentTime = new Date();
+
+        const messageObject = {
+            roomId: selectedChatRoom!,
+            message: newMessage,
+            sentAt: currentTime,
         };
 
-        client.publish({ destination: '/pub/dm/message', body: JSON.stringify(newMessage) });
-
+        setChatMessages((prevMessages) => [...prevMessages, messageObject]);
+        // stompClient.send('/dm/message', {}, JSON.stringify(messageObject));
         setInputMessage('');
     };
 
