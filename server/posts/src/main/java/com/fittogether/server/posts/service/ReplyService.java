@@ -112,7 +112,7 @@ public class ReplyService {
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
 
     if (!childReply.getUser().getUserId().equals(userVo.getUserId())) {
-      throw new PostException(ErrorCode.ONLY_AUTHOR_DELETE);
+      throw new PostException(ErrorCode.NO_PERMISSION_TO_VIEW_POST);
     }
 
     childReplyRepository.delete(childReply);

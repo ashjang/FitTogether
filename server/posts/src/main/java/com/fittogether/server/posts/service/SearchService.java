@@ -3,6 +3,7 @@ package com.fittogether.server.posts.service;
 import com.fittogether.server.domain.token.JwtProvider;
 import com.fittogether.server.domain.token.UserVo;
 import com.fittogether.server.posts.domain.dto.PostListDto;
+import com.fittogether.server.posts.domain.dto.PostResponse;
 import com.fittogether.server.posts.domain.model.Hashtag;
 import com.fittogether.server.posts.domain.model.Post;
 import com.fittogether.server.posts.domain.model.PostHashtag;
@@ -39,13 +40,15 @@ public class SearchService {
   /**
    * 전체 게시글 보기
    */
-  public List<PostListDto> allPost(int page, int size) {
+  public PostResponse allPost(int page, int size) {
 
     Pageable pageable = PageRequest.of(page, size);
     Page<Post> allPost = postRepository.findAllByOrderByCreatedAtDesc(pageable)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
-    return getPostList(allPost);
+    long totalElements = allPost.getTotalElements();
+
+    return PostResponse.from(getPostList(allPost), totalElements);
   }
 
   /**
@@ -67,7 +70,7 @@ public class SearchService {
   /**
    * 내 게시글 보기
    */
-  public List<PostListDto> myPost(String token,int page, int size) {
+  public PostResponse myPost(String token, int page, int size) {
     if (!provider.validateToken(token)) {
       throw new RuntimeException("Invalid or expired token.");
     }
@@ -81,13 +84,15 @@ public class SearchService {
     Page<Post> allPostByUser = postRepository.findAllByUserOrderByCreatedAtDesc(user, pageable)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
-    return getPostList(allPostByUser);
+    long totalElements = allPostByUser.getTotalElements();
+
+    return PostResponse.from(getPostList(allPostByUser), totalElements);
   }
 
   /**
    * 운동종목 별 검색
    */
-  public List<PostListDto> getPostByCategory(String keyword,int page, int size) {
+  public PostResponse getPostByCategory(String keyword, int page, int size) {
 
     Category category = Category.valueOf(keyword);
 
@@ -95,13 +100,15 @@ public class SearchService {
     Page<Post> postList = postRepository.findByCategoryOrderByCreatedAtDesc(category, pageable)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
-    return getPostList(postList);
+    long totalElements = postList.getTotalElements();
+
+    return PostResponse.from(getPostList(postList), totalElements);
   }
 
   /**
    * 해시태그 별 검색
    */
-  public List<PostListDto> getPostByHashtag(String keyword,int page, int size) {
+  public PostResponse getPostByHashtag(String keyword, int page, int size) {
 
     Hashtag hashtag = hashtagRepository.findByKeyword(keyword);
     if (hashtag == null) {
@@ -110,20 +117,25 @@ public class SearchService {
     Long hashtagId = hashtag.getId();
 
     Pageable pageable = PageRequest.of(page, size);
-    Page<PostHashtag> postHashtagList = postHashtagRepository.findAllByHashtagId(hashtagId, pageable)
+    Page<PostHashtag> postHashtagList = postHashtagRepository.findAllByHashtagId(hashtagId,
+            pageable)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_HASHTAG));
 
-    return getPostList(postHashtagList.map(PostHashtag::getPost));
+    long totalElements = postHashtagList.getTotalElements();
+
+    return PostResponse.from(getPostList(postHashtagList.map(PostHashtag::getPost)), totalElements);
   }
 
   /**
    * 제목 별 검색
    */
-  public List<PostListDto> getPostByTitle(String title,int page, int size) {
+  public PostResponse getPostByTitle(String title, int page, int size) {
     Pageable pageable = PageRequest.of(page, size);
     Page<Post> postList = postRepository.findByTitleContainingOrderByCreatedAtDesc(title, pageable)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
-    return getPostList(postList);
+    long totalElements = postList.getTotalElements();
+
+    return PostResponse.from(getPostList(postList), totalElements);
   }
 }
