@@ -39,6 +39,7 @@ interface MateDateItem {
 
 const MateList: React.FC<Props> = ({ isOpen, onClose }) => {
     const [mateData, setMateData] = useState<MateData>({});
+    const token: string | null = sessionStorage.getItem('token');
 
     // useEffect(() => {
     //     fetch('/data/usersProfile.json')
@@ -63,24 +64,19 @@ const MateList: React.FC<Props> = ({ isOpen, onClose }) => {
     //         });
     // }, []);
 
-    const token: string | null = sessionStorage.getItem('token');
     useEffect(() => {
         if (token) {
             axios
-                .get(`/matching/requests/lists`, {
+                .get('/api/matching/requests/lists', {
                     headers: {
                         'X-AUTH-TOKEN': token,
                     },
                 })
                 .then((response) => {
-                    console.log(response.data); // 응답 데이터 출력
-
                     if (response.status === 200) {
-                        // 응답이 성공적일 때 수행할 동작
-                        const mateData = processResponseData(response.data);
-                        setMateData(mateData);
+                        const processedData = processResponseData(response.data);
+                        setMateData(processedData);
                     } else {
-                        // 응답이 성공적이지 않을 때 수행할 동작
                         console.error('API 요청이 실패하였습니다.');
                         alert('친구 리스트를 가져오는데 실패했습니다.');
                     }
@@ -92,18 +88,20 @@ const MateList: React.FC<Props> = ({ isOpen, onClose }) => {
         }
     }, [token]);
 
-    // 사용자 닉네임만 추출하는 함수
     const processResponseData = (responseData: any) => {
-        const mateData: MateData = {};
+        const processedData: MateData = {};
 
-        responseData.forEach((user: any) => {
-            mateData[user.username] = {
-                senderProfileImage: imageSrc,
-                senderNickname: user.username,
-            };
-        });
+        if (Array.isArray(responseData)) {
+            responseData.forEach((user: any) => {
+                if (user && typeof user.username === 'string') {
+                    processedData[user.username] = {
+                        nickname: '',
+                    };
+                }
+            });
+        }
 
-        return mateData;
+        return processedData;
     };
 
     return (
