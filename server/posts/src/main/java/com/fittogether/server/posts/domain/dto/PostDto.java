@@ -27,7 +27,7 @@ public class PostDto {
         .description(post.getDescription())
         .category(post.getCategory())
         .accessLevel(post.isAccessLevel())
-        .createdAt(LocalDateTime.now())
+        .createdAt(post.getCreatedAt())
         .build();
   }
 }

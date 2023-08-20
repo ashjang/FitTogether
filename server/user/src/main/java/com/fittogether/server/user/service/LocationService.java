@@ -64,7 +64,9 @@ public class LocationService {
             throw new UserCustomException(UserErrorCode.NOT_FOUND_USER);
         }
 
-        return users.stream().map(AnotherUserDto::from).collect(Collectors.toList());
+        return users.stream()
+                .filter(x -> !x.getEmail().equals(user.getEmail()))
+                .map(AnotherUserDto::from).collect(Collectors.toList());
     }
 
     // 3km 내 위도, 경도 범위 구하기

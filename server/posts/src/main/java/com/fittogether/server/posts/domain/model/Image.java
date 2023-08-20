@@ -20,7 +20,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "image_url"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "imageUrl"))
 public class Image {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,6 +3,7 @@ package com.fittogether.server.posts.service;
 import com.fittogether.server.domain.token.JwtProvider;
 import com.fittogether.server.domain.token.UserVo;
 import com.fittogether.server.posts.domain.dto.ReplyForm;
+import com.fittogether.server.posts.domain.dto.ReplyListDto;
 import com.fittogether.server.posts.domain.model.ChildReply;
 import com.fittogether.server.posts.domain.model.Post;
 import com.fittogether.server.posts.domain.model.Reply;
@@ -16,6 +17,7 @@ import com.fittogether.server.user.domain.repository.UserRepository;
 import com.fittogether.server.user.exception.UserCustomException;
 import com.fittogether.server.user.exception.UserErrorCode;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,16 +30,14 @@ public class ReplyService {
   private final UserRepository userRepository;
   private final ReplyRepository replyRepository;
   private final ChildReplyRepository childReplyRepository;
-
   private final AuthenticationService authenticationService;
-
   private final JwtProvider provider;
 
   /**
    * 댓글 작성
    */
   @Transactional
-  public Reply createReply(String token, Long postId, ReplyForm replyForm) {
+  public void createReply(String token, Long postId, ReplyForm replyForm) {
 
     UserVo userVo = provider.getUserVo(token);
 
@@ -54,7 +54,7 @@ public class ReplyService {
         .createdAt(LocalDateTime.now())
         .build();
 
-    return replyRepository.save(reply);
+    replyRepository.save(reply);
   }
 
   /**
@@ -67,7 +67,8 @@ public class ReplyService {
 
     authenticationService.validate(token, post);
 
-    Reply reply = replyRepository.findByPostIdAndId(postId, replyId);
+    Reply reply = replyRepository.findByPostIdAndId(postId, replyId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
 
     replyRepository.delete(reply);
   }
@@ -76,13 +77,13 @@ public class ReplyService {
    * 대댓글 작성
    */
   @Transactional
-  public ChildReply createChildReply(String token, Long postId, Long replyId, ReplyForm replyForm) {
+  public void createChildReply(String token, Long postId, Long replyId, ReplyForm replyForm) {
     UserVo userVo = provider.getUserVo(token);
 
     User user = userRepository.findById(userVo.getUserId())
         .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
-    Reply postReply = replyRepository.findById(replyId)
+    Reply postReply = replyRepository.findByPostIdAndId(postId, replyId)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
 
     Post post = postRepository.findById(postId)
@@ -96,7 +97,7 @@ public class ReplyService {
         .createdAt(LocalDateTime.now())
         .build();
 
-    return childReplyRepository.save(childReply);
+    childReplyRepository.save(childReply);
   }
 
   @Transactional
@@ -111,9 +112,57 @@ public class ReplyService {
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
 
     if (!childReply.getUser().getUserId().equals(userVo.getUserId())) {
-      throw new PostException(ErrorCode.ONLY_AUTHOR_DELETE);
+      throw new PostException(ErrorCode.NO_PERMISSION_TO_VIEW_POST);
     }
 
     childReplyRepository.delete(childReply);
+  }
+
+  /**
+   * 댓글 리스트
+   */
+  public List<Reply> getReplyList(Long postId) {
+    return replyRepository.findAllByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
+  }
+
+  /**
+   * 대댓글 리스트
+   */
+  public List<ChildReply> getChildReplyList(Long postId) {
+    return childReplyRepository.findAllByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
+  }
+
+  /**
+   * 댓글 수
+   */
+  @Transactional
+  public Long getTotalReplyCount(Long postId) {
+    Long replyCount = replyRepository.countByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
+    Long childReplyCount = childReplyRepository.countByPostId(postId)
+        .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
+
+    return replyCount + childReplyCount;
+  }
+
+
+  public ReplyListDto getReplyListDto(String token, Long postId, Long replyId, ReplyForm replyForm,
+      boolean isCreate, boolean isChild, Long childReplyId) {
+
+    if (isCreate) {
+      if (!isChild) {
+        createReply(token, postId, replyForm);
+      } else {
+        createChildReply(token, postId, replyId, replyForm);
+      }
+    }
+
+    List<Reply> replyList = getReplyList(postId);
+    List<ChildReply> childReplyList = getChildReplyList(postId);
+    Long totalReplyCount = getTotalReplyCount(postId);
+
+    return ReplyListDto.fromList(replyList, childReplyList, totalReplyCount);
   }
 }

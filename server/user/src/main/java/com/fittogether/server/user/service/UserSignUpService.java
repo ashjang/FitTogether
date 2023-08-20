@@ -1,5 +1,6 @@
 package com.fittogether.server.user.service;
 
+import com.fittogether.server.domain.token.AES256Utils;
 import com.fittogether.server.user.domain.dto.SignUpForm;
 import com.fittogether.server.user.domain.dto.UserDto;
 import com.fittogether.server.user.domain.model.User;
@@ -16,9 +17,10 @@ public class UserSignUpService {
     // 일반 회원가입
     @Transactional
     public UserDto signUp(SignUpForm form) {
-        User user = userRepository.save(User.from(form));
+        User user = User.from(form);
+        user.setPassword(AES256Utils.encrypt(form.getPassword()));
 
-        return UserDto.from(user);
+        return UserDto.from(userRepository.save(user));
     }
 
     // 닉네임 중복검사

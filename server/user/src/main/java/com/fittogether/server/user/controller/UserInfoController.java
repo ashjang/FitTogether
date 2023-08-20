@@ -2,12 +2,16 @@ package com.fittogether.server.user.controller;
 
 import com.fittogether.server.user.domain.dto.AnotherUserDto;
 import com.fittogether.server.user.domain.dto.UpdateUserForm;
+import com.fittogether.server.user.domain.dto.UpdateUserPassword;
 import com.fittogether.server.user.domain.dto.UserDto;
 import com.fittogether.server.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +36,15 @@ public class UserInfoController {
         );
     }
 
+    @ApiOperation(value = "비밀번호 변경", response = UserDto.class)
+    @PutMapping("/my/password")
+    public ResponseEntity<UserDto> updateMyPassword(@RequestHeader(name = "X-AUTH-TOKEN") String token,
+                                                    @RequestBody UpdateUserPassword form) {
+        return ResponseEntity.ok(
+                userService.updateMyPassword(token, form)
+        );
+    }
+
     @ApiOperation(value = "유저 프로필 조회", response = AnotherUserDto.class)
     @GetMapping()
     public ResponseEntity<AnotherUserDto> getUserInfo(@RequestHeader(name = "X-AUTH-TOKEN") String token,
@@ -41,4 +54,11 @@ public class UserInfoController {
         );
     }
 
+    @PostMapping("/upload")
+    public ResponseEntity<String> updateProfileImage(@RequestHeader(name = "X-AUTH-TOKEN") String token,
+                                              @RequestParam("image") MultipartFile image) throws IOException {
+        return ResponseEntity.ok(
+                userService.updateProfileImage(token, image)
+        );
+    }
 }

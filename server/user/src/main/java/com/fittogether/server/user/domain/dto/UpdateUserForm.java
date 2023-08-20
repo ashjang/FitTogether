@@ -10,7 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserForm {
-    private String password;
     private String profilePicture;
     private List<ExerciseType> exerciseChoice;
     private boolean gender;
