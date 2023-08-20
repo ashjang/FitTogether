@@ -3,10 +3,7 @@ package com.fittogether.server.dm.domain.entity;
 import com.fittogether.server.user.domain.model.User;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,6 +16,7 @@ import java.time.LocalDateTime;
 public class Message {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long messageId;
     @ManyToOne
     @JoinColumn(name = "chatRoom_id")
@@ -31,7 +29,6 @@ public class Message {
     String senderNickname;
     String contents;
     LocalDateTime sendDt;
-
 
 
 }

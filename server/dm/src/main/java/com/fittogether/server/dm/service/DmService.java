@@ -77,12 +77,9 @@ public class DmService {
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
 
-        // 데이터베이스에서 마지막 id 값을 가져옴 id값이 null일경우 +1
-        Long currentMaxMessageId = messageRepository.findMaxMessageId();
-        currentMaxMessageId = (currentMaxMessageId != null) ? currentMaxMessageId + 1 : 1;
+
 
         Message message = Message.builder()
-                .messageId(currentMaxMessageId)
                 .chatRoomId(chatRoom)
                 .senderId(sender)
                 .senderNickname(sender.getNickname())
