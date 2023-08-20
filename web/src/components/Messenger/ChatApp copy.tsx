@@ -32,17 +32,45 @@ const ChatApp: React.FC = () => {
     const [username, setUsername] = useState('');
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     // const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
+        setUsername('윤몽진');
+
         const connectWebSocket = async () => {
             try {
                 await stompClient.connect({}, (frame) => {
                     console.log('WebSocket connected');
                     console.log('Connected frame:', frame);
-
-                    // 원하는 웹소켓 관련 로직 추가
                 });
+
+                // stompClient.subscribe('/dm/messages', (message) => {
+                //     console.log('Received  message:', message);
+                // });
+
+                const response = await fetch('/dm/message');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = (await response.json()) as ResponseData;
+
+                const usersInfo: UserProfile[] = data.usersInfo;
+                const chatRoomData = usersInfo.map((user) => ({
+                    id: user.username,
+                    name: user.username,
+                    profileImage: user.profileImage,
+                }));
+
+                setChatRooms(chatRoomData);
+
+                const defaultUserProfile = usersInfo[0];
+                if (defaultUserProfile) {
+                    setUserProfile(defaultUserProfile);
+                    setUsername(defaultUserProfile.username);
+                }
+
+                // setIsLoading(false);
             } catch (error) {
-                console.error('Error connecting WebSocket:', error);
+                console.error('Error connecting WebSocket or fetching chat rooms:', error);
             }
         };
 
@@ -57,7 +85,7 @@ const ChatApp: React.FC = () => {
                 });
             }
         };
-    }, []);
+    }, [selectedChatRoom, username]);
 
     const handleChatRoomClick = (chatRoomId: string) => {
         setSelectedChatRoom(chatRoomId);
@@ -88,7 +116,6 @@ const ChatApp: React.FC = () => {
 
     return (
         <ChatAppWrapper>
-            <div>WebSocket Connection Test</div>;
             {/* <ChatListBox>
                 {isLoading ? (
                     <p>Loading...</p>
@@ -101,6 +128,7 @@ const ChatApp: React.FC = () => {
             <ChatListBox>
                 <ChatList chatRooms={chatRooms} onChatRoomClick={handleChatRoomClick} />
             </ChatListBox>
+
             <ChatWindow
                 chatRoomId={selectedChatRoom}
                 chatMessages={chatMessages.filter((message) => message.roomId === selectedChatRoom)}
