@@ -11,6 +11,9 @@ repositories {
     mavenCentral()
 }
 
+ext{
+    set('springCloudVersion', "2021.0.1")
+}
 dependencies {
     implementation project(':user')
     implementation project(':posts')
@@ -26,12 +29,18 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 
+}
+dependencyManagement{
+    imports{
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 test {
