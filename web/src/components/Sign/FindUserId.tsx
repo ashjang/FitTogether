@@ -34,28 +34,28 @@ const FindUserId: React.FC = () => {
     return (
         <Container>
             <Title>ID 찾기</Title>
-            <MessageBox>
-                <GuideMessage>가입 시 입력한 이메일을 적어주세요.</GuideMessage>
-            </MessageBox>
-            <InputTextDiv>
-                <label htmlFor="email">이메일</label>
-                <InputText
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={email}
-                    onChange={handleEmailChange}
-                    required
-                />
-                <FindBtn type="submit" onClick={handleFindId}>
-                    ID 찾기
-                </FindBtn>
-            </InputTextDiv>
-            {foundId !== null && (
+            <Form onSubmit={handleFindId}>
                 <MessageBox>
-                    <GuideMessage>회원님의 ID는 {foundId} 입니다.</GuideMessage>
+                    <GuideMessage>가입 시 입력한 이메일을 적어주세요.</GuideMessage>
                 </MessageBox>
-            )}
+                <InputTextDiv>
+                    <label htmlFor="email">이메일</label>
+                    <InputText
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={email}
+                        onChange={handleEmailChange}
+                        required
+                    />
+                    <FindBtn type="submit">ID 찾기</FindBtn>
+                </InputTextDiv>
+                {foundId !== null && (
+                    <MessageBox>
+                        <GuideMessage>회원님의 ID는 {foundId} 입니다.</GuideMessage>
+                    </MessageBox>
+                )}
+            </Form>
         </Container>
     );
 };
@@ -67,6 +67,10 @@ const Container = styled.div`
     align-items: center;
     justify-content: center;
     min-height: calc(100vh - 50px);
+`;
+
+const Form = styled.form`
+    // width: 510px;
 `;
 
 const Title = styled.h1`
