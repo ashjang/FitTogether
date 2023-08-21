@@ -8,8 +8,12 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
+import { useRecoilValue } from 'recoil';
+import { loggedInState } from '../../recoil/AuthState/atoms';
+
 import { fetchVideos, resetTotalResults, VideosResponse, Video } from './YoutubeApi';
 import VideoPopup from './VideoPopup';
+import AddToBookmark from './AddToBookmark';
 
 import loadingGif from '../../assets/ball-triangle.svg';
 
@@ -17,6 +21,11 @@ const VideoList: React.FC = () => {
     const [category, setCategory] = useState<string>('러닝');
     const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
     const [favoriteStatus, setFavoriteStatus] = useState<Record<string, boolean>>({});
+
+    const [showModal, setShowModal] = useState(false);
+    const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
+
+    const isLoggedIn = useRecoilValue(loggedInState);
 
     useEffect(() => {
         resetTotalResults();
@@ -26,7 +35,7 @@ const VideoList: React.FC = () => {
         async ({ pageParam = null }) => {
             const response = await fetchVideos(pageParam, category);
 
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 800));
             return response;
         },
         [category]
@@ -67,17 +76,29 @@ const VideoList: React.FC = () => {
     }, []);
 
     //즐겨찾기
-    //즐겨찾기 리스트에 관한
-    const toggleFavoriteStatus = useCallback((videoId: string) => {
-        setFavoriteStatus((prevStatus) => ({
-            ...prevStatus,
-            [videoId]: !prevStatus[videoId],
-        }));
-    }, []);
+    //즐겨찾기 추가 별모양 토클 버튼
+    const toggleFavoriteStatus = useCallback(
+        (video: Video) => {
+            if (!isLoggedIn) {
+                alert('로그인 후 이용해주세요.');
+                return;
+            }
+
+            setFavoriteStatus((prevStatus) => ({
+                ...prevStatus,
+                [video.id.videoId]: !prevStatus[video.id.videoId],
+            }));
+
+            setCurrentVideo(video);
+            setShowModal(true);
+        },
+        // []
+        [isLoggedIn]
+    );
 
     return (
         <VideoListInn>
-            <PageTitle>운동 메이트 찾기</PageTitle>
+            <PageTitle>운동 정보</PageTitle>
             <BtnTab>
                 <button
                     className={`category01 ${category === '러닝' ? 'active' : ''}`}
@@ -123,7 +144,9 @@ const VideoList: React.FC = () => {
                                     {page.items.map((video: Video) => (
                                         <VideoThumb
                                             key={video.id.videoId}
-                                            onClick={() => openVideo(video)}
+                                            onClick={() => {
+                                                openVideo(video);
+                                            }}
                                         >
                                             <h4>
                                                 {video.snippet.title.length > 25
@@ -133,7 +156,7 @@ const VideoList: React.FC = () => {
                                                     icon={faStar}
                                                     onClick={(event) => {
                                                         event.stopPropagation();
-                                                        toggleFavoriteStatus(video.id.videoId);
+                                                        toggleFavoriteStatus(video);
                                                     }}
                                                     className={`star-icon ${
                                                         favoriteStatus[video.id.videoId]
@@ -163,6 +186,9 @@ const VideoList: React.FC = () => {
                         onClose={closeVideo}
                     />
                 )}
+                {showModal && currentVideo && (
+                    <AddToBookmark video={currentVideo} onClose={() => setShowModal(false)} />
+                )}
             </VideoSection>
         </VideoListInn>
     );
@@ -176,7 +202,7 @@ const VideoListInn = styled.div`
     margin: 120px auto 0;
     padding: 20px 60px;
     box-sizing: border-box;
-    background-color: #f8f8f8;
+    // background-color: #f8f8f8;
 `;
 const VideoSection = styled.section`
     position: relative;
@@ -187,7 +213,7 @@ const VideoGridContainer = styled.div`
     grid-template-columns: repeat(1, 1fr);
     gap: 20px;
     margin: 150px auto 0;
-    width: 600px;
+    max-width: 800px;
     text-align: center;
 `;
 const PageTitle = styled.h2`
@@ -205,17 +231,20 @@ const PageTitle = styled.h2`
     }
 `;
 const BtnTab = styled.div`
+    margin-top: 10px;
     position: relative;
     top: 60px;
+    z-index: 10;
 
     button {
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        border: 1px solid #000;
-        border-radius: 20px;
-        padding: 4px 20px;
+        border-style: none;
+        border-radius: 15px;
+        padding: 3px 10px;
         background-color: #fff;
+        box-shadow: 2.5px 5px 10px rgba(0, 0, 0, 0.5);
 
         &.active {
             background-color: #000;
@@ -223,11 +252,11 @@ const BtnTab = styled.div`
         }
     }
     .category01 {
-        left: 40%;
+        left: 43.75%;
         transform: translateX(-40%);
     }
     .category03 {
-        left: 60%;
+        left: 56.3%;
         transform: translateX(-60%);
     }
 `;
@@ -245,19 +274,19 @@ const VideoThumb = styled.div`
     margin-bottom: 50px;
 
     h4 {
-        font-size: 18px;
-        text-align: left;
-        padding: 8px;
-        border: 1px solid #000;
-
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        color: #fff;
+        text-align: left;
+        text-shadow: 2px 2px 4px #000;
+        padding: 8px 15px;
+        background-color: #888;
     }
     .star-icon {
         font-size: 20px;
         color: #fff;
-        stroke: black;
         stroke-width: 30px;
     }
     .star-icon.opened {

@@ -13,6 +13,7 @@ interface Props {
     viewCount: number;
     userNickname: string;
     userImage: string;
+    hashtags: string[];
 }
 
 const getCategoryName = (categoryEng: string) => {
@@ -28,18 +29,23 @@ const getCategoryName = (categoryEng: string) => {
 const PostListItem: React.FC<Props> = ({
     postId,
     category,
+    hashtags,
     title,
-    userNickname,
     // userImage,
+    userNickname,
     likeCount,
     viewCount,
 }) => {
     return (
         <PostListItemComponent>
-            {/* ShowPost: postId를 사용하여 해당 postId를 가진 post의 내용을 불러와 렌더링하도록 수정해야!! */}
             <ShowPost to={`/posts/${postId}`}>
                 <PostInfo>
-                    <PostCategory>{getCategoryName(category)}</PostCategory>
+                    <CategoryAndHashtag>
+                        <PostCategory>{getCategoryName(category)}</PostCategory>
+                        {hashtags?.map((hashtag) => {
+                            return <PostHashtag>#{hashtag}</PostHashtag>;
+                        })}
+                    </CategoryAndHashtag>
                     <PostTitle>{title}</PostTitle>
                     <PostDetail>
                         <PostDetailItem>
@@ -65,10 +71,9 @@ const PostListItem: React.FC<Props> = ({
 };
 
 const PostListItemComponent = styled.div`
-    width: 750px;
-    margin: 50px 0;
+    width: 1000px;
     border-top: 1px solid #d7d7d7;
-    padding: 5px 0;
+    padding: 15px 0;
     border-bottom: 1px solid #d7d7d7;
 `;
 
@@ -84,16 +89,34 @@ const PostInfo = styled.div`
     align-items: flex-start;
 `;
 
-const PostCategory = styled.p`
-    padding: 5px;
-    margin-right: 20px;
-    border-radius: 10px;
-    font-size: 12px;
-    background-color: #c7c7c7;
+const CategoryAndHashtag = styled.div`
+    display: flex;
+    justify-contents: flex-start;
+    align-items: center;
 `;
+
+const PostCategory = styled.p`
+    padding: 3px 8px 3px 9px;
+    margin-right: 20px;
+    border-radius: 15px;
+    font-size: 14px;
+    background-color: #c7c7c7;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+`;
+
+const PostHashtag = styled.p`
+    padding: 0 7px;
+    margin-right: 15px;
+    border-radius: 5px;
+    background-color: #a1c9e4;
+    font-size: 13px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+`;
+
 const PostTitle = styled.h2`
     height: 30px;
-    font-size: 18px;
+    margin: 20px 0px 15px;
+    font-size: 20px;
     white-space: nowrap;
     text-overflow: ellipsis;
 `;
@@ -118,17 +141,17 @@ const FaEye = styled(FontAwesomeIcon)`
 
 const PosterInfo = styled.div`
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    width: 200px;
+    width: 130px;
 `;
 
 const ProfileImageContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 25px;
-    height: 25px;
+    width: 35px;
+    height: 35px;
     border: 1px transparent solid;
     border-radius: 50%;
     overflow: hidden;
@@ -138,15 +161,15 @@ const ProfileImageContainer = styled.div`
 const ProfileImage = styled.img`
     display: block;
     padding: 0px;
-    width: 25px;
-    height: 25px;
+    width: 35px;
+    height: 35px;
 `;
 
 const PosterNickname = styled.p`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 12px;
+    font-size: 16px;
 `;
 
 export default PostListItem;

@@ -83,7 +83,7 @@ const MyPostList: React.FC<MyPostListProps> = ({ userId }) => {
 const PostListComponent = styled.div``;
 
 const PostListItems = styled.div`
-    width: 750px;
+    width: 1000px;
     height: 875px;
 `;
 

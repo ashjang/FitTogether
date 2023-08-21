@@ -1,70 +1,33 @@
-/** @jsxImportSource @emotion/react */
-import React, { useState, useEffect } from 'react';
-import { css } from '@emotion/react';
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import PostListItem from '../common/PostListItem';
-import styled from '@emotion/styled';
-import axios from 'axios';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { postListDataState } from '../../recoil/posts/atoms';
+import styled from '@emotion/styled';
 
 const PostList: React.FC = () => {
-    const [page, setPage] = useState<number>(1); // 현재 페이지
-    const [postListData, setPostListData] = useRecoilState(postListDataState); // 게시글 데이터
-    const limit: number = 5; // 한 페이지에 담길 수 있는 최대 PostListItem
+    const postListData = useRecoilValue(postListDataState);
 
-    const getPostListData = async () => {
-        try {
-            // 실제 구현시에는 axios.get('/posts/') !!
-            const response = await axios.get('http://localhost:3001/posts');
-            setPostListData(response.data);
-        } catch (error) {
-            console.error;
-        }
-    };
+    function ScrollToTopOnPageChange() {
+        const { pathname } = useLocation();
 
-    useEffect(() => {
-        getPostListData();
-    }, []);
+        useEffect(() => {
+            window.scrollTo(0, 0); // Scroll to the top on route change
+        }, [pathname]);
 
-    const dataArrayLength: number = postListData ? postListData.length : 0; // 데이터 배열의 길이. 즉, 총 PostListItem 수
-    const offset: number = (page - 1) * limit; // 각 페이지의 첫번째 PostlistItem의 Index
-    const numPages: number = Math.ceil(dataArrayLength / limit); // 총 페이지 수
-
-    const currentPageGroup: number = Math.ceil(page / 5); // 현재 페이지 그룹
-    const startPage: number = (currentPageGroup - 1) * 5 + 1; // 현재 페이지 그룹에서 시작페이지
-    const endPage: number = Math.min(currentPageGroup * 5, numPages); // 현재 페이지 그룹에서 마지막 페이지
+        return null;
+    }
 
     return (
         <PostListComponent>
+            <ScrollToTopOnPageChange />
             <PostListItems>
                 {postListData ? (
-                    postListData
-                        .slice(offset, offset + limit)
-                        .map((post) => <PostListItem key={post.postId} {...post} />)
+                    postListData.map((post) => <PostListItem key={post.postId} {...post} />)
                 ) : (
                     <div>Loading...</div>
                 )}
             </PostListItems>
-            <ButtonGroup>
-                <PaginationButton onClick={() => setPage(page - 1)} disabled={page === 1}>
-                    &lt;
-                </PaginationButton>
-                {Array.from(
-                    { length: endPage - startPage + 1 },
-                    (_, index) => startPage + index
-                ).map((item) => (
-                    <PaginationButton
-                        key={item}
-                        onClick={() => setPage(item)}
-                        css={item === page ? selectedButton : unselectedButton}
-                    >
-                        {item}
-                    </PaginationButton>
-                ))}
-                <PaginationButton onClick={() => setPage(page + 1)} disabled={page === numPages}>
-                    &gt;
-                </PaginationButton>
-            </ButtonGroup>
         </PostListComponent>
     );
 };
@@ -72,22 +35,8 @@ const PostList: React.FC = () => {
 const PostListComponent = styled.div``;
 
 const PostListItems = styled.div`
-    width: 750px;
-`;
-
-const ButtonGroup = styled.div`
-    width: max-content;
-    margin: 0 auto;
-`;
-
-const PaginationButton = styled.button`
-    width: 25px;
-`;
-
-const unselectedButton = css``;
-
-const selectedButton = css`
-    font-weight: bold;
+    width: 1000px;
+    margin: 50px 0;
 `;
 
 export default PostList;

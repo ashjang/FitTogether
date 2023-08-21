@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+/** @jsxImportSource @emotion/react */
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-// import axios from 'axios';
+import axios from 'axios';
 import styled from '@emotion/styled';
-// import { useRecoilState } from 'recoil';
-// import { useSetRecoilState } from 'recoil';
-// import { postListDataState } from '../../recoil/posts/atoms';
+import { useSetRecoilState, useRecoilState } from 'recoil';
+import { totalPageState, postListDataState, currentPageState } from '../../recoil/posts/atoms';
+import {
+    categoryFilterState,
+    keywordFilterState,
+    hashtagFilterState,
+} from '../../recoil/posts/atoms';
+import { css } from '@emotion/react';
 
 interface CategoryButtonProps {
     active: boolean;
@@ -14,89 +20,130 @@ interface CategoryButtonProps {
 const PostFilter: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const [category, setCategory] = useState<string>('');
-    const [keyword, setKeyword] = useState<string>('');
-    const [hashtag, setHashtag] = useState<string>('');
 
-    // const [postListData, setPostListData] = useRecoilState(postListDataState);
-    // const setPostListData = useSetRecoilState(postListDataState); //postListData 안쓸거면 이 코드 사용하기.
+    const [totalPages, setTotalPages] = useRecoilState(totalPageState);
+    const setPostListData = useSetRecoilState(postListDataState);
+    const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
+
+    const [categoryFilter, setCategoryFilter] = useRecoilState<string>(categoryFilterState);
+    const [keywordFilter, setKeywordFilter] = useRecoilState<string>(keywordFilterState);
+    const [hashtagFilter, setHashtagFilter] = useRecoilState<string>(hashtagFilterState);
+
+    const handlePaginationBtnClick = async (i: number) => {
+        setCurrentPage(i);
+    };
+
+    // 필터링없는 상태에서 postListData 얻기
+    const getPostListData = async () => {
+        try {
+            const response = await axios.get(`/api/posts/search?page=${currentPage - 1}&size=10`);
+            const numPages: number = Math.ceil(response.data.totalPostCount / 10); // 총 페이지 수
+            setTotalPages(numPages);
+            setPostListData(response.data.postList);
+            navigate(`${location.pathname}?page=${currentPage}`);
+        } catch (error) {
+            console.error;
+        }
+    };
 
     // 카테고리로 필터링
     const handleCategoryClick = async (newCategory: string) => {
-        try {
-            if (category !== newCategory) {
-                setCategory(newCategory);
-                navigate(`${location.pathname}?category=${newCategory}`);
-            } else {
-                setCategory('');
-                console.log(location.pathname);
-                navigate(location.pathname);
-            }
-            // const response = await axios.post(`/posts/search?category=${category}`);
-            // console.log(response.data);
+        console.log('newCategory', newCategory);
+        if (categoryFilter !== newCategory) {
+            setCategoryFilter(newCategory);
+        } else {
+            setCategoryFilter('');
+        }
+        setCurrentPage(1);
+    };
 
-            // setPostListData(response.data);
-            // console.log(postListData);
+    const getFilteredCategory = async () => {
+        try {
+            const response = await axios.get(
+                `/api/posts/search/category?category=${categoryFilter}&page=${
+                    currentPage - 1
+                }&size=10`
+            );
+            setPostListData(response.data.postList);
+            const page: number = Math.ceil(response.data.totalPostCount / 10);
+            setTotalPages(page);
+
+            navigate(`${location.pathname}?category=${categoryFilter}&page=${currentPage}`);
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
 
     // 검색으로 필터링
     const handleKeywordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setKeyword(event.target.value);
+        setKeywordFilter(event.target.value);
     };
-    const handleKeywordSubmit = async () => {
+
+    const getFilteredKeyword = async () => {
         try {
-            // const response = await axios.post(`/posts/search?title=${keyword}`);
-            // console.log(response.data);
+            const response = await axios.get(
+                `/api/posts/search/title?page=${currentPage - 1}&size=10&title=${keywordFilter}`
+            );
+            setPostListData(response.data.postList);
+            const page: number = Math.ceil(response.data.totalPostCount / 10);
+            setTotalPages(page);
 
-            // setPostListData(response.data);
-            // console.log(postListData);
-
-            navigate(`${location.pathname}?title=${keyword}`);
-            setKeyword(''); // 해시태그 추가 후, 해시태그 입력 필드를 비웁니다.
+            navigate(`${location.pathname}?&title=${keywordFilter}&page=${currentPage}`);
+            setKeywordFilter(''); // 수정해야함!
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
 
     // 해시태그로 필터링
     const handleHashtagChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setHashtag(event.target.value);
+        setHashtagFilter(event.target.value);
     };
-    const handleHashtagSubmit = async () => {
+    const getFilteredHashtag = async () => {
         try {
-            // const response = await axios.post(`/posts/search?${hashtagQueryString}`);
-            // console.log(response.data);
+            const response = await axios.get(
+                `/api/posts/search/hashtag?hashtag=${hashtagFilter}&page=${currentPage - 1}&size=10`
+            );
+            setPostListData(response.data.postList);
+            const page: number = Math.ceil(response.data.totalPostCount / 10);
+            setTotalPages(page);
 
-            // setPostListData(response.data);
-            // console.log(postListData);
-
-            navigate(`${location.pathname}?hashtag=${hashtag}`);
-            setHashtag('');
+            navigate(`${location.pathname}?hashtag=${hashtagFilter}&page=${currentPage}`);
+            setHashtagFilter(''); // 수정해야함!
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
+
+    useEffect(() => {
+        if (categoryFilter === '' && keywordFilter === '' && hashtagFilter === '') {
+            getPostListData();
+        } else if (categoryFilter !== '') {
+            getFilteredCategory();
+        } else if (keywordFilter !== '') {
+            getFilteredKeyword();
+        } else if (hashtagFilter !== '') {
+            getFilteredHashtag();
+        }
+    }, [currentPage, categoryFilter]);
 
     return (
         <PostFilterComponent>
             <CategoryField>
                 <CategoryButton
-                    active={category === 'RUNNING'}
+                    active={categoryFilter === 'RUNNING'}
                     onClick={() => handleCategoryClick('RUNNING')}
                 >
                     러닝
                 </CategoryButton>
                 <CategoryButton
-                    active={category === 'HIKING'}
+                    active={categoryFilter === 'HIKING'}
                     onClick={() => handleCategoryClick('HIKING')}
                 >
                     등산
                 </CategoryButton>
                 <CategoryButton
-                    active={category === 'WEIGHT'}
+                    active={categoryFilter === 'WEIGHT'}
                     onClick={() => handleCategoryClick('WEIGHT')}
                 >
                     헬스
@@ -105,21 +152,50 @@ const PostFilter: React.FC = () => {
             <InputField>
                 <PostFilterInput
                     type="text"
-                    value={keyword}
+                    value={keywordFilter}
                     onChange={handleKeywordChange}
-                    placeholder="검색어를 입력하세요"
+                    placeholder="제목을 검색해보세요!"
                 />
-                <SearchButton onClick={handleKeywordSubmit}>검색</SearchButton>
+                <SearchButton onClick={getFilteredKeyword}>검색</SearchButton>
             </InputField>
             <InputField>
                 <PostFilterInput
                     type="text"
-                    value={hashtag}
+                    value={hashtagFilter}
                     onChange={handleHashtagChange}
                     placeholder="태그로 검색해보세요!"
                 />
-                <SearchButton onClick={handleHashtagSubmit}>검색</SearchButton>
+                <SearchButton onClick={getFilteredHashtag}>검색</SearchButton>
             </InputField>
+            <ButtonGroup>
+                <PaginationButtonArrow
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                >
+                    &lt;
+                </PaginationButtonArrow>
+                {(() => {
+                    const buttons = [];
+                    for (let i = 1; i <= totalPages; i++) {
+                        buttons.push(
+                            <PaginationButtonNumber
+                                key={i}
+                                onClick={() => handlePaginationBtnClick(i)}
+                                css={i === currentPage ? selectedButton : unselectedButton}
+                            >
+                                {i}
+                            </PaginationButtonNumber>
+                        );
+                    }
+                    return buttons;
+                })()}
+                <PaginationButtonArrow
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                >
+                    &gt;
+                </PaginationButtonArrow>
+            </ButtonGroup>
         </PostFilterComponent>
     );
 };
@@ -129,20 +205,24 @@ const PostFilterComponent = styled.div`
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
-    width: 750px;
+    width: 1000px;
 `;
 
 const CategoryField = styled.div``;
 
 const CategoryButton = styled.button<CategoryButtonProps>`
     border: 2px solid transparent;
-    border-radius: 12px;
+    border-radius: 15px;
     padding: 0 5px;
     margin: 5px 10px 5px 0px;
+    cursor: pointer;
+    background-color: ${(props) => (props.active ? '#888888' : '#bbbbbb')};
     &:hover {
-        border: 2px dashed #b7b7b7;
+        background-color: #888888;
+        color: #ffffff;
     }
-    background-color: ${(props) => (props.active ? '#d7d7d7' : 'white')};
+    color: ${(props) => (props.active ? '#ffffff' : '#000000')};
+    font-size: 18px;
 `;
 
 const InputField = styled.div`
@@ -155,12 +235,13 @@ const InputField = styled.div`
 
 const PostFilterInput = styled.input`
     width: 500px;
-    height: 40px;
+    height: 45px;
     border: 0;
     border-radius: 10px;
     outline: none;
     padding-left: 10px;
     background-color: rgb(222, 222, 222);
+    font-size: 18px;
 `;
 
 const SearchButton = styled.button`
@@ -169,13 +250,52 @@ const SearchButton = styled.button`
     align-items: center;
     position: absolute;
     right: 0px;
-    height: 34px;
-    padding: 3px 10px 0px;
+    height: 35px;
+    padding: 3px 10px;
     border: 0;
     border-radius: 7px;
     margin-right: 3px;
     outline: none;
-    background-color: #c7c7c7;
-    font-size: 14px;
+    color: white;
+    background-color: #aaaaaa;
+    font-size: 16px;
 `;
+
+const ButtonGroup = styled.div`
+    position: absolute;
+    bottom: 0px;
+    left: 45%;
+    width: max-content;
+    margin: 0px auto;
+`;
+
+const PaginationButtonNumber = styled.button`
+    width: 25px;
+    background-color: #d7d7d7;
+    border: 1px solid treansparent;
+    border-style: none;
+    border-radius: 5px;
+    margin: 3px;
+    cursor: pointer;
+    color: #666666;
+    &:hover {
+        background-color: #a1c9e4;
+    }
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* 그림자 추가 */
+`;
+
+const PaginationButtonArrow = styled.button`
+    width: 25px;
+    border: 0px;
+    background-color: transparent;
+    color: #a7a7a7;
+    font-weight: bold;
+`;
+
+const unselectedButton = css``;
+
+const selectedButton = css`
+    font-weight: bold;
+`;
+
 export default PostFilter;

@@ -82,8 +82,6 @@ const Page = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    // min-height는 삭제 예정
-    // min-height: calc(100vh - 300px);
     flex-direction: column;
 `;
 
@@ -115,6 +113,7 @@ const InputField = styled.div`
 
 const SignInButton = styled.button`
     width: 300px;
+    margin-bottom: 20px;
     padding: 5px 10px;
     background-color: #007bff;
     color: white;

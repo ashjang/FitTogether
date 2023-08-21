@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useRecoilState } from 'recoil';
-import { hastagListState, categoryState, accessLevelState } from '../../recoil/posts/atoms';
+import { hashtagListState, categoryState, accessLevelState } from '../../recoil/posts/atoms';
 
 interface ButtonProps {
     active: boolean;
@@ -9,14 +9,14 @@ interface ButtonProps {
 }
 
 interface DataForPostSettingComp {
-    savedHashtag: string[];
+    savedHashtagList: string[];
     savedCategory: string;
     savedAccessLevel: boolean;
 }
 
 const PostSetting: React.FC<DataForPostSettingComp | {}> = (props) => {
     const [hashtag, setHashtag] = useState<string>('');
-    const [hashtagList, setHashtagList] = useRecoilState(hastagListState);
+    const [hashtagList, setHashtagList] = useRecoilState(hashtagListState);
     const [category, setCategory] = useRecoilState(categoryState);
     const [accessLevel, setAccessLevel] = useRecoilState(accessLevelState);
 
@@ -27,13 +27,14 @@ const PostSetting: React.FC<DataForPostSettingComp | {}> = (props) => {
         setHashtag(hashtagString);
     };
 
-    const handleHashtagInputKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleHashtagInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         // Enter 키 누를 때 호출되는 함수
         if (event.key === 'Enter') {
             event.preventDefault();
             setHashtagList([...hashtagList, hashtag]);
             event.currentTarget.value = ''; // 입력 필드를 비웁니다.
         }
+        console.log(hashtagList);
     };
 
     const handleRemoveHashtag = (index: number) => {
@@ -53,8 +54,12 @@ const PostSetting: React.FC<DataForPostSettingComp | {}> = (props) => {
     };
 
     useEffect(() => {
-        if ('savedHashtag' in props && 'savedCategory' in props && 'savedAccessLevel' in props) {
-            setHashtagList(props.savedHashtag);
+        if (
+            'savedHashtagList' in props &&
+            'savedCategory' in props &&
+            'savedAccessLevel' in props
+        ) {
+            setHashtagList(props.savedHashtagList);
             setCategory(props.savedCategory);
             setAccessLevel(props.savedAccessLevel);
         } else {
@@ -72,7 +77,7 @@ const PostSetting: React.FC<DataForPostSettingComp | {}> = (props) => {
                     name="hashtag"
                     type="text"
                     onChange={handleHashtagInputChange}
-                    onKeyPress={handleHashtagInputKeyPress}
+                    onKeyDown={handleHashtagInputKeyDown}
                 />
                 <HashtagList>
                     {hashtagList &&

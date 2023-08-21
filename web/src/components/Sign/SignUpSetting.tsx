@@ -140,6 +140,9 @@ const SignUpSetting: React.FC = () => {
         <Page>
             <Title>가입 정보 입력</Title>
             <Form onSubmit={handleSignUp}>
+                <MessageBox>
+                    <GuideMessage>영어/숫자만 입력 가능합니다.</GuideMessage>
+                </MessageBox>
                 <InputTextDiv>
                     <label htmlFor="nickname">아이디(닉네임)</label>
                     <InputText
@@ -147,6 +150,7 @@ const SignUpSetting: React.FC = () => {
                         id="nickname"
                         name="nickname"
                         value={nickname}
+                        pattern="[a-zA-Z0-9]*"
                         onChange={handleNicknameChange}
                         required
                     />
@@ -276,8 +280,6 @@ const Page = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    // min-height는 삭제 예정
-    // min-height: calc(100vh - 300px);
 `;
 
 const Title = styled.h1`
@@ -295,6 +297,13 @@ const MessageBox = styled.div`
 const ErrorMessage = styled.div`
     font-size: 0.5rem;
     color: red;
+`;
+
+const GuideMessage = styled.div`
+    font-size: 1rem;
+    color: #007bff;
+    margin-left: -50px;
+    margin-bottom: -15px;
 `;
 
 const Form = styled.form`

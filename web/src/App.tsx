@@ -28,6 +28,8 @@ import ProtectedRoute from './components/Sign/ProtectedRoute';
 import KakaoAuth from './components/Sign/KakaoAuth';
 
 import './index.css';
+import FindUserId from './components/Sign/FindUserId';
+import FindUserPassword from './components/Sign/FindUserPassword';
 
 const queryClient = new QueryClient();
 
@@ -43,16 +45,18 @@ function App() {
                         <Route path="/kakao/callback" element={<KakaoAuth />} />
                         <Route path="/signup" element={<SignUp />} />
                         <Route path="/messenger" element={<Messenger />} />
+                        <Route path="/finduserid" element={<FindUserId />} />
+                        <Route path="/finduserpassword" element={<FindUserPassword />} />
                         <Route element={<ProtectedRoute />}>
                             // 비로그인 상태에서는 접근 불가능한 컴포넌트들 모음
                             <Route path="/mypage" element={<MyPage />} />
                             <Route path="/mypage/passwordchange" element={<PasswordChange />} />
                             <Route path="/bookmark" element={<Bookmark />} />
-                            <Route path="/mypage/myvideos" element={<MyVideos />} />
+                            <Route path="/playlists" element={<MyVideos />} />
+                            <Route path="/findmate" element={<FindMate />} />
                         </Route>
                         <Route path="/exerciseInfo" element={<ExerciseInfo />} />
-                        <Route path="/findmate" element={<FindMate />} />
-                        <Route path="/posts" element={<Posts />} />
+                        <Route path="/posts/" element={<Posts />} />
                         <Route path="/posts/:postId" element={<Post />} />
                         <Route path="/posts/:postId/editpost" element={<EditPost />} />
                         <Route path="/posts/createpost" element={<CreatePost />} />
