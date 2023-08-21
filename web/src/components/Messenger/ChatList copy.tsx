@@ -6,9 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
 
 import MateList from '../common/MateList';
-import MateListItem from '../common/MateListitem';
-
-import default_user_image from '../../assets/default-user-image.png';
 
 interface ChatRoom {
     id: string;
@@ -32,12 +29,6 @@ const ChatList: React.FC<Props> = ({ chatRooms, onChatRoomClick }) => {
         setIsMateListOpen(false);
     };
 
-    //새로운 채팅방
-    const addChatRoom = (chatRoom: ChatRoom) => {
-        // chatRooms 배열에 chatRoom을 추가하는 로직을 구현하십시오.
-        // 이 함수는 필요한 채팅방 정보를 받아와서 chatRooms 상태를 업데이트하는 역할을 합니다.
-    };
-
     return (
         <ChatListBox>
             <TopArea>
@@ -53,12 +44,14 @@ const ChatList: React.FC<Props> = ({ chatRooms, onChatRoomClick }) => {
             <BottomArea>
                 {chatRooms.length > 0 ? (
                     chatRooms.map((chatRoom) => (
-                        <MateListItem
-                            key={chatRoom.id}
-                            senderProfileImage={chatRoom.profileImage || default_user_image}
-                            senderNickname={chatRoom.name}
-                            onChatRoomClick={onChatRoomClick}
-                        />
+                        <ListItem key={chatRoom.id} onClick={() => onChatRoomClick(chatRoom.id)}>
+                            <ProfileImageWrapper>
+                                {chatRoom.profileImage && (
+                                    <ProfileImage src={chatRoom.profileImage} alt={chatRoom.name} />
+                                )}
+                            </ProfileImageWrapper>
+                            <UserName>{chatRoom.name}</UserName>
+                        </ListItem>
                     ))
                 ) : (
                     <NoneChat>
@@ -111,30 +104,30 @@ const BottomArea = styled.ul`
     height: 100%;
     background-color: lightblue;
 `;
-// const ListItem = styled.li`
-//     cursor: pointer;
-//     display: flex;
-//     justify-content: left;
-//     align-items: center;
-//     width: 100%;
-//     height: 80px;
-//     padding-left: 30px;
-//     border-bottom: 1px solid #fff;
-// `;
-// const UserName = styled.li`
-//     font-size: 18px;
-//     font-weight: 700;
-// `;
+const ListItem = styled.li`
+    cursor: pointer;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    width: 100%;
+    height: 80px;
+    padding-left: 30px;
+    border-bottom: 1px solid #fff;
+`;
+const UserName = styled.li`
+    font-size: 18px;
+    font-weight: 700;
+`;
 
-// const ProfileImageWrapper = styled.div`
-//     margin-right: 10px;
-// `;
+const ProfileImageWrapper = styled.div`
+    margin-right: 10px;
+`;
 
-// const ProfileImage = styled.img`
-//     width: 40px;
-//     height: 40px;
-//     border-radius: 50%;
-// `;
+const ProfileImage = styled.img`
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+`;
 
 const NoneChat = styled.p`
     position: absolute;
@@ -145,5 +138,4 @@ const NoneChat = styled.p`
     font-weight: 500;
     text-align: center;
 `;
-
 export default ChatList;

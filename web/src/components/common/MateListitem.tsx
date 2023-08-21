@@ -1,3 +1,4 @@
+import axios from 'axios';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane as paperPlaneRegular } from '@fortawesome/free-regular-svg-icons';
@@ -7,12 +8,32 @@ import { Link } from 'react-router-dom';
 interface Props {
     senderProfileImage: string;
     senderNickname: string;
+    onChatRoomClick: (chatRoomId: string) => void;
 }
 
-const MateListItem: React.FC<Props> = ({ senderProfileImage, senderNickname }) => {
-    const handleDMiconClick = () => {};
-    console.log('senderProfileImage:', senderProfileImage);
-    console.log('senderNickname:', senderNickname);
+const MateListItem: React.FC<Props> = ({ senderProfileImage, senderNickname, onChatRoomClick }) => {
+    const token: string | null = sessionStorage.getItem('token');
+
+    const handleDMIconClick = () => {
+        try {
+            axios
+                .post(`/api/dm/${encodeURIComponent(senderNickname)}`, null, {
+                    headers: {
+                        'X-AUTH-TOKEN': token,
+                    },
+                })
+                .then((response) => {
+                    console.log('채팅방 생성 완료:', response.data);
+                    const chatRoomId = response.data.id;
+                    onChatRoomClick(chatRoomId); // 여기서 채팅방 열기 이벤트를 호출
+                })
+                .catch((error) => {
+                    console.error('채팅방 생성 에러:', error);
+                });
+        } catch (error) {
+            console.error('채팅방 생성 에러:', error);
+        }
+    };
 
     return (
         <MateListItemComponent>
@@ -23,9 +44,13 @@ const MateListItem: React.FC<Props> = ({ senderProfileImage, senderNickname }) =
                 <SenderNickname>{senderNickname}</SenderNickname>
             </MateListItemComponentElement>
             <MateListItemComponentElement>
-                <Link to="/messenger">
-                    <FaMessage icon={paperPlaneRegular} onClick={handleDMiconClick} />
+                <Link to={`/messenger/${encodeURIComponent(senderNickname)}`}>
+                    <FaMessage
+                        icon={paperPlaneRegular}
+                        onClick={handleDMIconClick} // 아이콘 클릭 시 채팅방 생성 및 열기 이벤트
+                    />
                 </Link>
+
                 <UnfollowButton>unfollow</UnfollowButton>
             </MateListItemComponentElement>
         </MateListItemComponent>
