@@ -10,12 +10,14 @@ const FindUserId: React.FC = () => {
         setEmail(event.target.value);
     };
 
-    const handleFindId = () => {
+    const handleFindId = (event) => {
+        event.preventDefault();
+
         if (email.trim() === '') {
             alert('이메일을 입력해주세요.');
         } else {
-            const url = `/users/findID?email=${encodeURIComponent(email)}`;
-
+            const url = `/api/users/findID?email=${encodeURIComponent(email)}`;
+            console.log('Request URL:', url);
             axios
                 .get(url)
                 .then((response) => {
@@ -30,6 +32,8 @@ const FindUserId: React.FC = () => {
                 });
         }
     };
+
+    const maskedId = foundId ? foundId.slice(0, -2) + '**' : ''; // ID 일부 *표기
 
     return (
         <Container>
@@ -52,7 +56,8 @@ const FindUserId: React.FC = () => {
                 </InputTextDiv>
                 {foundId !== null && (
                     <MessageBox>
-                        <GuideMessage>회원님의 ID는 {foundId} 입니다.</GuideMessage>
+                        {/* <FoundId>회원님의 ID는 {foundId} 입니다.</FoundId> */}
+                        <FoundId>회원님의 ID는 {maskedId} 입니다.</FoundId>
                     </MessageBox>
                 )}
             </Form>
@@ -91,6 +96,13 @@ const GuideMessage = styled.div`
     color: #007bff;
     margin-left: -80px;
     margin-bottom: -10px;
+`;
+
+const FoundId = styled.div`
+    margin: 10px;
+    margin-left: 90px;
+    font-weight: bold;
+    color: #007bff;
 `;
 
 const InputTextDiv = styled.div`

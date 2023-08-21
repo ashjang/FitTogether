@@ -14,7 +14,7 @@ const FindUserPassword: React.FC = () => {
         if (email.trim() === '') {
             alert('이메일을 입력해주세요.');
         } else {
-            const url = `/users/findPW?email=${encodeURIComponent(email)}`;
+            const url = `/api/users/findPW?email=${encodeURIComponent(email)}`;
 
             axios
                 .put(url)
