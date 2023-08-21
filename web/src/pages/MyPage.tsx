@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
-// import { useRecoilValue } from 'recoil';
-// import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 
-// import { loggedInState } from '../recoil/AuthState/atoms';
 import MyInformation from '../components/MyPage/MyInformation';
-// import MyPostList from '../components/MyPage/MyPostList';
 import PasswordChange from '../components/MyPage/PasswordChange';
 
-interface ButtonProps {
-    isActive: boolean;
-}
+// interface ButtonProps {
+//     isActive: boolean;
+// }
 
 const MyPage: React.FC = () => {
-    const [activeTab, setActiveTab] = useState('MyInformation');
+    // const [activeTab, setActiveTab] = useState('MyInformation');
     // const isLoggedIn = useRecoilValue(loggedInState);
     // const navigate = useNavigate();
 
@@ -28,59 +25,59 @@ const MyPage: React.FC = () => {
     return (
         <MypageContainer>
             <TabArea>
-                <Button
-                    isActive={activeTab === 'MyInformation'}
-                    onClick={() => handleTabClick('MyInformation')}
+                <Title
+                // isActive={activeTab === 'MyInformation'}
+                // onClick={() => handleTabClick('MyInformation')}
                 >
+                    {/* <Link to="/mypage/myinformation"> */}
                     나의 정보
-                </Button>
-                <Button
-                    isActive={activeTab === 'PasswordChange'}
-                    onClick={() => handleTabClick('PasswordChange')}
-                >
-                    비밀번호 변경
-                </Button>
+                    {/* </Link> */}
+                </Title>
+                <Link to="/mypage/passwordchange">
+                    <GoTo>비밀번호 변경하러 가기</GoTo>
+                </Link>
             </TabArea>
             <Content>
-                {activeTab === 'MyInformation' && <MyInformation />}
-                {activeTab === 'PasswordChange' && <PasswordChange />}
+                <MyInformation />
+                {/* {activeTab === 'MyInformation' && <MyInformation />} */}
+                {/* {activeTab === 'PasswordChange' && <PasswordChange />} */}
             </Content>
         </MypageContainer>
     );
 };
 
 const MypageContainer = styled.div`
-    margin-top: 150px;
-
+    margin-top: 80px;
     min-height: 100vh;
+    // width: 1040px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 `;
 
-const Button = styled.button<ButtonProps>`
+const Title = styled.h2`
     width: 180px;
     height: 50px;
-    border-radius: 30px;
-    // background-color: white;
-    background-color: ${(props) => (props.isActive ? '#d9d9d9' : 'white')};
-    border: none;
-    padding: 9px 20px;
-    margin-right: 25px;
     font-weight: bold;
     font-size: 22px;
-    cursor: pointer;
     white-space: nowrap;
     overflow: hidden;
+`;
 
-    &:hover {
-        background-color: #d9d9d9;
-    }
+const GoTo = styled.div`
+    font-size: 1.3rem;
+    // margin-left: 100px;
 `;
 
 const TabArea = styled.div`
     width: 80%;
     display: flex;
-    justify-content: center;
+    // justify-content: center;
+    justify-content: space-around;
     align-items: center;
-    // margin-top: 50px;
+    margin-top: 150px;
     margin-bottom: 70px;
 `;
 
@@ -89,7 +86,6 @@ const Content = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 10px;
     margin-bottom: 50px;
 `;
 

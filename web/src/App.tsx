@@ -21,6 +21,7 @@ import EditPost from './pages/EditPost';
 import CreatePost from './pages/CreatePost';
 import MyPage from './pages/MyPage';
 import MyVideos from './pages/MyVideos';
+import PasswordChange from './components/MyPage/PasswordChange';
 
 import ScrollTopButton from './components/common/ScrollTopButton';
 import ProtectedRoute from './components/Sign/ProtectedRoute';
@@ -45,6 +46,7 @@ function App() {
                         <Route element={<ProtectedRoute />}>
                             // 비로그인 상태에서는 접근 불가능한 컴포넌트들 모음
                             <Route path="/mypage" element={<MyPage />} />
+                            <Route path="/mypage/passwordchange" element={<PasswordChange />} />
                             <Route path="/bookmark" element={<Bookmark />} />
                             <Route path="/mypage/myvideos" element={<MyVideos />} />
                         </Route>

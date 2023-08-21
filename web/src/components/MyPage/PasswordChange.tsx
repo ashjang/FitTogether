@@ -81,7 +81,8 @@ const PasswordChange: React.FC = () => {
     const isSaveEnabled = isPasswordValid && passwordsMatch;
 
     return (
-        <div>
+        <PasswordBox>
+            <Title>비밀번호 변경</Title>
             <InputContainer>
                 <label css={labelStyle}>비밀번호</label>
                 <input
@@ -135,9 +136,23 @@ const PasswordChange: React.FC = () => {
                     disabled={!isSaveEnabled}
                 />
             </div>
-        </div>
+        </PasswordBox>
     );
 };
+
+const PasswordBox = styled.div`
+    margin-top: 150px;
+    min-height: calc(100vh - 150px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+`;
+
+const Title = styled.h2`
+    margin-left: -500px;
+    margin-bottom: 50px;
+`;
 
 const labelStyle = css`
     width: 108px;
@@ -163,7 +178,7 @@ const inputButton = css`
     text-align: center;
     cursor: pointer;
     margin: 10px;
-    margin-left: -100px;
+    margin-right: -295px;
     padding: 2px 10px;
     border-radius: 10px;
 

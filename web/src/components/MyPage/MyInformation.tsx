@@ -1,23 +1,12 @@
 /** @jsxImportSource @emotion/react */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { GiSwordman, GiSwordwoman, GiSnowman } from 'react-icons/gi';
-
-// import { canEditInfo } from '../../recoil/AuthState/atoms';
-// import { useRecoilValue } from 'recoil';
-
-// import { LiaWindowClose } from 'react-icons/lia';
-// import getGeocodeFromAddress from './getGeocodeFromAddress';
-// import DaumPostcode, { Address } from 'react-daum-postcode';
 
 const MyInformation: React.FC = () => {
-    // const [isAddressModalOpen, setAddressModalOpen] = useState(false);
-    // const [selectedAddress, setSelectedAddress] = useState<string>('');
-
     const [userData, setUserData] = useState({});
     const [introduction, setIntroduction] = useState<string>(userData.introduction || ''); // 초기 값 설정
     const [gender, setGender] = useState(false);
@@ -27,7 +16,7 @@ const MyInformation: React.FC = () => {
     const [publicStatus, setPublicStatus] = useState(true);
     const [favoriteSports, setFavoriteSports] = useState<string[]>([]);
 
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    // const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const token = sessionStorage.getItem('token');
 
@@ -50,7 +39,7 @@ const MyInformation: React.FC = () => {
             });
             setIntroduction(response.data.introduction || '');
             setGender(response.data.gender === true);
-            setProfilePicture(response.data.profilePicture);
+            setPictureURL(response.data.profilePicture);
             setPublicStatus(response.data.publicInfo === true);
             setFavoriteSports(response.data.exerciseChoice);
             console.log(response.data);
@@ -63,51 +52,6 @@ const MyInformation: React.FC = () => {
     // 성별 정보
     const handleGenderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setGender(event.target.value === '남성');
-    };
-
-    // 프로필 이미지 업로드
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        setSelectedImage(file);
-        setImagePreview(file);
-
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result as string);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    // 프로필 이미지
-    const handlePictureChange = async () => {
-        if (!selectedImage) return;
-
-        const formData = new FormData();
-        formData.append('image', selectedImage);
-
-        try {
-            const response = await axios.post(
-                `/api/users/upload?image=${encodeURIComponent(selectedImage.name)}`,
-                formData,
-                {
-                    headers: {
-                        'X-AUTH-TOKEN': token,
-                    },
-                }
-            );
-            const uploadedFileURL = response.data;
-            setPictureURL(uploadedFileURL);
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
-
-    // 프로필 이미지 삭제
-    const handlePictureDelete = () => {
-        setSelectedImage(null);
-        setImagePreview(null);
     };
 
     // 정보 공개 여부
@@ -141,6 +85,55 @@ const MyInformation: React.FC = () => {
 
     const introductionLength = introduction.length;
 
+    // 프로필 이미지 업로드
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        // setSelectedImage(file);
+        // setImagePreview(file);
+
+        if (file) {
+            setSelectedImage(file);
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    // 프로필 이미지 URL 반환받기
+    const handlePictureChange = async () => {
+        if (!selectedImage) return;
+
+        const formData = new FormData();
+        formData.append('image', selectedImage);
+
+        try {
+            const response = await axios.post(
+                `/api/users/upload?image=${encodeURIComponent(selectedImage.name)}`,
+                formData,
+                {
+                    headers: {
+                        'X-AUTH-TOKEN': token,
+                    },
+                }
+            );
+            const uploadedFileURL = response.data;
+            setImagePreview(uploadedFileURL);
+            setPictureURL(uploadedFileURL);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    // 프로필 이미지 삭제
+    const handlePictureDelete = () => {
+        setSelectedImage(null);
+        setImagePreview(null);
+        setPictureURL(null);
+    };
+
     // 비밀번호 외의 회원정보 데이터 저장
     const handleSaveClick = () => {
         const userInfo = {
@@ -148,7 +141,7 @@ const MyInformation: React.FC = () => {
             exerciseChoice: favoriteSports,
             introduction: introduction,
             publicInfo: publicStatus,
-            profilePicture: selectedImage,
+            profilePicture: pictureURL,
         };
 
         axios
@@ -202,7 +195,8 @@ const MyInformation: React.FC = () => {
                         <input
                             type="file"
                             name="image"
-                            ref={fileInputRef}
+                            ref={pictureURL}
+                            // {fileInputRef}
                             onChange={handleImageChange}
                             accept="image/*"
                         />
@@ -471,12 +465,6 @@ const ImageUploadButton = styled.label`
     :hover {
         background-color: #d2d2d2;
     }
-`;
-
-const IconContainer = css`
-    margin-left: 5px;
-    font-size: 35px;
-    color: #ffaea5;
 `;
 
 export default MyInformation;
