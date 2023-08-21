@@ -85,56 +85,81 @@ const MyInformation: React.FC = () => {
 
     const introductionLength = introduction.length;
 
+    // 이미지 미리보기 설정
+    useEffect(() => {
+        if (pictureURL) {
+            setImagePreview(pictureURL);
+        }
+    }, [pictureURL]);
+
     // 프로필 이미지 업로드
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
-        setSelectedImage(file);
-        setImagePreview(file);
+        // setSelectedImage(file);
 
         if (file) {
-            setSelectedImage(file);
-            setImagePreview(file);
-
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result as string);
             };
             reader.readAsDataURL(file);
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const response = await axios.post(
+                    `/api/users/upload?image=${encodeURIComponent(file.name)}`,
+                    formData,
+                    {
+                        headers: {
+                            'X-AUTH-TOKEN': token,
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    }
+                );
+                const uploadedFileURL = response.data;
+                setPictureURL(uploadedFileURL);
+                setImagePreview(URL.createObjectURL(file));
+            } catch (error) {
+                console.error('Error:', error);
+            }
         }
     };
 
     // 프로필 이미지 URL 반환받기
-    const handlePictureChange = async () => {
-        if (!selectedImage) {
-            alert('이미지를 선택해주세요');
-            return;
-        }
+    // const handlePictureChange = async () => {
+    //     if (!selectedImage) {
+    //         alert('이미지를 선택해주세요');
+    //         return;
+    //     }
 
-        const formData = new FormData();
-        formData.append('image', selectedImage);
+    //     const formData = new FormData();
+    //     formData.append('image', selectedImage);
 
-        try {
-            const response = await axios.post(
-                `/api/users/upload?image=${encodeURIComponent(selectedImage.name)}`,
-                formData,
-                {
-                    headers: {
-                        'X-AUTH-TOKEN': token,
-                    },
-                }
-            );
-            const uploadedFileURL = response.data;
-            setImagePreview(uploadedFileURL);
-            setPictureURL(uploadedFileURL);
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
+    //     try {
+    //         const response = await axios.post(
+    //             `/api/users/upload?image=${encodeURIComponent(selectedImage.name)}`,
+    //             formData,
+    //             {
+    //                 headers: {
+    //                     'X-AUTH-TOKEN': token,
+    //                     'Content-Type': 'multipart/form-data',
+    //                 },
+    //             }
+    //         );
+    //         const uploadedFileURL = response.data;
+    //         setImagePreview(uploadedFileURL);
+    //         setPictureURL(uploadedFileURL);
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //     }
+    // };
 
     // 프로필 이미지 삭제
     const handlePictureDelete = () => {
         // setSelectedImage('');
-        setImagePreview('');
+        // setImagePreview('');
         setPictureURL(null);
     };
 
@@ -190,7 +215,9 @@ const MyInformation: React.FC = () => {
                 <label css={labelStyle}>프로필 이미지</label>
                 <ImageUploadContainer>
                     <ImagePreviewContainer>
-                        {pictureURL ? <img src={pictureURL} alt="프로필 이미지 미리보기" /> : null}
+                        {imagePreview ? (
+                            <img src={imagePreview} alt="프로필 이미지 미리보기" />
+                        ) : null}
                     </ImagePreviewContainer>
                     <ImageUploadButton>
                         <span>이미지 선택</span>
@@ -201,9 +228,6 @@ const MyInformation: React.FC = () => {
                             onChange={handleImageChange}
                             accept="image/*"
                         />
-                    </ImageUploadButton>
-                    <ImageUploadButton onClick={handlePictureChange}>
-                        <span>이미지 저장</span>
                     </ImageUploadButton>
                     <ImageUploadButton onClick={handlePictureDelete}>이미지 삭제</ImageUploadButton>
                 </ImageUploadContainer>
