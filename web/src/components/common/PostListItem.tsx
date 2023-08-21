@@ -71,7 +71,7 @@ const PostListItem: React.FC<Props> = ({
 };
 
 const PostListItemComponent = styled.div`
-    width: 750px;
+    width: 1000px;
     border-top: 1px solid #d7d7d7;
     padding: 15px 0;
     border-bottom: 1px solid #d7d7d7;
@@ -141,17 +141,17 @@ const FaEye = styled(FontAwesomeIcon)`
 
 const PosterInfo = styled.div`
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    width: 200px;
+    width: 130px;
 `;
 
 const ProfileImageContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 25px;
-    height: 25px;
+    width: 35px;
+    height: 35px;
     border: 1px transparent solid;
     border-radius: 50%;
     overflow: hidden;
@@ -161,15 +161,15 @@ const ProfileImageContainer = styled.div`
 const ProfileImage = styled.img`
     display: block;
     padding: 0px;
-    width: 25px;
-    height: 25px;
+    width: 35px;
+    height: 35px;
 `;
 
 const PosterNickname = styled.p`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 12px;
+    font-size: 16px;
 `;
 
 export default PostListItem;

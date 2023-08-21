@@ -50,7 +50,7 @@ function App() {
                             <Route path="/findmate" element={<FindMate />} />
                         </Route>
                         <Route path="/exerciseInfo" element={<ExerciseInfo />} />
-                        <Route path="/posts" element={<Posts />} />
+                        <Route path="/posts/" element={<Posts />} />
                         <Route path="/posts/:postId" element={<Post />} />
                         <Route path="/posts/:postId/editpost" element={<EditPost />} />
                         <Route path="/posts/createpost" element={<CreatePost />} />

@@ -323,6 +323,7 @@ const PostTitle = styled.h1`
 
 const PostDescription = styled.div`
     width: 850px;
+    min-height: 300px;
 `;
 
 const PostDetail = styled.div`
