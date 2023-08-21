@@ -6,8 +6,6 @@ import styled from '@emotion/styled';
 import Modal from 'react-modal';
 import default_user_image from '../../assets/default-user-image.png';
 
-const imageSrc: string = default_user_image;
-
 interface Props {
     isOpen: boolean;
     onClose: () => void;
@@ -20,49 +18,14 @@ interface MateDateItem {
 interface MateData {
     [key: string]: MateDateItem;
 }
-interface MateDateItem {
+interface UserData {
     senderProfileImage: string;
     senderNickname: string;
 }
 
-// interface ApiResponse {
-//     data: User[];
-// }
-// interface User {
-//     id: number;
-//     nickname: string;
-// }
-
-// interface UsersProfileData {
-//     usersInfo: UserProfile[];
-// }
-
 const MateList: React.FC<Props> = ({ isOpen, onClose }) => {
     const [mateData, setMateData] = useState<MateData>({});
     const token: string | null = sessionStorage.getItem('token');
-
-    // useEffect(() => {
-    //     fetch('/data/usersProfile.json')
-    //         .then((response) => {
-    //             if (!response.ok) {
-    //                 throw new Error('Failed to fetch data');
-    //             }
-    //             return response.json();
-    //         })
-    //         .then((data: UsersProfileData) => {
-    //             const mateData: MateData = {};
-    //             data.usersInfo.forEach((user) => {
-    //                 mateData[user.username] = {
-    //                     senderProfileImage: user.profileImage || imageSrc,
-    //                     senderNickname: user.username,
-    //                 };
-    //             });
-    //             setMateData(mateData);
-    //         })
-    //         .catch((error) => {
-    //             console.error('An error occurred:', error);
-    //         });
-    // }, []);
 
     useEffect(() => {
         if (token) {
@@ -88,18 +51,18 @@ const MateList: React.FC<Props> = ({ isOpen, onClose }) => {
         }
     }, [token]);
 
-    const processResponseData = (responseData: any) => {
+    const processResponseData = (responseData: UserData[]) => {
         const processedData: MateData = {};
 
-        if (Array.isArray(responseData)) {
-            responseData.forEach((user: any) => {
-                if (user && typeof user.username === 'string') {
-                    processedData[user.username] = {
-                        nickname: '',
-                    };
-                }
-            });
-        }
+        responseData.forEach((user) => {
+            if (typeof user.senderNickname === 'string') {
+                processedData[user.senderNickname] = {
+                    senderProfileImage: user.senderProfileImage || default_user_image,
+                    senderNickname: user.senderNickname,
+                    nickname: '',
+                };
+            }
+        });
 
         return processedData;
     };
