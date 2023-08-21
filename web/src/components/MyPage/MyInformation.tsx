@@ -1,36 +1,22 @@
 /** @jsxImportSource @emotion/react */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { GiSwordman, GiSwordwoman, GiSnowman } from 'react-icons/gi';
-
-// import { canEditInfo } from '../../recoil/AuthState/atoms';
-// import { useRecoilValue } from 'recoil';
-
-// import { LiaWindowClose } from 'react-icons/lia';
-// import getGeocodeFromAddress from './getGeocodeFromAddress';
-// import DaumPostcode, { Address } from 'react-daum-postcode';
 
 const MyInformation: React.FC = () => {
-    // const [isAddressModalOpen, setAddressModalOpen] = useState(false);
-    // const [selectedAddress, setSelectedAddress] = useState<string>('');
-
     const [userData, setUserData] = useState({});
     const [introduction, setIntroduction] = useState<string>(userData.introduction || ''); // 초기 값 설정
     const [gender, setGender] = useState(false);
-    const [profilePicture, setProfilePicture] = useState('');
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [pictureURL, setPictureURL] = useState<string | null>(null);
     const [publicStatus, setPublicStatus] = useState(true);
     const [favoriteSports, setFavoriteSports] = useState<string[]>([]);
 
-    // const [latitude, setLatitude] = useState<number | null>(null);
-    // const [longitude, setLongitude] = useState<number | null>(null);
-
-    // const canInfoEdit = useRecoilValue(canEditInfo);
-
-    // const kakaoToken = sessionStorage.getItem('token_for_kakaotalk');
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const token = sessionStorage.getItem('token');
 
@@ -53,7 +39,7 @@ const MyInformation: React.FC = () => {
             });
             setIntroduction(response.data.introduction || '');
             setGender(response.data.gender === true);
-            setProfilePicture(response.data.profilePicture);
+            setPictureURL(response.data.profilePicture);
             setPublicStatus(response.data.publicInfo === true);
             setFavoriteSports(response.data.exerciseChoice);
             console.log(response.data);
@@ -63,67 +49,9 @@ const MyInformation: React.FC = () => {
         }
     };
 
-    // 주소찾기 모달 토글
-    // const handleAddressModalToggle = () => {
-    //     if (!isAddressModalOpen) {
-    //         setSelectedAddress(''); // 주소찾기 모달이 닫힐 때 주소 입력 값을 초기화
-    //         // setSelectedAddress(''); // 주소찾기 모달이 닫힐 때 주소 입력 값을 초기화
-    //     }
-    //     setAddressModalOpen((prev) => !prev); // 모달 상태를 토글
-    // };
-
-    // 찾은 주소를 거주지 Value값으로 입력
-    // const handleComplete = (data: Address): void => {
-    //     const userAddress = data.address;
-    //     setSelectedAddress(userAddress);
-    //     handleAddressModalToggle();
-
-    // 주소를 좌표로 변환해서 값 얻어내기
-    //     getGeocodeFromAddress(userAddress)
-    //         .then((geocode) => {
-    //             if (geocode) {
-    //                 const { lat, long } = geocode;
-
-    //                 console.log('위도:', lat);
-    //                 console.log('경도:', long);
-
-    //                 // 위도와 경도 값을 숫자로 변환하여 상태에 저장
-    //                 setLatitude(Number(lat));
-    //                 setLongitude(Number(long));
-
-    //                 // 위도와 경도 값을 서버에 PUT 요청
-    //                 axios
-    //                     .put(
-    //                         `/api/location?lat=${lat}&long=${long}`,
-    //                         {},
-    //                         {
-    //                             headers: {
-    //                                 // 'X-AUTH-TOKEN': canInfoEdit ? token : kakaoToken,
-    //                                 'X-AUTH-TOKEN': token,
-    //                             },
-    //                         }
-    //                     )
-    //                     .then((response) => {
-    //                         console.log('위도 경도 업데이트 성공:', response.data);
-    //                     })
-    //                     .catch((error) => {
-    //                         console.error('위도 경도 업데이트 실패:', error);
-    //                     });
-    //             }
-    //         })
-    //         .catch((error) => {
-    //             console.error('Geocoding API 호출 오류:', error);
-    //         });
-    // };
-
     // 성별 정보
     const handleGenderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setGender(event.target.value === '남성');
-    };
-
-    // 프로필 아이콘 선택
-    const handlePictureChange = (event) => {
-        setProfilePicture(event.target.value);
     };
 
     // 정보 공개 여부
@@ -157,6 +85,59 @@ const MyInformation: React.FC = () => {
 
     const introductionLength = introduction.length;
 
+    // 프로필 이미지 업로드
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        setSelectedImage(file);
+        setImagePreview(file);
+
+        if (file) {
+            setSelectedImage(file);
+            setImagePreview(file);
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    // 프로필 이미지 URL 반환받기
+    const handlePictureChange = async () => {
+        if (!selectedImage) {
+            alert('이미지를 선택해주세요');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('image', selectedImage);
+
+        try {
+            const response = await axios.post(
+                `/api/users/upload?image=${encodeURIComponent(selectedImage.name)}`,
+                formData,
+                {
+                    headers: {
+                        'X-AUTH-TOKEN': token,
+                    },
+                }
+            );
+            const uploadedFileURL = response.data;
+            setImagePreview(uploadedFileURL);
+            setPictureURL(uploadedFileURL);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    // 프로필 이미지 삭제
+    const handlePictureDelete = () => {
+        // setSelectedImage('');
+        setImagePreview('');
+        setPictureURL(null);
+    };
+
     // 비밀번호 외의 회원정보 데이터 저장
     const handleSaveClick = () => {
         const userInfo = {
@@ -164,13 +145,12 @@ const MyInformation: React.FC = () => {
             exerciseChoice: favoriteSports,
             introduction: introduction,
             publicInfo: publicStatus,
-            profilePicture: profilePicture,
+            profilePicture: pictureURL,
         };
 
         axios
             .put('/api/users/my', userInfo, {
                 headers: {
-                    // 'X-AUTH-TOKEN': canInfoEdit ? token : kakaoToken,
                     'X-AUTH-TOKEN': token,
                 },
             })
@@ -206,28 +186,28 @@ const MyInformation: React.FC = () => {
                     readOnly
                 />
             </InputContainer>
-
-            {/* <InputContainer>
-                <label css={labelStyle}>거주지역</label>
-                <input
-                    type="text"
-                    name="address"
-                    css={inputStyles}
-                    defaultValue={selectedAddress}
-                    readOnly
-                />
-                <button onClick={handleAddressModalToggle} css={inputButton}>
-                    주소찾기
-                </button>
-            </InputContainer> */}
-            {/* {isAddressModalOpen && (
-                <AddressPopup>
-                    <PopupContent>
-                        <DaumPostcode onComplete={handleComplete} />
-                        <LiaWindowClose onClick={handleAddressModalToggle} />
-                    </PopupContent>
-                </AddressPopup>
-            )} */}
+            <InputContainer>
+                <label css={labelStyle}>프로필 이미지</label>
+                <ImageUploadContainer>
+                    <ImagePreviewContainer>
+                        {pictureURL ? <img src={pictureURL} alt="프로필 이미지 미리보기" /> : null}
+                    </ImagePreviewContainer>
+                    <ImageUploadButton>
+                        <span>이미지 선택</span>
+                        <input
+                            type="file"
+                            name="image"
+                            ref={fileInputRef}
+                            onChange={handleImageChange}
+                            accept="image/*"
+                        />
+                    </ImageUploadButton>
+                    <ImageUploadButton onClick={handlePictureChange}>
+                        <span>이미지 저장</span>
+                    </ImageUploadButton>
+                    <ImageUploadButton onClick={handlePictureDelete}>이미지 삭제</ImageUploadButton>
+                </ImageUploadContainer>
+            </InputContainer>
             <div css={containerStyles}>
                 <p css={labelStyle}>성별</p>
                 <label css={radioButtonStyles}>
@@ -249,45 +229,6 @@ const MyInformation: React.FC = () => {
                         onChange={handleGenderChange}
                     />
                     여성
-                </label>
-            </div>
-            <div css={containerStyles}>
-                <p css={labelStyle}>프로필 아이콘</p>
-                <label css={radioButtonStyles}>
-                    <input
-                        type="radio"
-                        name="profilePicture"
-                        value="GiSwordman"
-                        checked={profilePicture === 'GiSwordman'}
-                        onChange={handlePictureChange}
-                    />
-                    <div css={IconContainer}>
-                        <GiSwordman />
-                    </div>
-                </label>
-                <label css={radioButtonStyles}>
-                    <input
-                        type="radio"
-                        name="profilePicture"
-                        value="GiSwordwoman"
-                        checked={profilePicture === 'GiSwordwoman'}
-                        onChange={handlePictureChange}
-                    />
-                    <div css={IconContainer}>
-                        <GiSwordwoman />
-                    </div>
-                </label>
-                <label css={radioButtonStyles}>
-                    <input
-                        type="radio"
-                        name="profilePicture"
-                        value="GiSnowman"
-                        checked={profilePicture === 'GiSnowman'}
-                        onChange={handlePictureChange}
-                    />
-                    <div css={IconContainer}>
-                        <GiSnowman />
-                    </div>
                 </label>
             </div>
             <div css={containerStyles}>
@@ -468,10 +409,63 @@ const radioButtonStyles = css`
     margin-right: 70px;
 `;
 
-const IconContainer = css`
-    margin-left: 5px;
-    font-size: 35px;
-    color: #ffaea5;
+const ImageUploadContainer = styled.div`
+    position: relative;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+`;
+
+const ImagePreviewContainer = styled.div`
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 10px;
+    margin-left: 50px;
+    margin-right: 10px;
+    pointer-events: none;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+`;
+
+const ImageUploadButton = styled.label`
+    border: 0.5px solid #d2d2d2;
+    background-color: white;
+    text-align: center;
+    cursor: pointer;
+    margin: 10px;
+    padding: 3px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    min-width: 80px;
+    height: 35px;
+
+    span {
+        pointer-events: none; // 클릭 이벤트가 버튼으로 전달되지 않도록 막음
+    }
+
+    input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        pointer-events: none;
+    }
+
+    :hover {
+        background-color: #d2d2d2;
+    }
 `;
 
 export default MyInformation;
