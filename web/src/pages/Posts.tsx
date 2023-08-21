@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import PostFilter from '../components/Posts/PostFilter';
 import PostList from '../components/Posts/PostList';
 import styled from '@emotion/styled';
@@ -8,13 +8,6 @@ import { loggedInState } from '../recoil/AuthState/atoms';
 
 const Posts: React.FC = () => {
     const loggedIn = useRecoilValue(loggedInState);
-
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    useEffect(() => {
-        navigate(location.pathname);
-    }, []);
 
     return (
         <Page>
@@ -38,13 +31,13 @@ const Page = styled.div`
     position: relative;
     margin: 120px auto 0;
     padding: 20px;
-    width: 750px;
+    width: 1000px;
     min-height: calc(100vh - 200px);
 `;
 
 const Title = styled.h2`
     position: relative;
-    width: 750px;
+    width: 1000px;
     margin-bottom: 50px;
     &::before {
         content: '';
