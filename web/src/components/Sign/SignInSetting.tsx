@@ -113,6 +113,7 @@ const InputField = styled.div`
 
 const SignInButton = styled.button`
     width: 300px;
+    margin-bottom: 20px;
     padding: 5px 10px;
     background-color: #007bff;
     color: white;
