@@ -1,22 +1,74 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import { useRecoilValue } from 'recoil';
+
 import styled from '@emotion/styled';
-import { IoMdClose } from 'react-icons/io';
 
-import {
-    // kakaoAccessTokenState,
-    signUpInfo,
-} from '../../recoil/AuthState/atoms';
-
-const MateRequest: React.FC = () => {
+const MateRequest: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const [activeBtn, setActiveBtn] = useState<number | null>(null);
     const [isRejected, setIsRejected] = useState(false);
     const [isClosed, setIsClosed] = useState(false);
 
-    const { nickname, profilePicture, exerciseChoice, gender, introduction } =
-        useRecoilValue(signUpInfo);
-    // const userTypeKakao = useRecoilValue(kakaoAccessTokenState);
+    const [userData, setUserData] = useState({});
+    const [nickname, setNickname] = useState<string>('');
+    const [introduction, setIntroduction] = useState<string>(userData.introduction || ''); // 초기 값 설정
+    const [gender, setGender] = useState(false);
+    const [pictureURL, setPictureURL] = useState<string | null>(null);
+    const [publicStatus, setPublicStatus] = useState(true);
+    const [favoriteSports, setFavoriteSports] = useState<string[]>([]);
+
+    const token = sessionStorage.getItem('token');
+    const mateRequestRef = useRef(null);
+
+    // 로그인한 사용자의 정보 요청 → 요청을 보낸 사용자의 정보를 요청해야 함
+    useEffect(() => {
+        if (token) {
+            getUserData(token);
+        }
+        // 팝업이 닫힐 때 userData 초기화
+        return () => {
+            setUserData({});
+        };
+    }, []);
+
+    const getUserData = async (token) => {
+        try {
+            const response = await axios.get('/api/users/my', {
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
+            });
+            setUserData({
+                ...response.data,
+                gender: response.data.gender === '남성',
+            });
+            setNickname(response.data.nickname);
+            setIntroduction(response.data.introduction || '');
+            setGender(response.data.gender === true);
+            setPictureURL(response.data.profilePicture);
+            setPublicStatus(response.data.publicInfo === true);
+            setFavoriteSports(response.data.exerciseChoice);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            alert('회원정보를 받아오는데 실패했습니다.');
+        }
+    };
+
+    // 팝업 외부 영역 클릭 감지
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (mateRequestRef.current && !mateRequestRef.current.contains(event.target as Node)) {
+                setIsClosed(true); // 팝업이 열려 있을 때 외부 영역 클릭 시 팝업 닫기
+                setIsRejected(false); // 팝업 닫을 때 거절 상태 초기화
+                onClose();
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const handleBtnClick = (index: number) => {
         setActiveBtn(index);
@@ -26,29 +78,35 @@ const MateRequest: React.FC = () => {
         // 거절 버튼을 누르면 알림을 표시하고 창을 닫음
         window.alert('요청을 거절하였습니다.');
         setIsClosed(true);
+        onClose();
     };
 
     const handleAcceptBtnClick = () => {
+        const senderId = 'test6'; // 실제 senderId(메이트요청을 한 사람)값 추출해서 넣기
+
         // 수락 버튼을 누르면 요청을 보내고 창을 닫음
-        // axios
-        //     .put(`/matching/accept?senderId={senderId}`, null, {
-        //         headers: { token: userToken }, // userToken을 적절한 값으로 설정해야 합니다
-        //     })
-        //     .then((response) => {
-        window.alert('요청을 수락하였습니다.');
-        setIsClosed(true); // axios 요청이 성공하면 창을 닫음
-        // })
-        // .catch((error) => {
-        //     window.alert('에러가 발생하였습니다.');
-        //     console.error('Error accepting request:', error);
-        // });
+        axios
+            .put(`/api/matching/accept?senderNickname=${senderId}`, null, {
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
+            })
+            .then((response) => {
+                window.alert('요청을 수락하였습니다.');
+                setIsClosed(true); // axios 요청이 성공하면 창을 닫음
+            })
+            .catch((error) => {
+                window.alert('에러가 발생하였습니다.');
+                console.error(error);
+            });
+        onClose();
     };
 
-    const handleCloseBtn = () => {
-        setIsClosed(true);
-    };
+    // const handleCloseBtn = () => {
+    //     setIsClosed(true);
+    // };
 
-    if (exerciseChoice.length === 0 || isClosed) {
+    if (favoriteSports.length === 0 || isClosed) {
         return null; // 빈 배열이거나 창이 닫힌 경우 아무것도 출력하지 않음
     }
 
@@ -56,15 +114,15 @@ const MateRequest: React.FC = () => {
         <>
             {!isRejected && ( // isRejected 상태가 false인 경우에만 MateRequestContainer를 렌더링
                 <MateRequestWrapper>
-                    <MateRequestContainer>
+                    <MateRequestContainer ref={mateRequestRef}>
                         <MateRequestTitle>
                             <MateRequestImg>
-                                <img src={profilePicture} alt="프로필이미지" />
+                                <img src={pictureURL} alt="프로필이미지" />
                             </MateRequestImg>
                             <MateRequestName>{nickname}</MateRequestName>
-                            <CloseBtn onClick={() => handleCloseBtn()}>
+                            {/* <CloseBtn onClick={() => handleCloseBtn()}>
                                 <IoMdClose />
-                            </CloseBtn>
+                            </CloseBtn> */}
                         </MateRequestTitle>
                         <MateRequestContent>
                             <UserGenderInfo>
@@ -81,13 +139,13 @@ const MateRequest: React.FC = () => {
                             <UserExercise>
                                 <RequestContentTitle>주로 하는 운동</RequestContentTitle>
                                 <RequestExercise>
-                                    {exerciseChoice.includes('RUNNING') && (
+                                    {favoriteSports.includes('RUNNING') && (
                                         <ExerciseContent className="running">러닝</ExerciseContent>
                                     )}
-                                    {exerciseChoice.includes('HIKING') && (
+                                    {favoriteSports.includes('HIKING') && (
                                         <ExerciseContent className="hiking">등산</ExerciseContent>
                                     )}
-                                    {exerciseChoice.includes('WEIGHT') && (
+                                    {favoriteSports.includes('WEIGHT') && (
                                         <ExerciseContent className="weight">헬스</ExerciseContent>
                                     )}
                                 </RequestExercise>
@@ -155,15 +213,17 @@ const MateRequestTitle = styled.div`
     padding: 10px;
     display: flex;
     align-items: center;
+    margin-top: 10px;
 `;
 
 const MateRequestImg = styled.div`
-    width: 35px;
-    height: 35px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
+    margin: 0 10px;
     img {
         border-radius: 50%;
-        max-width: 100%;
+        // max-width: 100%;
         max-height: 100%;
         object-fit: contain;
     }
@@ -176,12 +236,12 @@ const MateRequestName = styled.div`
     margin-left: 15px;
 `;
 
-const CloseBtn = styled.div`
-    top: 10px;
-    right: 10px;
-    position: fixed;
-    cursor: pointer;
-`;
+// const CloseBtn = styled.div`
+//     top: 10px;
+//     right: 10px;
+//     position: fixed;
+//     cursor: pointer;
+// `;
 
 const MateRequestContent = styled.div`
     flex: 1;
