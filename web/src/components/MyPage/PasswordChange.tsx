@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
@@ -9,8 +9,11 @@ import { canEditInfo } from '../../recoil/AuthState/atoms';
 import { useRecoilValue } from 'recoil';
 
 const PasswordChange: React.FC = () => {
-    const [password, setPassword] = useState('');
-    const [passwordConfirm, setPasswordConfirm] = useState('');
+    const passwordInputRef = useRef<HTMLInputElement | null>(null);
+    const passwordConfirmInputRef = useRef<HTMLInputElement | null>(null);
+
+    const [password, setPassword] = useState<string>('');
+    const [passwordConfirm, setPasswordConfirm] = useState<string>('');
     const [passwordsMatch, setPasswordsMatch] = useState(true);
     const [savedPassword, setSavedPassword] = useState('');
     const [isPasswordValid, setIsPasswordValid] = useState(true);
@@ -46,13 +49,13 @@ const PasswordChange: React.FC = () => {
             const isPasswordComplex = checkPasswordValidity(password);
             setIsPasswordValid(isPasswordComplex);
 
-            if (!isPasswordComplex) {
-                // alert('비밀번호가 조건을 만족하지 않습니다.');
+            if (!isPasswordComplex || password !== '') {
+                alert('비밀번호가 조건을 만족하지 않습니다.');
                 return;
             }
         }
 
-        if (password !== '' && !isPasswordValid) {
+        if (!isPasswordValid || password !== '') {
             return;
         }
 
@@ -80,14 +83,24 @@ const PasswordChange: React.FC = () => {
 
     const isSaveEnabled = isPasswordValid && passwordsMatch;
 
+    useEffect(() => {
+        setTimeout(() => {
+            passwordInputRef.current?.focus();
+        }, 0);
+    }, []);
+
     return (
         <PasswordBox>
             <Title>비밀번호 변경</Title>
             <InputContainer>
-                <label css={labelStyle}>비밀번호</label>
+                <label css={labelStyle} htmlFor="passwordInput">
+                    비밀번호
+                </label>
                 <input
                     type="password"
+                    id="passwordInput"
                     name="password"
+                    ref={passwordInputRef}
                     value={password || savedPassword} // 비밀번호 값이 비어있을 때 기존 비밀번호 사용
                     css={inputStyles}
                     placeholder="영문 대소문자/숫자/특수문자 중 2가지 이상 조합, 8~16자"
@@ -97,14 +110,18 @@ const PasswordChange: React.FC = () => {
                     minLength={8}
                     maxLength={16}
                     onChange={handlePasswordChange}
-                    autoFocus
+                    // autoFocus
                 />
             </InputContainer>
             <InputContainer>
-                <label css={labelStyle}>비밀번호 확인</label>
+                <label css={labelStyle} htmlFor="passwordConfirmInput">
+                    비밀번호 확인
+                </label>
                 <input
                     type="password"
+                    id="passwordConfirmInput"
                     name="password"
+                    ref={passwordConfirmInputRef}
                     css={inputStyles}
                     value={passwordConfirm}
                     placeholder="다시 한번 입력하세요"
@@ -130,7 +147,18 @@ const PasswordChange: React.FC = () => {
                 <input
                     type="button"
                     name="savePassword"
-                    onClick={handleSavePassword}
+                    // onClick={handleSavePassword}
+                    onClick={() => {
+                        if (!isSaveEnabled) {
+                            if (!isPasswordValid) {
+                                passwordInputRef.current?.focus();
+                            } else if (!passwordsMatch) {
+                                passwordConfirmInputRef.current?.focus();
+                            }
+                        } else {
+                            handleSavePassword();
+                        }
+                    }}
                     css={inputButton}
                     value="비밀번호 변경"
                     disabled={!isSaveEnabled}

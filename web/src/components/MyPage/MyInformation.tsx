@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
 import { css } from '@emotion/react';
@@ -16,7 +16,7 @@ const MyInformation: React.FC = () => {
     const [publicStatus, setPublicStatus] = useState(true);
     const [favoriteSports, setFavoriteSports] = useState<string[]>([]);
 
-    // const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const token = sessionStorage.getItem('token');
 
@@ -88,11 +88,12 @@ const MyInformation: React.FC = () => {
     // 프로필 이미지 업로드
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
-        // setSelectedImage(file);
-        // setImagePreview(file);
+        setSelectedImage(file);
+        setImagePreview(file);
 
         if (file) {
             setSelectedImage(file);
+            setImagePreview(file);
 
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -104,7 +105,10 @@ const MyInformation: React.FC = () => {
 
     // 프로필 이미지 URL 반환받기
     const handlePictureChange = async () => {
-        if (!selectedImage) return;
+        if (!selectedImage) {
+            alert('이미지를 선택해주세요');
+            return;
+        }
 
         const formData = new FormData();
         formData.append('image', selectedImage);
@@ -129,8 +133,8 @@ const MyInformation: React.FC = () => {
 
     // 프로필 이미지 삭제
     const handlePictureDelete = () => {
-        setSelectedImage(null);
-        setImagePreview(null);
+        // setSelectedImage('');
+        setImagePreview('');
         setPictureURL(null);
     };
 
@@ -186,17 +190,14 @@ const MyInformation: React.FC = () => {
                 <label css={labelStyle}>프로필 이미지</label>
                 <ImageUploadContainer>
                     <ImagePreviewContainer>
-                        {imagePreview ? (
-                            <img src={imagePreview} alt="프로필 이미지 미리보기" />
-                        ) : null}
+                        {pictureURL ? <img src={pictureURL} alt="프로필 이미지 미리보기" /> : null}
                     </ImagePreviewContainer>
                     <ImageUploadButton>
                         <span>이미지 선택</span>
                         <input
                             type="file"
                             name="image"
-                            ref={pictureURL}
-                            // {fileInputRef}
+                            ref={fileInputRef}
                             onChange={handleImageChange}
                             accept="image/*"
                         />

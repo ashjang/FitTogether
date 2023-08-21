@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 
 import MyInformation from '../components/MyPage/MyInformation';
-import PasswordChange from '../components/MyPage/PasswordChange';
 
 // interface ButtonProps {
 //     isActive: boolean;
@@ -18,9 +17,9 @@ const MyPage: React.FC = () => {
     //     navigate('/signin');
     // }
 
-    const handleTabClick = (tabName: string) => {
-        setActiveTab(tabName);
-    };
+    // const handleTabClick = (tabName: string) => {
+    //     setActiveTab(tabName);
+    // };
 
     return (
         <MypageContainer>
