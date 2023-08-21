@@ -1,44 +1,57 @@
 /** @jsxImportSource @emotion/react */
 
-import React, { useState } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
-import { FaPlus, FaMinus } from 'react-icons/fa';
+import { FaPlus } from 'react-icons/fa';
 
 import BookmarkFolder from '../components/Bookmark/BookmarkFolder';
-import BookmarkSetting from '../components/Bookmark/BookmarkSetting';
+// import BookmarkSetting from '../components/Bookmark/BookmarkSetting';
 
 const Bookmark: React.FC = () => {
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    // const [addedFolders, setAddedFolders] = useState<string[]>([]);
+    // const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-    const togglePopup = () => {
-        setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
-    };
+    // const togglePopup = () => {
+    //     setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
+    // };
 
-    const addFolder = () => {};
+    // const handleAddFolder = (folderName: string) => {
+    //     setAddedFolders((prevFolders) => [...prevFolders, folderName]);
+    // };
 
-  return (
-    <>
-      <div css={Container}>
-        <TitleArea>
-          <p css={centeredTextStyle}>즐겨찾기</p>
-          {isPopupOpen ? (
-            <>
-              <BookmarkSetting addFolder={addFolder} />
-              <FaMinus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
-            </>
-          ) : (
-            <FaPlus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
-          )}
-        </TitleArea>
-      </div>
-      <div css={Container}>
-        <BookmarkFolder />
-      </div>
-    </>
-  );
+    return (
+        <BookmarkPage>
+            <div css={Container}>
+                <TitleArea>
+                    <p css={centeredTextStyle}>즐겨찾기</p>
+                    <Link to="/exerciseInfo">
+                        <FaPlus />
+                    </Link>
+                    {/* {isPopupOpen ? (
+                        <>
+                            <BookmarkSetting addFolder={handleAddFolder} />
+                            <FaMinus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
+                        </>
+                    ) : (
+                        <FaPlus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
+                    )} */}
+                </TitleArea>
+            </div>
+            <div css={Container}>
+                <BookmarkFolder
+                //  folders={addedFolders}
+                />
+            </div>
+        </BookmarkPage>
+    );
 };
+
+const BookmarkPage = styled.div`
+    margin-top: 150px;
+`;
 
 const Container = css`
     display: flex;
@@ -47,16 +60,14 @@ const Container = css`
 `;
 
 const TitleArea = styled.div`
-  width: 1200px;
-  border-bottom: 1px solid black;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px;
-  padding-bottom: 30px;
-  margin-top: 70px;
-  margin-bottom: 70px;
-  font-weight: bold;
+    width: 1200px;
+    border-bottom: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 30px;
+    margin-bottom: 50px;
+    font-weight: bold;
 `;
 
 const centeredTextStyle = css`
@@ -65,13 +76,13 @@ const centeredTextStyle = css`
     font-size: 3rem;
 `;
 
-const rightAlignedStyle = css`
-    flex: 1;
-    text-align: right;
-`;
+// const rightAlignedStyle = css`
+//     flex: 1;
+//     text-align: right;
+// `;
 
-const icon = css`
-    cursor: pointer;
-`;
+// const icon = css`
+//     cursor: pointer;
+// `;
 
 export default Bookmark;

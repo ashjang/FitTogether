@@ -147,6 +147,7 @@ const SignUpSetting: React.FC = () => {
                         id="nickname"
                         name="nickname"
                         value={nickname}
+                        pattern="[a-zA-Z0-9]*"
                         onChange={handleNicknameChange}
                         required
                     />
@@ -276,8 +277,6 @@ const Page = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    // min-height는 삭제 예정
-    // min-height: calc(100vh - 300px);
 `;
 
 const Title = styled.h1`

@@ -4,11 +4,12 @@ import ReactQuill from 'react-quill';
 import styled from '@emotion/styled';
 import 'react-quill/dist/quill.snow.css';
 import { useRecoilState } from 'recoil';
-import { titleState, descriptionState } from '../../recoil/posts/atoms';
+import { titleState, descriptionState, imagesUrlListState } from '../../recoil/posts/atoms';
 
 interface DataForQuillEditorComp {
     savedTitle: string;
     savedDescription: string;
+    savedImages: string[];
 }
 
 const formats = [
@@ -49,6 +50,7 @@ const modules = {
 const QuillEditor: React.FC<DataForQuillEditorComp | {}> = (props) => {
     const [title, setTitle] = useRecoilState(titleState);
     const [description, setDescription] = useRecoilState(descriptionState);
+    const [images, setImages] = useRecoilState(imagesUrlListState);
     const quillRef = useRef<ReactQuill>(null);
     console.log(description);
 
@@ -65,24 +67,27 @@ const QuillEditor: React.FC<DataForQuillEditorComp | {}> = (props) => {
                 const file = input.files[0];
 
                 const formData = new FormData();
-                formData.append('file', file);
+                formData.append('image', file);
                 for (const entry of formData.entries()) {
                     console.log(entry);
                 }
 
-                // range는 '이미지 업로드 버튼'을 눌렀을 때의 위치입니다
+                // range는 '이미지 업로드 버튼'을 눌렀을 때의 위치
                 const range = quillRef.current.getEditor().getSelection(true);
 
                 try {
                     // 서버에 post 요청을 보내 업로드 한뒤 이미지 태그에 삽입할 url을 반환받도록 구현
-                    const response = await axios.post('/posts/', formData);
-                    console.log(response.data.url);
+                    const response = await axios.post('/api/upload', formData);
+                    console.log(response.data);
+
+                    setImages((prevImagesUrlList) => [...prevImagesUrlList, response.data[0]]);
+                    console.log(images);
 
                     quillRef.current
                         .getEditor()
-                        .insertEmbed(range.index, 'image', response.data.url);
+                        .insertEmbed(range.index, 'image', response.data[0]);
                 } catch (error) {
-                    console.log(error);
+                    console.error(error);
                 }
             };
         };
@@ -93,17 +98,21 @@ const QuillEditor: React.FC<DataForQuillEditorComp | {}> = (props) => {
             toolbar.addHandler('image', handleImage);
         }
 
-        if ('savedTitle' in props && 'savedDescription' in props) {
-            setTitle(props.savedTitle);
-            setDescription(props.savedDescription);
-        } else {
+        console.log(props);
+
+        if ('savedTitle' in props) setTitle(props.savedTitle as string);
+        if ('savedDescription' in props) setDescription(props.savedDescription as string);
+        if ('savedImages' in props) setImages(props.savedImages as string[]);
+        else {
             setTitle('');
             setDescription('');
+            setImages([]);
         }
 
         if (!props) {
             setTitle('');
             setDescription('');
+            setImages([]);
         }
     }, []);
 
@@ -115,33 +124,41 @@ const QuillEditor: React.FC<DataForQuillEditorComp | {}> = (props) => {
                 onChange={(event) => setTitle(event.target.value)}
                 placeholder=" title"
             />
-            <ReactQuillComponent
-                ref={quillRef}
-                placeholder="contents..."
-                value={description}
-                theme="snow"
-                modules={modules}
-                formats={formats}
-                onChange={setDescription}
-            />
+            <Quill>
+                <ReactQuillComponent
+                    ref={quillRef}
+                    placeholder="contents..."
+                    value={description}
+                    theme="snow"
+                    modules={modules}
+                    formats={formats}
+                    onChange={setDescription}
+                />
+            </Quill>
         </EditorComponent>
     );
 };
 
-const EditorComponent = styled.div`
-    margin: 50px 0;
-`;
+const EditorComponent = styled.div``;
 
 const TitleComponet = styled.input`
     width: 850px;
     font-size: 20px;
+    margin-top: 25px;
     border-style: none;
     &:focus {
         outline: none;
     }
 `;
+
+const Quill = styled.div`
+    margin-bottom: 25px;
+    height: 350px;
+    background-color: white;
+`;
+
 const ReactQuillComponent = styled(ReactQuill)`
     width: 850px;
-    height: 300px;
+    height: 307px;
 `;
 export default QuillEditor;

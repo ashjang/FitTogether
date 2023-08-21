@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-// import axios from 'axios';
-// import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useParams, Link } from 'react-router-dom';
 import default_user_image from '../../assets/default-user-image.png';
 import styled from '@emotion/styled';
@@ -10,35 +10,23 @@ import { faThumbsUp } from '@fortawesome/free-regular-svg-icons';
 import { faComment } from '@fortawesome/free-regular-svg-icons';
 import { faEye } from '@fortawesome/free-regular-svg-icons';
 import Modal from 'react-modal';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import { signInInfo } from '../../recoil/AuthState/atoms';
+import { postDataRecoil, postContentsDataRecoil, isLikedState } from '../../recoil/posts/atoms';
 
 const imageSrc: string = default_user_image;
-
-interface PostData {
-    postId: number;
-    userImage: string;
-    userNickname: string;
-    createdAt: string;
-    category: string;
-    hashtag: string[];
-    title: string;
-    description: string;
-    likeCount: number;
-    replyCount: number;
-    viewCount: number;
-    accessLevel: boolean;
-}
 
 interface DataForEdit {
     savedTitle: string;
     savedDescription: string;
-    savedHashtag: string[];
+    savedImages: string[];
+    savedHashtagList: string[];
     savedCategory: string;
     savedAccessLevel: boolean;
 }
 
-interface PostContentsProps {
-    postData: PostData;
-    onUpdate: () => void;
+interface PostDetailLikeProps {
+    active: boolean;
 }
 
 const getCategoryName = (categoryEng: string) => {
@@ -55,31 +43,50 @@ const getCategoryName = (categoryEng: string) => {
 };
 
 const formatDateString = (createdAt: string) => {
+    if (!createdAt) {
+        return '';
+    }
+
     const dateObject = new Date(createdAt);
 
     const formattedDate = dateObject.toLocaleString('en-US', {
         year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false, // 24-hour format
     });
 
-    return formattedDate;
+    const [date, time] = formattedDate.split(', ');
+    const [month, day, year] = date.split('/');
+    const [hour, minute] = time.split(':');
+
+    return `${year}/${month}/${day} ${hour}:${minute}`;
 };
 
-const PostContents: React.FC<PostContentsProps> = (props) => {
+const PostContents: React.FC = () => {
+    const token = sessionStorage.getItem('token');
+    const navigate = useNavigate();
+
+    const [postData, setPostData] = useRecoilState(postDataRecoil);
+    const [postContentsData, setPostContentsData] = useRecoilState(postContentsDataRecoil);
+    console.log('postContentsData', postContentsData);
+    const [likeState, setLikeState] = useRecoilState(isLikedState);
+
+    const myInfo = useRecoilValue(signInInfo);
+
     const { postId } = useParams<{ postId: string }>();
-    // const [isLikedState, setIsLikedState] = useState(isliked);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const dataForEdit: DataForEdit = {
-        savedTitle: props.postData.title,
-        savedDescription: props.postData.description,
-        savedHashtag: props.postData.hashtag,
-        savedCategory: props.postData.category,
-        savedAccessLevel: props.postData.accessLevel,
+        savedTitle: postData.title,
+        savedDescription: postData.description,
+        savedImages: postData.images,
+        savedHashtagList: postData.hashtagList,
+        savedCategory: postData.category,
+        savedAccessLevel: postData.accessLevel,
     };
 
     // 모달 토글 함수
@@ -88,64 +95,75 @@ const PostContents: React.FC<PostContentsProps> = (props) => {
     };
 
     // 전체 게시글을 보여주는 posts 페이지로 이동하는 함수
-    // const handleGoBackToPosts = () => {
-    //     const navigate = useNavigate();
-    //     navigate('/posts');
-    // };
-
-    // 게시글 수정 눌렀을 때 실행할 함수
-    const handleEditPost = () => {};
+    const handleGoBackToPosts = () => {
+        navigate('/posts');
+    };
 
     // 게시글 삭제 눌렀을 때 실행할 함수
     const handleDeletePost = async () => {
-        // try {
-        //     const response = await axios.delete(`/posts/${postId}`, {
-        //         headers,
-        //     });
-        //     console.log(response.data);
-        //     if (response.data.status === 'success') {
-        //         handleGoBackToPosts();
-        //     }
-        // } catch (error) {
-        //     console.log(error);
-        // }
+        try {
+            console.log(token);
+            const response = await axios.delete(`/api/posts/${postId}`, {
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
+            });
+            console.log(response.data);
+            if (response.status === 200) {
+                handleGoBackToPosts();
+            }
+        } catch (error) {
+            console.error(error);
+        }
     };
 
-    // 좋아요 눌렀을 때
+    // 좋아요 눌렀을 때 실행할 함수
     const handleToggleLikeButton = async () => {
-        // try {
-        //     const likeForm = {
-        //         like: !isLikedState,
-        //     };
-        //     const response = await axios.post(`/posts/${postId}/like`, likeForm, {
-        //         headers,
-        //     });
-        //     if (response.data.status === 'success') {
-        //         setIsLikedState(!IsLikedState);
-        //         props.onUpdate();
-        //     }
-        // } catch (error) {
-        //     console.log(error);
-        // }
-        props.onUpdate();
+        try {
+            console.log(token);
+            const response = await axios.post(`/api/posts/${postId}/like`, null, {
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
+            });
+            setPostData({
+                ...postData,
+                like: response.data.like,
+                likeCount: response.data.likeCount,
+            });
+            setPostContentsData({
+                ...postContentsData,
+                like: response.data.like,
+                likeCount: response.data.likeCount,
+            });
+            console.log(response.data);
+            console.log('postContentsData by like', postContentsData);
+            setLikeState(response.data.like);
+        } catch (error) {
+            console.error(error);
+        }
     };
     return (
         <PostContentsComponent>
             <CategoryAndHashtag>
-                <PostCategory>{getCategoryName(props.postData.category)}</PostCategory>
-                {props.postData.hashtag.map((hashtag) => {
-                    return <PostHashtag>{hashtag}</PostHashtag>;
-                })}
+                <PostCategory>{getCategoryName(postContentsData.category)}</PostCategory>
+                {postContentsData.hashtagList &&
+                    postContentsData.hashtagList.map((hashtag) => {
+                        return <PostHashtag>#{hashtag}</PostHashtag>;
+                    })}
             </CategoryAndHashtag>
 
             <ProfileContainer>
                 <ProfileImageContainer>
                     <ProfileImage src={imageSrc} />
                 </ProfileImageContainer>
-                <ProfileNickname>{props.postData.userNickname}</ProfileNickname>
-                <CreatedAt>{formatDateString(props.postData.createdAt)}</CreatedAt>
-                {/* ❗ 해당 포스트의 작성자만 아이콘이 보이도록하는 로직 */}
-                <FaEllipsis icon={faEllipsis} onClick={handleToggleModal} />
+
+                <ProfileNickname>{postContentsData.userNickname}</ProfileNickname>
+                <CreatedAt>{formatDateString(postContentsData.createdAt)}</CreatedAt>
+                {myInfo.nickname === postContentsData.userNickname && (
+                    <FaEllipsis icon={faEllipsis} onClick={handleToggleModal} />
+                )}
+
                 <Modal
                     isOpen={isModalOpen}
                     onRequestClose={handleToggleModal}
@@ -168,28 +186,30 @@ const PostContents: React.FC<PostContentsProps> = (props) => {
                     }}
                 >
                     <Link to={`/posts/${postId}/editpost`} state={{ dataForEdit }}>
-                        <button onClick={handleEditPost}>수정하기</button>
+                        <ModalButtonEdit>수정</ModalButtonEdit>
                     </Link>
-                    <button onClick={handleDeletePost}>삭제하기</button>
+                    <ModalButtonDelete onClick={handleDeletePost}>삭제</ModalButtonDelete>
                 </Modal>
             </ProfileContainer>
             <Post>
-                <PostTitle>{props.postData.title}</PostTitle>
-                <PostDescription dangerouslySetInnerHTML={{ __html: props.postData.description }} />
+                <PostTitle>{postContentsData.title}</PostTitle>
+                <PostDescription
+                    dangerouslySetInnerHTML={{ __html: postContentsData.description }}
+                />
             </Post>
             <PostDetail>
-                <PostDetailItem>
-                    <FaThumbsUp icon={faThumbsUp} onClick={handleToggleLikeButton} />
-                    <span>{props.postData.likeCount}</span>
-                </PostDetailItem>
-                <PostDetailItem>
+                <PostDetailLike active={likeState === true} onClick={handleToggleLikeButton}>
+                    <FaThumbsUp icon={faThumbsUp} />
+                    <LikeCount>{postContentsData.likeCount}</LikeCount>
+                </PostDetailLike>
+                <PostDetailReply>
                     <FaComment icon={faComment} />
-                    <span>{props.postData.replyCount}</span>
-                </PostDetailItem>
-                <PostDetailItem>
+                    <ReplyCount>{postContentsData.replyCount}</ReplyCount>
+                </PostDetailReply>
+                <PostDetailView>
                     <FaEye icon={faEye} />
-                    <span>{props.postData.viewCount}</span>
-                </PostDetailItem>
+                    <ViewCount>{postContentsData.viewCount}</ViewCount>
+                </PostDetailView>
             </PostDetail>
         </PostContentsComponent>
     );
@@ -211,16 +231,18 @@ const CategoryAndHashtag = styled.div`
 const PostCategory = styled.p`
     padding: 0 10px;
     margin-right: 20px;
-    border-radius: 7.5px;
+    border-radius: 15px;
     background-color: #c7c7c7;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
 `;
 
 const PostHashtag = styled.p`
-    padding: 0 10px;
+    padding: 0 7px;
     margin-right: 15px;
-    border-radius: 15px;
-    background-color: #e1e1e1;
+    border-radius: 5px;
+    background-color: #a1c9e4;
     font-size: 13px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
 `;
 
 const ProfileContainer = styled.div`
@@ -258,12 +280,37 @@ const ProfileNickname = styled.p`
 const CreatedAt = styled.p`
     position: absolute;
     right: 100px;
+    font-size: 10px;
 `;
 
 const FaEllipsis = styled(FontAwesomeIcon)`
     position: absolute;
     margin: 0 30px;
     right: 0px;
+`;
+
+const ModalButtonEdit = styled.button`
+    padding: 0 10px;
+    border-style: none;
+    border-radius: 15px;
+    margin: 5px;
+    background-color: #d7d7d7;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    &: hover {
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    }
+`;
+
+const ModalButtonDelete = styled.button`
+    padding: 0 10px;
+    border-style: none;
+    border-radius: 15px;
+    margin: 5px;
+    background-color: #dc9696;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    &: hover {
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    }
 `;
 
 const Post = styled.div`
@@ -288,21 +335,44 @@ const PostDetail = styled.div`
     border-bottom: 1px solid #d7d7d7;
 `;
 
-const PostDetailItem = styled.div`
-    margin-right: 20px;
+const PostDetailLike = styled.div<PostDetailLikeProps>`
+    margin-right: 10px;
+    border-radius: 10px;
+    background-color: ${(props) => (props.active ? '#a1c9e4' : 'transparent')};
+    font-weight: ${(props) => (props.active ? 'bold' : 'regular')};
 `;
 
 const FaThumbsUp = styled(FontAwesomeIcon)`
-    margin-left: 10px;
+    margin-left: 12px;
     margin-right: 5px;
+`;
+
+const LikeCount = styled.span`
+    margin-right: 10px;
+`;
+
+const PostDetailReply = styled.div`
+    margin-right: 10px;
 `;
 
 const FaComment = styled(FontAwesomeIcon)`
     margin-right: 5px;
 `;
 
+const ReplyCount = styled.span`
+    margin-right: 10px;
+`;
+
+const PostDetailView = styled.div`
+    margin-right: 10px;
+`;
+
 const FaEye = styled(FontAwesomeIcon)`
     margin-right: 5px;
+`;
+
+const ViewCount = styled.span`
+    margin-right: 10px;
 `;
 
 export default PostContents;
