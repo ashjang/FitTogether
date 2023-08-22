@@ -4,29 +4,48 @@ import axios from 'axios';
 
 const FindUserPassword: React.FC = () => {
     const [email, setEmail] = useState<string>('');
-    const [foundPassword, setFoundPassword] = useState(null);
+    const [responseMessage, setResponseMessage] = useState(null);
 
     const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(event.target.value);
     };
 
-    const handleFindPassword = () => {
+    const handleFindPassword = (event) => {
+        event.preventDefault();
+
         if (email.trim() === '') {
             alert('이메일을 입력해주세요.');
         } else {
             const url = `/api/users/findPW?email=${encodeURIComponent(email)}`;
-
             axios
                 .put(url)
                 .then((response) => {
                     // 서버 응답 처리
-                    const foundPassword = response.data;
-                    console.log('Found ID:', foundPassword);
-                    setFoundPassword(foundPassword);
+                    const responseData = response.data;
+
+                    if (responseData.status === 200) {
+                        // 이메일 전송 성공
+                        console.log('Success:', responseData.message);
+                        setResponseMessage(responseData.message);
+                    } else if (responseData.status === 400) {
+                        // 일치하는 회원 없음
+                        console.log('Error:', responseData.message);
+                        setResponseMessage(responseData.message);
+                        // alert(responseData.message); // 유저에게 보여주기
+                    } else {
+                        // 다른 상태 코드 처리
+                        console.log('Unexpected Response:', responseData);
+                        alert('알 수 없는 오류가 발생했습니다.');
+                    }
                 })
                 .catch((error) => {
                     console.error('Error fetching ID:', error);
-                    alert('존재하지 않는 이메일입니다.');
+
+                    if (error.response && error.response.data && error.response.data.message) {
+                        setResponseMessage(error.response.data.message); // 오류 응답 데이터의 message 사용
+                    } else {
+                        setResponseMessage('서버 요청 중 오류가 발생했습니다.');
+                    }
                 });
         }
     };
@@ -50,9 +69,9 @@ const FindUserPassword: React.FC = () => {
                     />
                     <FindBtn type="submit">비밀번호 찾기</FindBtn>
                 </InputTextDiv>
-                {foundPassword !== null && (
+                {responseMessage !== null && (
                     <MessageBox>
-                        <GuideMessage>{foundPassword}</GuideMessage>
+                        <ResponseMessage>{responseMessage}</ResponseMessage>
                     </MessageBox>
                 )}
             </Form>
@@ -91,6 +110,13 @@ const GuideMessage = styled.div`
     color: #007bff;
     margin-left: -80px;
     margin-bottom: -10px;
+`;
+
+const ResponseMessage = styled.div`
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #007bff;
+    margin-top: 10px;
 `;
 
 const InputTextDiv = styled.div`
