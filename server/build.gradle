@@ -19,6 +19,7 @@ dependencies {
     implementation project(':posts')
     implementation project(':dm')
     implementation project(':video')
+    implementation project(':notification')
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'mysql:mysql-connector-java'

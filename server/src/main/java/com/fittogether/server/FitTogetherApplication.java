@@ -21,7 +21,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
     "com.fittogether.server.dm",
     "com.fittogether.server.video",
     "com.fittogether.server.domain",
-    "com.fittogether.server.config"
+    "com.fittogether.server.config",
+    "com.fittogether.server.notification"
 })
 @EnableCaching
 @EnableJpaAuditing
