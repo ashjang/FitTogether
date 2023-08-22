@@ -1,51 +1,34 @@
 import axios from 'axios';
-import React, { useRef, useState, useEffect, useMemo } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { useRecoilState } from 'recoil';
-import { playlistState } from '../../recoil/BookMark/atoms';
 import { Video } from './YoutubeApi';
 
-type AddToBookmarkProps = {
+interface AddToBookmarkProps {
     video: Video;
     onClose: () => void;
-};
+}
 
-type UserDataResponse = {
-    id: number;
-    name: string;
-    email: string;
-};
-
-type ApiResponse = {
-    success: boolean;
-    message?: string;
-};
+interface Playlist {
+    playlistName: string;
+    userId: number;
+}
 
 const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
-    const [playlists, setPlaylists] = useRecoilState(playlistState);
-    const [playlist, setPlaylist] = useState<string>('');
     const [showInput, setShowInput] = useState<boolean>(false);
-    const [userData, setUserData] = useState<UserDataResponse | null>(null);
-    // const [userData, setUserData] = useState({});
-    const [parsingLists, setParsingLists] = useState<string[]>([]);
+    const [playlist, setPlaylist] = useState<string>('');
+    const [playlists, setPlaylists] = useState<Playlist[] | null>(null);
     const modalRef = useRef<HTMLDivElement | null>(null);
 
     const token = sessionStorage.getItem('token');
 
-    // 서버에 저장된 유저의 재생목록 정보 가져오기
-    useEffect(() => {
-        if (token) {
-            getUserData(token);
-        }
-    }, []);
-    const getUserData = async (token) => {
+    const getPlayLists = async () => {
         try {
             const response = await axios.get('/api/playlist', {
                 headers: {
                     'X-AUTH-TOKEN': token,
                 },
             });
-            setUserData(response.data); // 응답값을 userData 상태에 저장
+            setPlaylists(response.data);
             console.log(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -53,21 +36,94 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
         }
     };
 
-    const savedLists = userData;
-    const parsedLists: string[] = useMemo(
-        () => (savedLists ? savedLists.map((item) => item.playlistName) : []),
-        [savedLists]
-    );
-
-    useEffect(() => {
-        if (savedLists) {
-            const newList = savedLists.map((item) => item.playlistName);
-            setParsingLists(newList);
+    // 새로운 플레이리스트를 생성하는 함수
+    const handleCreatePlaylist = async () => {
+        // 이름을 안적었으면 반환
+        if (!playlist) {
+            alert('플레이 리스트의 이름을 작성해 주세요.');
+            return;
         }
-    }, [savedLists]);
 
-    console.log(parsedLists);
+        // 같은 이름이 있으면 반환
+        const isPlaylistExists = playlists?.some((p) => {
+            p.playlistName === playlist;
+        });
+        if (isPlaylistExists) {
+            alert('이미 같은 이름의 플레이리스트가 존재합니다.');
+            return;
+        }
 
+        const newPlaylistForm = {
+            playlistName: playlist,
+        };
+
+        try {
+            const response = await axios.post('/api/playlist', newPlaylistForm, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-AUTH-TOKEN': token,
+                },
+            });
+            console.log(response.data);
+
+            setShowInput(false);
+
+            if (response.data) {
+                alert('플레이리스트가 생성되었습니다.');
+            } else {
+                alert('플레이리스트 생성에 실패했습니다.');
+            }
+        } catch (error) {
+            console.error('There was an error!', error);
+        }
+    };
+
+    // 입력란을 열고 닫기 위한 상태를 토글하는 함수
+    const handleShowInput = () => {
+        setShowInput(true);
+    };
+
+    // 비디오를 플레이 리스트에 추가하는 함수
+    const handleAddVideoToPlaylist = async (name: string) => {
+        const videoData = {
+            title: video.snippet.title,
+            videoUrl: video.id.videoId,
+        };
+
+        try {
+            const response = await axios.post(`/api/playlist/${name}`, videoData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-AUTH-TOKEN': token,
+                },
+            });
+            const title = response.data;
+            if (title) {
+                alert('영상이 저장되었습니다.');
+            } else {
+                alert('영상 저장이 실패하였습니다.');
+            }
+        } catch (error) {
+            console.error('There was an error!', error);
+        }
+    };
+
+    // 플레이리스트를 삭제할 때 사용하는 함수
+    const handleDeletePlaylist = async (name: string) => {
+        try {
+            const response = await axios.delete(`/api/playlist/${name}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-AUTH-TOKEN': token,
+                },
+            });
+            console.log(response.data);
+        } catch (error) {
+            console.error('There was an error!', error);
+        }
+    };
+
+    // 마운트 시, onClose 시 실행할 함수 // 수정해야함!
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
@@ -81,109 +137,10 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
         };
     }, [onClose]);
 
-    // useEffect(() => {
-    //     getUserData().catch((error) => {
-    //         console.error('Error fetching user data:', error);
-    //     });
-    // }, []);
-
-    // const getUserData = async () => {
-    //     try {
-    //         const response = await axios.get<UserDataResponse>('/api/users/my', {
-    //             headers: {
-    //                 'X-AUTH-TOKEN': token,
-    //                 // 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5aHlNWDVSVnlSSmVnNG4wVGpJSS9BPT0iLCJpYXQiOjE2OTIwMjM5ODIsImV4cCI6MTY5MjExMDM4Mn0.0ZCbDvNSxwfBNXZmbl-087kjyo0xi7lPz9ZrmSuWtUc', // 실제 토큰 값을 넣어야 함
-    //             },
-    //         });
-    //         setUserData(response.data);
-    //     } catch (error) {
-    //         console.error('Error fetching user data:', error);
-    //     }
-    // };
-
-    const createPlaylistAndAddVideo = async (): Promise<void> => {
-        if (!playlist) {
-            alert('플레이 리스트의 이름을 작성해 주세요.');
-            return;
-        }
-
-        const isPlaylistExists = playlists.some((p) => p === playlist);
-
-        if (isPlaylistExists) {
-            alert('이미 같은 이름의 플레이리스트가 존재합니다.');
-            return;
-        }
-
-        setPlaylists((oldPlaylists) => [...oldPlaylists, playlist]);
-        console.log(`Created playlist: ${playlist}`);
-        setPlaylist('');
-        setShowInput(false);
-
-        const dataToSend = {
-            playlistName: playlist,
-        };
-        try {
-            const response = await axios.post<ApiResponse>(
-                '/api/playlist', // 실제 플레이리스트 생성 엔드포인트
-                // { playlistName: playlist },
-                dataToSend,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-AUTH-TOKEN': token,
-                    },
-                }
-            );
-            console.log(response.data);
-            const playListName = response.data;
-            if (playListName) {
-                alert('플레이리스트가 생성되었습니다.');
-            } else {
-                alert('플레이리스트 생성에 실패했습니다.');
-            }
-        } catch (error) {
-            console.error('There was an error!', error);
-        }
-    };
-
-    const handleCreateNewPlaylist = async () => {
-        await createPlaylistAndAddVideo();
-    };
-    const handleShowInput = () => {
-        setShowInput(true);
-    };
-
-    const handleAddVideoToPlaylist = async (name: string): Promise<void> => {
-        const token = sessionStorage.getItem('token');
-
-        const videoData = {
-            videoUrl: video.id.videoId, // 동영상 URL (videoId)
-            title: video.snippet.title, // 동영상 제목
-        };
-        console.log(`Adding video to playlist: ${name}`); // 영상 저장 로그
-
-        try {
-            const response = await axios.post<ApiResponse>(
-                `/api/playlist/${name}`, // 실제 영상을 플레이리스트에 추가 엔드포인트로 변경
-                videoData,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-AUTH-TOKEN': token,
-                    },
-                }
-            );
-            // const { success, message } = response.data;
-            const title = response.data;
-            if (title) {
-                alert('영상이 저장되었습니다.');
-            } else {
-                alert('영상 저장이 실패하였습니다.');
-            }
-        } catch (error) {
-            console.error('There was an error!', error);
-        }
-    };
+    // 마운트 시 실행할 함수
+    useEffect(() => {
+        getPlayLists();
+    }, []);
 
     return (
         <ModalWrapper>
@@ -191,44 +148,35 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
             <BookmarkModal ref={modalRef}>
                 <BookmarkModalTitle>즐겨찾기 리스트</BookmarkModalTitle>
                 {showInput ? (
-                    <>
+                    <div>
                         <input
                             type="text"
                             placeholder="즐겨찾기 리스트명"
                             value={playlist}
                             onChange={(e) => setPlaylist(e.target.value)}
                         />
-                        <MakeBtn onClick={() => void handleCreateNewPlaylist()}>생성</MakeBtn>
-                    </>
+                        <MakeBtn onClick={() => handleCreatePlaylist()}>생성</MakeBtn>
+                    </div>
                 ) : (
                     <PlusBtn onClick={handleShowInput}>새 플레이리스트 만들기</PlusBtn>
                 )}
                 <PlaylistContainer>
-                    {/* {playlists.map((name, index) => (
+                    {playlists?.map((playlist, index) => (
                         <PlaylistItemWrapper key={index}>
-                            <PlaylistItem onClick={() => void handleAddVideoToPlaylist(name)}>
-                                {name}
-                            </PlaylistItem> */}
-                    {parsedLists.map((name, index) => (
-                        <PlaylistItemWrapper key={index}>
-                            <PlaylistItem onClick={() => void handleAddVideoToPlaylist(name)}>
-                                {name}
+                            <PlaylistItem
+                                onClick={() => handleAddVideoToPlaylist(playlist.playlistName)}
+                            >
+                                {playlist.playlistName}
                             </PlaylistItem>
-
-                            {/* <DeleteButton onClick={() => handleDeletePlaylist(listName)}>
+                            <DeleteButton
+                                onClick={() => handleDeletePlaylist(playlist.playlistName)}
+                            >
                                 삭제
-                            </DeleteButton> */}
+                            </DeleteButton>
                         </PlaylistItemWrapper>
                     ))}
                 </PlaylistContainer>
             </BookmarkModal>
-            {userData && (
-                <div>
-                    User ID: {userData.id}
-                    User Name: {userData.name}
-                    User Email: {userData.email}
-                </div>
-            )}
         </ModalWrapper>
     );
 };
@@ -276,12 +224,13 @@ const PlusBtn = styled.button`
     border: none;
     background: none;
 `;
-// const DeleteButton = styled.button`
-//     padding: 4px 0px;
-//     margin-right: 10px;
-//     border: none;
-//     background: none;
-// `;
+
+const DeleteButton = styled.button`
+    padding: 4px 0px;
+    margin-right: 10px;
+    border: none;
+    background: none;
+`;
 
 const Overlay = styled.div`
     position: fixed;

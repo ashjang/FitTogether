@@ -1,49 +1,34 @@
 /** @jsxImportSource @emotion/react */
-
-import React from 'react';
-import { Link } from 'react-router-dom';
-
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
-import { FaPlus } from 'react-icons/fa';
-
+import { FaMinus, FaPlus } from 'react-icons/fa';
 import BookmarkFolder from '../components/Bookmark/BookmarkFolder';
-// import BookmarkSetting from '../components/Bookmark/BookmarkSetting';
 
 const Bookmark: React.FC = () => {
-    // const [addedFolders, setAddedFolders] = useState<string[]>([]);
-    // const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-    // const togglePopup = () => {
-    //     setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
-    // };
-
-    // const handleAddFolder = (folderName: string) => {
-    //     setAddedFolders((prevFolders) => [...prevFolders, folderName]);
-    // };
+    const togglePopup = () => {
+        setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
+        console.log(isPopupOpen);
+    };
 
     return (
         <BookmarkPage>
             <div css={Container}>
                 <TitleArea>
                     <p css={centeredTextStyle}>즐겨찾기</p>
-                    <Link to="/exerciseInfo">
-                        <FaPlus />
-                    </Link>
-                    {/* {isPopupOpen ? (
-                        <>
-                            <BookmarkSetting addFolder={handleAddFolder} />
+                    {isPopupOpen ? (
+                        <div>
                             <FaMinus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
-                        </>
+                        </div>
                     ) : (
                         <FaPlus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
-                    )} */}
+                    )}
                 </TitleArea>
             </div>
             <div css={Container}>
-                <BookmarkFolder
-                //  folders={addedFolders}
-                />
+                <BookmarkFolder />
             </div>
         </BookmarkPage>
     );
@@ -76,13 +61,13 @@ const centeredTextStyle = css`
     font-size: 3rem;
 `;
 
-// const rightAlignedStyle = css`
-//     flex: 1;
-//     text-align: right;
-// `;
+const rightAlignedStyle = css`
+    flex: 1;
+    text-align: right;
+`;
 
-// const icon = css`
-//     cursor: pointer;
-// `;
+const icon = css`
+    cursor: pointer;
+`;
 
 export default Bookmark;
