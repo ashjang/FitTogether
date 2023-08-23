@@ -3,7 +3,6 @@ import { EventSourcePolyfill } from 'event-source-polyfill';
 import { FaRegBell } from 'react-icons/fa';
 import styled from '@emotion/styled';
 import AlertListItem from './AlertListItem';
-import MateRequest from './MateRequest';
 
 // interface Alert {
 //     message: string;
@@ -38,16 +37,23 @@ const AlertList: React.FC = ({ alerts }) => {
 
             eventSource.onopen = (event) => {
                 console.log('connection opened');
-                console.log(alert);
             };
 
-            eventSource.onmessage = (event) => {
-                const newAlert = JSON.parse(event.data);
-                console.log('result', newAlert);
+            // eventSource.onmessage = (event) => {
+            //     const newAlert = JSON.parse(event.data);
+            //     console.log('result', newAlert);
 
+            //     setAlert((prevAlert) => [newAlert, ...prevAlert]);
+            //     console.log('prevAlert', alert);
+            // };
+
+            eventSource.addEventListener('data', function (event) {
+                console.log('EVENT : ' + event.data);
+                const newAlert = JSON.parse(event.data); // 받은 데이터 추출
+                console.log('newAlert : ', newAlert);
                 setAlert((prevAlert) => [newAlert, ...prevAlert]);
                 console.log('prevAlert', alert);
-            };
+            });
 
             eventSource.onerror = (event) => {
                 console.log(event.target.readyState);

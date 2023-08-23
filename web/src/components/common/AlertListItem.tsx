@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { EventSourcePolyfill } from 'event-source-polyfill';
 import styled from '@emotion/styled';
 
 import MateRequest from './MateRequest';
@@ -11,10 +12,14 @@ interface AlertListItemProps {
 const AlertListItem: React.FC<AlertListItemProps> = ({ alerts }) => {
     const [showPopup, setShowPopup] = useState(false);
     const [fetchedAlerts, setFetchedAlerts] = useState([]);
+    const [realtimeAlerts, setRealtimeAlerts] = useState([]);
 
+    const EventSource = EventSourcePolyfill;
+    const token = sessionStorage.getItem('token');
     const navigate = useNavigate();
 
     useEffect(() => {
+        console.log('useEffect is running');
         // 알림 목록을 가져오는 GET 요청을 보내고 fetchedAlerts 상태를 업데이트
         const token = sessionStorage.getItem('token');
         if (token) {
@@ -34,7 +39,24 @@ const AlertListItem: React.FC<AlertListItemProps> = ({ alerts }) => {
         }
     }, []);
 
-    console.log(alerts);
+    useEffect(() => {
+        const eventSource = new EventSource(`/api/notification/subscribe`, {
+            headers: {
+                'X-AUTH-TOKEN': token,
+            },
+        });
+
+        eventSource.addEventListener('data', function (event) {
+            const newAlert = JSON.parse(event.data);
+            setRealtimeAlerts((prevRealtimeAlerts) => [newAlert, ...prevRealtimeAlerts]);
+        });
+
+        return () => {
+            eventSource.close(); // 컴포넌트 언마운트 시 SSE 연결 닫기
+        };
+    }, []);
+
+    // console.log(alerts);
 
     const handleAlertClick = (url) => {
         navigate(url);
@@ -46,19 +68,13 @@ const AlertListItem: React.FC<AlertListItemProps> = ({ alerts }) => {
     // };
 
     return (
-        // <AlertListItemBox>
-        //     {alerts.map((alert, index) => (
-        //         <ListItem
-        //             key={index}
-        //             onClick={() => handleAlertClick(alert.url)}
-        //             // onClick={handleListItemClick}
-        //         >
-        //             {alert.message} {/* 알림 내용 */}
-        //         </ListItem>
-        //     ))}
-        //     {showPopup && <MateRequest onClose={() => setShowPopup(false)} />}
-        // </AlertListItemBox>
         <AlertListItemBox>
+            {[...alerts, ...realtimeAlerts].map((alert, index) => (
+                <ListItem key={index} onClick={() => handleAlertClick(alert.url)}>
+                    {alert.message}
+                </ListItem>
+            ))}
+            {showPopup && <MateRequest onClose={() => setShowPopup(false)} />}
             {fetchedAlerts.map((alert, index) => (
                 <ListItem
                     key={index}
@@ -70,6 +86,9 @@ const AlertListItem: React.FC<AlertListItemProps> = ({ alerts }) => {
             ))}
             {showPopup && <MateRequest onClose={() => setShowPopup(false)} />}
         </AlertListItemBox>
+        // <AlertListItemBox>
+        //     {showPopup && <MateRequest onClose={() => setShowPopup(false)} />}
+        // </AlertListItemBox>
     );
 };
 
@@ -79,6 +98,7 @@ const ListItem = styled.div`
     padding: 10px;
     border-bottom: 0.5px solid #d2d2d2;
     cursor: pointer;
+    font-size: 1.3rem;
 `;
 
-export default React.memo(AlertListItem);
+export default AlertListItem;
