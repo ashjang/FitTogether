@@ -2,6 +2,8 @@ package com.fittogether.server.posts.service;
 
 import com.fittogether.server.domain.token.JwtProvider;
 import com.fittogether.server.domain.token.UserVo;
+import com.fittogether.server.notification.domain.dto.NotificationType;
+import com.fittogether.server.notification.service.NotificationService;
 import com.fittogether.server.posts.domain.dto.ReplyForm;
 import com.fittogether.server.posts.domain.dto.ReplyListDto;
 import com.fittogether.server.posts.domain.model.ChildReply;
@@ -32,6 +34,7 @@ public class ReplyService {
   private final ChildReplyRepository childReplyRepository;
   private final AuthenticationService authenticationService;
   private final JwtProvider provider;
+  private final NotificationService notificationService;
 
   /**
    * 댓글 작성
@@ -53,6 +56,9 @@ public class ReplyService {
         .comment(replyForm.getComment())
         .createdAt(LocalDateTime.now())
         .build();
+
+    notificationService.createNotification(user.getNickname(), post.getUser().getUserId(),
+        NotificationType.POST_REPLY, "/posts/" + post.getId() + "/comment");
 
     replyRepository.save(reply);
   }
@@ -96,6 +102,9 @@ public class ReplyService {
         .comment(replyForm.getComment())
         .createdAt(LocalDateTime.now())
         .build();
+
+    notificationService.createNotification(user.getNickname(), postReply.getUser().getUserId(),
+        NotificationType.RE_REPLY, "/posts/" + post.getId() + "/comment/" + replyId);
 
     childReplyRepository.save(childReply);
   }

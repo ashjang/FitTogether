@@ -2,6 +2,8 @@ package com.fittogether.server.posts.service;
 
 import com.fittogether.server.domain.token.JwtProvider;
 import com.fittogether.server.domain.token.UserVo;
+import com.fittogether.server.notification.domain.dto.NotificationType;
+import com.fittogether.server.notification.service.NotificationService;
 import com.fittogether.server.posts.domain.model.Like;
 import com.fittogether.server.posts.domain.model.Post;
 import com.fittogether.server.posts.domain.repository.LikeRepository;
@@ -33,6 +35,7 @@ public class LikeService {
   private final LikeRepository likeRepository;
   private final JwtProvider provider;
   private final RedisTemplate<String, String> redisTemplate;
+  private final NotificationService notificationService;
 
   /**
    * 좋아요 클릭
@@ -50,6 +53,9 @@ public class LikeService {
     UserVo userVo = provider.getUserVo(token);
     User user = userRepository.findById(userVo.getUserId())
         .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+    notificationService.createNotification(user.getNickname(), post.getUser().getUserId(),
+        NotificationType.POST_LIKE, "/posts/" + post.getId() + "/like");
 
     return LikeToggle(post, user);
   }
