@@ -15,6 +15,7 @@ dependencies {
     implementation project(":domain")
     implementation project(":user")
     implementation project(":dm")
+    implementation project(":notification")
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
