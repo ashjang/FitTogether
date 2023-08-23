@@ -2,13 +2,13 @@ package com.fittogether.server.notification.controller;
 
 import com.fittogether.server.notification.domain.dto.NotificationDto;
 import com.fittogether.server.notification.service.NotificationService;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -18,6 +18,7 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @ApiOperation(value = "알림 구독")
+    @CrossOrigin
     @GetMapping("/subscribe")
     public SseEmitter subscribe(@RequestHeader("X-AUTH-TOKEN") String token) {
         return notificationService.subscribe(token);

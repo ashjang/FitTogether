@@ -14,6 +14,7 @@ import com.fittogether.server.user.domain.repository.UserRepository;
 import com.fittogether.server.user.exception.UserCustomException;
 import com.fittogether.server.user.exception.UserErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -21,10 +22,10 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class NotificationService {
     private final JwtProvider jwtProvider;
@@ -40,32 +41,28 @@ public class NotificationService {
 
         SseEmitter emitter = new SseEmitter();
         emitterRepository.save(userVo.getUserId(), emitter);
-        emitter.onCompletion(() -> emitterRepository.deleteById(userVo.getUserId()));
-        emitter.onTimeout(() -> emitterRepository.deleteById(userVo.getUserId()));
 
         try {
             emitter.send(SseEmitter.event().id(String.valueOf(userVo.getUserId())).name("notify").data("Connection completed"));
         } catch (IOException exception) {
             throw new NotificationCustomException(NotificationErrorCode.CONNECTION_ERROR);
         }
+
         return emitter;
     }
 
-    private void sendToClient(Long id, Object data) {
+    private void sendToClient(Long id, NotificationDto data) {
         SseEmitter emitter = emitterRepository.get(id);
         System.out.println(emitter);
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event()
-                        .id(String.valueOf(id))
-                        .name("sse")
-                        .data(data)
-                        .reconnectTime(0));
-                System.out.println("실시간 알림 잘 보내졌어요");
+                        .name("data")
+                        .data(data));
+                log.info("PostMapping for specific clients SSE Emitters : {}", emitter);
             } catch (IOException exception) {
                 emitterRepository.deleteById(id);
-                emitter.completeWithError(exception);
-                System.out.println("실시간 알림 안 보내졌어요");
+                log.info("Exception SSE Emitters : {}", emitter);
             }
         }
     }
@@ -106,7 +103,6 @@ public class NotificationService {
     public void createNotification(String senderNickname, Long receiverId, NotificationType type, String url) {
         String message = senderNickname + "님이 회원님";
         switch (type) {
-            case DM: message += "에게 메시지를 남겼습니다";    break;
             case POST_LIKE: message += "의 게시글을 좋아합니다.";  break;
             case POST_REPLY: message += "의 게시글에 댓글을 남겼습니다.";    break;
             case RE_REPLY: message += "의 댓글에 대댓글을 남겼습니다.";      break;
@@ -136,6 +132,6 @@ public class NotificationService {
             notification.setCreatedAt(LocalDateTime.now());
         }
 
-        sendToClient(user.getUserId(), notification);
+        sendToClient(user.getUserId(), NotificationDto.from(notification));
     }
 }
