@@ -24,7 +24,6 @@ import MateList from './MateList';
 import LogoImg from './../../assets/logo.png';
 
 import axios from 'axios';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { totalPageState, postListDataState, currentPageState } from '../../recoil/posts/atoms';
 import {
     categoryFilterState,
@@ -51,8 +50,6 @@ function Header() {
 
     const [isScrolled, setScrolled] = useState(false); // 스크롤 내릴때 배경색
 
-    const navigate = useNavigate();
-    const location = useLocation();
     const setTotalPages = useSetRecoilState(totalPageState);
     const setPostListData = useSetRecoilState(postListDataState);
     const setCurrentPage = useSetRecoilState(currentPageState);
@@ -119,7 +116,6 @@ function Header() {
             setCategoryFilter('');
             setKeywordFilter('');
             setHashtagFilter('');
-            navigate(`${location.pathname}?page=1`);
         } catch (error) {
             console.error;
         }

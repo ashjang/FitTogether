@@ -19,9 +19,7 @@ const Bookmark: React.FC = () => {
                 <TitleArea>
                     <p css={centeredTextStyle}>즐겨찾기</p>
                     {isPopupOpen ? (
-                        <div>
-                            <FaMinus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
-                        </div>
+                        <FaMinus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
                     ) : (
                         <FaPlus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
                     )}

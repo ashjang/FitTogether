@@ -1,36 +1,32 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { json, useNavigate } from 'react-router-dom';
-
-// import { useRecoilState } from 'recoil';
-// import { playlistState } from '../../recoil/BookMark/atoms';
-
 import styled from '@emotion/styled';
 import { FaEllipsisV } from 'react-icons/fa';
 import axios from 'axios';
 // import BookmarkThumb from './BookmarkThumb';
 // import VideoList from '../ExerciseInfo/VideoList';
 
-const BookmarkFolder: React.FC = () => {
-    // const [playlists, setPlaylists] = useRecoilState(playlistState);
-    // const [userData, setUserData] = useState({});
-    const [userData, setUserData] = useState([]);
+interface Playlist {
+    playlistName: string;
+    userId: number;
+}
 
+const BookmarkFolder: React.FC = () => {
     const token = sessionStorage.getItem('token');
     const navigate = useNavigate();
+    const [editingPlaylistInputIndex, setEditingPlaylistInputIndex] = useState<number | null>(null);
+    const [editedPlaylist, setEditedPlaylist] = useState<string>('');
+    const [playlists, setPlaylists] = useState<Playlist[] | null>(null);
 
-    useEffect(() => {
-        if (token) {
-            getUserData(token);
-        }
-    }, []);
-    const getUserData = async (token) => {
+    // 플레이리스트를 반환받는 함수 ✅readPlaylist
+    const getPlayLists = async () => {
         try {
             const response = await axios.get('/api/playlist', {
                 headers: {
                     'X-AUTH-TOKEN': token,
                 },
             });
-            setUserData(response.data); // 응답값을 userData 상태에 저장
+            setPlaylists(response.data);
             console.log(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -38,36 +34,52 @@ const BookmarkFolder: React.FC = () => {
         }
     };
 
-    // const savedLists = localStorage.getItem('bookmarkLists');
-    const savedLists = userData;
-    const parsedLists: string[] = useMemo(
-        () => savedLists.map((item) => item.playlistName),
-        [savedLists]
-    );
-    const [contextMenuVisibility, setContextMenuVisibility] = useState<boolean[]>(
-        parsedLists.map(() => false)
-    );
-    const [editedListNames, setEditedListNames] = useState<(string | null)[]>(
-        parsedLists.map(() => null)
-    );
-    const [editIndex, setEditIndex] = useState<number | null>(null); // 수정 중인 재생목록의 인덱스
-
     // 해당 재생목록 페이지로 이동
-    const handlePlaylistClick = (listName: string) => {
-        navigate(`/playlists?name=${encodeURIComponent(listName)}`);
+    const handlePlaylistClick = (name: string) => {
+        navigate(`/playlists?name=${name}`);
     };
 
-    // 더보기 아이콘 클릭 이벤트
-    const handleContextMenu = (index: number) => (e: React.MouseEvent) => {
-        e.stopPropagation();
-        setContextMenuVisibility((prevVisibility) =>
-            prevVisibility.map((val, i) => (i === index ? !val : false))
-        );
-    };
+    // 플레이리스트를 수정할 때 사용하는 함수 ✅updatePlaylist
+    const handleEditPlaylist = async (name: string) => {
+        if (!editedPlaylist) {
+            alert('플레이리스트의 이름을 수정해 주세요.');
+            return;
+        }
 
-    const deletePlaylist = async (playlistName, token) => {
+        // 같은 이름이 있으면 반환
+        const isPlaylistExists = playlists?.some((playlist) => {
+            playlist.playlistName === editedPlaylist;
+        });
+        if (isPlaylistExists) {
+            alert('이미 같은 이름의 플레이리스트가 존재합니다.');
+            return;
+        }
+
+        const editedPlaylistForm = {
+            playlistName: editedPlaylist,
+        };
+
+        console.log(editedPlaylist);
+
         try {
-            await axios.delete(`/api/playlist/${playlistName}`, {
+            const response = await axios.put(`/api/playlist/${name}`, editedPlaylistForm, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-AUTH-TOKEN': token,
+                },
+            });
+            console.log(response.data);
+            setEditingPlaylistInputIndex(null);
+            getPlayLists();
+        } catch (error) {
+            console.error('There was an error!', error);
+        }
+    };
+
+    // 플레이리스트를 삭제할 때 사용하는 함수 ✅deletePlaylist
+    const deletePlaylist = async (name: string) => {
+        try {
+            await axios.delete(`/api/playlist/${name}`, {
                 headers: {
                     'X-AUTH-TOKEN': token,
                 },
@@ -78,145 +90,43 @@ const BookmarkFolder: React.FC = () => {
         }
     };
 
-    // 재생목록 삭제
-    const handleDeleteClick = (index: number, listName: string) => (e: React.MouseEvent) => {
-        e.stopPropagation();
-
-        deletePlaylist(listName, token);
-
-        const updatedLists = parsedLists.filter((list) => list !== listName);
-        // localStorage.setItem('bookmarkLists', JSON.stringify(updatedLists));
-        // window.location.reload();
-        setContextMenuVisibility((prevState) => prevState.map((_, i) => i !== index));
-
-        // 재생목록이 삭제될 때 해당 인덱스의 editedListNames를 초기화
-        const newEditedListNames = [...editedListNames];
-        newEditedListNames[index] = null;
-        setEditedListNames(newEditedListNames);
-    };
-
     useEffect(() => {
-        console.log(parsedLists);
-        // parsedLists가 변경될 때 contextMenuVisibility와 editedListNames 초기화
-        setContextMenuVisibility(parsedLists.map(() => false));
-        setEditedListNames(parsedLists.map(() => null));
-    }, [parsedLists]);
-
-    // 수정하기 클릭 이벤트
-    const handleEditClick = (index: number, listName: string) => (e: React.MouseEvent) => {
-        e.stopPropagation();
-        setEditIndex(index);
-        const newListNames = [...editedListNames];
-        newListNames[index] = listName;
-        setEditedListNames(newListNames);
-
-        setContextMenuVisibility((prevVisibility) =>
-            prevVisibility.map((val, i) => (i === index ? !val : val))
-        );
-    };
-
-    const handleEditInputChange = (index: number, value: string) => {
-        const newListNames = [...editedListNames];
-        newListNames[index] = value;
-        setEditedListNames(newListNames);
-    };
-
-    const handleSaveEdit = (index: number) => (e: React.MouseEvent) => {
-        e.stopPropagation();
-        const editedName = editedListNames[index];
-        if (editedName !== null) {
-            const updatedLists = [...parsedLists];
-            updatedLists[index] = editedName;
-            // localStorage.setItem('bookmarkLists', JSON.stringify(updatedLists));
-
-            const listToUpdate = parsedLists[index];
-            axios
-                .put(
-                    `/api/playlist/${listToUpdate}`,
-                    { playlistName: editedName },
-                    {
-                        headers: {
-                            'X-AUTH-TOKEN': token,
-                            'Content-Type': 'application/json',
-                        },
-                    }
-                )
-                .then(() => {
-                    // PUT 요청 성공 시 처리
-                    const newParsedLists = [...parsedLists];
-                    newParsedLists[index] = editedName;
-                    setEditedListNames(newParsedLists);
-
-                    // 수정 완료 후 초기화
-                    const newListNames = [...editedListNames];
-                    newListNames[index] = null;
-                    setEditedListNames(newListNames);
-
-                    // 더보기 아이콘 닫기
-                    setContextMenuVisibility((prevState) => prevState.map((_, i) => i !== index));
-                    setEditIndex(null);
-                    window.location.reload();
-                })
-                .catch((error) => {
-                    console.error('Error updating playlist:', error);
-                    alert('재생목록을 수정하는데 실패했습니다.');
-                });
+        if (token) {
+            getPlayLists();
         }
-    };
+    }, []);
 
     return (
         <BookmarkFolderContainer>
-            {/* <div>
-                <Link to="/mypage/myvideos/playlistId1">맘에들어 등산</Link>
-            </div>
-            <div>
-                <Link to="/mypage/myvideos/playlistId1">친구랑 같이할거</Link>
-            </div> */}
-            {parsedLists.length > 0 ? (
-                <FolderListArea>
-                    {parsedLists.map((list, index) => (
-                        <FolderWrapper key={index}>
-                            <FolderName>
-                                {editedListNames[index] !== null ? (
-                                    <>
-                                        <InputArea
-                                            type="text"
-                                            value={editedListNames[index] || ''}
-                                            onChange={(e) =>
-                                                handleEditInputChange(index, e.target.value)
-                                            }
-                                            maxLength={10}
-                                        />
-                                        <SaveButton onClick={handleSaveEdit(index)}>
-                                            저장
-                                        </SaveButton>
-                                    </>
-                                ) : (
-                                    <>
-                                        {list}
-                                        <MoreIcon onClick={handleContextMenu(index)} />
-                                    </>
-                                )}
-                            </FolderName>
-                            {contextMenuVisibility[index] && (
-                                <ContextMenu>
-                                    <MenuItem onClick={handleEditClick(index, list)}>
-                                        수정하기
-                                    </MenuItem>
-                                    <MenuItem onClick={handleDeleteClick(index, list)}>
-                                        삭제하기
-                                    </MenuItem>
-                                </ContextMenu>
-                            )}
-                            <FolderThumbnail onClick={() => handlePlaylistClick(list)}>
-                                동영상 썸네일
-                            </FolderThumbnail>
-                        </FolderWrapper>
-                    ))}
-                </FolderListArea>
-            ) : (
-                <ErrorMessage>생성된 재생목록이 없습니다.</ErrorMessage>
-            )}
+            <FolderListArea>
+                {playlists?.map((list, index) => (
+                    <FolderWrapper key={index}>
+                        <FolderName>
+                            <div>
+                                <InputArea
+                                    type="text"
+                                    value={''}
+                                    onChange={() => {}}
+                                    maxLength={100}
+                                />
+                                <SaveButton onClick={() => {}}>저장</SaveButton>
+                            </div>
+                            <div>
+                                <MoreIcon onClick={() => {}} />
+                            </div>
+                        </FolderName>
+                        <ContextMenu>
+                            <MenuItem>수정하기</MenuItem>
+                            <MenuItem>삭제하기</MenuItem>
+                        </ContextMenu>
+
+                        <FolderThumbnail onClick={() => handlePlaylistClick}>
+                            동영상 썸네일
+                        </FolderThumbnail>
+                    </FolderWrapper>
+                ))}
+            </FolderListArea>
+            <ErrorMessage>생성된 재생목록이 없습니다.</ErrorMessage>
         </BookmarkFolderContainer>
     );
 };
