@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { json, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { FaEllipsisV } from 'react-icons/fa';
 import axios from 'axios';
-// import BookmarkThumb from './BookmarkThumb';
+import { useRecoilState } from 'recoil';
+import { playlistsDataRecoil } from '../../recoil/BookMark/atoms';
 // import VideoList from '../ExerciseInfo/VideoList';
 
 interface Playlist {
@@ -14,9 +15,13 @@ interface Playlist {
 const BookmarkFolder: React.FC = () => {
     const token = sessionStorage.getItem('token');
     const navigate = useNavigate();
+    const [menuToggleState, setMenuToggleState] = useState<boolean>(false);
+    const [menuIndex, setMenuIndex] = useState<number | null>(null);
     const [editingPlaylistInputIndex, setEditingPlaylistInputIndex] = useState<number | null>(null);
     const [editedPlaylist, setEditedPlaylist] = useState<string>('');
-    const [playlists, setPlaylists] = useState<Playlist[] | null>(null);
+    const [playlistsData, setPlaylistsData] = useRecoilState<Playlist[] | null>(
+        playlistsDataRecoil
+    );
 
     // 플레이리스트를 반환받는 함수 ✅readPlaylist
     const getPlayLists = async () => {
@@ -26,7 +31,7 @@ const BookmarkFolder: React.FC = () => {
                     'X-AUTH-TOKEN': token,
                 },
             });
-            setPlaylists(response.data);
+            setPlaylistsData(response.data);
             console.log(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -34,20 +39,16 @@ const BookmarkFolder: React.FC = () => {
         }
     };
 
-    // 해당 재생목록 페이지로 이동
-    const handlePlaylistClick = (name: string) => {
-        navigate(`/playlists?name=${name}`);
-    };
-
     // 플레이리스트를 수정할 때 사용하는 함수 ✅updatePlaylist
     const handleEditPlaylist = async (name: string) => {
+        // 입력이 없으면 반환
         if (!editedPlaylist) {
             alert('플레이리스트의 이름을 수정해 주세요.');
             return;
         }
 
         // 같은 이름이 있으면 반환
-        const isPlaylistExists = playlists?.some((playlist) => {
+        const isPlaylistExists = playlistsData?.some((playlist) => {
             playlist.playlistName === editedPlaylist;
         });
         if (isPlaylistExists) {
@@ -55,6 +56,7 @@ const BookmarkFolder: React.FC = () => {
             return;
         }
 
+        // 백으로 전송할 데이터(= 수정한 이름)
         const editedPlaylistForm = {
             playlistName: editedPlaylist,
         };
@@ -69,6 +71,8 @@ const BookmarkFolder: React.FC = () => {
                 },
             });
             console.log(response.data);
+            setMenuToggleState(false);
+            setMenuIndex(null);
             setEditingPlaylistInputIndex(null);
             getPlayLists();
         } catch (error) {
@@ -77,17 +81,36 @@ const BookmarkFolder: React.FC = () => {
     };
 
     // 플레이리스트를 삭제할 때 사용하는 함수 ✅deletePlaylist
-    const deletePlaylist = async (name: string) => {
+    const handleDeletePlaylist = async (name: string) => {
         try {
             await axios.delete(`/api/playlist/${name}`, {
                 headers: {
                     'X-AUTH-TOKEN': token,
                 },
             });
+            setMenuToggleState(false);
+            setMenuIndex(null);
+            getPlayLists();
         } catch (error) {
             console.error('Error deleting playlist:', error);
             alert('재생목록을 삭제하는데 실패했습니다.');
         }
+    };
+
+    const handleMenuToggle = (index: number) => {
+        setMenuToggleState(!menuToggleState);
+        setMenuIndex(index);
+    };
+
+    // 플레이리스트 수정 입력란을 열고 닫기 위한 인덱스를 저장하는 함수
+    const showInputForEdit = (index: number) => {
+        setEditingPlaylistInputIndex(index);
+        setMenuToggleState(!menuToggleState);
+    };
+
+    // 해당 재생목록 페이지로 이동
+    const handlePlaylistClick = (name: string) => {
+        navigate(`/playlists?name=${name}`);
     };
 
     useEffect(() => {
@@ -98,35 +121,57 @@ const BookmarkFolder: React.FC = () => {
 
     return (
         <BookmarkFolderContainer>
-            <FolderListArea>
-                {playlists?.map((list, index) => (
-                    <FolderWrapper key={index}>
-                        <FolderName>
-                            <div>
-                                <InputArea
-                                    type="text"
-                                    value={''}
-                                    onChange={() => {}}
-                                    maxLength={100}
-                                />
-                                <SaveButton onClick={() => {}}>저장</SaveButton>
-                            </div>
-                            <div>
-                                <MoreIcon onClick={() => {}} />
-                            </div>
-                        </FolderName>
-                        <ContextMenu>
-                            <MenuItem>수정하기</MenuItem>
-                            <MenuItem>삭제하기</MenuItem>
-                        </ContextMenu>
-
-                        <FolderThumbnail onClick={() => handlePlaylistClick}>
-                            동영상 썸네일
-                        </FolderThumbnail>
-                    </FolderWrapper>
-                ))}
-            </FolderListArea>
-            <ErrorMessage>생성된 재생목록이 없습니다.</ErrorMessage>
+            {playlistsData ? (
+                <FolderListArea>
+                    {playlistsData?.map((playlist, index) => (
+                        <FolderWrapper key={index}>
+                            <FolderHeader>
+                                {index === editingPlaylistInputIndex ? (
+                                    <InputField>
+                                        <InputArea
+                                            type="text"
+                                            defaultValue={playlist.playlistName}
+                                            onChange={(e) => setEditedPlaylist(e.target.value)}
+                                            maxLength={15}
+                                        />
+                                        <SaveButton
+                                            onClick={() =>
+                                                handleEditPlaylist(playlist.playlistName)
+                                            }
+                                        >
+                                            저장
+                                        </SaveButton>
+                                    </InputField>
+                                ) : (
+                                    <PlaylistItem>{playlist.playlistName}</PlaylistItem>
+                                )}
+                                <MoreIcon onClick={() => handleMenuToggle(index)} />
+                                {menuToggleState && menuIndex === index && (
+                                    <Menu>
+                                        <MenuItem onClick={() => showInputForEdit(index)}>
+                                            수정하기
+                                        </MenuItem>
+                                        <MenuItem
+                                            onClick={() =>
+                                                handleDeletePlaylist(playlist.playlistName)
+                                            }
+                                        >
+                                            삭제하기
+                                        </MenuItem>
+                                    </Menu>
+                                )}
+                            </FolderHeader>
+                            <FolderThumbnail
+                                onClick={() => handlePlaylistClick(playlist.playlistName)}
+                            >
+                                동영상 썸네일
+                            </FolderThumbnail>
+                        </FolderWrapper>
+                    ))}
+                </FolderListArea>
+            ) : (
+                <ErrorMessage>생성된 재생목록이 없습니다.</ErrorMessage>
+            )}
         </BookmarkFolderContainer>
     );
 };
@@ -158,7 +203,7 @@ const FolderWrapper = styled.div`
     justify-content: space-between;
 `;
 
-const FolderName = styled.div`
+const FolderHeader = styled.div`
     width: 100%;
     padding: 10px;
     display: flex;
@@ -166,7 +211,12 @@ const FolderName = styled.div`
     align-items: center;
     font-size: 16px;
     font-weight: bold;
-    border-bottom: 1px solid black;
+`;
+
+const PlaylistItem = styled.p``;
+
+const InputField = styled.div`
+    display: flex;
 `;
 
 const InputArea = styled.input`
@@ -201,10 +251,10 @@ const FolderThumbnail = styled.div`
     cursor: pointer;
 `;
 
-const ContextMenu = styled.div`
+const Menu = styled.div`
     position: absolute;
-    top: 55px;
-    right: 35px;
+    top: 60px;
+    right: 20px;
     display: flex;
     flex-direction: column;
     background-color: white;

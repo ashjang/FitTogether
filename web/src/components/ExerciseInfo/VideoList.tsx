@@ -21,8 +21,7 @@ const VideoList: React.FC = () => {
     const [category, setCategory] = useState<string>('러닝');
     const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
     const [favoriteStatus, setFavoriteStatus] = useState<Record<string, boolean>>({});
-
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState<boolean>(false);
     const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
 
     const isLoggedIn = useRecoilValue(loggedInState);

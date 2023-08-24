@@ -4,9 +4,11 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import BookmarkFolder from '../components/Bookmark/BookmarkFolder';
+// import BookmarkSetting from '../components/Bookmark/BookmarkSetting';
+import AddToBookmark from '../components/ExerciseInfo/AddToBookmark';
 
 const Bookmark: React.FC = () => {
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
     const togglePopup = () => {
         setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
@@ -17,11 +19,14 @@ const Bookmark: React.FC = () => {
         <BookmarkPage>
             <div css={Container}>
                 <TitleArea>
-                    <p css={centeredTextStyle}>즐겨찾기</p>
+                    <p css={centeredTextStyle}>저장된 동영상</p>
                     {isPopupOpen ? (
                         <FaMinus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
                     ) : (
                         <FaPlus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
+                    )}
+                    {isPopupOpen && (
+                        <AddToBookmark video={null} onClose={() => setIsPopupOpen(false)} />
                     )}
                 </TitleArea>
             </div>

@@ -2,9 +2,11 @@ import axios from 'axios';
 import React, { useRef, useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { Video } from './YoutubeApi';
+import { useRecoilState } from 'recoil';
+import { playlistsDataRecoil } from '../../recoil/BookMark/atoms';
 
 interface AddToBookmarkProps {
-    video: Video;
+    video: Video | null;
     onClose: () => void;
 }
 
@@ -20,7 +22,9 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
     const [editingPlaylistInputIndex, setEditingPlaylistInputIndex] = useState<number | null>(null);
     const [newPlaylist, setNewPlaylist] = useState<string>('');
     const [editedPlaylist, setEditedPlaylist] = useState<string>('');
-    const [playlists, setPlaylists] = useState<Playlist[] | null>(null);
+    const [playlistsData, setPlaylistsData] = useRecoilState<Playlist[] | null>(
+        playlistsDataRecoil
+    );
 
     // 플레이리스트를 반환받는 함수 ✅readPlaylist
     const getPlayLists = async () => {
@@ -30,7 +34,7 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
                     'X-AUTH-TOKEN': token,
                 },
             });
-            setPlaylists(response.data);
+            setPlaylistsData(response.data);
             console.log(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -47,7 +51,7 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
         }
 
         // 같은 이름이 있으면 반환
-        const isPlaylistExists = playlists?.some((playlist) => {
+        const isPlaylistExists = playlistsData?.some((playlist) => {
             playlist.playlistName === newPlaylist;
         });
         if (isPlaylistExists) {
@@ -90,7 +94,7 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
         }
 
         // 같은 이름이 있으면 반환
-        const isPlaylistExists = playlists?.some((playlist) => {
+        const isPlaylistExists = playlistsData?.some((playlist) => {
             playlist.playlistName === editedPlaylist;
         });
         if (isPlaylistExists) {
@@ -137,9 +141,12 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
 
     // 비디오를 플레이 리스트에 추가하는 함수 ✅addVideoToPlaylist
     const handleAddVideoToPlaylist = async (name: string) => {
+        if (video === null) {
+            return;
+        }
         const videoData = {
-            title: video.snippet.title,
-            videoUrl: video.id.videoId,
+            title: video?.snippet.title,
+            videoUrl: video?.id.videoId,
         };
 
         try {
@@ -164,7 +171,7 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
         setCreatingPlaylistInput(true);
     };
 
-    // 플레이리스트 수정 입력란을 열고 닫기 위한 상태를 토글하는 함수
+    // 플레이리스트 수정 입력란을 열고 닫기 위한 인덱스를 저장하는 함수
     const showInputForEdit = (index: number) => {
         setEditingPlaylistInputIndex(index);
     };
@@ -207,7 +214,7 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
                     <PlusBtn onClick={handleCreatingPlaylistInput}>새 리스트 만들기</PlusBtn>
                 )}
                 <PlaylistContainer>
-                    {playlists?.map((playlist, index) => (
+                    {playlistsData?.map((playlist, index) => (
                         <PlaylistItemWrapper key={index}>
                             {editingPlaylistInputIndex === index ? (
                                 <EditingPlaylistInput
