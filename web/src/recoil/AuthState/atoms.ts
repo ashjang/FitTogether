@@ -30,6 +30,7 @@ export const loggedInState = atom({
 export const canEditInfo = atom({
     key: 'canEditInfo',
     default: false,
+    effects_UNSTABLE: [persistAtom],
 });
 
 // 로그인 요청하는 유저의 정보
@@ -38,4 +39,5 @@ export const signInInfo = atom({
     default: {
         nickname: '',
     },
+    effects_UNSTABLE: [persistAtom],
 });
