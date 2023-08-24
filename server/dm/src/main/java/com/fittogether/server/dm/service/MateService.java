@@ -6,6 +6,8 @@ import com.fittogether.server.dm.domain.repository.RequestRepository;
 import com.fittogether.server.dm.exception.RequestNotFoundException;
 import com.fittogether.server.domain.token.JwtProvider;
 import com.fittogether.server.domain.token.UserVo;
+import com.fittogether.server.notification.domain.dto.NotificationType;
+import com.fittogether.server.notification.service.NotificationService;
 import com.fittogether.server.user.domain.model.User;
 import com.fittogether.server.user.domain.repository.UserRepository;
 import com.fittogether.server.user.exception.UserCustomException;
@@ -13,6 +15,7 @@ import com.fittogether.server.user.exception.UserErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +27,7 @@ public class MateService {
 
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
-
+    private final NotificationService notificationService;
 
     // 운동 메이트 요청
     @Transactional
@@ -37,7 +40,6 @@ public class MateService {
             throw new UserCustomException(UserErrorCode.NOT_FOUND_USER);
         }
 
-
         UserVo userVo = jwtProvider.getUserVo(token);
 
         User sender = userRepository.findByNickname(userVo.getNickname())
@@ -46,6 +48,8 @@ public class MateService {
         User receiver = userRepository.findByNickname(receiverNickname)
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
+        notificationService.createNotification(userVo.getNickname(),receiver.getUserId(),
+                NotificationType.MATCHING,"/matching/request");
 
         Request request = Request.builder()
                 .senderId(sender)
@@ -124,8 +128,6 @@ public class MateService {
 
         return mateList;
     }
-
-
 
 
 }
