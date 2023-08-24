@@ -113,6 +113,11 @@ const BookmarkFolder: React.FC = () => {
         navigate(`/playlists?name=${name}`);
     };
 
+    // 메뉴를 닫는 함수
+    const resetMenuIndex = () => {
+        setMenuIndex(null);
+    };
+
     useEffect(() => {
         if (token) {
             getPlayLists();
@@ -148,16 +153,19 @@ const BookmarkFolder: React.FC = () => {
                                 <MoreIcon onClick={() => handleMenuToggle(index)} />
                                 {menuToggleState && menuIndex === index && (
                                     <Menu>
-                                        <MenuItem onClick={() => showInputForEdit(index)}>
-                                            수정하기
-                                        </MenuItem>
-                                        <MenuItem
-                                            onClick={() =>
-                                                handleDeletePlaylist(playlist.playlistName)
-                                            }
-                                        >
-                                            삭제하기
-                                        </MenuItem>
+                                        <Overlay onClick={resetMenuIndex} />
+                                        <MenuItems>
+                                            <EditButton onClick={() => showInputForEdit(index)}>
+                                                수정하기
+                                            </EditButton>
+                                            <DeleteButton
+                                                onClick={() =>
+                                                    handleDeletePlaylist(playlist.playlistName)
+                                                }
+                                            >
+                                                삭제하기
+                                            </DeleteButton>
+                                        </MenuItems>
                                     </Menu>
                                 )}
                             </FolderHeader>
@@ -192,15 +200,15 @@ const FolderListArea = styled.div`
 `;
 
 const FolderWrapper = styled.div`
-    width: 700px;
-    height: 500px;
-    margin: 30px;
-    border: 1px solid #ccc;
-    padding: 20px;
-    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    position: relative;
+    width: 700px;
+    height: 500px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    margin: 30px;
 `;
 
 const FolderHeader = styled.div`
@@ -222,13 +230,15 @@ const InputField = styled.div`
 const InputArea = styled.input`
     width: 80%;
     border: none;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #c9c9c9;
     outline: none;
     background-color: rgba(0, 0, 0, 0);
 `;
 
 const SaveButton = styled.button`
-    padding: 5px 10px;
+    position: relative;
+    right: 5px;
+    padding: 5px;
     font-size: 12px;
     background-color: #c9c9c9;
     color: #fff;
@@ -260,13 +270,36 @@ const Menu = styled.div`
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 10px;
-    z-index: 100;
 `;
 
-const MenuItem = styled.div`
+const Overlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.1);
+    z-index: 99;
+`;
+
+const MenuItems = styled.div`
+    z-index: 100;
+`;
+const EditButton = styled.div`
     padding: 10px;
     cursor: pointer;
-    border-radius: 10px;
+    border-radius: 10px 10px 0 0;
+    background-color: #ffffff;
+    &:hover {
+        background-color: #f0f0f0;
+    }
+`;
+
+const DeleteButton = styled.div`
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 0 0 10px 10px;
+    background-color: #ffffff;
     &:hover {
         background-color: #f0f0f0;
     }

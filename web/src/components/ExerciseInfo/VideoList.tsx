@@ -2,7 +2,7 @@
 // import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { faFolderPlus } from '@fortawesome/free-solid-svg-icons';
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { useInfiniteQuery } from 'react-query';
@@ -20,7 +20,6 @@ import loadingGif from '../../assets/ball-triangle.svg';
 const VideoList: React.FC = () => {
     const [category, setCategory] = useState<string>('러닝');
     const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
-    const [favoriteStatus, setFavoriteStatus] = useState<Record<string, boolean>>({});
     const [showModal, setShowModal] = useState<boolean>(false);
     const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
 
@@ -75,18 +74,12 @@ const VideoList: React.FC = () => {
     }, []);
 
     //즐겨찾기
-    //즐겨찾기 추가 별모양 토클 버튼
-    const toggleFavoriteStatus = useCallback(
+    const handleIconClick = useCallback(
         (video: Video) => {
             if (!isLoggedIn) {
                 alert('로그인 후 이용해주세요.');
                 return;
             }
-
-            setFavoriteStatus((prevStatus) => ({
-                ...prevStatus,
-                [video.id.videoId]: !prevStatus[video.id.videoId],
-            }));
 
             setCurrentVideo(video);
             setShowModal(true);
@@ -97,7 +90,6 @@ const VideoList: React.FC = () => {
 
     return (
         <VideoListInn>
-            <PageTitle>운동 정보</PageTitle>
             <BtnTab>
                 <button
                     className={`category01 ${category === '러닝' ? 'active' : ''}`}
@@ -151,17 +143,12 @@ const VideoList: React.FC = () => {
                                                 {video.snippet.title.length > 25
                                                     ? `${video.snippet.title.substring(0, 25)}...`
                                                     : video.snippet.title}
-                                                <FontAwesomeIcon
-                                                    icon={faStar}
+                                                <FaFolderPlus
+                                                    icon={faFolderPlus}
                                                     onClick={(event) => {
                                                         event.stopPropagation();
-                                                        toggleFavoriteStatus(video);
+                                                        handleIconClick(video);
                                                     }}
-                                                    className={`star-icon ${
-                                                        favoriteStatus[video.id.videoId]
-                                                            ? 'opened'
-                                                            : ''
-                                                    }`}
                                                 />
                                             </h4>
                                             <img
@@ -195,13 +182,9 @@ const VideoList: React.FC = () => {
 
 const VideoListInn = styled.div`
     position: relative;
-    max-width: 1440px;
-    min-height: 100vh;
     height: 100%;
-    margin: 120px auto 0;
     padding: 20px 60px;
     box-sizing: border-box;
-    // background-color: #f8f8f8;
 `;
 const VideoSection = styled.section`
     position: relative;
@@ -215,20 +198,7 @@ const VideoGridContainer = styled.div`
     max-width: 800px;
     text-align: center;
 `;
-const PageTitle = styled.h2`
-    position: relative;
 
-    &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: -10px;
-        width: 100%;
-        height: 1px;
-        color: #000;
-        background-color: #000;
-    }
-`;
 const BtnTab = styled.div`
     margin-top: 10px;
     position: relative;
@@ -283,17 +253,15 @@ const VideoThumb = styled.div`
         padding: 8px 15px;
         background-color: #888;
     }
-    .star-icon {
-        font-size: 20px;
-        color: #fff;
-        stroke-width: 30px;
-    }
-    .star-icon.opened {
-        color: gold;
-        stroke: gold;
-    }
     img {
         width: 100%;
     }
 `;
+
+const FaFolderPlus = styled(FontAwesomeIcon)`
+    font-size: 20px;
+    color: #fff;
+    stroke-width: 30px;
+`;
+
 export default VideoList;

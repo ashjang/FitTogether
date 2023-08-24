@@ -39,6 +39,7 @@ const Bookmark: React.FC = () => {
 
 const BookmarkPage = styled.div`
     margin-top: 150px;
+    min-height: calc(100vh - 200px);
 `;
 
 const Container = css`

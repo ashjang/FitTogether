@@ -258,6 +258,17 @@ const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
 const ModalWrapper = styled.div`
     position: relative;
 `;
+
+const Overlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+`;
+
 const BookmarkModal = styled.div`
     position: fixed;
     top: 50%;
@@ -270,15 +281,12 @@ const BookmarkModal = styled.div`
     border: 1px solid #ccc;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
     z-index: 9999;
+`;
 
-    input {
-        width: 80%;
-        margin-bottom: 10px;
-        padding: 5px;
-        border: none;
-        border-bottom: 1px solid #d7d7d7;
-        outline: none;
-    }
+const BookmarkModalTitle = styled.h2`
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
 `;
 
 const InputField = styled.div`
@@ -304,11 +312,7 @@ const CreateButton = styled.button`
     background-color: #d7d7d7;
     color: white;
 `;
-const PlaylistItemWrapper = styled.div`
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-`;
+
 const PlusBtn = styled.button`
     padding: 5px 0px;
     margin-left: 10px;
@@ -316,7 +320,38 @@ const PlusBtn = styled.button`
     background: none;
 `;
 
-const EditingPlaylistInput = styled.input``;
+const PlaylistContainer = styled.div`
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 210px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+`;
+
+const PlaylistItemWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+`;
+
+const PlaylistItem = styled.div`
+    margin: 5px 0;
+    cursor: pointer;
+    border: 1px solid transparent;
+`;
+
+const EditingPlaylistInput = styled.input`
+    width: 60%;
+    padding: 5px;
+    border: 1px solid #d7d7d7;
+    border-radius: 5px;
+    outline: none;
+`;
 
 const EditButton = styled.button`
     position: absolute;
@@ -343,39 +378,6 @@ const DeleteButton = styled.button`
     margin-right: 10px;
     border: none;
     background: none;
-`;
-
-const Overlay = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-`;
-
-const BookmarkModalTitle = styled.h2`
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 10px;
-`;
-
-const PlaylistContainer = styled.div`
-    position: absolute;
-    left: 50%;
-    bottom: 20px;
-    transform: translateX(-50%);
-    width: 300px;
-    height: 210px;
-    overflow-y: auto;
-    border: 1px solid #ccc;
-    padding: 10px;
-`;
-
-const PlaylistItem = styled.div`
-    margin: 5px 0;
-    cursor: pointer;
 `;
 
 export default AddToBookmark;
