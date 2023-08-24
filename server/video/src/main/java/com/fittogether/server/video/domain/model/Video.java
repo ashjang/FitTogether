@@ -32,10 +32,16 @@ public class Video extends BaseEntity {
 
   private String title;
 
+  private String thumbnail;
+
+  private String keyword;
+
   public static Video from(VideoForm form){
     return Video.builder()
         .url(form.getVideoUrl())
         .title(form.getTitle())
+        .thumbnail(form.getThumbnail())
+        .keyword(form.getKeyword())
         .build();
   }
 

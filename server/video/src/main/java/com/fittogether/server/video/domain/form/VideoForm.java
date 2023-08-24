@@ -13,5 +13,7 @@ public class VideoForm {
 
   String videoUrl;
   String title;
+  String thumbnail;
+  String keyword;
 
 }

@@ -31,8 +31,7 @@ public class VideoService {
   private final VideoRepository videoRepository;
   private final JwtProvider provider;
 
-  @Transactional
-  public PlaylistVideo addVideoToPlaylist(String token, String targetName, VideoForm form) {
+  public List<PlaylistVideo> getVideoInPlaylist(String token, String targetName) {
     UserVo userVo = provider.getUserVo(token);
 
     User user = userRepository.findById(userVo.getUserId())
@@ -41,8 +40,29 @@ public class VideoService {
     Playlist playlist = playlistRepository.findByUser_UserIdAndPlaylistName(user.getUserId(),
         targetName).orElseThrow(() -> new VideoCustomException(VideoErrorCode.NOT_FOUND_PLAYLIST));
 
-    Video video = videoRepository.findByUrl(form.getVideoUrl())
-        .orElse(Video.from(form));
+    return playlistVideoRepository.findByPlaylistId(playlist.getPlaylistId());
+  }
+
+  public List<Video> getVideo(String keyword){
+    if(videoRepository.findByKeyword(keyword).isEmpty()){
+      throw new VideoCustomException(VideoErrorCode.NOT_FOUND_KEYWORD);
+    }
+
+    return videoRepository.findByKeyword(keyword);
+  }
+
+  @Transactional
+  public PlaylistVideo addVideoToPlaylist(String token, String targetName, String videoTitle) {
+    UserVo userVo = provider.getUserVo(token);
+
+    User user = userRepository.findById(userVo.getUserId())
+        .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
+
+    Playlist playlist = playlistRepository.findByUser_UserIdAndPlaylistName(user.getUserId(),
+        targetName).orElseThrow(() -> new VideoCustomException(VideoErrorCode.NOT_FOUND_PLAYLIST));
+
+    Video video = videoRepository.findByTitle(videoTitle)
+        .orElseThrow(() -> new VideoCustomException(VideoErrorCode.NOT_FOUND_VIDEO));
 
     if (playlistVideoRepository.findByPlaylist_PlaylistIdAndVideo_VideoId(
             playlist.getPlaylistId(), video.getVideoId())
@@ -56,18 +76,6 @@ public class VideoService {
     return playlistVideoRepository.save(playlistVideo);
   }
 
-  public List<PlaylistVideo> getVideoInPlaylist(String token, String targetName) {
-    UserVo userVo = provider.getUserVo(token);
-
-    User user = userRepository.findById(userVo.getUserId())
-        .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
-
-    Playlist playlist = playlistRepository.findByUser_UserIdAndPlaylistName(user.getUserId(),
-        targetName).orElseThrow(() -> new VideoCustomException(VideoErrorCode.NOT_FOUND_PLAYLIST));
-
-    return playlistVideoRepository.findByPlaylistId(playlist.getPlaylistId());
-
-  }
 
   @Transactional
   public void deleteVideoInPlaylist(String token, String targetName, Long videoId) {
