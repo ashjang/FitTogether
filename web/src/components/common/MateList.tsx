@@ -94,7 +94,16 @@ const MateList: React.FC<Props> = ({ isOpen, onClose }) => {
                 <Title>운동 메이트 리스트</Title>
                 <MateListItems>
                     {Object.entries(mateData).map(([key, mate]) => (
-                        <MateListItem key={key} {...mate} />
+                        <MateListItem
+                            key={key}
+                            {...mate}
+                            onChatRoomClick={(chatRoomId: string) => {
+                                // 채팅방 생성 및 열기 동작 시뮬레이션
+                                console.log(
+                                    `Chat room with ${mate.senderNickname} opened. Room ID: ${chatRoomId}`
+                                );
+                            }}
+                        />
                     ))}
                 </MateListItems>
             </MateListComponent>
@@ -121,5 +130,4 @@ const MateListItems = styled.div`
     height: 380px;
     overflow-y: auto;
 `;
-
 export default MateList;

@@ -46,7 +46,6 @@ const ChatApp: React.FC = () => {
 
     const handleChatRoomClick = (chatRoomId: string) => {
         if (selectedChatRoom) {
-            // 현재 구독 중인 채팅방의 구독을 해제합니다.
             client.unsubscribe(`/sub/dm/room/${selectedChatRoom}`);
         }
 
@@ -54,7 +53,6 @@ const ChatApp: React.FC = () => {
         setInputMessage('');
 
         if (chatRoomId) {
-            // 선택한 채팅방에 대한 구독을 시작합니다.
             const stompSubscription = client.subscribe(`/sub/dm/room/${chatRoomId}`, (message) => {
                 const receivedMessage = JSON.parse(message.body) as ChatMessage;
                 setChatMessages((prevMessages) => [...prevMessages, receivedMessage]);

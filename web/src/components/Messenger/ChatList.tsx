@@ -32,12 +32,6 @@ const ChatList: React.FC<Props> = ({ chatRooms, onChatRoomClick }) => {
         setIsMateListOpen(false);
     };
 
-    //새로운 채팅방
-    const addChatRoom = (chatRoom: ChatRoom) => {
-        // chatRooms 배열에 chatRoom을 추가하는 로직을 구현하십시오.
-        // 이 함수는 필요한 채팅방 정보를 받아와서 chatRooms 상태를 업데이트하는 역할을 합니다.
-    };
-
     return (
         <ChatListBox>
             <TopArea>
@@ -55,7 +49,7 @@ const ChatList: React.FC<Props> = ({ chatRooms, onChatRoomClick }) => {
                     chatRooms.map((chatRoom) => (
                         <MateListItem
                             key={chatRoom.id}
-                            senderProfileImage={chatRoom.profileImage || default_user_image}
+                            senderProfileImage={chatRoom.profileImage || ''}
                             senderNickname={chatRoom.name}
                             onChatRoomClick={onChatRoomClick}
                         />
