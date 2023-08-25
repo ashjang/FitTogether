@@ -9,16 +9,17 @@ import { useInfiniteQuery } from 'react-query';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { useRecoilValue } from 'recoil';
+import { categoryRecoil } from '../../recoil/video/atoms';
 import { loggedInState } from '../../recoil/AuthState/atoms';
 
 import { fetchVideos, resetTotalResults, VideosResponse, Video } from './YoutubeApi';
 import VideoPopup from './VideoPopup';
-import AddToBookmark from './AddToBookmark';
+import PlaylistSetting from '../common/PlaylistSetting';
 
 import loadingGif from '../../assets/ball-triangle.svg';
 
 const VideoList: React.FC = () => {
-    const [category, setCategory] = useState<string>('러닝');
+    const category = useRecoilValue<string>(categoryRecoil);
     const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
@@ -58,12 +59,6 @@ const VideoList: React.FC = () => {
         }
     }, [hasNextPage, fetchNextPage]);
 
-    const handleTabClick = useCallback((newCategory: string) => {
-        setCategory('');
-        resetTotalResults();
-        setCategory(newCategory);
-    }, []);
-
     // 팝업창
     const openVideo = useCallback((video: Video) => {
         setSelectedVideo(video);
@@ -90,26 +85,6 @@ const VideoList: React.FC = () => {
 
     return (
         <VideoListInn>
-            <BtnTab>
-                <button
-                    className={`category01 ${category === '러닝' ? 'active' : ''}`}
-                    onClick={() => handleTabClick('러닝')}
-                >
-                    러닝
-                </button>
-                <button
-                    className={`category02 ${category === '등산' ? 'active' : ''}`}
-                    onClick={() => handleTabClick('등산')}
-                >
-                    등산
-                </button>
-                <button
-                    className={`category03 ${category === '헬스' ? 'active' : ''}`}
-                    onClick={() => handleTabClick('헬스')}
-                >
-                    헬스
-                </button>
-            </BtnTab>
             <VideoSection>
                 <VideoGridContainer>
                     {isLoading ? (
@@ -173,7 +148,7 @@ const VideoList: React.FC = () => {
                     />
                 )}
                 {showModal && currentVideo && (
-                    <AddToBookmark video={currentVideo} onClose={() => setShowModal(false)} />
+                    <PlaylistSetting video={currentVideo} onClose={() => setShowModal(false)} />
                 )}
             </VideoSection>
         </VideoListInn>
@@ -197,37 +172,6 @@ const VideoGridContainer = styled.div`
     margin: 150px auto 0;
     max-width: 800px;
     text-align: center;
-`;
-
-const BtnTab = styled.div`
-    margin-top: 10px;
-    position: relative;
-    top: 60px;
-    z-index: 10;
-
-    button {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        border-style: none;
-        border-radius: 15px;
-        padding: 3px 10px;
-        background-color: #fff;
-        box-shadow: 2.5px 5px 10px rgba(0, 0, 0, 0.5);
-
-        &.active {
-            background-color: #000;
-            color: #fff;
-        }
-    }
-    .category01 {
-        left: 43.75%;
-        transform: translateX(-40%);
-    }
-    .category03 {
-        left: 56.3%;
-        transform: translateX(-60%);
-    }
 `;
 
 const Loading = styled.p`

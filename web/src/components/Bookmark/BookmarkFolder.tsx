@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { FaEllipsisV } from 'react-icons/fa';
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
-import { playlistsDataRecoil } from '../../recoil/BookMark/atoms';
+import { playlistsDataRecoil } from '../../recoil/video/atoms';
 // import VideoList from '../ExerciseInfo/VideoList';
 
 interface Playlist {

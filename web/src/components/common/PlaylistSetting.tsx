@@ -1,11 +1,11 @@
 import axios from 'axios';
 import React, { useRef, useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { Video } from './YoutubeApi';
+import { Video } from '../ExerciseInfo/YoutubeApi';
 import { useRecoilState } from 'recoil';
-import { playlistsDataRecoil } from '../../recoil/BookMark/atoms';
+import { playlistsDataRecoil } from '../../recoil/video/atoms';
 
-interface AddToBookmarkProps {
+interface Props {
     video: Video | null;
     onClose: () => void;
 }
@@ -15,7 +15,7 @@ interface Playlist {
     userId: number;
 }
 
-const AddToBookmark: React.FC<AddToBookmarkProps> = ({ video, onClose }) => {
+const PlaylistSetting: React.FC<Props> = ({ video, onClose }) => {
     const token = sessionStorage.getItem('token');
     const modalRef = useRef<HTMLDivElement | null>(null);
     const [creatingPlaylistInput, setCreatingPlaylistInput] = useState<boolean>(false);
@@ -380,4 +380,4 @@ const DeleteButton = styled.button`
     background: none;
 `;
 
-export default AddToBookmark;
+export default PlaylistSetting;

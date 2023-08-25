@@ -30,6 +30,7 @@ import {
     keywordFilterState,
     hashtagFilterState,
 } from '../../recoil/posts/atoms';
+import { categoryRecoil } from '../../recoil/video/atoms';
 
 // interface Props {}
 // type HeaderProps = {
@@ -56,6 +57,7 @@ function Header() {
     const setCategoryFilter = useSetRecoilState<string>(categoryFilterState);
     const setKeywordFilter = useSetRecoilState<string>(keywordFilterState);
     const setHashtagFilter = useSetRecoilState<string>(hashtagFilterState);
+    const setVideoCategory = useSetRecoilState<string>(categoryRecoil);
 
     // dark light Mode
     // const handleToggleDarkMode = () => {
@@ -204,7 +206,10 @@ function Header() {
                         </MenuBtn>
                         <ul css={Menu}>
                             <li css={menuLi}>
-                                <Link to="/exerciseInfo">
+                                <Link
+                                    to="/exerciseInfo"
+                                    onClick={() => setVideoCategory('running')}
+                                >
                                     <span>운동 정보</span>
                                 </Link>
                             </li>

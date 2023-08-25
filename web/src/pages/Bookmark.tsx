@@ -5,7 +5,7 @@ import { css } from '@emotion/react';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import BookmarkFolder from '../components/Bookmark/BookmarkFolder';
 // import BookmarkSetting from '../components/Bookmark/BookmarkSetting';
-import AddToBookmark from '../components/ExerciseInfo/AddToBookmark';
+import PlaylistSetting from '../components/common/PlaylistSetting';
 
 const Bookmark: React.FC = () => {
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
@@ -26,7 +26,7 @@ const Bookmark: React.FC = () => {
                         <FaPlus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
                     )}
                     {isPopupOpen && (
-                        <AddToBookmark video={null} onClose={() => setIsPopupOpen(false)} />
+                        <PlaylistSetting video={null} onClose={() => setIsPopupOpen(false)} />
                     )}
                 </TitleArea>
             </div>
