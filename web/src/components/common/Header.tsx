@@ -23,9 +23,7 @@ import AlertList from './AlertList';
 import MateList from './MateList';
 import LogoImg from './../../assets/logo.png';
 
-import axios from 'axios';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { totalPageState, postListDataState, currentPageState } from '../../recoil/posts/atoms';
+import { currentPageState } from '../../recoil/posts/atoms';
 import {
     categoryFilterState,
     keywordFilterState,
@@ -51,10 +49,6 @@ function Header() {
 
     const [isScrolled, setScrolled] = useState(false); // 스크롤 내릴때 배경색
 
-    const navigate = useNavigate();
-    const location = useLocation();
-    const setTotalPages = useSetRecoilState(totalPageState);
-    const setPostListData = useSetRecoilState(postListDataState);
     const setCurrentPage = useSetRecoilState(currentPageState);
     const setCategoryFilter = useSetRecoilState<string>(categoryFilterState);
     const setKeywordFilter = useSetRecoilState<string>(keywordFilterState);
@@ -111,15 +105,10 @@ function Header() {
     // 헤더의 커뮤니티 탭을 눌렀을때는 필터링되지 않은 초기의 postList가 출력되게 하기 위한 함수
     const getInitialPostListData = async () => {
         try {
-            const response = await axios.get(`/api/posts/search?page=0&size=10`);
-            const page: number = Math.ceil(response.data.totalPostCount / 10); // 총 페이지 수
-            setTotalPages(page);
-            setPostListData(response.data.postList);
             setCurrentPage(1);
             setCategoryFilter('');
             setKeywordFilter('');
             setHashtagFilter('');
-            navigate(`${location.pathname}?page=1`);
         } catch (error) {
             console.error;
         }

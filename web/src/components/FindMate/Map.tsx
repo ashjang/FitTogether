@@ -3,9 +3,9 @@ import axios from 'axios';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons';
-import { useRecoilValue } from 'recoil';
-import { signInInfo } from '../../recoil/AuthState/atoms';
-import imgSrc from '../../assets/user-marker.png';
+import UserMarkerSrc from '../../assets/user_marker.png';
+import MyMarkerSrc from '../../assets/my_marker.png';
+import clickMarkerSrc from '../../assets/click_marker.png';
 import UserProfile from './UserProfile';
 import Modal from 'react-modal';
 
@@ -20,7 +20,6 @@ interface User {
 }
 
 const Map: React.FC = () => {
-    const signInData = useRecoilValue(signInInfo);
     const token = sessionStorage.getItem('token');
     const [category, setCategory] = useState<string>('RUNNING');
     const kakaoMapRef = useRef<HTMLDivElement | null>(null);
@@ -31,6 +30,7 @@ const Map: React.FC = () => {
     const [map, setMap] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentMarker, setCurrentMarker] = useState<any>(null);
+    const [clickedMarker, setClickedMarker] = useState<any>(null);
     const [locationKeyword, setLocationKeyword] = useState<string | null>(null);
 
     const dafaultLatitude = 37.566826;
@@ -45,6 +45,25 @@ const Map: React.FC = () => {
         const clickedLatLng = mouseEvent.latLng;
         setLatitude(clickedLatLng.getLat());
         setLongitude(clickedLatLng.getLng());
+
+        // 클릭 마커 에러 안뜨는데 동작을 안함... 해결 필요
+        // 1. 출력되는 에러 없음
+        // 2. 위치, 이미지 문제 없음
+        // 3. 다른 마커 생성 코드와 동일한 코드 사용
+        if (clickedMarker) {
+            clickedMarker.setMap(null);
+        }
+
+        const clickMarker = new window.kakao.maps.Marker({
+            position: clickedLatLng,
+            image: new window.kakao.maps.MarkerImage(
+                clickMarkerSrc,
+                new window.kakao.maps.Size(30, 30)
+            ),
+        });
+
+        clickMarker.setMap(map);
+        setClickedMarker(clickMarker);
     };
 
     // 내 위치 업데이트 함수
@@ -95,8 +114,8 @@ const Map: React.FC = () => {
             const marker = new window.kakao.maps.Marker({
                 position: newLatLng,
                 image: new window.kakao.maps.MarkerImage(
-                    'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
-                    new window.kakao.maps.Size(30, 45)
+                    MyMarkerSrc,
+                    new window.kakao.maps.Size(50, 50)
                 ),
             });
 
@@ -142,16 +161,16 @@ const Map: React.FC = () => {
     // users가 존재 && users 상태가 업데이트될 때 실행되는 함수
     useEffect(() => {
         users?.forEach((user) => {
-            // 좋아하는 운동에 현재 카테고리의 운동이 있는 user만 추출, 내 정보는 무시
-            if (user.exerciseChoice.includes(category) && user.nickname !== signInData.nickname) {
+            // 좋아하는 운동에 현재 카테고리의 운동이 있는 user만 추출
+            if (user.exerciseChoice.includes(category)) {
                 // 아까처럼 위치 설정해 marker를 찍어서 지도에 출력
                 const userLatLng = new window.kakao.maps.LatLng(user.latitude, user.longitude);
                 console.log(user.latitude, user.longitude);
                 const marker = new window.kakao.maps.Marker({
                     position: userLatLng,
                     image: new window.kakao.maps.MarkerImage(
-                        imgSrc,
-                        new window.kakao.maps.Size(50, 50)
+                        UserMarkerSrc,
+                        new window.kakao.maps.Size(65, 65)
                     ),
                 });
                 marker.setMap(map);

@@ -31,6 +31,7 @@ const PostFilter: React.FC = () => {
 
     const handlePaginationBtnClick = async (i: number) => {
         setCurrentPage(i);
+        navigate(`${location.pathname}?page=${i}`);
     };
 
     // 필터링없는 상태에서 postListData 얻기
@@ -40,7 +41,6 @@ const PostFilter: React.FC = () => {
             const numPages: number = Math.ceil(response.data.totalPostCount / 10); // 총 페이지 수
             setTotalPages(numPages);
             setPostListData(response.data.postList);
-            navigate(`${location.pathname}?page=${currentPage}`);
         } catch (error) {
             console.error;
         }
@@ -169,7 +169,10 @@ const PostFilter: React.FC = () => {
             </InputField>
             <ButtonGroup>
                 <PaginationButtonArrow
-                    onClick={() => setCurrentPage(currentPage - 1)}
+                    onClick={() => {
+                        setCurrentPage(currentPage - 1);
+                        navigate(`${location.pathname}?page=${currentPage - 1}`);
+                    }}
                     disabled={currentPage === 1}
                 >
                     &lt;
@@ -190,7 +193,10 @@ const PostFilter: React.FC = () => {
                     return buttons;
                 })()}
                 <PaginationButtonArrow
-                    onClick={() => setCurrentPage(currentPage + 1)}
+                    onClick={() => {
+                        setCurrentPage(currentPage + 1);
+                        navigate(`${location.pathname}?page=${currentPage + 1}`);
+                    }}
                     disabled={currentPage === totalPages}
                 >
                     &gt;
