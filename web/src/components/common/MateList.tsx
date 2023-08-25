@@ -10,14 +10,17 @@ interface Props {
     isOpen: boolean;
     onClose: () => void;
 }
+
 interface MateDateItem {
     senderProfileImage: string;
     senderNickname: string;
     nickname: string;
 }
+
 interface MateData {
     [key: string]: MateDateItem;
 }
+
 interface UserData {
     senderProfileImage: string;
     senderNickname: string;
@@ -103,6 +106,7 @@ const MateList: React.FC<Props> = ({ isOpen, onClose }) => {
                                     `Chat room with ${mate.senderNickname} opened. Room ID: ${chatRoomId}`
                                 );
                             }}
+                            showButton={true}
                         />
                     ))}
                 </MateListItems>
@@ -116,7 +120,7 @@ const MateListComponent = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 300px;
+    width: 320px;
     height: 450px;
     margin: 0 auto;
     background-color: white;
@@ -128,6 +132,8 @@ const Title = styled.h2``;
 const MateListItems = styled.div`
     width: 300px;
     height: 380px;
+    padding: 0 4px;
     overflow-y: auto;
 `;
+
 export default MateList;

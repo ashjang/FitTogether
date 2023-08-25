@@ -1,5 +1,4 @@
 // ChatWindow.tsx
-import React from 'react';
 import styled from '@emotion/styled';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,6 +8,7 @@ interface UserProfile {
     username: string;
     profileImage: string | null;
 }
+
 interface Props {
     chatRoomId: string | null;
     chatMessages: { roomId: string; message: string; sentAt: Date }[]; // 보낸 시간 정보 추가

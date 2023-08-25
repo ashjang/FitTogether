@@ -1,27 +1,29 @@
 import axios from 'axios';
-
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane as paperPlaneRegular } from '@fortawesome/free-regular-svg-icons';
-
 import { Link } from 'react-router-dom';
 
 interface Props {
     senderProfileImage: string;
     senderNickname: string;
+    showButton: boolean;
     onChatRoomClick: (chatRoomId: string) => void;
-    onClose: () => void;
+}
+interface ResponseData {
+    chatRoomId: string;
 }
 
 const MateListItem: React.FC<Props> = ({
     senderProfileImage,
     senderNickname,
+    showButton,
     onChatRoomClick,
-    onClose,
 }) => {
     const token: string | null = sessionStorage.getItem('token');
 
-    const handleDMIconClick = () => {
+    const handleDMIconClick = (event: React.MouseEvent<SVGElement, MouseEvent>) => {
+        event.stopPropagation();
         try {
             axios
                 .post(`/api/dm/${encodeURIComponent(senderNickname)}`, null, {
@@ -30,10 +32,10 @@ const MateListItem: React.FC<Props> = ({
                     },
                 })
                 .then((response) => {
+                    const chatRoomId = (response.data as ResponseData).chatRoomId;
                     console.log('채팅방 생성 완료:', response.data);
-                    const chatRoomId = response.data.id;
+                    console.log('채팅방 ID:', chatRoomId);
                     onChatRoomClick(chatRoomId);
-                    onClose();
                 })
                 .catch((error) => {
                     console.error('채팅방 생성 에러:', error);
@@ -52,18 +54,19 @@ const MateListItem: React.FC<Props> = ({
                 <SenderNickname>{senderNickname}</SenderNickname>
             </MateListItemComponentElement>
             <MateListItemComponentElement>
-                <Link to={`/messenger/${encodeURIComponent(senderNickname)}`}>
-                    <FaMessage
-                        icon={paperPlaneRegular}
-                        onClick={handleDMIconClick} // 아이콘 클릭 시 채팅방 생성 및 열기 이벤트
-                    />
-                </Link>
-                {/* <FaMessage icon={paperPlaneRegular} onClick={handleDMIconClick} /> */}
-                <UnfollowButton>unfollow</UnfollowButton>
+                {showButton && (
+                    <>
+                        <Link to={`/messenger/${encodeURIComponent(senderNickname)}`}>
+                            <FaMessage icon={paperPlaneRegular} onClick={handleDMIconClick} />
+                        </Link>
+                        <UnfollowButton>unfollow</UnfollowButton>
+                    </>
+                )}
             </MateListItemComponentElement>
         </MateListItemComponent>
     );
 };
+
 const MateListItemComponent = styled.div`
     display: flex;
     justify-content: space-between;
@@ -75,6 +78,7 @@ const MateListItemComponentElement = styled.div`
     justify-content: space-between;
     align-items: center;
 `;
+
 const ProfileImageContainer = styled.div`
     display: flex;
     justify-content: center;
@@ -97,6 +101,7 @@ const ProfileImage = styled.img`
 const SenderNickname = styled.p`
     font-size: 14px;
 `;
+
 const FaMessage = styled(FontAwesomeIcon)`
     margin: 5px;
     cursor: pointer;

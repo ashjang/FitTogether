@@ -1,5 +1,7 @@
 // ChatList.tsx
-import React, { useState } from 'react';
+import axios from 'axios';
+
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,6 +16,7 @@ interface ChatRoom {
     id: string;
     name: string;
     profileImage: string | null;
+    receiverNickname: string;
 }
 
 interface Props {
@@ -21,15 +24,51 @@ interface Props {
     onChatRoomClick: (chatRoomId: string) => void;
 }
 
-const ChatList: React.FC<Props> = ({ chatRooms, onChatRoomClick }) => {
+const ChatList: React.FC<Props> = ({ onChatRoomClick }) => {
     const [isMateListOpen, setIsMateListOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
+
+    const token: string | null = sessionStorage.getItem('token');
+
+    useEffect(() => {
+        if (token) {
+            axios
+                .get('/api/dm/lists', {
+                    headers: {
+                        'X-AUTH-TOKEN': token,
+                    },
+                })
+                .then((response) => {
+                    if (response.status === 200) {
+                        setChatRooms(response.data as unknown as ChatRoom[]);
+                    } else {
+                        console.error('API 요청이 실패하였습니다.');
+                        alert('채팅 리스트를 가져오는데 실패했습니다.');
+                    }
+                })
+                .catch((error) => {
+                    console.error('채팅방 리스트 조회 에러:', error);
+                    alert('채팅 리스트를 가져오는데 실패했습니다.');
+                });
+        }
+    }, [token]);
 
     // 클릭시 운동메이트 리스트 모달창
     const handleShowMateListClick = () => {
-        setIsMateListOpen(true);
+        if (!isLoading) {
+            setIsLoading(true);
+            setIsMateListOpen(true);
+        }
     };
     const handleCloseMateList = () => {
         setIsMateListOpen(false);
+        setIsLoading(false);
+    };
+
+    const handleCreateChatRoom = (chatRoomId: string) => {
+        onChatRoomClick(chatRoomId);
     };
 
     return (
@@ -47,12 +86,17 @@ const ChatList: React.FC<Props> = ({ chatRooms, onChatRoomClick }) => {
             <BottomArea>
                 {chatRooms.length > 0 ? (
                     chatRooms.map((chatRoom) => (
-                        <MateListItem
+                        <ListItem
                             key={chatRoom.id}
-                            senderProfileImage={chatRoom.profileImage || ''}
-                            senderNickname={chatRoom.name}
-                            onChatRoomClick={onChatRoomClick}
-                        />
+                            onClick={() => handleCreateChatRoom(chatRoom.id)}
+                        >
+                            <MateListItem
+                                senderProfileImage={default_user_image}
+                                senderNickname={chatRoom.receiverNickname}
+                                showButton={false}
+                                onChatRoomClick={handleCreateChatRoom}
+                            />
+                        </ListItem>
                     ))
                 ) : (
                     <NoneChat>
@@ -78,11 +122,13 @@ const ChatListBox = styled.div`
 `;
 const TopArea = styled.div`
     position: relative;
+
     display: flex;
     align-items: center;
     justify-content: center;
     height: 120px;
     background-color: #ffd4d4;
+    z-index: 1;
 `;
 const MateListButton = styled.button`
     display: inline-block;
@@ -102,19 +148,27 @@ const BottomArea = styled.ul`
     position: relative;
     top: 0px;
     width: 100%;
-    height: 100%;
-    background-color: lightblue;
+    // height: 100%;
+    // background-color: lightblue;
 `;
-// const ListItem = styled.li`
-//     cursor: pointer;
-//     display: flex;
-//     justify-content: left;
-//     align-items: center;
-//     width: 100%;
-//     height: 80px;
-//     padding-left: 30px;
-//     border-bottom: 1px solid #fff;
-// `;
+
+const ListItem = styled.li`
+    cursor: pointer;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    width: 100%;
+    height: 80px;
+    padding-left: 30px;
+    border-bottom: 1px solid #fff;
+    // border-top: none;
+    // border-right: none;
+    // border-left: none;
+
+    &:hover {
+        background-color: lightblue;
+    }
+`;
 // const UserName = styled.li`
 //     font-size: 18px;
 //     font-weight: 700;

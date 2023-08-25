@@ -9,6 +9,7 @@ interface ChatRoom {
     id: string;
     name: string;
     profileImage: string | null;
+    receiverNickname: string;
 }
 interface UserProfile {
     username: string;

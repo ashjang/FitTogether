@@ -41,7 +41,11 @@ function App() {
                         <Route path="/signin" element={<SignIn />} />
                         <Route path="/kakao/callback" element={<KakaoAuth />} />
                         <Route path="/signup" element={<SignUp />} />
-                        <Route path="/messenger" element={<Messenger />} />
+                        {/* <Route path="/messenger" element={<Messenger />} /> */}
+                        <Route path="/messenger" element={<Messenger />}>
+                            {/* 여기에 /messenger 경로 아래의 라우트 정의 */}
+                            <Route path=":nickname" element={<Messenger />} />
+                        </Route>
                         <Route element={<ProtectedRoute />}>
                             // 비로그인 상태에서는 접근 불가능한 컴포넌트들 모음
                             <Route path="/mypage" element={<MyPage />} />
