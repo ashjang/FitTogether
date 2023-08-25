@@ -36,6 +36,7 @@ public class SearchService {
   private final PostHashtagRepository postHashtagRepository;
   private final HashtagRepository hashtagRepository;
   private final JwtProvider provider;
+  private final PostService postService;
 
   /**
    * 전체 게시글 보기
@@ -46,15 +47,28 @@ public class SearchService {
     Page<Post> allPost = postRepository.findAllByOrderByCreatedAtDesc(pageable)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
+    List<Post> updateWatchedPost = updateWatchedPost(allPost);
+
     long totalElements = allPost.getTotalElements();
 
-    return PostResponse.from(getPostList(allPost), totalElements);
+    return PostResponse.from(getPostList(updateWatchedPost), totalElements);
+  }
+
+  /**
+   * 캐싱된 값으로 조회수 업데이트
+   */
+  private List<Post> updateWatchedPost(Page<Post> allPost) {
+    return allPost.getContent().stream()
+        .peek(post -> {
+          Long watchedCount = postService.getWatchedCount(post.getId());
+          post.setWatched(watchedCount);
+        }).collect(Collectors.toList());
   }
 
   /**
    * 해당 게시글 리스트에서 해시태그 추출해서 Dto변환
    */
-  private List<PostListDto> getPostList(Page<Post> Post) {
+  private List<PostListDto> getPostList(List<Post> Post) {
     return Post.stream().map(post -> {
           List<PostHashtag> postHashtagList = postHashtagRepository.findByPostId(post.getId())
               .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
@@ -84,9 +98,11 @@ public class SearchService {
     Page<Post> allPostByUser = postRepository.findAllByUserOrderByCreatedAtDesc(user, pageable)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
+    List<Post> updateWatchedPost = updateWatchedPost(allPostByUser);
+
     long totalElements = allPostByUser.getTotalElements();
 
-    return PostResponse.from(getPostList(allPostByUser), totalElements);
+    return PostResponse.from(getPostList(updateWatchedPost), totalElements);
   }
 
   /**
@@ -100,9 +116,11 @@ public class SearchService {
     Page<Post> postList = postRepository.findByCategoryOrderByCreatedAtDesc(category, pageable)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
+    List<Post> updateWatchedPost = updateWatchedPost(postList);
+
     long totalElements = postList.getTotalElements();
 
-    return PostResponse.from(getPostList(postList), totalElements);
+    return PostResponse.from(getPostList(updateWatchedPost), totalElements);
   }
 
   /**
@@ -121,9 +139,12 @@ public class SearchService {
             pageable)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_HASHTAG));
 
+    List<Post> updateWatchedPost = updateWatchedPost(
+        postHashtagList.map(PostHashtag::getPost));
+
     long totalElements = postHashtagList.getTotalElements();
 
-    return PostResponse.from(getPostList(postHashtagList.map(PostHashtag::getPost)), totalElements);
+    return PostResponse.from(getPostList(updateWatchedPost), totalElements);
   }
 
   /**
@@ -134,8 +155,10 @@ public class SearchService {
     Page<Post> postList = postRepository.findByTitleContainingOrderByCreatedAtDesc(title, pageable)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
+    List<Post> updateWatchedPost = updateWatchedPost(postList);
+
     long totalElements = postList.getTotalElements();
 
-    return PostResponse.from(getPostList(postList), totalElements);
+    return PostResponse.from(getPostList(updateWatchedPost), totalElements);
   }
 }
