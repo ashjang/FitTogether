@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
+import { useRecoilValue } from 'recoil';
+import { signInInfo } from '../../recoil/AuthState/atoms';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp } from '@fortawesome/free-regular-svg-icons';
 import { faEye } from '@fortawesome/free-regular-svg-icons';
@@ -38,12 +40,14 @@ const PostListItem: React.FC<Props> = ({
     viewCount,
     accessLevel,
 }) => {
+    const myInfo = useRecoilValue(signInInfo);
+
     return (
         <PostListItemComponent>
             <ShowPost
-                to={accessLevel ? `/posts/${postId}` : '#'}
+                to={!accessLevel && myInfo.nickname !== userNickname ? '#' : `/posts/${postId}`}
                 onClick={() => {
-                    if (!accessLevel) {
+                    if (!accessLevel && myInfo.nickname !== userNickname) {
                         alert('메이트만 볼 수 있는 게시글입니다.');
                     }
                 }}
