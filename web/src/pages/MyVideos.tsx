@@ -14,7 +14,7 @@ const MyVideos: React.FC = () => {
                 <ListTitle>
                     <TitleTextStyle>{playlistName}</TitleTextStyle>
                     <Link to="/exerciseInfo">
-                        <LinkText>전체 동영상 목록</LinkText>
+                        <LinkText>모든 동영상</LinkText>
                     </Link>
                 </ListTitle>
             </MyVideosContainer>

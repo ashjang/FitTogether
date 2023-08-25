@@ -7,6 +7,8 @@ import { useRecoilState } from 'recoil';
 import { playlistsDataRecoil } from '../../recoil/video/atoms';
 // import VideoList from '../ExerciseInfo/VideoList';
 
+import imgSrc from '../../assets/post_image_example.jpg'; // 썸네일 예시
+
 interface Playlist {
     playlistName: string;
     userId: number;
@@ -150,6 +152,11 @@ const BookmarkFolder: React.FC = () => {
                                 ) : (
                                     <PlaylistItem>{playlist.playlistName}</PlaylistItem>
                                 )}
+                                <AllVideos
+                                    onClick={() => handlePlaylistClick(playlist.playlistName)}
+                                >
+                                    동영상 더보기
+                                </AllVideos>
                                 <MoreIcon onClick={() => handleMenuToggle(index)} />
                                 {menuToggleState && menuIndex === index && (
                                     <Menu>
@@ -169,11 +176,24 @@ const BookmarkFolder: React.FC = () => {
                                     </Menu>
                                 )}
                             </FolderHeader>
-                            <FolderThumbnail
-                                onClick={() => handlePlaylistClick(playlist.playlistName)}
-                            >
-                                동영상 썸네일
-                            </FolderThumbnail>
+                            <FolderItems>
+                                <FolderItem>
+                                    <img src={imgSrc} width="240" height="180" alt="Image" />
+                                    <p>동영상 제목 ...</p>
+                                </FolderItem>
+                                <FolderItem>
+                                    <img src={imgSrc} width="240" height="180" alt="Image" />
+                                    <p>동영상 제목 ...</p>
+                                </FolderItem>
+                                <FolderItem>
+                                    <img src={imgSrc} width="240" height="180" alt="Image" />
+                                    <p>동영상 제목 ...</p>
+                                </FolderItem>
+                                <FolderItem>
+                                    <img src={imgSrc} width="240" height="180" alt="Image" />
+                                    <p>동영상 제목 ...</p>
+                                </FolderItem>
+                            </FolderItems>
                         </FolderWrapper>
                     ))}
                 </FolderListArea>
@@ -204,8 +224,7 @@ const FolderWrapper = styled.div`
     flex-direction: column;
     justify-content: space-between;
     position: relative;
-    width: 700px;
-    height: 500px;
+    width: 1200px;
     padding: 20px;
     border: 1px solid #ccc;
     margin: 30px;
@@ -250,17 +269,20 @@ const SaveButton = styled.button`
     justify-content: center;
 `;
 
-const FolderThumbnail = styled.div`
-    width: 100%;
-    height: 100%;
-    margin-bottom: 10px;
-    background-color: pink;
+const FolderItems = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 10px;
 `;
 
+const FolderItem = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+`;
 const Menu = styled.div`
     position: absolute;
     top: 60px;
@@ -303,6 +325,16 @@ const DeleteButton = styled.div`
     &:hover {
         background-color: #f0f0f0;
     }
+`;
+
+const AllVideos = styled.button`
+    position: absolute;
+    right: 75px;
+    font-size: 13px;
+    color: blue;
+    outline: none;
+    border: none;
+    background-color: transparent;
 `;
 
 const MoreIcon = styled(FaEllipsisV)`

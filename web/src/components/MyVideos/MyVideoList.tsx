@@ -37,11 +37,13 @@ const MyVideoList: React.FC = () => {
         }
     };
 
-    const handleStarClick = () => {
+    // 플레이리스트 내 동영상을 삭제하는 함수
+    // ❗ 삭제 요청을 포함한 비동기 함수로 변경해야함
+    const handleVideoDelete = () => {
         setShowPopup(true);
         setTimeout(() => {
             setShowPopup(false);
-        }, 1000); // 1초 후 알림 팝업이 사라짐
+        }, 1000);
     };
 
     return (
@@ -51,7 +53,7 @@ const MyVideoList: React.FC = () => {
                     <VideoListItem>
                         <VideoTitleArea>
                             <VideoTitle>{video.videoTitle}</VideoTitle>
-                            <FaTrash onClick={handleStarClick} />
+                            <FaTrash onClick={() => handleVideoDelete()} />
                         </VideoTitleArea>
                         <img src="http://placehold.it/500x300" alt="예시" />
                     </VideoListItem>
@@ -92,8 +94,9 @@ const VideoTitle = styled.div`
 `;
 
 const DeletePopup = styled.div`
-    position: absolute;
-    transform: translate(50%, 50%);
+    position: fixed;
+    top: 50%;
+    left: 44%;
     padding: 10px 20px;
     background-color: white;
     border: 1px solid black;

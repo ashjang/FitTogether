@@ -1,21 +1,15 @@
-/** @jsxImportSource @emotion/react */
-// import { css } from '@emotion/react';
-import styled from '@emotion/styled';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFolderPlus } from '@fortawesome/free-solid-svg-icons';
-
 import React, { useState, useCallback, useEffect } from 'react';
+import styled from '@emotion/styled';
 import { useInfiniteQuery } from 'react-query';
 import InfiniteScroll from 'react-infinite-scroll-component';
-
 import { useRecoilValue } from 'recoil';
 import { categoryRecoil } from '../../recoil/video/atoms';
 import { loggedInState } from '../../recoil/AuthState/atoms';
-
 import { fetchVideos, resetTotalResults, VideosResponse, Video } from './YoutubeApi';
 import VideoPopup from './VideoPopup';
 import PlaylistSetting from '../common/PlaylistSetting';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFolderPlus } from '@fortawesome/free-solid-svg-icons';
 import loadingGif from '../../assets/ball-triangle.svg';
 
 const VideoList: React.FC = () => {
