@@ -87,7 +87,13 @@ const QuillEditor: React.FC<DataForQuillEditorComp | {}> = (props) => {
                         .getEditor()
                         .insertEmbed(range.index, 'image', response.data[0]);
                 } catch (error) {
-                    console.error(error);
+                    if (axios.isAxiosError(error)) {
+                        if (error.message === 'Network Error') {
+                            alert('이미지 크기(10MB)를 초과하였습니다.');
+                        }
+                    } else {
+                        console.error('오류 발생:', error);
+                    }
                 }
             };
         };

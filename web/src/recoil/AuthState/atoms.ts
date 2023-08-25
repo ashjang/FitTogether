@@ -38,4 +38,5 @@ export const signInInfo = atom({
     default: {
         nickname: '',
     },
+    effects_UNSTABLE: [persistAtom],
 });

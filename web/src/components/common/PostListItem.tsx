@@ -14,6 +14,7 @@ interface Props {
     userNickname: string;
     userImage: string;
     hashtags: string[];
+    accessLevel: boolean;
 }
 
 const getCategoryName = (categoryEng: string) => {
@@ -35,10 +36,18 @@ const PostListItem: React.FC<Props> = ({
     userNickname,
     likeCount,
     viewCount,
+    accessLevel,
 }) => {
     return (
         <PostListItemComponent>
-            <ShowPost to={`/posts/${postId}`}>
+            <ShowPost
+                to={accessLevel ? `/posts/${postId}` : '#'}
+                onClick={() => {
+                    if (!accessLevel) {
+                        alert('메이트만 볼 수 있는 게시글입니다.');
+                    }
+                }}
+            >
                 <PostInfo>
                     <CategoryAndHashtag>
                         <PostCategory>{getCategoryName(category)}</PostCategory>
