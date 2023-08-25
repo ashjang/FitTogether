@@ -14,6 +14,7 @@ import com.fittogether.server.user.domain.model.User;
 import com.fittogether.server.user.domain.repository.UserRepository;
 import com.fittogether.server.user.exception.UserCustomException;
 import com.fittogether.server.user.exception.UserErrorCode;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.LockModeType;
 import lombok.RequiredArgsConstructor;
@@ -117,7 +118,7 @@ public class LikeService {
     if (valueOperations.get(likeCountKey) == null) {
       likeCount = getLikeCountByDB(postId);
     } else {
-      likeCount = Long.parseLong(valueOperations.get(likeCountKey));
+      likeCount = Long.parseLong(Objects.requireNonNull(valueOperations.get(likeCountKey)));
     }
     return likeCount;
   }
@@ -137,13 +138,13 @@ public class LikeService {
     log.info("DB 좋아요 수 갱신");
     Set<String> keys = redisTemplate.keys("postLikeCount::*");
 
-    for (String data : keys) {
+    Objects.requireNonNull(keys).forEach(data -> {
       Long postId = Long.parseLong(data.split("::")[1]);
-      Long likeCount = Long.parseLong(redisTemplate.opsForValue().get(data));
+      Long likeCount = Long.parseLong(Objects.requireNonNull(redisTemplate.opsForValue().get(data)));
 
       updateLikeCountDB(postId, likeCount);
       redisTemplate.delete("postLikeCount::" + postId);
-    }
+    });
   }
 
   /**

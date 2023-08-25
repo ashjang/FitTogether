@@ -28,6 +28,7 @@ import com.fittogether.server.user.exception.UserErrorCode;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -81,7 +82,8 @@ public class PostService {
         .accessLevel(postForm.isAccessLevel())
         .likes(0L)
         .watched(0L)
-        .createdAt(LocalDateTime.now()).build();
+        .createdAt(LocalDateTime.now())
+        .build();
 
     List<Hashtag> savedHashtag = addHashtag(postForm);
 
@@ -226,7 +228,6 @@ public class PostService {
     List<PostHashtag> postHashtagList = postHashtagRepository.findByPostId(postId)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_HASHTAG));
 
-
     List<String> hashtagList = postHashtagList.stream()
         .map(postHashtag -> postHashtag.getHashtag().getKeyword())
         .collect(Collectors.toList());
@@ -241,11 +242,13 @@ public class PostService {
     List<ChildReply> childReplies = childReplyRepository.findAllByPostId(postId)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_REPLY));
 
-    //조회수
-    Long incrementWatchedCount = incrementWatchedCount(postId);
     Long totalReplyCount = replyService.getTotalReplyCount(postId);
 
-    Long likeCount = likeService.getLikeCountByRedis(postId); // 캐싱된 조회수 가져오기
+    // 증가된 조회수
+    Long incrementWatchedCount = incrementWatchedCount(postId);
+
+    // 캐싱된 좋아요 수
+    Long likeCount = likeService.getLikeCountByRedis(postId);
 
     return PostInfo.from(post, replyList, childReplies, totalReplyCount, isLike,
         incrementWatchedCount, images, hashtagList, likeCount);
@@ -253,7 +256,7 @@ public class PostService {
 
 
   /**
-   * 조회수 캐싱
+   * 조회수 증가 (캐싱)
    */
   @Transactional
   public Long incrementWatchedCount(Long postId) {
@@ -267,11 +270,31 @@ public class PostService {
 
       valueOperations.set(key, String.valueOf(post.getWatched()), Duration.ofMinutes(5));
       valueOperations.increment(key);
-      return Long.parseLong(valueOperations.get(key));
+      return Long.parseLong(Objects.requireNonNull(valueOperations.get(key)));
 
     } else {
       valueOperations.increment(key);
-      return Long.parseLong(valueOperations.get(key));
+      return Long.parseLong(Objects.requireNonNull(valueOperations.get(key)));
+    }
+  }
+
+  /**
+   * 조회수 가져오기 (캐싱)
+   */
+  public Long getWatchedCount(Long postId) {
+    String key = "postWatchedCount::" + postId;
+
+    ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+
+    if (valueOperations.get(key) == null) {
+      Post post = postRepository.findById(postId)
+          .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
+
+      valueOperations.set(key, String.valueOf(post.getWatched()), Duration.ofMinutes(10));
+      return Long.parseLong(Objects.requireNonNull(valueOperations.get(key)));
+
+    } else {
+      return Long.parseLong(Objects.requireNonNull(valueOperations.get(key)));
     }
   }
 
@@ -284,14 +307,15 @@ public class PostService {
 
     Set<String> keys = redisTemplate.keys("postWatchedCount::*");
 
-    for (String data : keys) {
+    Objects.requireNonNull(keys).forEach(data -> {
       Long postId = Long.parseLong(data.split("::")[1]);
-      Long viewCnt = Long.parseLong(redisTemplate.opsForValue().get(data));
-
+      Long viewCnt = Long.parseLong(Objects.requireNonNull(redisTemplate.opsForValue().get(data)));
       updateWatchedCountInDatabase(postId, viewCnt);
       redisTemplate.delete("postWatchedCount::" + postId);
-    }
+    });
+
   }
+
 
   /**
    * 조회수 DB 업데이트
