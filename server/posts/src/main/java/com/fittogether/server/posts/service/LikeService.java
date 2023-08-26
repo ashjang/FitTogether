@@ -108,13 +108,10 @@ public class LikeService {
 
     ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 
-    Long likeCount;
     if (valueOperations.get(likeCountKey) == null) {
-      likeCount = getLikeCountByDB(postId);
-    } else {
-      likeCount = Long.parseLong(Objects.requireNonNull(valueOperations.get(likeCountKey)));
+      return getLikeCountByDB(postId);
     }
-    return likeCount;
+    return Long.parseLong(Objects.requireNonNull(valueOperations.get(likeCountKey)));
   }
 
   /**
@@ -134,7 +131,8 @@ public class LikeService {
 
     Objects.requireNonNull(keys).forEach(data -> {
       Long postId = Long.parseLong(data.split("::")[1]);
-      Long likeCount = Long.parseLong(Objects.requireNonNull(redisTemplate.opsForValue().get(data)));
+      Long likeCount = Long.parseLong(
+          Objects.requireNonNull(redisTemplate.opsForValue().get(data)));
 
       updateLikeCountDB(postId, likeCount);
       redisTemplate.delete("postLikeCount::" + postId);

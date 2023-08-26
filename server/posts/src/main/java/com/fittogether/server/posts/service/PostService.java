@@ -290,7 +290,7 @@ public class PostService {
       Post post = postRepository.findById(postId)
           .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
-      valueOperations.set(key, String.valueOf(post.getWatched()), Duration.ofMinutes(10));
+      valueOperations.set(key, String.valueOf(post.getWatched()));
       return Long.parseLong(Objects.requireNonNull(valueOperations.get(key)));
 
     } else {

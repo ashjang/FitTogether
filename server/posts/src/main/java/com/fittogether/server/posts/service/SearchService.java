@@ -37,6 +37,7 @@ public class SearchService {
   private final HashtagRepository hashtagRepository;
   private final JwtProvider provider;
   private final PostService postService;
+  private final LikeService likeService;
 
   /**
    * 전체 게시글 보기
@@ -47,7 +48,7 @@ public class SearchService {
     Page<Post> allPost = postRepository.findAllByOrderByCreatedAtDesc(pageable)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
-    List<Post> updateWatchedPost = updateWatchedPost(allPost);
+    List<Post> updateWatchedPost = updateWatchedAndLikePost(allPost);
 
     long totalElements = allPost.getTotalElements();
 
@@ -57,11 +58,14 @@ public class SearchService {
   /**
    * 캐싱된 값으로 조회수 업데이트
    */
-  private List<Post> updateWatchedPost(Page<Post> allPost) {
+  private List<Post> updateWatchedAndLikePost(Page<Post> allPost) {
     return allPost.getContent().stream()
         .peek(post -> {
           Long watchedCount = postService.getWatchedCount(post.getId());
+          Long likeCount = likeService.getLikeCountByRedis(post.getId());
+
           post.setWatched(watchedCount);
+          post.setLikes(likeCount);
         }).collect(Collectors.toList());
   }
 
@@ -98,7 +102,7 @@ public class SearchService {
     Page<Post> allPostByUser = postRepository.findAllByUserOrderByCreatedAtDesc(user, pageable)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
-    List<Post> updateWatchedPost = updateWatchedPost(allPostByUser);
+    List<Post> updateWatchedPost = updateWatchedAndLikePost(allPostByUser);
 
     long totalElements = allPostByUser.getTotalElements();
 
@@ -116,7 +120,7 @@ public class SearchService {
     Page<Post> postList = postRepository.findByCategoryOrderByCreatedAtDesc(category, pageable)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
-    List<Post> updateWatchedPost = updateWatchedPost(postList);
+    List<Post> updateWatchedPost = updateWatchedAndLikePost(postList);
 
     long totalElements = postList.getTotalElements();
 
@@ -139,7 +143,7 @@ public class SearchService {
             pageable)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_HASHTAG));
 
-    List<Post> updateWatchedPost = updateWatchedPost(
+    List<Post> updateWatchedPost = updateWatchedAndLikePost(
         postHashtagList.map(PostHashtag::getPost));
 
     long totalElements = postHashtagList.getTotalElements();
@@ -155,7 +159,7 @@ public class SearchService {
     Page<Post> postList = postRepository.findByTitleContainingOrderByCreatedAtDesc(title, pageable)
         .orElseThrow(() -> new PostException(ErrorCode.NOT_FOUND_POST));
 
-    List<Post> updateWatchedPost = updateWatchedPost(postList);
+    List<Post> updateWatchedPost = updateWatchedAndLikePost(postList);
 
     long totalElements = postList.getTotalElements();
 
