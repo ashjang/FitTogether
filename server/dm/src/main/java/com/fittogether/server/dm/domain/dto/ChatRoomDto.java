@@ -24,7 +24,7 @@ public class ChatRoomDto {
 
     String senderNickname;
     String receiverNickname;
-    LocalDateTime chatRoomDt;
+    LocalDateTime chatRoomDate;
 
     public static ChatRoomDto from(ChatRoom chatRoom) {
         return ChatRoomDto.builder()
@@ -33,7 +33,7 @@ public class ChatRoomDto {
                 .receiverId(chatRoom.getReceiverId().getUserId())
                 .senderNickname(chatRoom.getSenderNickname())
                 .receiverNickname(chatRoom.getReceiverNickname())
-                .chatRoomDt(chatRoom.getChatRoomDt())
+                .chatRoomDate(chatRoom.getChatRoomDate())
                 .build();
     }
 
@@ -43,7 +43,7 @@ public class ChatRoomDto {
                         .chatRoomId(chatRoom.getChatRoomId())
                         .senderNickname(chatRoom.getSenderNickname())
                         .receiverNickname(chatRoom.getReceiverNickname())
-                        .chatRoomDt(chatRoom.getChatRoomDt())
+                        .chatRoomDate(chatRoom.getChatRoomDate())
                         .build())
                 .collect(Collectors.toList());
     }

@@ -28,7 +28,7 @@ public class Message {
 
     String senderNickname;
     String contents;
-    LocalDateTime sendDt;
+    LocalDateTime sendDate;
 
 
 }

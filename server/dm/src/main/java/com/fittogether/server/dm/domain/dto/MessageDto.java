@@ -22,7 +22,7 @@ public class MessageDto {
     Long senderId;
     String senderNickname;
     String contents;
-    LocalDateTime sendDt;
+    LocalDateTime sendDate;
 
 
     public static MessageDto from(Message message){
@@ -31,7 +31,7 @@ public class MessageDto {
                 .senderId(message.getSenderId().getUserId())
                 .senderNickname(message.getSenderNickname())
                 .contents(message.getContents())
-                .sendDt(message.getSendDt())
+                .sendDate(message.getSendDate())
                 .build();
     }
 
@@ -42,7 +42,7 @@ public class MessageDto {
                         .senderId(message.getSenderId().getUserId())
                         .senderNickname(message.getSenderNickname())
                         .contents(message.getContents())
-                        .sendDt(message.getSendDt())
+                        .sendDate(message.getSendDate())
                         .build())
                 .collect(Collectors.toList());
     }

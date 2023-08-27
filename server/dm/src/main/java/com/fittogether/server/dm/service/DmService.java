@@ -5,6 +5,8 @@ import com.fittogether.server.dm.domain.entity.ChatRoom;
 import com.fittogether.server.dm.domain.entity.Message;
 import com.fittogether.server.dm.domain.repository.ChatRoomRepository;
 import com.fittogether.server.dm.domain.repository.MessageRepository;
+import com.fittogether.server.dm.exception.DmCustomException;
+import com.fittogether.server.dm.exception.DmErrorCode;
 import com.fittogether.server.domain.token.JwtProvider;
 import com.fittogether.server.domain.token.UserVo;
 import com.fittogether.server.user.domain.model.User;
@@ -48,7 +50,7 @@ public class DmService {
                 .receiverId(receiver)
                 .senderNickname(sender.getNickname())
                 .receiverNickname(receiver.getNickname())
-                .chatRoomDt(LocalDateTime.now())
+                .chatRoomDate(LocalDateTime.now())
                 .build();
         chatRoomRepository.save(chatRoom);
         return chatRoom;
@@ -80,7 +82,7 @@ public class DmService {
                 .senderId(sender)
                 .senderNickname(sender.getNickname())
                 .contents(messageForm.getContents())
-                .sendDt(LocalDateTime.now())
+                .sendDate(LocalDateTime.now())
                 .build();
         messageRepository.save(message);
         return message;
@@ -122,7 +124,8 @@ public class DmService {
 
 
         //message 의 chatRoomId는 ChatRoom의 Id값을 참조하기때문에 따로 값을 추출
-        Optional<ChatRoom> room = chatRoomRepository.findById(chatRoomId);
+        Optional<ChatRoom> room = Optional.ofNullable(chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new DmCustomException(DmErrorCode.NOT_FOUND_CHATROOM)));
 
         List<Message> roomId = messageRepository.findAllByChatRoomId(room);
 

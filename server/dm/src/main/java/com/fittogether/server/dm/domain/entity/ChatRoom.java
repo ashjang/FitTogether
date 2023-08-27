@@ -27,7 +27,7 @@ public class ChatRoom {
     User receiverId;
     String senderNickname;
     String receiverNickname;
-    LocalDateTime chatRoomDt;
+    LocalDateTime chatRoomDate;
 
 
 }
