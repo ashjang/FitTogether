@@ -1,39 +1,26 @@
-// ParentComponent.tsx
-import React, { useState } from 'react';
-import ChatList from './ChatList';
-import ChatWindow from './ChatWindow';
+// import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+// import React, { useState } from 'react';
 
-const ParentComponent: React.FC = () => {
-    const [selectedChatRoomId, setSelectedChatRoomId] = useState<string | null>(null);
+// import ChatList from './ChatList';
+// import ChatWindow from './ChatWindow';
 
-    const handleChatRoomClick = (chatRoomId: string) => {
-        setSelectedChatRoomId(chatRoomId);
-    };
+// function ParentComponent() {
+//     const [selectedChatRoomId, setSelectedChatRoomId] = useState<string>(''); // 또는 초기값을 제공하지 않아도 됩니다.
 
-    // Sample data for demonstration purposes
-    const sampleChatMessages = [
-        { roomId: '1', message: 'Hello!', sentAt: new Date() },
-        // ... other messages
-    ];
+//     const handleChatRoomClick = (chatRoomId) => {
+//         setSelectedChatRoomId(chatRoomId);
+//     };
 
-    return (
-        <div>
-            <ChatList chatRooms={[]} onChatRoomClick={handleChatRoomClick} />
-            {selectedChatRoomId && (
-                <ChatWindow
-                    chatRoomId={selectedChatRoomId}
-                    chatMessages={sampleChatMessages}
-                    inputMessage=""
-                    onInputChange={() => {}}
-                    onSendMessage={() => {}}
-                    username="JohnDoe"
-                    onUsernameChange={() => {}}
-                    chatRoomName="Sample Chat Room"
-                    userProfile={{ username: 'JohnDoe', profileImage: null }}
-                />
-            )}
-        </div>
-    );
-};
+//     return (
+//         <Router>
+//             <ChatList onChatRoomClick={handleChatRoomClick} />
+//             <Switch>
+//                 <Route path="/chat/:chatRoomId">
+//                     <ChatWindow chatRoomId={selectedChatRoomId} />
+//                 </Route>
+//             </Switch>
+//         </Router>
+//     );
+// }
 
-export default ParentComponent;
+// export default ParentComponent;

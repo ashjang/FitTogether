@@ -32,6 +32,7 @@ const MateListItem: React.FC<Props> = ({
                     },
                 })
                 .then((response) => {
+                    // 타입 단언을 통해 response.data의 형식을 ResponseData로 강제 변환
                     const chatRoomId = (response.data as ResponseData).chatRoomId;
                     console.log('채팅방 생성 완료:', response.data);
                     console.log('채팅방 ID:', chatRoomId);
@@ -54,7 +55,11 @@ const MateListItem: React.FC<Props> = ({
                 <SenderNickname>{senderNickname}</SenderNickname>
             </MateListItemComponentElement>
             <MateListItemComponentElement>
-                {showButton && (
+                {/* <Link to={`/messenger/${encodeURIComponent(senderNickname)}`}>
+                    <FaMessage icon={paperPlaneRegular} onClick={handleDMIconClick} />
+                </Link>
+                <UnfollowButton>unfollow</UnfollowButton> */}
+                {showButton && ( // 버튼 표시 여부에 따라 조건부 렌더링
                     <>
                         <Link to={`/messenger/${encodeURIComponent(senderNickname)}`}>
                             <FaMessage icon={paperPlaneRegular} onClick={handleDMIconClick} />

@@ -1,7 +1,6 @@
-// ChatList.tsx
-import axios from 'axios';
+// import axios from 'axios';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -24,36 +23,11 @@ interface Props {
     onChatRoomClick: (chatRoomId: string) => void;
 }
 
-const ChatList: React.FC<Props> = ({ onChatRoomClick }) => {
+const ChatList: React.FC<Props> = ({ chatRooms, onChatRoomClick }) => {
+    console.log('Received chatRooms:', chatRooms);
+
     const [isMateListOpen, setIsMateListOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-
-    const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
-
-    const token: string | null = sessionStorage.getItem('token');
-
-    useEffect(() => {
-        if (token) {
-            axios
-                .get('/api/dm/lists', {
-                    headers: {
-                        'X-AUTH-TOKEN': token,
-                    },
-                })
-                .then((response) => {
-                    if (response.status === 200) {
-                        setChatRooms(response.data as unknown as ChatRoom[]);
-                    } else {
-                        console.error('API 요청이 실패하였습니다.');
-                        alert('채팅 리스트를 가져오는데 실패했습니다.');
-                    }
-                })
-                .catch((error) => {
-                    console.error('채팅방 리스트 조회 에러:', error);
-                    alert('채팅 리스트를 가져오는데 실패했습니다.');
-                });
-        }
-    }, [token]);
 
     // 클릭시 운동메이트 리스트 모달창
     const handleShowMateListClick = () => {
@@ -68,6 +42,8 @@ const ChatList: React.FC<Props> = ({ onChatRoomClick }) => {
     };
 
     const handleCreateChatRoom = (chatRoomId: string) => {
+        console.log('Chat room clicked:', chatRoomId);
+
         onChatRoomClick(chatRoomId);
     };
 
@@ -94,7 +70,7 @@ const ChatList: React.FC<Props> = ({ onChatRoomClick }) => {
                                 senderProfileImage={default_user_image}
                                 senderNickname={chatRoom.receiverNickname}
                                 showButton={false}
-                                onChatRoomClick={handleCreateChatRoom}
+                                onChatRoomClick={() => onChatRoomClick(chatRoom.id)}
                             />
                         </ListItem>
                     ))
@@ -109,7 +85,7 @@ const ChatList: React.FC<Props> = ({ onChatRoomClick }) => {
         </ChatListBox>
     );
 };
-// emotion css style
+
 const ChatListBox = styled.div`
     position: absolute;
     top: 0px;
@@ -118,11 +94,10 @@ const ChatListBox = styled.div`
     height: 600px;
     overflow-y: auto;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    // z-index: 10;
 `;
+
 const TopArea = styled.div`
     position: relative;
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -130,6 +105,7 @@ const TopArea = styled.div`
     background-color: #ffd4d4;
     z-index: 1;
 `;
+
 const MateListButton = styled.button`
     display: inline-block;
     margin-left: 20px;
@@ -137,19 +113,18 @@ const MateListButton = styled.button`
     border: none;
     background: none;
 
-    & :hover {
+    &:hover {
         color: #7f5539;
         transition: all 0.3s;
     }
 `;
+
 const MateListTitle = styled.h2``;
 
 const BottomArea = styled.ul`
     position: relative;
     top: 0px;
     width: 100%;
-    // height: 100%;
-    // background-color: lightblue;
 `;
 
 const ListItem = styled.li`
@@ -161,33 +136,16 @@ const ListItem = styled.li`
     height: 80px;
     padding-left: 30px;
     border-bottom: 1px solid #fff;
-    // border-top: none;
-    // border-right: none;
-    // border-left: none;
 
     &:hover {
         background-color: lightblue;
     }
 `;
-// const UserName = styled.li`
-//     font-size: 18px;
-//     font-weight: 700;
-// `;
-
-// const ProfileImageWrapper = styled.div`
-//     margin-right: 10px;
-// `;
-
-// const ProfileImage = styled.img`
-//     width: 40px;
-//     height: 40px;
-//     border-radius: 50%;
-// `;
 
 const NoneChat = styled.p`
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 170px;
     transform: translate(-50%, -50%);
     font-size: 20px;
     font-weight: 500;

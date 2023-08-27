@@ -8,7 +8,6 @@ interface UserProfile {
     username: string;
     profileImage: string | null;
 }
-
 interface Props {
     chatRoomId: string | null;
     chatMessages: { roomId: string; message: string; sentAt: Date }[]; // 보낸 시간 정보 추가
@@ -86,13 +85,15 @@ const ChatWindow: React.FC<Props> = ({
 };
 const ChatWindowBox = styled.div`
     position: relative;
-    top: 0;
-    left: 390px;
-    width: 1000px;
-    height: 600px;
-    padding: 20px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    background-color: #d9d9d9;
+    // top: 0;
+    // left: 390px;
+    // width: 1000px;
+    // height: 600px;
+    width: 100%;
+    height: 100%;
+    // padding: 20px;
+    // box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    // background-color: #d9d9d9;
 `;
 const TopArea = styled.div`
     position: relative;
