@@ -56,27 +56,23 @@ public class DmService {
 
     // 메세지 보내기
     public Message sendMessage(
-            //  String token,
+            String token,
             MessageForm messageForm
     ) {
 
-      /*  if (!jwtProvider.validateToken(token)) {
+        if (!jwtProvider.validateToken(token)) {
             throw new UserCustomException(UserErrorCode.NOT_FOUND_USER);
         }
 
-         UserVo userVo = jwtProvider.getUserVo(token);
-
-       */
+        UserVo userVo = jwtProvider.getUserVo(token);
 
 
         //추후 토큰 사용자로 변경해야함
         ChatRoom chatRoom = chatRoomRepository.findById(messageForm.getChatRoomId())
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
-        User sender = userRepository.findByNickname(messageForm.getSenderNickname())
+        User sender = userRepository.findByNickname(userVo.getNickname())
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
-
-
 
 
         Message message = Message.builder()
@@ -119,16 +115,16 @@ public class DmService {
 
 
     //해당 채팅방 메세지 조회
-    public List<Message> messageLists(String token,Long chatRoomId){
+    public List<Message> messageLists(String token, Long chatRoomId) {
         if (!jwtProvider.validateToken(token)) {
             throw new UserCustomException(UserErrorCode.NOT_FOUND_USER);
         }
 
 
         //message 의 chatRoomId는 ChatRoom의 Id값을 참조하기때문에 따로 값을 추출
-        Optional<ChatRoom> room=chatRoomRepository.findById(chatRoomId);
+        Optional<ChatRoom> room = chatRoomRepository.findById(chatRoomId);
 
-        List<Message> roomId=messageRepository.findAllByChatRoomId(room);
+        List<Message> roomId = messageRepository.findAllByChatRoomId(room);
 
         return roomId;
 
