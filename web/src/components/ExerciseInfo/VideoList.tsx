@@ -19,18 +19,24 @@ const VideoList: React.FC = () => {
     const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
     const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
 
+    // 마운트 시, 카테고리 업데이트 시 실행되는 코드
     useEffect(() => {
         resetTotalResults();
     }, [category]);
 
+    // 카테고리에 변경이 있을때까지 useCallback 훅의 함수를 재사용하여 비디오 데이터를 가져오는 함수
     const fetchVideosWrapped = useCallback(
         async ({ pageParam = null }) => {
             const response = await fetchVideos(pageParam, category);
+            await new Promise((resolve) => setTimeout(resolve, 800));
             return response;
         },
         [category]
     );
 
+    // useInfiniteQuery를 사용하여 { data, isError, isLoading, fetchNextPage, hasNextPage } 데이터를 가져온다.
+    // queryKey는 ['videos', category]
+    // queryFn은 fetchVideosWrapped
     const { data, isError, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery<
         VideosResponse,
         Error
@@ -40,6 +46,7 @@ const VideoList: React.FC = () => {
         enabled: category !== '',
     });
 
+    // hasNextPage, fetchNextPage에 변경이 있을때까지 useCallback 훅의 함수를 재사용하여 다음페이지를 보여주는 함수
     const handleFetchMore = useCallback(async () => {
         if (hasNextPage) {
             try {
@@ -50,27 +57,26 @@ const VideoList: React.FC = () => {
         }
     }, [hasNextPage, fetchNextPage]);
 
-    // 팝업창
+    // 비디오 팝업을 여는 함수
     const openVideo = useCallback((video: Video) => {
         setSelectedVideo(video);
     }, []);
 
+    // 비디오 팝업을 닫는 함수
     const closeVideo = useCallback(() => {
         setSelectedVideo(null);
     }, []);
 
-    //즐겨찾기
+    // 즐겨찾기
     const handleIconClick = useCallback(
         (video: Video) => {
             if (!isLoggedIn) {
                 alert('로그인 후 이용해주세요.');
                 return;
             }
-
             setCurrentVideo(video);
             setShowModal(true);
         },
-        // []
         [isLoggedIn]
     );
 
