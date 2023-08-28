@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
+import { useRecoilValue } from 'recoil';
+import { signInInfo } from '../../recoil/AuthState/atoms';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp } from '@fortawesome/free-regular-svg-icons';
 import { faEye } from '@fortawesome/free-regular-svg-icons';
@@ -14,6 +16,7 @@ interface Props {
     userNickname: string;
     userImage: string;
     hashtags: string[];
+    accessLevel: boolean;
 }
 
 const getCategoryName = (categoryEng: string) => {
@@ -35,10 +38,20 @@ const PostListItem: React.FC<Props> = ({
     userNickname,
     likeCount,
     viewCount,
+    accessLevel,
 }) => {
+    const myInfo = useRecoilValue(signInInfo);
+
     return (
         <PostListItemComponent>
-            <ShowPost to={`/posts/${postId}`}>
+            <ShowPost
+                to={!accessLevel && myInfo.nickname !== userNickname ? '#' : `/posts/${postId}`}
+                onClick={() => {
+                    if (!accessLevel && myInfo.nickname !== userNickname) {
+                        alert('메이트만 볼 수 있는 게시글입니다.');
+                    }
+                }}
+            >
                 <PostInfo>
                     <CategoryAndHashtag>
                         <PostCategory>{getCategoryName(category)}</PostCategory>
