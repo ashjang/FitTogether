@@ -7,7 +7,7 @@ import { categoryRecoil } from '../../recoil/video/atoms';
 import { loggedInState } from '../../recoil/AuthState/atoms';
 import { fetchVideos, resetTotalResults, VideosResponse, Video } from './YoutubeApi';
 import VideoPopup from './VideoPopup';
-import PlaylistSetting from '../common/PlaylistSetting';
+import PlaylistSetting from './PlaylistSetting';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFolderPlus } from '@fortawesome/free-solid-svg-icons';
 import loadingGif from '../../assets/ball-triangle.svg';

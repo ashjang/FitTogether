@@ -248,6 +248,7 @@ const InputField = styled.div`
 
 const InputArea = styled.input`
     width: 80%;
+    padding-left: 10px;
     border: none;
     border-bottom: 1px solid #c9c9c9;
     outline: none;
@@ -257,8 +258,8 @@ const InputArea = styled.input`
 const SaveButton = styled.button`
     position: relative;
     right: 5px;
-    padding: 5px;
-    font-size: 12px;
+    padding: 5px 10px;
+    font-size: 14px;
     background-color: #c9c9c9;
     color: #fff;
     border: none;

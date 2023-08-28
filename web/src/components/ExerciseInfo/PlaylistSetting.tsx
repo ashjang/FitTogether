@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useRef, useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { Video } from '../ExerciseInfo/YoutubeApi';
+import { Video } from './YoutubeApi';
 import { useRecoilState } from 'recoil';
 import { playlistsDataRecoil } from '../../recoil/video/atoms';
 
