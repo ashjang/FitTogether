@@ -7,10 +7,9 @@ type VideoPopupProps = {
     };
     onClose: () => void;
 };
-function VideoPopup({ video, onClose }: VideoPopupProps) {
+const VideoPopup = ({ video, onClose }: VideoPopupProps) => {
     return (
         <VideoPopupContainer onClick={onClose}>
-            {/* <CloseButton onClick={onClose}>닫기</CloseButton> */}
             <iframe
                 width="560"
                 height="315"
@@ -22,7 +21,7 @@ function VideoPopup({ video, onClose }: VideoPopupProps) {
             ></iframe>
         </VideoPopupContainer>
     );
-}
+};
 
 const VideoPopupContainer = styled.div`
     position: fixed;
@@ -36,11 +35,5 @@ const VideoPopupContainer = styled.div`
     align-items: center;
     z-index: 1000;
 `;
-
-// const CloseButton = styled.button`
-//     position: absolute;
-//     top: 20px;
-//     right: 20px;
-// `;
 
 export default VideoPopup;

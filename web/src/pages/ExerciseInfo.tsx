@@ -13,6 +13,7 @@ const ExerciseInfo: React.FC = () => {
         resetTotalResults();
         setCategory(newCategory);
     }, []);
+
     return (
         <ExerciseInfoPage>
             <PageTitle>운동 정보</PageTitle>
