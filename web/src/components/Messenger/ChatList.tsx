@@ -7,43 +7,54 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
 
 import MateList from '../common/MateList';
-import MateListItem from '../common/MateListitem';
-
 import default_user_image from '../../assets/default-user-image.png';
 
 interface ChatRoom {
-    id: string;
-    name: string;
-    profileImage: string | null;
+    chatRoomId: number;
+    senderId: null;
+    receiverId: null;
+    senderNickname: string;
     receiverNickname: string;
+    chatRoomDate: string;
 }
 
 interface Props {
     chatRooms: ChatRoom[];
-    onChatRoomClick: (chatRoomId: string) => void;
+    onChatRoomClick: (chatRoomId: number) => void;
+    mateModalOpen: boolean;
+    setMateModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    createChatRoom: () => void;
 }
 
-const ChatList: React.FC<Props> = ({ chatRooms, onChatRoomClick }) => {
-    console.log('Received chatRooms:', chatRooms);
+const ChatList: React.FC<Props> = ({
+    chatRooms,
+    onChatRoomClick,
+    mateModalOpen,
+    setMateModalOpen,
+    createChatRoom,
+}) => {
+    // console.log('Received chatRooms:', chatRooms);
 
-    const [isMateListOpen, setIsMateListOpen] = useState(false);
+    // const [isMateListOpen, setIsMateListOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    // 클릭시 운동메이트 리스트 모달창
-    const handleShowMateListClick = () => {
+    const handleShowMateListClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation(); // 이벤트 버블링 막기
+        console.log('운동메이트 리스트 버튼 클릭 확인');
+
         if (!isLoading) {
             setIsLoading(true);
-            setIsMateListOpen(true);
+            setMateModalOpen(true);
         }
     };
+
     const handleCloseMateList = () => {
-        setIsMateListOpen(false);
+        setMateModalOpen(false);
         setIsLoading(false);
     };
 
-    const handleCreateChatRoom = (chatRoomId: string) => {
+    const handleCreateChatRoom = (chatRoomId: number) => {
         console.log('Chat room clicked:', chatRoomId);
-
         onChatRoomClick(chatRoomId);
     };
 
@@ -52,26 +63,34 @@ const ChatList: React.FC<Props> = ({ chatRooms, onChatRoomClick }) => {
             <TopArea>
                 <MateListTitle>운동 메이트 리스트</MateListTitle>
 
-                <MateListButton onClick={handleShowMateListClick}>
+                <MateListButton onClick={handleShowMateListClick} disabled={isLoading}>
                     <span className="blind">운동 메이트 리스트 버튼</span>
                     <FontAwesomeIcon icon={faUserGroup} />
                 </MateListButton>
-                {isMateListOpen && <MateList isOpen={true} onClose={handleCloseMateList} />}
+                {mateModalOpen && (
+                    <MateList
+                        isOpen={mateModalOpen}
+                        onClose={handleCloseMateList}
+                        createChatRoom={createChatRoom}
+                    />
+                )}
             </TopArea>
 
             <BottomArea>
                 {chatRooms.length > 0 ? (
                     chatRooms.map((chatRoom) => (
                         <ListItem
-                            key={chatRoom.id}
-                            onClick={() => handleCreateChatRoom(chatRoom.id)}
+                            key={chatRoom.chatRoomId}
+                            onClick={() => handleCreateChatRoom(chatRoom.chatRoomId)}
                         >
-                            <MateListItem
-                                senderProfileImage={default_user_image}
-                                senderNickname={chatRoom.receiverNickname}
-                                showButton={false}
-                                onChatRoomClick={() => onChatRoomClick(chatRoom.id)}
-                            />
+                            <ChatListItem>
+                                <img
+                                    src={default_user_image}
+                                    alt="프로필 이미지"
+                                    style={{ width: '40px', height: '40px', borderRadius: '50%' }}
+                                />
+                                <ChatListItemName>{chatRoom.receiverNickname}</ChatListItemName>
+                            </ChatListItem>
                         </ListItem>
                     ))
                 ) : (
@@ -141,7 +160,13 @@ const ListItem = styled.li`
         background-color: lightblue;
     }
 `;
-
+const ChatListItem = styled.div`
+    display: flex;
+    align-items: center;
+`;
+const ChatListItemName = styled.div`
+    margin-left: 15px;
+`;
 const NoneChat = styled.p`
     position: absolute;
     left: 50%;

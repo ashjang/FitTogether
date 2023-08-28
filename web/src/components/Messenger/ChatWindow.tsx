@@ -9,8 +9,8 @@ interface UserProfile {
     profileImage: string | null;
 }
 interface Props {
-    chatRoomId: string | null;
-    chatMessages: { roomId: string; message: string; sentAt: Date }[]; // 보낸 시간 정보 추가
+    chatRoomId: number | null;
+    chatMessages: { roomId: number; message: string; sentAt: Date }[]; // 보낸 시간 정보 추가
 
     inputMessage: string;
     onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;

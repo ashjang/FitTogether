@@ -1,4 +1,6 @@
-import axios from 'axios';
+// import axios from 'axios';
+import React, { useState } from 'react';
+
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane as paperPlaneRegular } from '@fortawesome/free-regular-svg-icons';
@@ -8,43 +10,57 @@ interface Props {
     senderProfileImage: string;
     senderNickname: string;
     showButton: boolean;
-    onChatRoomClick: (chatRoomId: string) => void;
+    // onChatRoomClick: (chatRoomId: number) => void;
+    createChatRoom: (senderNickname: string) => void;
 }
-interface ResponseData {
-    chatRoomId: string;
-}
+// interface ResponseData {
+//     chatRoomId: string;
+// }
 
 const MateListItem: React.FC<Props> = ({
     senderProfileImage,
     senderNickname,
     showButton,
-    onChatRoomClick,
+    // onChatRoomClick,
+    createChatRoom,
 }) => {
-    const token: string | null = sessionStorage.getItem('token');
+    const [chatRoomCreated, setChatRoomCreated] = useState(false);
 
-    const handleDMIconClick = (event: React.MouseEvent<SVGElement, MouseEvent>) => {
-        event.stopPropagation();
-        try {
-            axios
-                .post(`/api/dm/${encodeURIComponent(senderNickname)}`, null, {
-                    headers: {
-                        'X-AUTH-TOKEN': token,
-                    },
-                })
-                .then((response) => {
-                    // 타입 단언을 통해 response.data의 형식을 ResponseData로 강제 변환
-                    const chatRoomId = (response.data as ResponseData).chatRoomId;
-                    console.log('채팅방 생성 완료:', response.data);
-                    console.log('채팅방 ID:', chatRoomId);
-                    onChatRoomClick(chatRoomId);
-                })
-                .catch((error) => {
-                    console.error('채팅방 생성 에러:', error);
-                });
-        } catch (error) {
-            console.error('채팅방 생성 에러:', error);
+    const handleChatRoomClick = () => {
+        if (!chatRoomCreated) {
+            console.log(`Chat room with ${senderNickname} opened.`);
+            setChatRoomCreated(true);
+            createChatRoom(senderNickname);
+        } else {
+            console.log(`Chat room with ${senderNickname} already created.`);
         }
     };
+
+    // const token: string | null = sessionStorage.getItem('token');
+
+    // const handleDMIconClick = (event: React.MouseEvent<SVGElement, MouseEvent>) => {
+    //     event.stopPropagation();
+    //     try {
+    //         axios
+    //             .post(`/api/dm/${encodeURIComponent(senderNickname)}`, null, {
+    //                 headers: {
+    //                     'X-AUTH-TOKEN': token,
+    //                 },
+    //             })
+    //             .then((response) => {
+    //                 // 타입 단언을 통해 response.data의 형식을 ResponseData로 강제 변환
+    //                 const chatRoomId = (response.data as ResponseData).chatRoomId;
+    //                 console.log('채팅방 생성 완료:', response.data);
+    //                 console.log('채팅방 ID:', chatRoomId);
+    //                 onChatRoomClick(chatRoomId);
+    //             })
+    //             .catch((error) => {
+    //                 console.error('채팅방 생성 에러:', error);
+    //             });
+    //     } catch (error) {
+    //         console.error('채팅방 생성 에러:', error);
+    //     }
+    // };
 
     return (
         <MateListItemComponent>
@@ -62,7 +78,7 @@ const MateListItem: React.FC<Props> = ({
                 {showButton && ( // 버튼 표시 여부에 따라 조건부 렌더링
                     <>
                         <Link to={`/messenger/${encodeURIComponent(senderNickname)}`}>
-                            <FaMessage icon={paperPlaneRegular} onClick={handleDMIconClick} />
+                            <FaMessage icon={paperPlaneRegular} onClick={handleChatRoomClick} />
                         </Link>
                         <UnfollowButton>unfollow</UnfollowButton>
                     </>

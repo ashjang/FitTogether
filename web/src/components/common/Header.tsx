@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     // faSun,
     // faMoon,
-    faUserGroup,
+    // faUserGroup,
     faBell,
     faComment,
     faBookmark,
@@ -20,7 +20,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { loggedInState } from '../../recoil/AuthState/atoms';
 
 import AlertList from './AlertList';
-import MateList from './MateList';
+// import MateList from './MateList';
 import LogoImg from './../../assets/logo.png';
 
 // interface Props {}
@@ -35,7 +35,7 @@ function Header() {
     const setLoggedIn = useSetRecoilState(loggedInState); // 상태를 업데이트하는 setLoggedIn 함수 가져오기
 
     // const [isDarkMode, setDarkMode] = useState(false);
-    const [isMateListOpen, setIsMateListOpen] = useState(false); // 메이트리스트창
+    // const [isMateListOpen, setIsMateListOpen] = useState(false); // 메이트리스트창
 
     const [isPopupOpen, setPopupOpen] = useState(false);
     const bellPopupRef = useRef<HTMLDivElement | null>(null); //알림창
@@ -78,12 +78,12 @@ function Header() {
     // };
 
     //운동메이트 리스트
-    const handleShowMateListClick = () => {
-        setIsMateListOpen(true);
-    };
-    const handleCloseMateList = () => {
-        setIsMateListOpen(false);
-    };
+    // const handleShowMateListClick = () => {
+    //     setIsMateListOpen(true);
+    // };
+    // const handleCloseMateList = () => {
+    //     setIsMateListOpen(false);
+    // };
 
     // 로그아웃일때 로직
     const handleSignOut = () => {
@@ -109,7 +109,7 @@ function Header() {
                             </ThemeLi> */}
                             {loggedIn ? (
                                 <>
-                                    <li>
+                                    {/* <li>
                                         <MateBtn onClick={handleShowMateListClick}>
                                             <span className="blind">운동 메이트 리스트</span>
                                             <FontAwesomeIcon icon={faUserGroup} />
@@ -117,7 +117,7 @@ function Header() {
                                         {isMateListOpen && (
                                             <MateList isOpen={true} onClose={handleCloseMateList} />
                                         )}
-                                    </li>
+                                    </li> */}
                                     <li>
                                         <span className="blind">알림창</span>
                                         <BellBtn onClick={handleOpenPopup}>
@@ -244,10 +244,10 @@ const IconList = styled.ul`
         padding: 0 5px;
     }
 `;
-const MateBtn = styled.button`
-    border: none;
-    background: none;
-`;
+// const MateBtn = styled.button`
+//     border: none;
+//     background: none;
+// `;
 const BellBtn = styled.button`
     border: none;
     background: none;

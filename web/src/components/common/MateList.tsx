@@ -9,6 +9,7 @@ import default_user_image from '../../assets/default-user-image.png';
 interface Props {
     isOpen: boolean;
     onClose: () => void;
+    createChatRoom: () => void;
 }
 
 interface MateDateItem {
@@ -26,14 +27,14 @@ interface UserData {
     senderNickname: string;
 }
 
-const MateList: React.FC<Props> = ({ isOpen, onClose }) => {
+const MateList: React.FC<Props> = ({ isOpen, onClose, createChatRoom }) => {
     const [mateData, setMateData] = useState<MateData>({});
     const token: string | null = sessionStorage.getItem('token');
 
     useEffect(() => {
         if (token) {
             axios
-                .get('/api/matching/requests/lists', {
+                .get<UserData[]>('/api/matching/requests/lists', {
                     headers: {
                         'X-AUTH-TOKEN': token,
                     },
@@ -99,14 +100,16 @@ const MateList: React.FC<Props> = ({ isOpen, onClose }) => {
                     {Object.entries(mateData).map(([key, mate]) => (
                         <MateListItem
                             key={key}
-                            {...mate}
-                            onChatRoomClick={(chatRoomId: string) => {
-                                // 채팅방 생성 및 열기 동작 시뮬레이션
+                            senderProfileImage={mate.senderProfileImage}
+                            senderNickname={mate.senderNickname}
+                            onChatRoomClick={(chatRoomId: number) => {
                                 console.log(
                                     `Chat room with ${mate.senderNickname} opened. Room ID: ${chatRoomId}`
                                 );
+                                createChatRoom(chatRoomId); // 수정된 부분
                             }}
                             showButton={true}
+                            createChatRoom={createChatRoom} // 수정된 부분
                         />
                     ))}
                 </MateListItems>
