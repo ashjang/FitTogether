@@ -6,7 +6,7 @@ import ChatWindow from './ChatWindow';
 import client from '../utils/websoket';
 
 interface ChatRoom {
-    id: string;
+    id: number;
     name: string;
     profileImage: string | null;
     receiverNickname: string;
@@ -16,7 +16,7 @@ interface UserProfile {
     profileImage: string | null;
 }
 interface ChatMessage {
-    roomId: string;
+    roomId: number;
     message: string;
     sentAt: Date;
 }
