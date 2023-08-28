@@ -210,14 +210,16 @@ const ChatListBox = styled.div`
     overflow-y: auto;
 `;
 const ChatwindowBox = styled.div`
-    position: absolute;
-    top: 0;
-    left: 390px;
-    width: 1000px;
-    height: 600px;
-    padding: 20px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    background-color: #d9d9d9;
+    // position: absolute;
+    // top: 0;
+    // left: 390px;
+    // width: 1000px;
+    // height: 600px;
+    // padding: 20px;
+    // width: 100%;
+    // height: 100%;
+    // box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    // background-color: #d9d9d9;
     overflow-y: auto;
 `;
 

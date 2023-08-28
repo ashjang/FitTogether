@@ -31,12 +31,17 @@ const ChatWindow: React.FC<Props> = ({
     chatRoomName,
     userProfile,
 }) => {
+    // const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    //     if (event.key === 'Enter') {
+    //         onSendMessage(); // 엔터키를 누르면 메시지 전송
+    //     }
+    // };
     const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
-            onSendMessage(); // 엔터키를 누르면 메시지 전송
+            event.preventDefault(); // 엔터 키의 디폴트 동작 막기
+            onSendMessage(); // 메시지 전송
         }
     };
-
     return (
         <ChatWindowBox>
             {chatRoomId ? (
@@ -84,16 +89,16 @@ const ChatWindow: React.FC<Props> = ({
     );
 };
 const ChatWindowBox = styled.div`
-    position: relative;
-    // top: 0;
-    // left: 390px;
-    // width: 1000px;
-    // height: 600px;
-    width: 100%;
-    height: 100%;
-    // padding: 20px;
-    // box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    // background-color: #d9d9d9;
+    position: absolute;
+    top: 0;
+    left: 390px;
+    width: 1000px;
+    height: 600px;
+    // width: 100%;
+    // height: 100%;
+    padding: 20px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    background-color: #d9d9d9;
 `;
 const TopArea = styled.div`
     position: relative;

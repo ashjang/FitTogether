@@ -100,16 +100,15 @@ const MateList: React.FC<Props> = ({ isOpen, onClose, createChatRoom }) => {
                     {Object.entries(mateData).map(([key, mate]) => (
                         <MateListItem
                             key={key}
-                            senderProfileImage={mate.senderProfileImage}
-                            senderNickname={mate.senderNickname}
+                            {...mate}
                             onChatRoomClick={(chatRoomId: number) => {
+                                // 채팅방 생성 및 열기 동작 시뮬레이션
                                 console.log(
                                     `Chat room with ${mate.senderNickname} opened. Room ID: ${chatRoomId}`
                                 );
-                                createChatRoom(chatRoomId); // 수정된 부분
+                                createChatRoom();
                             }}
                             showButton={true}
-                            createChatRoom={createChatRoom} // 수정된 부분
                         />
                     ))}
                 </MateListItems>
