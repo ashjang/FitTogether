@@ -47,7 +47,7 @@ const AlertList: React.FC = ({ alerts }) => {
             //     console.log('prevAlert', alert);
             // };
 
-            eventSource.addEventListener('data', function (event) {
+            eventSource.addEventListener('data', (event) => {
                 console.log('EVENT : ' + event.data);
                 const newAlert = JSON.parse(event.data); // 받은 데이터 추출
                 console.log('newAlert : ', newAlert);
@@ -57,14 +57,14 @@ const AlertList: React.FC = ({ alerts }) => {
 
             eventSource.onerror = (event) => {
                 console.log(event.target.readyState);
-                if (event.target.readyState === EventSource.CONNECTING) {
-                    console.log('Reconnecting...');
-                    // 연결 시도 중인 상태일 때 재연결 시도
-                    setTimeout(establishSSEConnection, 1000);
-                } else if (event.target.readyState === EventSource.CLOSED) {
+                if (event.target.readyState === EventSource.CLOSED) {
                     console.log('eventsource closed (' + event.target.readyState + ')');
                 }
                 eventSource.close();
+            };
+            return () => {
+                eventSource.close(); // 컴포넌트 언마운트 시 SSE 연결 닫기
+                console.log('eventsource closed');
             };
         };
 
