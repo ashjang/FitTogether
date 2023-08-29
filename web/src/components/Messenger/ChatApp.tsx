@@ -5,7 +5,6 @@ import axios from 'axios';
 import ChatList from './ChatList';
 import ChatWindow from './ChatWindow';
 import client from '../utils/websoket';
-import { GiToken } from 'react-icons/gi';
 
 interface ChatRoom {
     chatRoomId: number;
@@ -20,9 +19,9 @@ interface UserProfile {
     profileImage: string | null;
 }
 interface ChatMessage {
-    roomId: number;
-    message: string;
-    sentAt: Date;
+    chatRoomId: number;
+    contents: string;
+    sendDate: Date;
 }
 
 const ChatApp: React.FC = () => {
@@ -188,7 +187,7 @@ const ChatApp: React.FC = () => {
                 <ChatWindow
                     chatRoomId={selectedChatRoom}
                     chatMessages={chatMessages.filter(
-                        (message) => message.roomId === selectedChatRoom
+                        (message) => message.chatRoomId === selectedChatRoom
                     )}
                     onSendMessage={handleSendMessage}
                     inputMessage={inputMessage}

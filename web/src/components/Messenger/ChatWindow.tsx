@@ -10,7 +10,7 @@ interface UserProfile {
 }
 interface Props {
     chatRoomId: number | null;
-    chatMessages: { roomId: number; message: string; sentAt: Date }[]; // 보낸 시간 정보 추가
+    chatMessages: { chatRoomId: number; contents: string; sendDate: Date }[]; // 보낸 시간 정보 추가
 
     inputMessage: string;
     onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -60,13 +60,16 @@ const ChatWindow: React.FC<Props> = ({
                         <MessageArea>
                             {chatMessages.map((message, index) => (
                                 <MessageBox key={index}>
-                                    <MessageText>{message.message}</MessageText>
+                                    <MessageText>{message.contents}</MessageText>
+                                    {/*
                                     <MessageTime>
-                                        {message.sentAt.toLocaleTimeString([], {
+                                        {message.sendDate.toLocaleTimeString([], {
                                             hour: '2-digit',
                                             minute: '2-digit',
                                         })}
                                     </MessageTime>{' '}
+                                    */}
+                                    <MessageTime>{message.sendDate.toString()}</MessageTime>{' '}
                                 </MessageBox>
                             ))}
                         </MessageArea>
