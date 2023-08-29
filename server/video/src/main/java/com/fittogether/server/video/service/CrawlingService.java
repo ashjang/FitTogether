@@ -1,6 +1,5 @@
 package com.fittogether.server.video.service;
 
-import com.fittogether.server.video.domain.dto.VideoDto;
 import com.fittogether.server.video.domain.model.Video;
 import com.fittogether.server.video.domain.repository.VideoRepository;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
@@ -18,11 +17,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,8 +39,6 @@ public class CrawlingService {
 
   private static YouTube youTube;
   private static String nextPageToken = "";
-
-  private String key = "nextPageToken";
 
   public List<SearchResult> searchKeyword(String keyword) {
     try {
@@ -88,7 +82,7 @@ public class CrawlingService {
     for (SearchResult sr : searchKeyword("런닝")) {
       video = new Video();
       video.setTitle(sr.getSnippet().getTitle());
-      video.setUrl("https://www.youtube.com/watch?v=" + sr.getId().getVideoId());
+      video.setVideoId(sr.getId().getVideoId());
       video.setThumbnail(sr.getSnippet().getThumbnails().getHigh().getUrl());
       video.setKeyword("running");
 
@@ -103,7 +97,7 @@ public class CrawlingService {
     for (SearchResult sr : searchKeyword("등산")) {
       video = new Video();
       video.setTitle(sr.getSnippet().getTitle());
-      video.setUrl("https://www.youtube.com/watch?v=" + sr.getId().getVideoId());
+      video.setVideoId(sr.getId().getVideoId());
       video.setThumbnail(sr.getSnippet().getThumbnails().getHigh().getUrl());
       video.setKeyword("hiking");
 
@@ -118,7 +112,7 @@ public class CrawlingService {
     for (SearchResult sr : searchKeyword("헬스")) {
       video = new Video();
       video.setTitle(sr.getSnippet().getTitle());
-      video.setUrl("https://www.youtube.com/watch?v=" + sr.getId().getVideoId());
+      video.setVideoId(sr.getId().getVideoId());
       video.setThumbnail(sr.getSnippet().getThumbnails().getHigh().getUrl());
       video.setKeyword("health");
 
@@ -172,24 +166,6 @@ public class CrawlingService {
         count += 1;
       }
     }
-  }
-
-  public Map<String, String> getResultMap() {
-    return resultMap;
-  }
-
-  public void initResultMap() {
-    this.resultMap.clear();
-  }
-
-  public String getVideoKey(int key) {
-    Iterator<String> iterator = resultMap.keySet().iterator();
-    String data = null;
-    for (int i = 0; i < key; ++i) {
-      data = (String) iterator.next();
-    }
-
-    return data;
   }
 
 }

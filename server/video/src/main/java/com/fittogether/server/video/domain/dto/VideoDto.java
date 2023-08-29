@@ -14,14 +14,14 @@ import lombok.ToString;
 @AllArgsConstructor
 public class VideoDto {
 
-  private String url;
+  private String videoId;
   private String title;
   private String thumbnail;
   private String keyword;
 
   public static VideoDto from(Video video){
     return VideoDto.builder()
-        .url(video.getUrl())
+        .videoId(video.getVideoId())
         .title(video.getTitle())
         .thumbnail(video.getThumbnail())
         .keyword(video.getKeyword())

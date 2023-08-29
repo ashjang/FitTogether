@@ -11,13 +11,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PlaylistVideoRepository extends JpaRepository<PlaylistVideo, Long> {
 
-  Optional<PlaylistVideo> findByPlaylist_PlaylistIdAndVideo_VideoId(Long playlistId, Long videoId);
+  Optional<PlaylistVideo> findByPlaylist_PlaylistIdAndVideo_Id(Long playlistId, Long videoId);
 
   Optional<PlaylistVideo> findAllByPlaylist_PlaylistId(Long PlaylistId);
 
   void deleteAllByPlaylist_PlaylistId(Long playlistId);
 
-  void deleteByPlaylist_PlaylistIdAndVideo_VideoId(Long playlistId, Long videoId);
+  void deleteByPlaylist_PlaylistIdAndVideo_Id(Long playlistId, Long videoId);
 
   // playlistId로 playlist 와 video 받아옴
   @Query("select pv from PlaylistVideo pv "
