@@ -58,15 +58,14 @@ public class DmService {
 
     // 메세지 보내기
     public Message sendMessage(
-            String token,
             MessageForm messageForm
     ) {
 
-        if (!jwtProvider.validateToken(token)) {
+        if (!jwtProvider.validateToken(messageForm.getToken())) {
             throw new UserCustomException(UserErrorCode.NOT_FOUND_USER);
         }
 
-        UserVo userVo = jwtProvider.getUserVo(token);
+        UserVo userVo = jwtProvider.getUserVo(messageForm.getToken());
 
 
         //추후 토큰 사용자로 변경해야함

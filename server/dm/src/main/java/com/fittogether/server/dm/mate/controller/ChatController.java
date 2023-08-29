@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 @RequiredArgsConstructor
 @Controller
@@ -25,11 +24,10 @@ public class ChatController {
      */
     @MessageMapping("/dm/message")
     public void message(
-            @RequestHeader("X-AUTH-TOKEN") String token,
             MessageForm messageForm
     ) {
         //메세지 정보 DB 저장
-        MessageDto messageDto=MessageDto.from(dmService.sendMessage(token ,
+        MessageDto messageDto=MessageDto.from(dmService.sendMessage(
                 messageForm)) ;
 
         //클라이언트에서 "/pub/dm/message"의 경로로 메시지를 보내는 요청을 하면,

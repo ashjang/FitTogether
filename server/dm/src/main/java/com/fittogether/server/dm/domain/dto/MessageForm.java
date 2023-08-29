@@ -13,6 +13,7 @@ public class MessageForm {
 
     Long chatRoomId;
     String contents;
+    String token;
 
 
 
