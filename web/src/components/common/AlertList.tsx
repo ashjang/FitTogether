@@ -39,14 +39,6 @@ const AlertList: React.FC = ({ alerts }) => {
                 console.log('connection opened');
             };
 
-            // eventSource.onmessage = (event) => {
-            //     const newAlert = JSON.parse(event.data);
-            //     console.log('result', newAlert);
-
-            //     setAlert((prevAlert) => [newAlert, ...prevAlert]);
-            //     console.log('prevAlert', alert);
-            // };
-
             eventSource.addEventListener('data', (event) => {
                 console.log('EVENT : ' + event.data);
                 const newAlert = JSON.parse(event.data); // 받은 데이터 추출
@@ -62,10 +54,10 @@ const AlertList: React.FC = ({ alerts }) => {
                 }
                 eventSource.close();
             };
-            return () => {
-                eventSource.close(); // 컴포넌트 언마운트 시 SSE 연결 닫기
-                console.log('eventsource closed');
-            };
+            // return () => {
+            //     eventSource.close(); // 컴포넌트 언마운트 시 SSE 연결 닫기
+            //     console.log('eventsource closed');
+            // };
         };
 
         establishSSEConnection();
@@ -76,7 +68,7 @@ const AlertList: React.FC = ({ alerts }) => {
                 console.log('eventsource closed');
             }
         };
-    }, []);
+    });
 
     return (
         <AlertContainer>
