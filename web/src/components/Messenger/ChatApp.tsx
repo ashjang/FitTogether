@@ -5,6 +5,7 @@ import axios from 'axios';
 import ChatList from './ChatList';
 import ChatWindow from './ChatWindow';
 import client from '../utils/websoket';
+import { GiToken } from 'react-icons/gi';
 
 interface ChatRoom {
     chatRoomId: number;
@@ -96,6 +97,8 @@ const ChatApp: React.FC = () => {
                 setSelectedChatRoom(chatRoomId);
                 console.log('채팅방 생성 완료:', response.data);
                 console.log('채팅방 ID:', chatRoomId);
+                console.log('chattt token:', token);
+                console.log('chattt 세닉:', senderNickname);
 
                 getChatRoomList();
             })
@@ -112,6 +115,7 @@ const ChatApp: React.FC = () => {
             (message) => {
                 const receivedMessage = JSON.parse(message.body) as ChatMessage;
                 setChatMessages((prevMessages) => [...prevMessages, receivedMessage]);
+                console.log('receivedMessage', receivedMessage);
             }
         );
 
@@ -141,8 +145,9 @@ const ChatApp: React.FC = () => {
     // };
 
     const handleChatRoomClick = (chatRoomId: number) => {
-        if (selectedChatRoom) {
-            client.unsubscribe(`/sub/dm/room/${selectedChatRoom}`);
+        console.log('handleChatRoomCliek', chatRoomId);
+        if (chatRoomId) {
+            client.unsubscribe(`/sub/dm/room/${chatRoomId}`);
         }
 
         setSelectedChatRoom(chatRoomId);
@@ -151,14 +156,17 @@ const ChatApp: React.FC = () => {
     };
 
     const handleSendMessage = () => {
-        if (inputMessage.trim() === '' || username.trim() === '' || !selectedChatRoom) return;
+        console.log('handleSendMessage-inputMessage', inputMessage);
+        console.log('handleSendMessage-username', username);
+        console.log('handleSendMessage-selectedChatRoom', selectedChatRoom);
+        if (inputMessage.trim() === '' || !selectedChatRoom) return;
 
         const newMessage = {
-            roomId: selectedChatRoom,
-            message: inputMessage,
-            sentAt: new Date(),
+            chatRoomId: selectedChatRoom,
+            contents: inputMessage,
+            token: sessionStorage.getItem('token'),
         };
-
+        console.log('handleSendMessage02');
         client.publish({ destination: '/pub/dm/message', body: JSON.stringify(newMessage) });
 
         setInputMessage('');

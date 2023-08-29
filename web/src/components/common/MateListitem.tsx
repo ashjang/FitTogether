@@ -22,7 +22,7 @@ const MateListItem: React.FC<Props> = ({
     senderNickname,
     showButton,
     // onChatRoomClick,
-    createChatRoom,
+    //createChatRoom,
 }) => {
     const [chatRoomCreated, setChatRoomCreated] = useState(false);
 
@@ -30,7 +30,9 @@ const MateListItem: React.FC<Props> = ({
         if (!chatRoomCreated) {
             console.log(`Chat room with ${senderNickname} opened.`);
             setChatRoomCreated(true);
-            createChatRoom(senderNickname);
+
+            // console.log('createChatRoom', createChatRoom);
+            // ChatApp.createChatRoom(senderNickname);
         } else {
             console.log(`Chat room with ${senderNickname} already created.`);
         }

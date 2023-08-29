@@ -38,10 +38,12 @@ const ChatWindow: React.FC<Props> = ({
     // };
     const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
+            console.log('enter handleSendMessage');
             event.preventDefault(); // 엔터 키의 디폴트 동작 막기
             onSendMessage(); // 메시지 전송
         }
     };
+
     return (
         <ChatWindowBox>
             {chatRoomId ? (

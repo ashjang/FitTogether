@@ -40,15 +40,16 @@ const ChatList: React.FC<Props> = ({
 
     const handleShowMateListClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.stopPropagation(); // 이벤트 버블링 막기
-        console.log('운동메이트 리스트 버튼 클릭 확인');
+        console.log('운동메이트 리스트 버튼 클릭 확인', isLoading);
 
         if (!isLoading) {
-            setIsLoading(true);
+            // setIsLoading(true);
             setMateModalOpen(true);
         }
     };
 
     const handleCloseMateList = () => {
+        console.log('====================');
         setMateModalOpen(false);
         setIsLoading(false);
     };
@@ -63,7 +64,7 @@ const ChatList: React.FC<Props> = ({
             <TopArea>
                 <MateListTitle>운동 메이트 리스트</MateListTitle>
 
-                <MateListButton onClick={handleShowMateListClick} disabled={isLoading}>
+                <MateListButton onClick={handleShowMateListClick}>
                     <span className="blind">운동 메이트 리스트 버튼</span>
                     <FontAwesomeIcon icon={faUserGroup} />
                 </MateListButton>
