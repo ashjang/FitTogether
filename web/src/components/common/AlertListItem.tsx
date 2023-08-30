@@ -5,26 +5,21 @@ import styled from '@emotion/styled';
 import MateRequest from './MateRequest';
 import { useNavigate } from 'react-router-dom';
 
-interface AlertListItemProps {
-    alerts: Array<{
-        message: string;
-        notificationId: number;
-        notificationType: string;
-        read: boolean;
-        sender: string;
-        url: string;
-    }>;
-}
+// interface AlertListItemProps {
+//     alerts: Array<{
+//         message: string;
+//         notificationId: number;
+//         notificationType: string;
+//         read: boolean;
+//         sender: string;
+//         url: string;
+//     }>;
+// }
 
-const AlertListItem: React.FC<AlertListItemProps> = ({ alerts }) => {
+const AlertListItem: React.FC = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [fetchedAlerts, setFetchedAlerts] = useState([]);
     const [senderNickname, setSenderNickname] = useState('');
-    // const [realtimeAlerts, setRealtimeAlerts] = useState([]);
-    // const [clickedAlert, setClickedAlert] = useState(null);
-
-    // const EventSource = EventSourcePolyfill;
-    // const token = sessionStorage.getItem('token');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -48,39 +43,6 @@ const AlertListItem: React.FC<AlertListItemProps> = ({ alerts }) => {
         }
     }, []);
 
-    // useEffect(() => {
-    //     const eventSource = new EventSource(`/api/notification/subscribe`, {
-    //         headers: {
-    //             'X-AUTH-TOKEN': token,
-    //         },
-    //     });
-
-    //     eventSource.addEventListener('data', function (event) {
-    //         const newAlert = JSON.parse(event.data);
-    //         setRealtimeAlerts((prevRealtimeAlerts) => [newAlert, ...prevRealtimeAlerts]);
-    //     });
-
-    //     return () => {
-    //         eventSource.close(); // 컴포넌트 언마운트 시 SSE 연결 닫기
-    //     };
-    // }, [realtimeAlerts]);
-
-    // const handleAlertClick = (event) => {
-    //     console.log(event);
-    //     const postIdPattern = /\/posts\/(\d+)/;
-    //     const match = alerts.url.match(postIdPattern);
-
-    //     if (match) {
-    //         const postId = match[1];
-    //         const processedUrl = `/posts/${postId}`;
-    //         navigate(processedUrl);
-    //         setShowPopup(false);
-    //     } else {
-    //         // postIdPattern이 유효하지 않을 경우 팝업 열기
-    //         setShowPopup(true);
-    //     }
-    // };
-
     const handleAlertClick = (alert) => {
         const postIdPattern = /\/posts\/(\d+)/;
 
@@ -100,7 +62,7 @@ const AlertListItem: React.FC<AlertListItemProps> = ({ alerts }) => {
 
     return (
         <AlertListItemBox>
-            {[...alerts, ...fetchedAlerts].map((alert, index) => (
+            {[...fetchedAlerts].map((alert, index) => (
                 <ListItem key={index} onClick={() => handleAlertClick(alert)}>
                     {alert.message}
                 </ListItem>

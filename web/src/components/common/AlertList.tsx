@@ -1,75 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { EventSourcePolyfill } from 'event-source-polyfill';
+import React from 'react';
 import { FaRegBell } from 'react-icons/fa';
 import styled from '@emotion/styled';
 import AlertListItem from './AlertListItem';
 
-// interface Alert {
-//     message: string;
-//     notificationId: number;
-//     notificationType: string;
-//     read: boolean;
-//     sender: string;
-//     url: string;
-// }
-
-const AlertList: React.FC = ({ alerts }) => {
-    const [alert, setAlert] = useState([]); // SSE로 가져온 alert의 state 변수
-
-    const EventSource = EventSourcePolyfill;
-    // const EventSource = require('eventsource');
-    const token = sessionStorage.getItem('token');
-
-    // SSE 구독하기
-    useEffect(() => {
-        if (!token) {
-            return;
-        }
-
-        let eventSource;
-
-        const establishSSEConnection = () => {
-            eventSource = new EventSource(`/api/notification/subscribe`, {
-                headers: {
-                    'X-AUTH-TOKEN': token,
-                },
-            });
-
-            eventSource.onopen = (event) => {
-                console.log('connection opened');
-            };
-
-            eventSource.addEventListener('data', (event) => {
-                console.log('EVENT : ' + event.data);
-                const newAlert = JSON.parse(event.data); // 받은 데이터 추출
-                console.log('newAlert : ', newAlert);
-                setAlert((prevAlert) => [newAlert, ...prevAlert]);
-                console.log('prevAlert', alert);
-            });
-
-            eventSource.onerror = (event) => {
-                console.log(event.target.readyState);
-                if (event.target.readyState === EventSource.CLOSED) {
-                    console.log('eventsource closed (' + event.target.readyState + ')');
-                }
-                eventSource.close();
-            };
-            // return () => {
-            //     eventSource.close(); // 컴포넌트 언마운트 시 SSE 연결 닫기
-            //     console.log('eventsource closed');
-            // };
-        };
-
-        establishSSEConnection();
-
-        return () => {
-            if (eventSource) {
-                eventSource.close(); // 컴포넌트 언마운트 시 SSE 연결 닫기
-                console.log('eventsource closed');
-            }
-        };
-    });
-
+const AlertList: React.FC = () => {
     return (
         <AlertContainer>
             <AlertArea>
@@ -79,8 +13,7 @@ const AlertList: React.FC = ({ alerts }) => {
                 </AlertTitle>
             </AlertArea>
             <AlertContents>
-                <AlertListItem alerts={alert} />
-                {/* <MateRequest /> */}
+                <AlertListItem />
             </AlertContents>
         </AlertContainer>
     );

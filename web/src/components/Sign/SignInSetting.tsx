@@ -13,7 +13,7 @@ const SignInSetting: React.FC = () => {
     const setCanEditInfo = useSetRecoilState(canEditInfo);
     const navigate = useNavigate();
     const location = useLocation();
-    const from = location?.state?.redirectFrom || '/';
+    const from = location?.state?.redirectedFrom || '/';
 
     const [passwordForRequest, setPasswordForRequest] = useState<string>('');
 
@@ -34,6 +34,7 @@ const SignInSetting: React.FC = () => {
                 setCanEditInfo(true);
                 sessionStorage.setItem('token', token);
                 navigate(from);
+                window.location.reload();
             } else if (response.status === 400) {
                 // 에러 메시지 출력
                 setErrorMessage(response.data.message);

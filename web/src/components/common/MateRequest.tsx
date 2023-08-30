@@ -12,7 +12,7 @@ const MateRequest: React.FC<MateRequestProps> = ({ sender, onClose }) => {
     const [activeBtn, setActiveBtn] = useState<number | null>(null);
     const [isRejected, setIsRejected] = useState(false);
     const [isClosed, setIsClosed] = useState(false);
-    const [senderNickname, setSenderNickname] = useState(sender);
+    const senderNickname = sender;
 
     const token = sessionStorage.getItem('token');
     const mateRequestRef = useRef(null);
@@ -76,9 +76,6 @@ const MateRequest: React.FC<MateRequestProps> = ({ sender, onClose }) => {
                             <MateRequestName>
                                 {senderNickname}님이 운동메이트를 신청하였습니다.
                             </MateRequestName>
-                            {/* <CloseBtn onClick={() => handleCloseBtn()}>
-                                <IoMdClose />
-                            </CloseBtn> */}
                         </MateRequestTitle>
                         <RequestBtnArea>
                             <RequestBtn
