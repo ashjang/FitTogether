@@ -3,14 +3,14 @@ import styled from '@emotion/styled';
 import { useRecoilState } from 'recoil';
 import { categoryRecoil } from '../recoil/video/atoms';
 import VideoList from '../components/ExerciseInfo/VideoList';
-import { resetTotalResults } from '../components/ExerciseInfo/YoutubeApi';
+// import { resetTotalResults } from '../components/ExerciseInfo/YoutubeApi';
 
 const ExerciseInfo: React.FC = () => {
     const [category, setCategory] = useRecoilState<string>(categoryRecoil);
 
     const handleTabClick = useCallback((newCategory: string) => {
         setCategory('');
-        resetTotalResults();
+        // resetTotalResults();
         setCategory(newCategory);
     }, []);
 

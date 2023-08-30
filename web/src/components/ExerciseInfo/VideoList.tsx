@@ -1,16 +1,23 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import styled from '@emotion/styled';
 import { useInfiniteQuery } from 'react-query';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import axios from 'axios';
+import styled from '@emotion/styled';
 import { useRecoilValue } from 'recoil';
 import { categoryRecoil } from '../../recoil/video/atoms';
 import { loggedInState } from '../../recoil/AuthState/atoms';
-import { fetchVideos, resetTotalResults, VideosResponse, Video } from './YoutubeApi';
 import VideoPopup from './VideoPopup';
 import PlaylistSetting from './PlaylistSetting';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFolderPlus } from '@fortawesome/free-solid-svg-icons';
 import Spinner from '../../assets/Spinner.svg';
+
+interface Video {
+    videoId: string;
+    title: string;
+    thumbnail: string;
+    keyword: string;
+}
 
 const VideoList: React.FC = () => {
     const isLoggedIn = useRecoilValue(loggedInState);
@@ -18,44 +25,28 @@ const VideoList: React.FC = () => {
     const [showModal, setShowModal] = useState<boolean>(false);
     const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
     const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
+    const [page, setPage] = useState<number>(1);
 
-    // 마운트 시, 카테고리 업데이트 시 실행되는 코드
-    useEffect(() => {
-        resetTotalResults();
-    }, [category]);
+    const fetchVideos = async (category: string, page: number = 1): Promise<Video[]> => {
+        // const response = await axios.get<Video>(`/api/video/${category}/${page}`);
+        const response = await axios.get<Video[]>(
+            `http://localhost:4000/video-${category}-${page}`
+        );
+        setPage(page + 1);
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        return response.data;
+    };
 
-    // 카테고리에 변경이 있을때까지 useCallback 훅의 함수를 재사용하여 비디오 데이터를 가져오는 함수
-    const fetchVideosWrapped = useCallback(
-        async ({ pageParam = null }) => {
-            const response = await fetchVideos(pageParam, category);
-            await new Promise((resolve) => setTimeout(resolve, 800));
-            return response;
-        },
-        [category]
-    );
-
-    // useInfiniteQuery를 사용하여 { data, isError, isLoading, fetchNextPage, hasNextPage } 데이터를 가져온다.
-    // queryKey는 ['videos', category]
-    // queryFn은 fetchVideosWrapped
-    const { data, isError, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery<
-        VideosResponse,
+    const { data, isLoading, isError, fetchNextPage, hasNextPage } = useInfiniteQuery<
+        Video[],
         Error
-    >(['videos', category], fetchVideosWrapped, {
-        getNextPageParam: (lastPage) => lastPage.nextPageToken || undefined,
-        keepPreviousData: true,
-        enabled: category !== '',
+    >('videos', ({ pageParam = page }) => fetchVideos(category, pageParam), {
+        getNextPageParam: () => {
+            return page;
+        },
     });
 
-    // hasNextPage, fetchNextPage에 변경이 있을때까지 useCallback 훅의 함수를 재사용하여 다음페이지를 보여주는 함수
-    const handleFetchMore = useCallback(async () => {
-        if (hasNextPage) {
-            try {
-                await fetchNextPage();
-            } catch (error) {
-                console.error('Error fetching next page:', error);
-            }
-        }
-    }, [hasNextPage, fetchNextPage]);
+    const allVideos = data?.pages.flatMap((page) => page);
 
     // 비디오 팝업을 여는 함수
     const openVideo = useCallback((video: Video) => {
@@ -67,7 +58,7 @@ const VideoList: React.FC = () => {
         setSelectedVideo(null);
     }, []);
 
-    // 즐겨찾기
+    // 동영상을 저장하는 함수
     const handleIconClick = useCallback(
         (video: Video) => {
             if (!isLoggedIn) {
@@ -88,57 +79,42 @@ const VideoList: React.FC = () => {
                         <span className="blind">로딩 중입니다.</span>
                     </Loading>
                 ) : isError ? (
-                    <ErrorMessage>
-                        일일 요청 횟수를 초과하여 영상을 불러올 수 없습니다.
-                    </ErrorMessage>
+                    <ErrorMessage>Error</ErrorMessage>
                 ) : (
                     <InfiniteScroll
-                        dataLength={
-                            data?.pages.reduce((acc, page) => acc + page.items.length, 0) || 0
-                        }
-                        next={handleFetchMore}
+                        dataLength={allVideos?.length || 0}
+                        next={fetchNextPage}
                         hasMore={!!hasNextPage}
                         loader={<img src={Spinner} alt="Loading" />}
                     >
-                        {data?.pages.map((page, i) => (
-                            <React.Fragment key={i}>
-                                {page.items.map((video: Video) => (
-                                    <VideoItem
-                                        key={video.id.videoId}
-                                        onClick={() => {
-                                            openVideo(video);
+                        {allVideos?.map((video) => (
+                            <VideoItem
+                                key={video.videoId}
+                                onClick={() => {
+                                    openVideo(video);
+                                }}
+                            >
+                                <VideoTitle>
+                                    {video.title.length > 50
+                                        ? `${video.title.substring(0, 50)}...`
+                                        : video.title}
+                                    <FaFolderPlus
+                                        icon={faFolderPlus}
+                                        onClick={(event) => {
+                                            event.stopPropagation();
+                                            handleIconClick(video);
                                         }}
-                                    >
-                                        <VideoTitle>
-                                            {video.snippet.title.length > 50
-                                                ? `${video.snippet.title.substring(0, 50)}...`
-                                                : video.snippet.title}
-                                            <FaFolderPlus
-                                                icon={faFolderPlus}
-                                                onClick={(event) => {
-                                                    event.stopPropagation();
-                                                    handleIconClick(video);
-                                                }}
-                                            />
-                                        </VideoTitle>
-                                        <VideoThumbnail
-                                            src={
-                                                video.snippet.thumbnails.high?.url ||
-                                                video.snippet.thumbnails.default.url
-                                            }
-                                            alt={video.snippet.title}
-                                        />
-                                    </VideoItem>
-                                ))}
-                            </React.Fragment>
+                                    />
+                                </VideoTitle>
+                                <VideoThumbnail src={video.thumbnail} alt={video.title} />
+                            </VideoItem>
                         ))}
                     </InfiniteScroll>
                 )}
             </VideoContainer>
-
             {selectedVideo && (
                 <VideoPopup
-                    video={{ id: selectedVideo.id.videoId, title: selectedVideo.snippet.title }}
+                    video={{ id: selectedVideo.videoId, title: selectedVideo.title }}
                     onClose={closeVideo}
                 />
             )}
@@ -169,6 +145,7 @@ const Loading = styled.p`
     background: url(${Spinner}) no-repeat center center;
 `;
 const ErrorMessage = styled.p`
+    font-size: 40px;
     padding-top: 100px;
 `;
 

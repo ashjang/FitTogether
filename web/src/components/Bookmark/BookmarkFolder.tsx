@@ -189,10 +189,6 @@ const BookmarkFolder: React.FC = () => {
                                     <img src={imgSrc} width="240" height="180" alt="Image" />
                                     <p>동영상 제목 ...</p>
                                 </FolderItem>
-                                <FolderItem>
-                                    <img src={imgSrc} width="240" height="180" alt="Image" />
-                                    <p>동영상 제목 ...</p>
-                                </FolderItem>
                             </FolderItems>
                         </FolderWrapper>
                     ))}
@@ -282,7 +278,7 @@ const FolderItems = styled.div`
 const FolderItem = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 10px;
+    padding: 30px 50px 10px;
 `;
 const Menu = styled.div`
     position: absolute;

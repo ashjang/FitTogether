@@ -1,9 +1,15 @@
 import axios from 'axios';
 import React, { useRef, useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { Video } from './YoutubeApi';
 import { useRecoilState } from 'recoil';
 import { playlistsDataRecoil } from '../../recoil/video/atoms';
+
+interface Video {
+    videoId: string;
+    title: string;
+    thumbnail: string;
+    keyword: string;
+}
 
 interface Props {
     video: Video | null;
@@ -145,8 +151,8 @@ const PlaylistSetting: React.FC<Props> = ({ video, onClose }) => {
             return;
         }
         const videoData = {
-            title: video?.snippet.title,
-            videoUrl: video?.id.videoId,
+            videoId: video.videoId,
+            title: video.title,
         };
 
         try {
