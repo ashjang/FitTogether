@@ -34,7 +34,7 @@ const PostListItem: React.FC<Props> = ({
     category,
     hashtags,
     title,
-    // userImage,
+    userImage,
     userNickname,
     likeCount,
     viewCount,
@@ -73,8 +73,7 @@ const PostListItem: React.FC<Props> = ({
                 </PostInfo>
                 <PosterInfo>
                     <ProfileImageContainer>
-                        {/* <ProfileImage src={userImage} /> */}
-                        <ProfileImage src={imgSrc} />
+                        <ProfileImage src={userImage ? userImage : imgSrc} />
                     </ProfileImageContainer>
                     <PosterNickname>{userNickname}</PosterNickname>
                 </PosterInfo>

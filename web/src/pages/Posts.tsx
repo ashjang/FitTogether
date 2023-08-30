@@ -26,8 +26,6 @@ const Posts: React.FC = () => {
 const Page = styled.div`
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     position: relative;
     margin: 120px auto 0;
     padding: 20px;

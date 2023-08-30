@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import styled from '@emotion/styled';
@@ -24,10 +24,11 @@ const PostFilter: React.FC = () => {
     const [totalPages, setTotalPages] = useRecoilState(totalPageState);
     const setPostListData = useSetRecoilState(postListDataState);
     const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
-
     const [categoryFilter, setCategoryFilter] = useRecoilState<string>(categoryFilterState);
     const [keywordFilter, setKeywordFilter] = useRecoilState<string>(keywordFilterState);
+    const [keywordItem, setKeywordItem] = useState<string>('');
     const [hashtagFilter, setHashtagFilter] = useRecoilState<string>(hashtagFilterState);
+    const [hashtagItem, setHashtagItem] = useState<string>('');
 
     const handlePaginationBtnClick = async (i: number) => {
         setCurrentPage(i);
@@ -36,6 +37,10 @@ const PostFilter: React.FC = () => {
 
     // 필터링없는 상태에서 postListData 얻기
     const getPostListData = async () => {
+        setHashtagFilter('');
+        setHashtagItem('');
+        setKeywordFilter('');
+        setKeywordItem('');
         try {
             const response = await axios.get(`/api/posts/search?page=${currentPage - 1}&size=10`);
             const numPages: number = Math.ceil(response.data.totalPostCount / 10); // 총 페이지 수
@@ -46,8 +51,12 @@ const PostFilter: React.FC = () => {
         }
     };
 
-    // 카테고리로 필터링
+    // 카테고리 탭으로 필터링
     const handleCategoryClick = async (newCategory: string) => {
+        setHashtagFilter('');
+        setHashtagItem('');
+        setKeywordFilter('');
+        setKeywordItem('');
         console.log('newCategory', newCategory);
         if (categoryFilter !== newCategory) {
             setCategoryFilter(newCategory);
@@ -74,12 +83,15 @@ const PostFilter: React.FC = () => {
         }
     };
 
-    // 검색으로 필터링
+    // 키워드 검색으로 필터링
     const handleKeywordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setKeywordFilter(event.target.value);
     };
-
     const getFilteredKeyword = async () => {
+        setCategoryFilter('');
+        setHashtagFilter('');
+        setHashtagItem('');
+        setKeywordItem(keywordFilter);
         try {
             const response = await axios.get(
                 `/api/posts/search/title?page=${currentPage - 1}&size=10&title=${keywordFilter}`
@@ -89,17 +101,21 @@ const PostFilter: React.FC = () => {
             setTotalPages(page);
 
             navigate(`${location.pathname}?&title=${keywordFilter}&page=${currentPage}`);
-            setKeywordFilter(''); // 수정해야함!
+            setKeywordFilter('');
         } catch (error) {
             console.error(error);
         }
     };
 
-    // 해시태그로 필터링
+    // 해시태그 검색으로 필터링
     const handleHashtagChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setHashtagFilter(event.target.value);
     };
     const getFilteredHashtag = async () => {
+        setCategoryFilter('');
+        setKeywordFilter('');
+        setKeywordItem('');
+        setHashtagItem(hashtagFilter);
         try {
             const response = await axios.get(
                 `/api/posts/search/hashtag?hashtag=${hashtagFilter}&page=${currentPage - 1}&size=10`
@@ -109,9 +125,30 @@ const PostFilter: React.FC = () => {
             setTotalPages(page);
 
             navigate(`${location.pathname}?hashtag=${hashtagFilter}&page=${currentPage}`);
-            setHashtagFilter(''); // 수정해야함!
+            setHashtagFilter('');
         } catch (error) {
             console.error(error);
+            alert('검색된 게시글이 없습니다.');
+            setHashtagFilter('');
+            setHashtagItem('');
+        }
+    };
+
+    const handleEnterPressInKeyword = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            if (keywordFilter !== '') {
+                getFilteredKeyword();
+            }
+        }
+    };
+
+    const handleEnterPressInHashtag = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            if (hashtagFilter !== '') {
+                getFilteredHashtag();
+            }
         }
     };
 
@@ -154,18 +191,40 @@ const PostFilter: React.FC = () => {
                     type="text"
                     value={keywordFilter}
                     onChange={handleKeywordChange}
+                    onKeyDown={handleEnterPressInKeyword}
                     placeholder="제목을 검색해보세요!"
                 />
-                <SearchButton onClick={getFilteredKeyword}>검색</SearchButton>
+                <SearchButton type="button" onClick={getFilteredKeyword}>
+                    검색
+                </SearchButton>
+                {keywordItem && (
+                    <CurrentFilterItem>
+                        {keywordItem}
+                        <FilterResetButton type="button" onClick={getPostListData}>
+                            X
+                        </FilterResetButton>
+                    </CurrentFilterItem>
+                )}
             </InputField>
             <InputField>
                 <PostFilterInput
                     type="text"
                     value={hashtagFilter}
                     onChange={handleHashtagChange}
+                    onKeyDown={handleEnterPressInHashtag}
                     placeholder="태그로 검색해보세요!"
                 />
-                <SearchButton onClick={getFilteredHashtag}>검색</SearchButton>
+                <SearchButton type="button" onClick={getFilteredHashtag}>
+                    검색
+                </SearchButton>
+                {hashtagItem && (
+                    <CurrentFilterItem>
+                        {`#${hashtagItem}`}
+                        <FilterResetButton type="button" onClick={getPostListData}>
+                            X
+                        </FilterResetButton>
+                    </CurrentFilterItem>
+                )}
             </InputField>
             <ButtonGroup>
                 <PaginationButtonArrow
@@ -233,9 +292,10 @@ const CategoryButton = styled.button<CategoryButtonProps>`
 
 const InputField = styled.div`
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     position: relative;
+    width: 100%;
     margin: 5px 0;
 `;
 
@@ -255,7 +315,7 @@ const SearchButton = styled.button`
     justify-content: center;
     align-items: center;
     position: absolute;
-    right: 0px;
+    left: 445px;
     height: 35px;
     padding: 3px 10px;
     border: 0;
@@ -265,6 +325,28 @@ const SearchButton = styled.button`
     color: white;
     background-color: #aaaaaa;
     font-size: 16px;
+`;
+
+const CurrentFilterItem = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 500px;
+    background-color: #f0f0f0;
+    padding: 0 5px;
+    border-radius: 12px;
+    margin: 0 10px;
+`;
+
+const FilterResetButton = styled.button`
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding-top: 3px;
+    margin-left: 5px;
+    font-size: 12px;
+    color: red;
 `;
 
 const ButtonGroup = styled.div`

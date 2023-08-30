@@ -3,7 +3,7 @@ import axios from 'axios';
 import ReactQuill from 'react-quill';
 import styled from '@emotion/styled';
 import 'react-quill/dist/quill.snow.css';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { titleState, descriptionState, imagesUrlListState } from '../../recoil/posts/atoms';
 
 interface DataForQuillEditorComp {
@@ -50,9 +50,8 @@ const modules = {
 const QuillEditor: React.FC<DataForQuillEditorComp | {}> = (props) => {
     const [title, setTitle] = useRecoilState(titleState);
     const [description, setDescription] = useRecoilState(descriptionState);
-    const [images, setImages] = useRecoilState(imagesUrlListState);
+    const setImages = useSetRecoilState(imagesUrlListState);
     const quillRef = useRef<ReactQuill>(null);
-    console.log(description);
 
     useEffect(() => {
         const handleImage = () => {
@@ -78,10 +77,8 @@ const QuillEditor: React.FC<DataForQuillEditorComp | {}> = (props) => {
                 try {
                     // 서버에 post 요청을 보내 업로드 한뒤 이미지 태그에 삽입할 url을 반환받도록 구현
                     const response = await axios.post('/api/upload', formData);
-                    console.log(response.data);
 
                     setImages((prevImagesUrlList) => [...prevImagesUrlList, response.data[0]]);
-                    console.log(images);
 
                     quillRef.current
                         .getEditor()
@@ -92,7 +89,7 @@ const QuillEditor: React.FC<DataForQuillEditorComp | {}> = (props) => {
                             alert('이미지 크기(10MB)를 초과하였습니다.');
                         }
                     } else {
-                        console.error('오류 발생:', error);
+                        console.error(error);
                     }
                 }
             };
