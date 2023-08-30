@@ -19,7 +19,7 @@ const KakaoAuth: React.FC = () => {
             const code = new URL(window.location.href).searchParams.get('code');
             try {
                 console.log(code);
-                const response = await axios.post(`/api/users/signin/kakao?code=${code}`);
+                const response = await axios.get(`/api/users/signin/kakao?code=${code}`);
                 const kakaoToken = response.data;
                 sessionStorage.setItem('token', kakaoToken);
 

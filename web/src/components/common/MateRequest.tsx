@@ -3,56 +3,19 @@ import axios from 'axios';
 
 import styled from '@emotion/styled';
 
-const MateRequest: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+interface MateRequestProps {
+    sender: string;
+    onClose: () => void;
+}
+
+const MateRequest: React.FC<MateRequestProps> = ({ sender, onClose }) => {
     const [activeBtn, setActiveBtn] = useState<number | null>(null);
     const [isRejected, setIsRejected] = useState(false);
     const [isClosed, setIsClosed] = useState(false);
-
-    const [userData, setUserData] = useState({});
-    const [nickname, setNickname] = useState<string>('');
-    const [introduction, setIntroduction] = useState<string>(userData.introduction || ''); // 초기 값 설정
-    const [gender, setGender] = useState(false);
-    const [pictureURL, setPictureURL] = useState<string | null>(null);
-    const [publicStatus, setPublicStatus] = useState(true);
-    const [favoriteSports, setFavoriteSports] = useState<string[]>([]);
+    const senderNickname = sender;
 
     const token = sessionStorage.getItem('token');
     const mateRequestRef = useRef(null);
-
-    // 로그인한 사용자의 정보 요청 → 요청을 보낸 사용자의 정보를 요청해야 함
-    useEffect(() => {
-        if (token) {
-            getUserData(token);
-        }
-        // 팝업이 닫힐 때 userData 초기화
-        return () => {
-            setUserData({});
-        };
-    }, []);
-
-    const getUserData = async (token) => {
-        try {
-            const response = await axios.get('/api/users/my', {
-                headers: {
-                    'X-AUTH-TOKEN': token,
-                },
-            });
-            setUserData({
-                ...response.data,
-                gender: response.data.gender === '남성',
-            });
-            setNickname(response.data.nickname);
-            setIntroduction(response.data.introduction || '');
-            setGender(response.data.gender === true);
-            setPictureURL(response.data.profilePicture);
-            setPublicStatus(response.data.publicInfo === true);
-            setFavoriteSports(response.data.exerciseChoice);
-            console.log(response.data);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            alert('회원정보를 받아오는데 실패했습니다.');
-        }
-    };
 
     // 팝업 외부 영역 클릭 감지
     useEffect(() => {
@@ -82,11 +45,9 @@ const MateRequest: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     };
 
     const handleAcceptBtnClick = () => {
-        const senderId = 'test6'; // 실제 senderId(메이트요청을 한 사람)값 추출해서 넣기
-
         // 수락 버튼을 누르면 요청을 보내고 창을 닫음
         axios
-            .put(`/api/matching/accept?senderNickname=${senderId}`, null, {
+            .put(`/api/matching/accept?senderNickname=${senderNickname}`, null, {
                 headers: {
                     'X-AUTH-TOKEN': token,
                 },
@@ -106,51 +67,16 @@ const MateRequest: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     //     setIsClosed(true);
     // };
 
-    if (favoriteSports.length === 0 || isClosed) {
-        return null; // 빈 배열이거나 창이 닫힌 경우 아무것도 출력하지 않음
-    }
-
     return (
         <>
             {!isRejected && ( // isRejected 상태가 false인 경우에만 MateRequestContainer를 렌더링
                 <MateRequestWrapper>
                     <MateRequestContainer ref={mateRequestRef}>
                         <MateRequestTitle>
-                            <MateRequestImg>
-                                <img src={pictureURL} alt="프로필이미지" />
-                            </MateRequestImg>
-                            <MateRequestName>{nickname}</MateRequestName>
-                            {/* <CloseBtn onClick={() => handleCloseBtn()}>
-                                <IoMdClose />
-                            </CloseBtn> */}
+                            <MateRequestName>
+                                {senderNickname}님이 운동메이트를 신청하였습니다.
+                            </MateRequestName>
                         </MateRequestTitle>
-                        <MateRequestContent>
-                            <UserGenderInfo>
-                                <RequestContentTitle>성별 </RequestContentTitle>
-                                <RequestGender>&nbsp;{gender ? '남자' : '여자'}</RequestGender>
-                            </UserGenderInfo>
-                            <UserIntroduction>
-                                <RequestContentTitle>자기소개</RequestContentTitle>
-                                <RequestIntroduction
-                                    contentEditable={false}
-                                    dangerouslySetInnerHTML={{ __html: introduction }}
-                                />
-                            </UserIntroduction>
-                            <UserExercise>
-                                <RequestContentTitle>주로 하는 운동</RequestContentTitle>
-                                <RequestExercise>
-                                    {favoriteSports.includes('RUNNING') && (
-                                        <ExerciseContent className="running">러닝</ExerciseContent>
-                                    )}
-                                    {favoriteSports.includes('HIKING') && (
-                                        <ExerciseContent className="hiking">등산</ExerciseContent>
-                                    )}
-                                    {favoriteSports.includes('WEIGHT') && (
-                                        <ExerciseContent className="weight">헬스</ExerciseContent>
-                                    )}
-                                </RequestExercise>
-                            </UserExercise>
-                        </MateRequestContent>
                         <RequestBtnArea>
                             <RequestBtn
                                 active={activeBtn === 0}
@@ -200,8 +126,8 @@ const MateRequestContainer = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
 
-    width: 350px;
-    height: 450px;
+    width: 450px;
+    height: 150px;
     background-color: white;
     border-radius: 20px;
     box-shadow: 4px 4px 4px rgba(0, 0, 0, 25%);
@@ -213,27 +139,28 @@ const MateRequestTitle = styled.div`
     padding: 10px;
     display: flex;
     align-items: center;
+    justify-content: center;
     margin-top: 10px;
 `;
 
-const MateRequestImg = styled.div`
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    margin: 0 10px;
-    img {
-        border-radius: 50%;
-        // max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-    }
-`;
+// const MateRequestImg = styled.div`
+//     width: 45px;
+//     height: 45px;
+//     border-radius: 50%;
+//     margin: 0 10px;
+//     img {
+//         border-radius: 50%;
+//         // max-width: 100%;
+//         max-height: 100%;
+//         object-fit: contain;
+//     }
+// `;
 
 const MateRequestName = styled.div`
-    text-align: center;
-    font-size: 20px;
-    font-weight: bold;
-    margin-left: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
 `;
 
 // const CloseBtn = styled.div`
@@ -243,70 +170,70 @@ const MateRequestName = styled.div`
 //     cursor: pointer;
 // `;
 
-const MateRequestContent = styled.div`
-    flex: 1;
-    border-top: 1px solid #d7d7d7;
-    padding: 15px 30px;
-`;
+// const MateRequestContent = styled.div`
+//     flex: 1;
+//     border-top: 1px solid #d7d7d7;
+//     padding: 15px 30px;
+// `;
 
-const RequestContentTitle = styled.div`
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 5px;
-`;
+// const RequestContentTitle = styled.div`
+//     font-size: 18px;
+//     font-weight: bold;
+//     margin-bottom: 5px;
+// `;
 
-const UserGenderInfo = styled.div`
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 15px;
-`;
+// const UserGenderInfo = styled.div`
+//     display: flex;
+//     align-items: flex-start;
+//     margin-bottom: 15px;
+// `;
 
-const RequestGender = styled.div`
-    // font-size: 18px;
-`;
+// const RequestGender = styled.div`
+//     // font-size: 18px;
+// `;
 
-const UserIntroduction = styled.div`
-    margin-bottom: 15px;
-`;
+// const UserIntroduction = styled.div`
+//     margin-bottom: 15px;
+// `;
 
-const RequestIntroduction = styled.div`
-    width: 100%;
-    font-size: 14px;
-    height: 100px;
-    overflow: auto;
-    outline: none;
-`;
+// const RequestIntroduction = styled.div`
+//     width: 100%;
+//     font-size: 14px;
+//     height: 100px;
+//     overflow: auto;
+//     outline: none;
+// `;
 
-const UserExercise = styled.div`
-    margin-bottom: 15px;
-`;
+// const UserExercise = styled.div`
+//     margin-bottom: 15px;
+// `;
 
-const RequestExercise = styled.div`
-    display: flex;
-    align-items: center;
-`;
+// const RequestExercise = styled.div`
+//     display: flex;
+//     align-items: center;
+// `;
 
-const ExerciseContent = styled.div`
-    width: 60px;
-    height: 30px;
-    margin: 2px 5px;
-    padding: 5px;
-    background-color: #e6a87f;
-    font-size: 14px;
-    font-weight: bold;
-    text-align: center;
-    border-radius: 20px;
+// const ExerciseContent = styled.div`
+//     width: 60px;
+//     height: 30px;
+//     margin: 2px 5px;
+//     padding: 5px;
+//     background-color: #e6a87f;
+//     font-size: 14px;
+//     font-weight: bold;
+//     text-align: center;
+//     border-radius: 20px;
 
-    &.running {
-        background-color: #e6a87f;
-    }
-    &.hiking {
-        background-color: #55acee;
-    }
-    &.weight {
-        background-color: #29cc7a;
-    }
-`;
+//     &.running {
+//         background-color: #e6a87f;
+//     }
+//     &.hiking {
+//         background-color: #55acee;
+//     }
+//     &.weight {
+//         background-color: #29cc7a;
+//     }
+// `;
 
 const RequestBtnArea = styled.div`
     display: flex;
