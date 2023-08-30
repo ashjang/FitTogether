@@ -1,9 +1,30 @@
 // src/utils/websocket.ts
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
+// import { Client, StompConfig } from '@stomp/stompjs';
 
-const socket = new SockJS('http://localhost:8080/ws');
+// const stompConfig: StompConfig = {
+//     brokerURL: 'ws://localhost:8080/ws',
+//     reconnectDelay: 5000,
+// };
 
-const stompClient: Stomp.Client = Stomp.over(socket);
+// const stompClient: Client = new Client(stompConfig) as any;
 
-export { socket, stompClient };
+// export default stompClient;
+
+// src/utils/websocket.ts
+import { Client } from '@stomp/stompjs';
+import { WebSocket } from 'ws';
+Object.assign(global, { WebSocket });
+
+const client: Client = new Client({
+    brokerURL: 'ws://localhost:8080/ws',
+    onConnect: () => {
+        console.log('WebSocket연결되었쥬짝짝^^');
+    },
+    onStompError: (frame) => {
+        console.error('STOMP 에러입니다ㅜㅜ:', frame);
+    },
+});
+
+client.activate();
+
+export default client;

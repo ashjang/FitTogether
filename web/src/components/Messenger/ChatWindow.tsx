@@ -1,5 +1,4 @@
 // ChatWindow.tsx
-import React from 'react';
 import styled from '@emotion/styled';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,8 +9,8 @@ interface UserProfile {
     profileImage: string | null;
 }
 interface Props {
-    chatRoomId: string | null;
-    chatMessages: { roomId: string; message: string; sentAt: Date }[]; // 보낸 시간 정보 추가
+    chatRoomId: number | null;
+    chatMessages: { chatRoomId: number; contents: string; sendDate: Date }[]; // 보낸 시간 정보 추가
 
     inputMessage: string;
     onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -34,7 +33,9 @@ const ChatWindow: React.FC<Props> = ({
 }) => {
     const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
-            onSendMessage(); // 엔터키를 누르면 메시지 전송
+            console.log('엔터키로 메세지 보내기');
+            event.preventDefault(); // 엔터 키 디폴트 동작 막기
+            onSendMessage(); // 메시지 전송
         }
     };
 
@@ -54,13 +55,17 @@ const ChatWindow: React.FC<Props> = ({
                         <MessageArea>
                             {chatMessages.map((message, index) => (
                                 <MessageBox key={index}>
-                                    <MessageText>{message.message}</MessageText>
                                     <MessageTime>
-                                        {message.sentAt.toLocaleTimeString([], {
+                                        {new Date(message.sendDate).toLocaleTimeString([], {
+                                            // year: 'numeric',
+                                            // month: 'short',
+                                            // day: 'numeric',
                                             hour: '2-digit',
                                             minute: '2-digit',
+                                            hour12: true,
                                         })}
                                     </MessageTime>{' '}
+                                    <MessageText>{message.contents}</MessageText>
                                 </MessageBox>
                             ))}
                         </MessageArea>
@@ -85,7 +90,7 @@ const ChatWindow: React.FC<Props> = ({
     );
 };
 const ChatWindowBox = styled.div`
-    position: relative;
+    position: absolute;
     top: 0;
     left: 390px;
     width: 1000px;
@@ -100,7 +105,7 @@ const TopArea = styled.div`
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
-    height: 100px;
+    height: 80px;
 
     ::before {
         content: '';
@@ -112,7 +117,7 @@ const TopArea = styled.div`
         background-color: rgb(91, 75, 56);
     }
 `;
-// 프로필 이미지를 감싸는 스타일 컴포넌트
+
 const ProfileWrapper = styled.div`
     position: absolute;
     left: 50px;
@@ -123,7 +128,6 @@ const ProfileWrapper = styled.div`
     align-items: center;
 `;
 
-// 프로필 이미지 스타일 컴포넌트
 const ProfileImage = styled.img`
     width: 40px;
     height: 40px;
@@ -138,36 +142,81 @@ const TextBox = styled.div`
     display: flex;
     align-items: center;
     flex-direction: column;
-
     margin-top: 10px;
-    // background-color: rgb(91, 75, 56);
 `;
 const MessageArea = styled.div`
+    position: relative;
+    right: 0px;
+
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+
     width: 100%;
     height: 405px;
-    margin-left: 50px;
+    margin-top: 10px;
     overflow-y: auto;
+    overflow-x: hidden;
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(0, 0, 0, 0.4);
+    }
 `;
 const MessageBox = styled.div`
     display: flex;
     align-items: flex-end;
     padding: 8px;
+    margin-right: 10px;
 `;
-const MessageText = styled.div`
+const MessageText = styled.p`
+    position: relative;
     display: block;
     font-size: 18px;
+
+    width: 300px;
+    height: 100%;
+    word-break: break-all;
+    padding: 12px;
+    border-radius: 10px;
+    background-color: #e7b2b2;
+
+    &::before {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        width: 0;
+        height: 0;
+        border: 20px solid transparent;
+        border-left-color: #e7b2b2;
+        border-right: 0;
+        border-top: 0;
+        border-radius: 5px;
+
+        margin-top: -10px;
+        margin-right: -15px;
+    }
 `;
 const MessageTime = styled.div`
     display: block;
     font-size: 14px;
-    margin-left: 10px;
+    margin-right: 10px;
+    padding-bottom: 8px;
 `;
 
 const SendArea = styled.div`
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-top: 15px;
+    justify-content: center;
+    margin-top: 20px;
 
     input {
         width: 800px;

@@ -166,7 +166,11 @@ function App() {
                         <Route path="/signin" element={<SignIn />} />
                         <Route path="/kakao/callback" element={<KakaoAuth />} />
                         <Route path="/signup" element={<SignUp />} />
-                        <Route path="/messenger" element={<Messenger />} />
+                        {/* <Route path="/messenger" element={<Messenger />} /> */}
+                        <Route path="/messenger" element={<Messenger />}>
+                            {/* 여기에 /messenger 경로 아래의 라우트 정의 */}
+                            <Route path=":nickname" element={<Messenger />} />
+                        </Route>
                         <Route path="/finduserid" element={<FindUserId />} />
                         <Route path="/finduserpassword" element={<FindUserPassword />} />
                         <Route element={<ProtectedRoute />}>
