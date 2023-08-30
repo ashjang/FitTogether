@@ -11,7 +11,7 @@ const SignInSetting: React.FC = () => {
     const [signInData, setSignInData] = useRecoilState(signInInfo); // 값을 받아와서 변경하고 싶으면 useRecoilState
     const setLoggedIn = useSetRecoilState(loggedInState); // 값을 변경하고 싶으면 useSetRecoilState
     const setCanEditInfo = useSetRecoilState(canEditInfo);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const location = useLocation();
     const from = location?.state?.redirectedFrom || '/';
 
@@ -34,8 +34,8 @@ const SignInSetting: React.FC = () => {
                 setCanEditInfo(true);
                 // window.location.reload();
                 sessionStorage.setItem('token', token);
-                sessionStorage.setItem('shouldRefresh', 'true'); // 페이지 새로고침 설정
-                navigate(from);
+                // navigate(from);
+                window.location.replace(from);
             } else if (response.status === 400) {
                 // 에러 메시지 출력
                 setErrorMessage(response.data.message);
