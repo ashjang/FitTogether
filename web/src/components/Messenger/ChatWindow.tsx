@@ -1,5 +1,6 @@
 // ChatWindow.tsx
 import styled from '@emotion/styled';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
@@ -31,14 +32,34 @@ const ChatWindow: React.FC<Props> = ({
     chatRoomName,
     userProfile,
 }) => {
+    const messageAreaRef = useRef<HTMLDivElement | null>(null);
+    const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
+
+    const scrollToBottom = () => {
+        if (messageAreaRef.current) {
+            messageAreaRef.current.scrollTop = messageAreaRef.current.scrollHeight;
+        }
+    };
+    useEffect(() => {
+        if (shouldScrollToBottom) {
+            scrollToBottom();
+        }
+    }, [chatMessages, shouldScrollToBottom]);
+
     const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             console.log('엔터키로 메세지 보내기');
-            event.preventDefault(); // 엔터 키 디폴트 동작 막기
-            onSendMessage(); // 메시지 전송
+            event.preventDefault();
+            onSendMessage();
+            setShouldScrollToBottom(true); // 엔터키 입력 시에는 스크롤 다시 아래로
+        } else {
+            setShouldScrollToBottom(false); // 다른 키 입력 시에는 스크롤 유지
         }
     };
-
+    const handleSendMessage = () => {
+        onSendMessage();
+        setShouldScrollToBottom(true); // 보내기 버튼 클릭 시에는 스크롤 다시 아래로
+    };
     return (
         <ChatWindowBox>
             {chatRoomId ? (
@@ -52,7 +73,7 @@ const ChatWindow: React.FC<Props> = ({
                         </ProfileWrapper>
                     </TopArea>
                     <TextBox>
-                        <MessageArea>
+                        <MessageArea ref={messageAreaRef}>
                             {chatMessages.map((message, index) => (
                                 <MessageBox key={index}>
                                     <MessageTime>
@@ -76,7 +97,7 @@ const ChatWindow: React.FC<Props> = ({
                                 onChange={onInputChange}
                                 onKeyPress={handleKeyPress}
                             />
-                            <SendBtn onClick={onSendMessage}>
+                            <SendBtn onClick={handleSendMessage}>
                                 <span className="blind">보내기</span>
                                 <FontAwesomeIcon icon={faPaperPlane} />
                             </SendBtn>

@@ -33,9 +33,6 @@ const ChatList: React.FC<Props> = ({
     setMateModalOpen,
     createChatRoom,
 }) => {
-    // console.log('Received chatRooms:', chatRooms);
-
-    // const [isMateListOpen, setIsMateListOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleShowMateListClick = (event: React.MouseEvent<HTMLButtonElement>) => {
