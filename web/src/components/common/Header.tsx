@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     // faSun,
     // faMoon,
-    // faUserGroup,
+    faUserGroup,
     faBell,
     faComment,
     faBookmark,
@@ -17,11 +17,19 @@ Modal.setAppElement('#root');
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { loggedInState } from '../../recoil/AuthState/atoms';
+import { canEditInfo, loggedInState, signInInfo } from '../../recoil/AuthState/atoms';
 
 import AlertList from './AlertList';
-// import MateList from './MateList';
+import MateList from './MateList';
 import LogoImg from './../../assets/logo.png';
+
+import { currentPageState } from '../../recoil/posts/atoms';
+import {
+    categoryFilterState,
+    keywordFilterState,
+    hashtagFilterState,
+} from '../../recoil/posts/atoms';
+import axios from 'axios';
 
 // interface Props {}
 // type HeaderProps = {
@@ -33,14 +41,21 @@ function Header() {
     // function Header({ onToggleDarkMode }: HeaderProps) {
     const loggedIn = useRecoilValue(loggedInState); // loggedInState 상태 가져오기
     const setLoggedIn = useSetRecoilState(loggedInState); // 상태를 업데이트하는 setLoggedIn 함수 가져오기
+    const setcanEditInfo = useSetRecoilState(canEditInfo);
+    const setSignInInfo = useSetRecoilState(signInInfo);
 
     // const [isDarkMode, setDarkMode] = useState(false);
-    // const [isMateListOpen, setIsMateListOpen] = useState(false); // 메이트리스트창
+    const [isMateListOpen, setIsMateListOpen] = useState(false); // 메이트리스트창
 
     const [isPopupOpen, setPopupOpen] = useState(false);
     const bellPopupRef = useRef<HTMLDivElement | null>(null); //알림창
 
     const [isScrolled, setScrolled] = useState(false); // 스크롤 내릴때 배경색
+
+    const setCurrentPage = useSetRecoilState(currentPageState);
+    const setCategoryFilter = useSetRecoilState<string>(categoryFilterState);
+    const setKeywordFilter = useSetRecoilState<string>(keywordFilterState);
+    const setHashtagFilter = useSetRecoilState<string>(hashtagFilterState);
 
     // dark light Mode
     // const handleToggleDarkMode = () => {
@@ -78,17 +93,56 @@ function Header() {
     // };
 
     //운동메이트 리스트
-    // const handleShowMateListClick = () => {
-    //     setIsMateListOpen(true);
-    // };
-    // const handleCloseMateList = () => {
-    //     setIsMateListOpen(false);
-    // };
+    const handleShowMateListClick = () => {
+        setIsMateListOpen(true);
+    };
+    const handleCloseMateList = () => {
+        setIsMateListOpen(false);
+    };
 
     // 로그아웃일때 로직
-    const handleSignOut = () => {
-        setLoggedIn(false);
+    const handleSignOut = async () => {
+        const token = sessionStorage.getItem('token');
+
+        if (token) {
+            try {
+                // 로그아웃 요청 보내기
+                const response = await axios.post('/api/users/signout', null, {
+                    headers: {
+                        'X-AUTH-TOKEN': token,
+                    },
+                });
+
+                if (response.status === 200) {
+                    // 서버에서 로그아웃 처리 완료한 경우
+                    console.log('로그아웃 완료');
+                }
+            } catch (error) {
+                console.error('로그아웃 처리 중 오류:', error);
+            }
+
+            // 세션 스토리지에서 토큰 삭제
+            sessionStorage.removeItem('token');
+
+            // recoil 상태 변경
+            setLoggedIn(false);
+            setcanEditInfo(false);
+            setSignInInfo('');
+        }
     };
+
+    // 헤더의 커뮤니티 탭을 눌렀을때는 필터링되지 않은 초기의 postList가 출력되게 하기 위한 함수
+    const getInitialPostListData = async () => {
+        try {
+            setCurrentPage(1);
+            setCategoryFilter('');
+            setKeywordFilter('');
+            setHashtagFilter('');
+        } catch (error) {
+            console.error;
+        }
+    };
+
     return (
         <HeaderWrap css={[isScrolled && scrolledHeader]}>
             <div css={headerInn}>
@@ -108,8 +162,9 @@ function Header() {
                                 </ThemeBtn>
                             </ThemeLi> */}
                             {loggedIn ? (
+                                // 로그인 상태일때
                                 <>
-                                    {/* <li>
+                                    <li>
                                         <MateBtn onClick={handleShowMateListClick}>
                                             <span className="blind">운동 메이트 리스트</span>
                                             <FontAwesomeIcon icon={faUserGroup} />
@@ -117,7 +172,7 @@ function Header() {
                                         {isMateListOpen && (
                                             <MateList isOpen={true} onClose={handleCloseMateList} />
                                         )}
-                                    </li> */}
+                                    </li>
                                     <li>
                                         <span className="blind">알림창</span>
                                         <BellBtn onClick={handleOpenPopup}>
@@ -141,6 +196,7 @@ function Header() {
                                     </li>
                                 </>
                             ) : (
+                                //로그인 전 상태
                                 <div css={signinSection}>
                                     <SignInLink to="/signin">로그인</SignInLink>
                                     <span>|</span>
@@ -180,7 +236,7 @@ function Header() {
                                 </Link>
                             </li>
                             <li css={menuLi}>
-                                <Link to="/posts">
+                                <Link to="/posts" onClick={() => getInitialPostListData()}>
                                     <span>커뮤니티</span>
                                 </Link>
                             </li>
@@ -244,10 +300,10 @@ const IconList = styled.ul`
         padding: 0 5px;
     }
 `;
-// const MateBtn = styled.button`
-//     border: none;
-//     background: none;
-// `;
+const MateBtn = styled.button`
+    border: none;
+    background: none;
+`;
 const BellBtn = styled.button`
     border: none;
     background: none;
