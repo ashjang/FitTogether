@@ -17,7 +17,7 @@ Modal.setAppElement('#root');
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { loggedInState } from '../../recoil/AuthState/atoms';
+import { canEditInfo, loggedInState, signInInfo } from '../../recoil/AuthState/atoms';
 
 import AlertList from './AlertList';
 import MateList from './MateList';
@@ -29,6 +29,7 @@ import {
     keywordFilterState,
     hashtagFilterState,
 } from '../../recoil/posts/atoms';
+import axios from 'axios';
 
 // interface Props {}
 // type HeaderProps = {
@@ -40,6 +41,8 @@ function Header() {
     // function Header({ onToggleDarkMode }: HeaderProps) {
     const loggedIn = useRecoilValue(loggedInState); // loggedInState 상태 가져오기
     const setLoggedIn = useSetRecoilState(loggedInState); // 상태를 업데이트하는 setLoggedIn 함수 가져오기
+    const setcanEditInfo = useSetRecoilState(canEditInfo);
+    const setSignInInfo = useSetRecoilState(signInInfo);
 
     // const [isDarkMode, setDarkMode] = useState(false);
     const [isMateListOpen, setIsMateListOpen] = useState(false); // 메이트리스트창
@@ -98,8 +101,34 @@ function Header() {
     };
 
     // 로그아웃일때 로직
-    const handleSignOut = () => {
-        setLoggedIn(false);
+    const handleSignOut = async () => {
+        const token = sessionStorage.getItem('token');
+
+        if (token) {
+            try {
+                // 로그아웃 요청 보내기
+                const response = await axios.post('/api/users/signout', null, {
+                    headers: {
+                        'X-AUTH-TOKEN': token,
+                    },
+                });
+
+                if (response.status === 200) {
+                    // 서버에서 로그아웃 처리 완료한 경우
+                    console.log('로그아웃 완료');
+                }
+            } catch (error) {
+                console.error('로그아웃 처리 중 오류:', error);
+            }
+
+            // 세션 스토리지에서 토큰 삭제
+            sessionStorage.removeItem('token');
+
+            // recoil 상태 변경
+            setLoggedIn(false);
+            setcanEditInfo(false);
+            setSignInInfo('');
+        }
     };
 
     // 헤더의 커뮤니티 탭을 눌렀을때는 필터링되지 않은 초기의 postList가 출력되게 하기 위한 함수
