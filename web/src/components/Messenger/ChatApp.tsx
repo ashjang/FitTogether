@@ -38,7 +38,42 @@ const ChatApp: React.FC = () => {
         setMateModalOpen(false);
 
         getChatRoomList();
+
+        // 새로고침 시에도 서버에서 메시지 가져오기
+        if (selectedChatRoom) {
+            getChatMessages(selectedChatRoom);
+        }
     }, [params]);
+
+    const getChatMessages = (chatRoomId: number) => {
+        const token: string | null = sessionStorage.getItem('token');
+
+        axios
+            .get(`/api/dm?chatRoomId=${chatRoomId}`, {
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
+            })
+            .then((response) => {
+                if (response.status === 200) {
+                    const chatMessageList = response.data as unknown as ChatMessage[];
+                    console.log('메시지 기록 불러오기:', chatMessageList);
+                    // setChatMessages(chatMessageList);
+                    // 기존 메시지 목록에 덧붙이기
+                    setChatMessages((prevMessages) => {
+                        const updatedMessages = prevMessages.filter(
+                            (message) => message.chatRoomId !== chatRoomId
+                        );
+                        return [...updatedMessages, ...chatMessageList];
+                    });
+                } else {
+                    console.error('API 요청이 실패하였습니다.');
+                }
+            })
+            .catch((error) => {
+                console.error('메시지 조회 에러:', error);
+            });
+    };
 
     const getChatRoomList = () => {
         const token: string | null = sessionStorage.getItem('token');
@@ -55,6 +90,11 @@ const ChatApp: React.FC = () => {
                         const chatRoomList = response.data as unknown as ChatRoom[];
                         console.log('채팅방 리스트 불러오기: ', chatRoomList);
                         setChatRooms(() => [...chatRoomList]);
+
+                        // 각 채팅방에 대해 메시지 가져오기
+                        chatRoomList.forEach((room) => {
+                            getChatMessages(room.chatRoomId);
+                        });
 
                         console.log('params', params);
                         const paramsNickname: string | undefined = params.nickname
@@ -82,10 +122,10 @@ const ChatApp: React.FC = () => {
 
     const createChatRoom = () => {
         const token: string | null = sessionStorage.getItem('token');
-        const senderNickname: string = params.nickname ? params.nickname : '';
+        const receiverNickname: string = params.nickname ? params.nickname : '';
 
         axios
-            .post(`/api/dm/${senderNickname}`, null, {
+            .post(`/api/dm/${receiverNickname}`, null, {
                 headers: {
                     'X-AUTH-TOKEN': token,
                 },
@@ -96,7 +136,7 @@ const ChatApp: React.FC = () => {
                 console.log('채팅방 생성 완료:', response.data);
                 console.log('채팅방 ID:', chatRoomId);
                 console.log('token넘버:', token);
-                console.log('받는사람:', senderNickname);
+                console.log('받는사람:', receiverNickname);
 
                 getChatRoomList();
             })
@@ -130,7 +170,7 @@ const ChatApp: React.FC = () => {
 
         setSelectedChatRoom(chatRoomId);
         setInputMessage('');
-        console.log('선택한 채팅방으로 이동:', chatRoomId); // 수정된 위치로 이동
+        console.log('선택한 채팅방으로 이동:', chatRoomId);
     };
 
     const handleSendMessage = () => {
