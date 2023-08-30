@@ -22,7 +22,11 @@ public class EmitterRepository {
     }
 
     public SseEmitter get(Long id) {
-        return emitters.get(id);
+        if (emitters.containsKey(id)) {
+            return emitters.get(id);
+        } else {
+            return null;
+        }
     }
 
     @PreDestroy
