@@ -39,7 +39,7 @@ const ChatList: React.FC<Props> = ({
     const [isLoading, setIsLoading] = useState(false);
 
     const handleShowMateListClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.stopPropagation(); // 이벤트 버블링 막기
+        event.stopPropagation(); // 이벤트 버블링 x
         console.log('운동메이트 리스트 버튼 클릭 확인', isLoading);
 
         if (!isLoading) {
@@ -55,7 +55,7 @@ const ChatList: React.FC<Props> = ({
     };
 
     const handleCreateChatRoom = (chatRoomId: number) => {
-        console.log('Chat room clicked:', chatRoomId);
+        console.log('chatRoolId 리스트 클릭하기:', chatRoomId);
         onChatRoomClick(chatRoomId);
     };
 

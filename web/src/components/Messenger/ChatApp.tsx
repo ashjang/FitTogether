@@ -53,7 +53,7 @@ const ChatApp: React.FC = () => {
                 .then((response) => {
                     if (response.status === 200) {
                         const chatRoomList = response.data as unknown as ChatRoom[];
-                        console.log('채팅방 리스트 불러와졌쥬 ^^: ', chatRoomList);
+                        console.log('채팅방 리스트 불러오기: ', chatRoomList);
                         setChatRooms(() => [...chatRoomList]);
 
                         console.log('params', params);
@@ -91,13 +91,12 @@ const ChatApp: React.FC = () => {
                 },
             })
             .then((response) => {
-                // 타입 단언을 통해 response.data의 형식을 ResponseData로 강제 변환
                 const chatRoomId = (response.data as ResponseData).chatRoomId;
                 setSelectedChatRoom(chatRoomId);
                 console.log('채팅방 생성 완료:', response.data);
                 console.log('채팅방 ID:', chatRoomId);
-                console.log('chattt token:', token);
-                console.log('chattt 세닉:', senderNickname);
+                console.log('token넘버:', token);
+                console.log('받는사람:', senderNickname);
 
                 getChatRoomList();
             })
@@ -123,26 +122,6 @@ const ChatApp: React.FC = () => {
         };
     }, [selectedChatRoom]);
 
-    // const handleChatRoomClick = (chatRoomId: string) => {
-    //     if (selectedChatRoom) {
-    //         client.unsubscribe(`/sub/dm/room/${selectedChatRoom}`);
-    //     }
-
-    //     setSelectedChatRoom(chatRoomId);
-    //     setInputMessage('');
-
-    //     if (chatRoomId) {
-    //         const stompSubscription = client.subscribe(`/sub/dm/room/${chatRoomId}`, (message) => {
-    //             const receivedMessage = JSON.parse(message.body) as ChatMessage;
-    //             setChatMessages((prevMessages) => [...prevMessages, receivedMessage]);
-    //         });
-
-    //         return () => {
-    //             stompSubscription.unsubscribe();
-    //         };
-    //     }
-    // };
-
     const handleChatRoomClick = (chatRoomId: number) => {
         console.log('handleChatRoomCliek', chatRoomId);
         if (chatRoomId) {
@@ -151,7 +130,7 @@ const ChatApp: React.FC = () => {
 
         setSelectedChatRoom(chatRoomId);
         setInputMessage('');
-        console.log('Selected Chat Room:', chatRoomId); // 수정된 위치로 이동
+        console.log('선택한 채팅방으로 이동:', chatRoomId); // 수정된 위치로 이동
     };
 
     const handleSendMessage = () => {
