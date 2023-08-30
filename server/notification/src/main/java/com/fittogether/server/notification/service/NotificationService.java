@@ -39,21 +39,25 @@ public class NotificationService {
         }
         UserVo userVo = jwtProvider.getUserVo(token);
 
-        SseEmitter emitter = new SseEmitter();
-        emitterRepository.save(userVo.getUserId(), emitter);
+        SseEmitter sseEmitter = emitterRepository.get(userVo.getUserId());
+        if (sseEmitter == null) {
+            SseEmitter emitter = new SseEmitter();
+            emitterRepository.save(userVo.getUserId(), emitter);
 
-        try {
-            emitter.send(SseEmitter.event().id(String.valueOf(userVo.getUserId())).name("notify").data("Connection completed"));
-        } catch (IOException exception) {
-            throw new NotificationCustomException(NotificationErrorCode.CONNECTION_ERROR);
+            try {
+                emitter.send(SseEmitter.event().id(String.valueOf(userVo.getUserId())).name("notify").data("Connection completed"));
+            } catch (IOException exception) {
+                throw new NotificationCustomException(NotificationErrorCode.CONNECTION_ERROR);
+            }
+
+            return emitter;
+        } else {
+            return sseEmitter;
         }
-
-        return emitter;
     }
 
     private void sendToClient(Long id, NotificationDto data) {
         SseEmitter emitter = emitterRepository.get(id);
-        System.out.println(emitter);
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event()
@@ -76,7 +80,7 @@ public class NotificationService {
         User user = userRepository.findById(userVo.getUserId())
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
-        return notificationRepository.findByUserOrderByCreatedAtDesc(user)
+        return notificationRepository.findByUserAndReadIsFalseOrderByCreatedAtDesc(user)
                 .stream().map(NotificationDto::from).collect(Collectors.toList());
     }
 
