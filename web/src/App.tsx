@@ -55,6 +55,14 @@ function App() {
 
     const EventSource = EventSourcePolyfill;
     const token = sessionStorage.getItem('token');
+    const shouldRefresh = sessionStorage.getItem('shouldRefresh');
+
+    useEffect(() => {
+        if (token && shouldRefresh !== 'true') {
+            sessionStorage.setItem('shouldRefresh', 'false');
+            window.location.reload();
+        }
+    }, []);
 
     // SSE 구독하기
     useEffect(() => {
