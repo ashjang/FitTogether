@@ -1,6 +1,5 @@
 package com.fittogether.server.video.domain.model;
 
-import com.fittogether.server.video.domain.form.VideoForm;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,18 +24,15 @@ import org.hibernate.envers.AuditOverride;
 public class Video extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long videoId;
+  @Column(name = "video_id")
+  private Long id;
 
-  @Column(unique = true)
-  private String url;
+  @Column(unique = true, name = "youtube_video_id")
+  private String videoId;
 
   private String title;
 
-  public static Video from(VideoForm form){
-    return Video.builder()
-        .url(form.getVideoUrl())
-        .title(form.getTitle())
-        .build();
-  }
+  private String thumbnail;
 
+  private String keyword;
 }

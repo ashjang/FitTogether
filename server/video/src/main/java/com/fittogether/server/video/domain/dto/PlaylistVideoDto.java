@@ -15,12 +15,16 @@ import lombok.ToString;
 public class PlaylistVideoDto {
 
   private String playlistName;
+  private String videoId;
   private String videoTitle;
+  private String thumbnail;
 
   public static PlaylistVideoDto from(PlaylistVideo playlistVideo) {
     return new PlaylistVideoDto(
         playlistVideo.getPlaylist().getPlaylistName(),
-        playlistVideo.getVideo().getTitle()
+        playlistVideo.getVideo().getVideoId(),
+        playlistVideo.getVideo().getTitle(),
+        playlistVideo.getVideo().getThumbnail()
     );
   }
 

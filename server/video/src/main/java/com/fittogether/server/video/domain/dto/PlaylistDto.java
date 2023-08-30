@@ -14,10 +14,9 @@ import lombok.ToString;
 @AllArgsConstructor
 public class PlaylistDto {
 
-  private Long userId;
   private String playlistName;
 
   public static PlaylistDto from(Playlist playlist) {
-    return new PlaylistDto(playlist.getUser().getUserId(), playlist.getPlaylistName());
+    return new PlaylistDto(playlist.getPlaylistName());
   }
 }

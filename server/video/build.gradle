@@ -14,11 +14,13 @@ repositories {
 dependencies {
     implementation project(':user')
     implementation project(':domain')
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.6.1'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.data:spring-data-envers'
-
+    implementation 'com.google.apis:google-api-services-youtube:v3-rev205-1.25.0'
+    implementation 'com.google.api-client:google-api-client:1.25.0'
     testImplementation project(path: ':')
 
     compileOnly 'org.projectlombok:lombok'
