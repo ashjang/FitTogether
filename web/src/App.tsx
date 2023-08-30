@@ -58,14 +58,17 @@ function App() {
     const shouldRefresh = sessionStorage.getItem('shouldRefresh');
 
     useEffect(() => {
-        if (token && shouldRefresh !== 'true') {
-            sessionStorage.setItem('shouldRefresh', 'false');
+        if (token && shouldRefresh === 'true') {
             window.location.reload();
+            sessionStorage.setItem('shouldRefresh', 'false');
         }
-    }, []);
+    }, [shouldRefresh]);
 
     // SSE 구독하기
     useEffect(() => {
+        if (!token) {
+            return; // token이 없으면 함수 종료
+        }
         let eventSource;
 
         const establishSSEConnection = () => {

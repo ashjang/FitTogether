@@ -32,10 +32,10 @@ const SignInSetting: React.FC = () => {
                 const token = response.data;
                 setLoggedIn(true);
                 setCanEditInfo(true);
+                // window.location.reload();
                 sessionStorage.setItem('token', token);
                 sessionStorage.setItem('shouldRefresh', 'true'); // 페이지 새로고침 설정
                 navigate(from);
-                // window.location.reload();
             } else if (response.status === 400) {
                 // 에러 메시지 출력
                 setErrorMessage(response.data.message);
