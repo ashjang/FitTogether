@@ -153,8 +153,7 @@ const RequestBtn = styled.button`
     font-weight: bold;
     border-style: none;
     border-radius: 10px;
-    box-shadow: 0px 1px 15px 0px rgba(0, 0, 0, 0.5);
-
+    border: 2px solid #666;
     &:hover {
         background-color: #ffffe7;
     }
@@ -163,10 +162,11 @@ const RequestBtn = styled.button`
 const ExerciseChoiceBox = styled.div<{ isActive?: boolean }>`
     padding: 0px 5px;
     margin: 3px;
-    background-color: ${(props) => (props.isActive ? '#dde4ff' : '#d7d7d7')};
+    background-color: ${(props) => (props.isActive ? '#ffffd7' : '#d7d7d7')};
     border: 1px solid #a6a6a6;
     border-radius: 10px;
     font-size: 13px;
+    font-weight: ${(props) => (props.isActive ? 'bold' : 'regular')};
     color: #555;
     cursor: pointer;
 `;

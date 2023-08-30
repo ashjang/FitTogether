@@ -13,8 +13,8 @@ import {
 } from '../recoil/posts/atoms';
 
 const Post: React.FC = () => {
+    const token = sessionStorage.getItem('token');
     const { postId } = useParams<{ postId: string }>();
-
     const [postData, setPostData] = useRecoilState(postDataRecoil);
     const [postContentsData, setPostContentsData] = useRecoilState(postContentsDataRecoil);
     const [commentsData, setCommentsData] = useRecoilState(conmentsDataRecoil);
@@ -22,11 +22,10 @@ const Post: React.FC = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        const token = sessionStorage.getItem('token');
-        getPostData(token);
+        getPostData();
     }, []);
 
-    const getPostData = async (token: string | null) => {
+    const getPostData = async () => {
         try {
             console.log(token);
             const response = await axios.get(`/api/posts/${postId}`, {
@@ -57,7 +56,7 @@ const Post: React.FC = () => {
             setCommentsData({
                 ...commentsData,
                 replyList: response.data.replyList,
-                childReplyList: response.data.replyList,
+                childReplyList: response.data.childReplyList,
             });
             setLikeState(response.data.like);
         } catch (error) {

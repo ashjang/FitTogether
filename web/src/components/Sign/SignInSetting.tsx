@@ -13,7 +13,7 @@ const SignInSetting: React.FC = () => {
     const setCanEditInfo = useSetRecoilState(canEditInfo);
     const navigate = useNavigate();
     const location = useLocation();
-    const from = location?.state?.redirectFrom || '/';
+    const from = location?.state?.redirectedFrom || '/';
 
     const [passwordForRequest, setPasswordForRequest] = useState<string>('');
 
@@ -33,7 +33,9 @@ const SignInSetting: React.FC = () => {
                 setLoggedIn(true);
                 setCanEditInfo(true);
                 sessionStorage.setItem('token', token);
+                sessionStorage.setItem('shouldRefresh', 'true'); // 페이지 새로고침 설정
                 navigate(from);
+                // window.location.reload();
             } else if (response.status === 400) {
                 // 에러 메시지 출력
                 setErrorMessage(response.data.message);
@@ -113,6 +115,7 @@ const InputField = styled.div`
 
 const SignInButton = styled.button`
     width: 300px;
+    margin-bottom: 20px;
     padding: 5px 10px;
     background-color: #007bff;
     color: white;

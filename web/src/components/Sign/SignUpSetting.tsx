@@ -140,6 +140,9 @@ const SignUpSetting: React.FC = () => {
         <Page>
             <Title>가입 정보 입력</Title>
             <Form onSubmit={handleSignUp}>
+                <MessageBox>
+                    <GuideMessage>영어/숫자만 입력 가능합니다.</GuideMessage>
+                </MessageBox>
                 <InputTextDiv>
                     <label htmlFor="nickname">아이디(닉네임)</label>
                     <InputText
@@ -294,6 +297,13 @@ const MessageBox = styled.div`
 const ErrorMessage = styled.div`
     font-size: 0.5rem;
     color: red;
+`;
+
+const GuideMessage = styled.div`
+    font-size: 1rem;
+    color: #007bff;
+    margin-left: -50px;
+    margin-bottom: -15px;
 `;
 
 const Form = styled.form`

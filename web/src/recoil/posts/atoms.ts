@@ -4,6 +4,7 @@ import { atom } from 'recoil';
 interface PostDataListItem {
     postId: number;
     category: string;
+    hashtags: string[];
     title: string;
     userImage: string;
     userNickname: string;
@@ -12,9 +13,34 @@ interface PostDataListItem {
     accessLevel: boolean;
 }
 
+export const totalPageState = atom<number>({
+    key: 'totalPageState',
+    default: 0,
+});
+
 export const postListDataState = atom<PostDataListItem[] | null>({
     key: 'postListDataState',
     default: null,
+});
+
+export const currentPageState = atom<number>({
+    key: 'currentPageState',
+    default: 1,
+});
+
+export const categoryFilterState = atom<string>({
+    key: 'categoryFilterState',
+    default: '',
+});
+
+export const keywordFilterState = atom<string>({
+    key: 'keywordFilterState',
+    default: '',
+});
+
+export const hashtagFilterState = atom<string>({
+    key: 'hashtagFilterState',
+    default: '',
 });
 
 // 게시글 보기 눌렀을 때 관련 상태

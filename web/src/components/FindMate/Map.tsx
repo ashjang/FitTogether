@@ -3,9 +3,9 @@ import axios from 'axios';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons';
-import { useRecoilValue } from 'recoil';
-import { signInInfo } from '../../recoil/AuthState/atoms';
-import imgSrc from '../../assets/user-marker.png';
+import UserMarkerSrc from '../../assets/user_marker.png';
+import MyMarkerSrc from '../../assets/my_marker.png';
+import clickMarkerSrc from '../../assets/click_marker.png';
 import UserProfile from './UserProfile';
 import Modal from 'react-modal';
 
@@ -20,7 +20,6 @@ interface User {
 }
 
 const Map: React.FC = () => {
-    const signInData = useRecoilValue(signInInfo);
     const token = sessionStorage.getItem('token');
     const [category, setCategory] = useState<string>('RUNNING');
     const kakaoMapRef = useRef<HTMLDivElement | null>(null);
@@ -31,6 +30,8 @@ const Map: React.FC = () => {
     const [map, setMap] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentMarker, setCurrentMarker] = useState<any>(null);
+    const [clickedMarker, setClickedMarker] = useState<any>(null);
+    const [locationKeyword, setLocationKeyword] = useState<string | null>(null);
 
     const dafaultLatitude = 37.566826;
     const dafaultLongitude = 126.9786567;
@@ -44,6 +45,25 @@ const Map: React.FC = () => {
         const clickedLatLng = mouseEvent.latLng;
         setLatitude(clickedLatLng.getLat());
         setLongitude(clickedLatLng.getLng());
+
+        // 클릭 마커 에러 안뜨는데 동작을 안함... 해결 필요
+        // 1. 출력되는 에러 없음
+        // 2. 위치, 이미지 문제 없음
+        // 3. 다른 마커 생성 코드와 동일한 코드 사용
+        if (clickedMarker) {
+            clickedMarker.setMap(null);
+        }
+
+        const clickMarker = new window.kakao.maps.Marker({
+            position: clickedLatLng,
+            image: new window.kakao.maps.MarkerImage(
+                clickMarkerSrc,
+                new window.kakao.maps.Size(30, 30)
+            ),
+        });
+
+        clickMarker.setMap(map);
+        setClickedMarker(clickMarker);
     };
 
     // 내 위치 업데이트 함수
@@ -78,22 +98,24 @@ const Map: React.FC = () => {
     };
 
     // 현재 위치 marker 생성하는 함수
-    const createCurrentLocationMarker = () => {
-        // 저장한 위도,경도 상태를 기반으로 현재 위치를 정의
+    const createLocationMarker = () => {
         if (map) {
+            // 마커 초기화
             if (currentMarker) {
                 currentMarker.setMap(null);
             }
-            const currentLatLng = new window.kakao.maps.LatLng(latitude, longitude);
-            // 지도를 현재 위치로 이동하는 기능 포함
-            map.panTo(currentLatLng);
 
-            // 좌표의 위치를 기반으로 마커를 생성
+            //
+            const newLatLng = new window.kakao.maps.LatLng(latitude, longitude);
+            // 지도를 새로운 위치로 이동
+            map.panTo(newLatLng);
+
+            // 새로운 좌표의 위치를 기반으로 마커를 생성
             const marker = new window.kakao.maps.Marker({
-                position: currentLatLng,
+                position: newLatLng,
                 image: new window.kakao.maps.MarkerImage(
-                    'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
-                    new window.kakao.maps.Size(30, 45)
+                    MyMarkerSrc,
+                    new window.kakao.maps.Size(50, 50)
                 ),
             });
 
@@ -139,16 +161,16 @@ const Map: React.FC = () => {
     // users가 존재 && users 상태가 업데이트될 때 실행되는 함수
     useEffect(() => {
         users?.forEach((user) => {
-            // 좋아하는 운동에 현재 카테고리의 운동이 있는 user만 추출, 내 정보는 무시
-            if (user.exerciseChoice.includes(category) && user.nickname !== signInData.nickname) {
+            // 좋아하는 운동에 현재 카테고리의 운동이 있는 user만 추출
+            if (user.exerciseChoice.includes(category)) {
                 // 아까처럼 위치 설정해 marker를 찍어서 지도에 출력
                 const userLatLng = new window.kakao.maps.LatLng(user.latitude, user.longitude);
                 console.log(user.latitude, user.longitude);
                 const marker = new window.kakao.maps.Marker({
                     position: userLatLng,
                     image: new window.kakao.maps.MarkerImage(
-                        imgSrc,
-                        new window.kakao.maps.Size(50, 50)
+                        UserMarkerSrc,
+                        new window.kakao.maps.Size(65, 65)
                     ),
                 });
                 marker.setMap(map);
@@ -162,6 +184,41 @@ const Map: React.FC = () => {
         });
     }, [users]);
 
+    // 키워드를 상태에 저장하는 함수
+    const handleLocationKeyword = (keyword: string) => {
+        setLocationKeyword(keyword);
+    };
+
+    // 키워드 검색 완료 시 호출되는 콜백함수
+    const placesSearchCB = (data: any, status: any) => {
+        console.log(status);
+        if (status === window.kakao.maps.services.Status.OK) {
+            // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해 LatLngBounds 객체에 좌표를 추가
+            const bounds = new window.kakao.maps.LatLngBounds();
+
+            // 검색된 각 장소의 좌표를 이용하여 지도 범위 재설정
+            for (var i = 0; i < data.length; i++) {
+                bounds.extend(new window.kakao.maps.LatLng(data[i].y, data[i].x));
+            }
+
+            // 해당 범위로 지도 위치 설정
+            map.setBounds(bounds);
+        }
+    };
+
+    // 검색 버튼 눌렀을 때 실행할 함수
+    const handleClickSearchBtn = () => {
+        const ps = new window.kakao.maps.services.Places();
+        ps.keywordSearch(locationKeyword, placesSearchCB);
+    };
+
+    // Enter 눌렀을 때도 handleClickSearchBtn 실행하도록 처리
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            handleClickSearchBtn();
+        }
+    };
+    // 모달 토글 함수
     const handleToggleModal = () => {
         setIsModalOpen(!isModalOpen);
     };
@@ -188,9 +245,21 @@ const Map: React.FC = () => {
                     헬스
                 </CategoryBtn>
             </CategoryBtnTab>
+            <LocationSearchBar>
+                <LocationSearchInput
+                    type="text"
+                    placeholder="검색어로 장소 찾기"
+                    onChange={(event) => {
+                        handleLocationKeyword(event.target.value);
+                    }}
+                    onKeyDown={handleKeyDown}
+                />
+                <LocationSearchBtn onClick={handleClickSearchBtn}>입력</LocationSearchBtn>
+            </LocationSearchBar>
+
             <MapBox ref={kakaoMapRef}>
-                <GoBackButton onClick={createCurrentLocationMarker}>
-                    <span className="blind">현재 위치로 이동</span>
+                <GoBackButton onClick={createLocationMarker}>
+                    <span className="blind">위치 설정 버튼</span>
                     <LightIcon icon={faCrosshairs} />
                 </GoBackButton>
             </MapBox>
@@ -261,6 +330,29 @@ const CategoryBtnTab = styled.div`
 `;
 const CategoryBtn = styled.button``;
 
+const LocationSearchBar = styled.div`
+    position: absolute;
+    z-index: 5;
+    top: 160px;
+    left: 155px;
+    opacity: 0.9;
+    border: 1px solid black;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
+`;
+
+const LocationSearchInput = styled.input`
+    width: max-contents;
+    min-width: 400px;
+    font-size: 20px;
+    padding: 0px 10px;
+    outline: none;
+`;
+
+const LocationSearchBtn = styled.button`
+    font-size: 20px;
+    padding: 0px 5px;
+`;
+
 const MapBox = styled.div`
     position: absolute;
     top: 150px;
@@ -274,10 +366,10 @@ const GoBackButton = styled.button`
     position: absolute;
     right: 10px;
     bottom: 10px;
-    padding: 5px;
+    padding: 10px 10px 5px 10px;
     border: none;
-    border-radius: 100%;
-    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.2);
     z-index: 10;
 `;
 const LightIcon = styled(FontAwesomeIcon)`

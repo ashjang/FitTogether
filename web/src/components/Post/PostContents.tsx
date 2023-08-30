@@ -143,12 +143,14 @@ const PostContents: React.FC = () => {
             console.error(error);
         }
     };
+
     return (
         <PostContentsComponent>
             <CategoryAndHashtag>
                 <PostCategory>{getCategoryName(postContentsData.category)}</PostCategory>
                 {postContentsData.hashtagList &&
                     postContentsData.hashtagList.map((hashtag) => {
+                        console.log('아아아', myInfo.nickname);
                         return <PostHashtag>#{hashtag}</PostHashtag>;
                     })}
             </CategoryAndHashtag>
@@ -194,7 +196,12 @@ const PostContents: React.FC = () => {
             <Post>
                 <PostTitle>{postContentsData.title}</PostTitle>
                 <PostDescription
-                    dangerouslySetInnerHTML={{ __html: postContentsData.description }}
+                    dangerouslySetInnerHTML={{
+                        __html: postContentsData.description.replace(
+                            /<img /g,
+                            '<img style="max-width: 100%; height: auto;" '
+                        ),
+                    }}
                 />
             </Post>
             <PostDetail>
@@ -323,6 +330,8 @@ const PostTitle = styled.h1`
 
 const PostDescription = styled.div`
     width: 850px;
+    min-height: 300px;
+    // overflow: hidden;
 `;
 
 const PostDetail = styled.div`
