@@ -36,8 +36,11 @@ public class VideoService {
   public CursorResult<VideoDto> get(String keyword, Long cursorId, Pageable page) {
     final List<Video> videos = getVideos(keyword, cursorId, page);
     final Long lastIdOfList = videos.isEmpty() ? null : videos.get(videos.size() - 1).getId();
+    Long lastId = 0L;
+    if(!videos.isEmpty()){
+      lastId = videos.get(videos.size() - 1).getId();
+    }
 
-    Long lastId = videos.get(videos.size() - 1).getId();
     List<VideoDto> videosDto = videos.stream().map(VideoDto::from).collect(Collectors.toList());
     return new CursorResult<>(videosDto, hasNext(lastIdOfList), lastId);
   }

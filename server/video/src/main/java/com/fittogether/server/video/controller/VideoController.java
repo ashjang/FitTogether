@@ -24,9 +24,11 @@ public class VideoController {
   @GetMapping("/{keyword}")
   public ResponseEntity<CursorResult<VideoDto>> getVideos(
       @PathVariable(name = "keyword") String keyword,
-      @RequestParam(value = "cursorId", required = false) Long cursorId,
+      @RequestParam(value = "cursorId") Long cursorId,
       @RequestParam(value = "size", required = false, defaultValue = "5") int size) {
-
+    if(cursorId == -1){
+      cursorId = null;
+    }
     return ResponseEntity.ok(videoService.get(keyword, cursorId, PageRequest.of(0, size)));
   }
 
