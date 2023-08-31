@@ -13,7 +13,7 @@ public interface RequestRepository extends JpaRepository<Request,Long> {
      Request findAllBySenderNicknameAndReceiverNickname(String senderNickname,String receiverNickname);
     List<Request> findAllBySenderNicknameAndIsAccepted(String senderNickname,  boolean isAccepted);
     List<Request> findAllByReceiverNicknameAndIsAccepted(String senderNickname,  boolean isAccepted);
-
+    boolean existsBySenderNicknameAndReceiverNickname(String senderNickname,String receiverNickname);
 
 
 }
