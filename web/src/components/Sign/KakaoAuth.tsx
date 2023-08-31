@@ -26,7 +26,8 @@ const KakaoAuth: React.FC = () => {
                 // 토큰이 발급되면 로그인 상태로 변경
                 setLoggedIn(true);
                 setCanEditUserInfo(false);
-                navigate('/');
+                // navigate('/');
+                window.location.replace('/');
             } catch (error) {
                 console.error(error);
                 setError('서버 토큰 발급 중 오류가 발생했습니다.');
