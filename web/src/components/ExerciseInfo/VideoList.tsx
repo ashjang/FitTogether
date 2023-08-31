@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import axios from 'axios';
@@ -29,19 +29,22 @@ const VideoList: React.FC = () => {
     const isLoggedIn = useRecoilValue(loggedInState);
     const category = useRecoilValue<string>(categoryRecoil);
     const [showModal, setShowModal] = useState<boolean>(false);
+    const [clickedVideo, setClidkedVideo] = useState<Video | null>(null);
     const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
-    const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
 
-    const fetchVideos = async (category: string, page: number = -1): Promise<VideoList> => {
-        const response = await axios.get<VideoList>(`/api/video/${category}?cursorId=${page}`);
+    const fetchVideos = async (category: string, lastId: number): Promise<VideoList> => {
+        const response = await axios.get<VideoList>(
+            `/api/video/${category}?cursorId=${lastId}&size=5`
+        );
         await new Promise((resolve) => setTimeout(resolve, 1500));
+        console.log(response.data);
         return response.data;
     };
 
     const { data, isLoading, isError, fetchNextPage, hasNextPage } = useInfiniteQuery<
         VideoList,
         Error
-    >('videos', ({ pageParam = -1 }) => fetchVideos(category, pageParam), {
+    >(['videos', category], ({ pageParam = -1 }) => fetchVideos(category, pageParam), {
         getNextPageParam: (lastPage) => {
             // 이전 페이지의 lastId를 반환하여 다음 페이지 요청 시 사용
             if (lastPage.hasNext) {
@@ -54,16 +57,16 @@ const VideoList: React.FC = () => {
         },
     });
 
-    const videoList: Video[] = data?.pages.flatMap((page) => page.values) || [];
+    let videoList = data?.pages.flatMap((page) => page.values);
 
     // 비디오 팝업을 여는 함수
     const openVideo = useCallback((video: Video) => {
-        setSelectedVideo(video);
+        setClidkedVideo(video);
     }, []);
 
     // 비디오 팝업을 닫는 함수
     const closeVideo = useCallback(() => {
-        setSelectedVideo(null);
+        setClidkedVideo(null);
     }, []);
 
     // 동영상을 저장하는 함수
@@ -73,7 +76,7 @@ const VideoList: React.FC = () => {
                 alert('로그인 후 이용해주세요.');
                 return;
             }
-            setCurrentVideo(video);
+            setSelectedVideo(video);
             setShowModal(true);
         },
         [isLoggedIn]
@@ -120,14 +123,14 @@ const VideoList: React.FC = () => {
                     </InfiniteScroll>
                 )}
             </VideoContainer>
-            {selectedVideo && (
+            {clickedVideo && (
                 <VideoPopup
-                    video={{ id: selectedVideo.videoId, title: selectedVideo.title }}
+                    video={{ id: clickedVideo.videoId, title: clickedVideo.title }}
                     onClose={closeVideo}
                 />
             )}
-            {showModal && currentVideo && (
-                <PlaylistSetting video={currentVideo} onClose={() => setShowModal(false)} />
+            {showModal && selectedVideo && (
+                <PlaylistSetting video={selectedVideo} onClose={() => setShowModal(false)} />
             )}
         </VideoListComponent>
     );
