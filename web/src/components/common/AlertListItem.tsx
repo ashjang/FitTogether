@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 
 import MateRequest from './MateRequest';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 // interface AlertListItemProps {
 //     alerts: Array<{
@@ -20,7 +20,7 @@ const AlertListItem: React.FC = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [fetchedAlerts, setFetchedAlerts] = useState([]);
     const [senderNickname, setSenderNickname] = useState('');
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     useEffect(() => {
         console.log('useEffect is running');
@@ -55,7 +55,8 @@ const AlertListItem: React.FC = () => {
             // postIdPattern이 유효한 경우 해당 URL로 이동
             const postId = alert.url.match(postIdPattern)[1];
             const processedUrl = `/posts/${postId}`;
-            navigate(processedUrl);
+            // navigate(processedUrl);
+            window.location.replace(processedUrl);
             setShowPopup(false);
         }
     };
