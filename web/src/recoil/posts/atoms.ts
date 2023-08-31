@@ -43,6 +43,16 @@ export const hashtagFilterState = atom<string>({
     default: '',
 });
 
+export const keywordItemState = atom<string>({
+    key: 'keywordItemState',
+    default: '',
+});
+
+export const hashtagItemState = atom<string>({
+    key: 'hashtagItemState',
+    default: '',
+});
+
 // 게시글 보기 눌렀을 때 관련 상태
 
 interface ReplyData {

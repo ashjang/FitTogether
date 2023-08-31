@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import styled from '@emotion/styled';
@@ -9,6 +9,8 @@ import {
     categoryFilterState,
     keywordFilterState,
     hashtagFilterState,
+    keywordItemState,
+    hashtagItemState,
 } from '../../recoil/posts/atoms';
 import { css } from '@emotion/react';
 
@@ -26,9 +28,9 @@ const PostFilter: React.FC = () => {
     const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
     const [categoryFilter, setCategoryFilter] = useRecoilState<string>(categoryFilterState);
     const [keywordFilter, setKeywordFilter] = useRecoilState<string>(keywordFilterState);
-    const [keywordItem, setKeywordItem] = useState<string>('');
+    const [keywordItem, setKeywordItem] = useRecoilState<string>(keywordItemState);
     const [hashtagFilter, setHashtagFilter] = useRecoilState<string>(hashtagFilterState);
-    const [hashtagItem, setHashtagItem] = useState<string>('');
+    const [hashtagItem, setHashtagItem] = useRecoilState<string>(hashtagItemState);
 
     const handlePaginationBtnClick = async (i: number) => {
         setCurrentPage(i);
@@ -128,7 +130,7 @@ const PostFilter: React.FC = () => {
             setHashtagFilter('');
         } catch (error) {
             console.error(error);
-            alert('검색된 게시글이 없습니다.');
+            alert('해당 해시태그로 작성된 게시글이 없습니다.');
             setHashtagFilter('');
             setHashtagItem('');
         }
@@ -157,12 +159,12 @@ const PostFilter: React.FC = () => {
             getPostListData();
         } else if (categoryFilter !== '') {
             getFilteredCategory();
-        } else if (keywordFilter !== '') {
+        } else if (keywordItem !== '') {
             getFilteredKeyword();
-        } else if (hashtagFilter !== '') {
+        } else if (hashtagItem !== '') {
             getFilteredHashtag();
         }
-    }, [currentPage, categoryFilter]);
+    }, [currentPage, categoryFilter, keywordItem, hashtagItem]);
 
     return (
         <PostFilterComponent>

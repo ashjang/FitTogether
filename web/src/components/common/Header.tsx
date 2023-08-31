@@ -28,6 +28,8 @@ import {
     categoryFilterState,
     keywordFilterState,
     hashtagFilterState,
+    keywordItemState,
+    hashtagItemState,
 } from '../../recoil/posts/atoms';
 
 // interface Props {}
@@ -53,7 +55,8 @@ function Header() {
     const setCategoryFilter = useSetRecoilState<string>(categoryFilterState);
     const setKeywordFilter = useSetRecoilState<string>(keywordFilterState);
     const setHashtagFilter = useSetRecoilState<string>(hashtagFilterState);
-
+    const setKeywordItem = useSetRecoilState<string>(keywordItemState);
+    const setHashtagItem = useSetRecoilState<string>(hashtagItemState);
     // dark light Mode
     // const handleToggleDarkMode = () => {
     //     setDarkMode((prevMode) => !prevMode);
@@ -109,6 +112,8 @@ function Header() {
             setCategoryFilter('');
             setKeywordFilter('');
             setHashtagFilter('');
+            setKeywordItem('');
+            setHashtagItem('');
         } catch (error) {
             console.error;
         }
