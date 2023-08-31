@@ -46,7 +46,7 @@ const ChatList: React.FC<Props> = ({
     };
 
     const handleCloseMateList = () => {
-        console.log('====================');
+        console.log('운동 메이트 리스트 모달창 닫힘');
         setMateModalOpen(false);
         setIsLoading(false);
     };
