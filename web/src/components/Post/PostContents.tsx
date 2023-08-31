@@ -14,7 +14,7 @@ import { useRecoilValue, useRecoilState } from 'recoil';
 import { signInInfo } from '../../recoil/AuthState/atoms';
 import { postDataRecoil, postContentsDataRecoil, isLikedState } from '../../recoil/posts/atoms';
 
-const imageSrc: string = default_user_image;
+const imgSrc: string = default_user_image;
 
 interface DataForEdit {
     savedTitle: string;
@@ -157,7 +157,9 @@ const PostContents: React.FC = () => {
 
             <ProfileContainer>
                 <ProfileImageContainer>
-                    <ProfileImage src={imageSrc} />
+                    <ProfileImage
+                        src={postContentsData.userImage ? postContentsData.userImage : imgSrc}
+                    />
                 </ProfileImageContainer>
 
                 <ProfileNickname>{postContentsData.userNickname}</ProfileNickname>
@@ -286,13 +288,12 @@ const ProfileNickname = styled.p`
 
 const CreatedAt = styled.p`
     position: absolute;
-    right: 100px;
+    right: 30px;
     font-size: 10px;
 `;
 
 const FaEllipsis = styled(FontAwesomeIcon)`
     position: absolute;
-    margin: 0 30px;
     right: 0px;
 `;
 
@@ -330,7 +331,8 @@ const PostTitle = styled.h1`
 
 const PostDescription = styled.div`
     width: 850px;
-    min-height: 300px;
+    min-height: 150px;
+
     // overflow: hidden;
 `;
 

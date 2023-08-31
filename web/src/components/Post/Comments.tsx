@@ -197,8 +197,7 @@ const Comments: React.FC = () => {
                 <ReplyContainer key={reply.replyId}>
                     <TopDiv>
                         <ProfileImageContainer>
-                            {/* <ProfileImage src={reply.userImage || imgSrc} /> */}
-                            <ProfileImage src={imgSrc} />
+                            <ProfileImage src={reply.userImage ? reply.userImage : imgSrc} />
                         </ProfileImageContainer>
                         <UserId>{reply.userNickname}</UserId>
                         <PostTime>{formatDateString(reply.createdAt)}</PostTime>
@@ -218,8 +217,13 @@ const Comments: React.FC = () => {
                                 <ChildReplyItem key={childReply.childReplyId}>
                                     <TopDiv>
                                         <ProfileImageContainer>
-                                            {/* <ProfileImage src={childReply.userImage || imgSrc} /> */}
-                                            <ProfileImage src={imgSrc} />
+                                            <ProfileImage
+                                                src={
+                                                    childReply.userImage
+                                                        ? childReply.userImage
+                                                        : imgSrc
+                                                }
+                                            />
                                         </ProfileImageContainer>
                                         <UserId>{childReply.userNickname}</UserId>
                                         <PostTime>
