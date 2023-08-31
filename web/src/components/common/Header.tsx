@@ -126,7 +126,6 @@ function Header() {
 
             // 세션 스토리지에서 토큰 삭제
             sessionStorage.removeItem('token');
-            sessionStorage.setItem('shouldRefresh', 'false');
 
             // recoil 상태 변경
             setLoggedIn(false);

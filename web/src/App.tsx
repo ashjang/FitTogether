@@ -56,67 +56,58 @@ function App() {
     const EventSource = EventSourcePolyfill;
     const token = sessionStorage.getItem('token');
 
-    // SSE 구독하기
-    useEffect(() => {
-        if (!token) {
-            return; // token이 없으면 함수 종료
-        }
-        let eventSource;
+    let eventSource;
 
-        const establishSSEConnection = () => {
-            eventSource = new EventSource(`/api/notification/subscribe`, {
-                headers: {
-                    'X-AUTH-TOKEN': token,
-                },
-            });
+    const establishSSEConnection = () => {
+        eventSource = new EventSource(`/api/notification/subscribe`, {
+            headers: {
+                'X-AUTH-TOKEN': token,
+            },
+        });
 
-            eventSource.onopen = (event) => {
-                console.log('connection opened');
-                console.log(event.target.readyState);
-            };
-
-            eventSource.addEventListener('data', (event) => {
-                console.log('EVENT : ' + event.data);
-                const newAlert = JSON.parse(event.data); // 받은 데이터 추출
-                console.log('newAlert : ', newAlert);
-
-                // 토스트 알림 표시
-                showToastNotification(newAlert.message); // message 필드 사용
-
-                setAlert((prevAlert) => [newAlert, ...prevAlert]);
-                console.log('prevAlert', alert);
-            });
-
-            eventSource.onerror = (event) => {
-                console.log(event.target.readyState);
-                if (event.target.readyState === EventSource.CONNECTING) {
-                    console.log('connecting...');
-
-                    // 연결 끊기 후 재연결 신청
-                    eventSource.close();
-                    establishSSEConnection();
-                } else if (event.target.readyState === EventSource.CLOSED) {
-                    console.log('eventsource closed (' + event.target.readyState + ')');
-                }
-            };
+        eventSource.onopen = (event) => {
+            console.log('connection opened');
+            console.log(event.target.readyState);
         };
 
-        const requestNotificationPermission = async () => {
-            const permission = await Notification.requestPermission();
-            if (permission === 'granted') {
-                console.log('알림 권한이 허용되었습니다.');
-                establishSSEConnection(); // 허용된 경우 SSE 연결 설정
-                setNotificationEnabled(
-                    '알림 권한이 허용되었습니다. 실시간 알림을 받을 수 있습니다.'
-                ); // 알림 권한이 허용
-            } else {
-                console.log('알림 권한이 거부되었습니다.');
-                setNotificationEnabled(
-                    '알림 권한이 거부되었습니다. 실시간 알림을 받을 수 없습니다.'
-                ); // 알림 권한이 거부
+        eventSource.addEventListener('data', (event) => {
+            console.log('EVENT : ' + event.data);
+            const newAlert = JSON.parse(event.data); // 받은 데이터 추출
+            console.log('newAlert : ', newAlert);
+
+            // 토스트 알림 표시
+            showToastNotification(newAlert.message); // message 필드 사용
+
+            setAlert((prevAlert) => [newAlert, ...prevAlert]);
+            console.log('prevAlert', alert);
+        });
+
+        eventSource.onerror = (event) => {
+            console.log(event.target.readyState);
+            if (event.target.readyState === EventSource.CONNECTING) {
+                console.log('connecting...');
+
+                // 연결 끊기
+                eventSource.close();
+                // establishSSEConnection();
             }
         };
+    };
 
+    const requestNotificationPermission = async () => {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+            console.log('알림 권한이 허용되었습니다.');
+            establishSSEConnection(); // 허용된 경우 SSE 연결 설정
+            setNotificationEnabled('알림 권한이 허용되었습니다. 실시간 알림을 받을 수 있습니다.'); // 알림 권한이 허용
+        } else {
+            console.log('알림 권한이 거부되었습니다.');
+            setNotificationEnabled('알림 권한이 거부되었습니다. 실시간 알림을 받을 수 없습니다.'); // 알림 권한이 거부
+        }
+    };
+
+    // SSE 구독하기
+    useEffect(() => {
         if (!token) {
             return; // token이 없으면 함수 종료
         }
@@ -131,7 +122,7 @@ function App() {
                 console.log('eventsource closed');
             }
         };
-    }, [token]);
+    }, []);
 
     useEffect(() => {
         // (알림 권한을 확인하고 3초 후에 알림 메시지가 사라지게 함
