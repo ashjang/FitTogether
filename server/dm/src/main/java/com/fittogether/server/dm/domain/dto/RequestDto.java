@@ -3,9 +3,6 @@ package com.fittogether.server.dm.domain.dto;
 import com.fittogether.server.dm.domain.entity.Request;
 import lombok.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Getter
 @NoArgsConstructor
 @ToString
@@ -29,14 +26,4 @@ public class RequestDto {
                 .build();
     }
 
-    public static List<RequestDto> fromList(List<Request> mateList) {
-
-        return mateList.stream()
-                .map(request -> RequestDto.builder()
-                        .senderNickname(request.getSenderNickname())
-                        .receiverNickname(request.getReceiverNickname())
-                        .isAccept(request.isAccepted())
-                        .build())
-                .collect(Collectors.toList());
-    }
 }

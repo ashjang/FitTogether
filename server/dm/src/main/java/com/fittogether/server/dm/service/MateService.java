@@ -1,8 +1,11 @@
 package com.fittogether.server.dm.service;
 
 
+import com.fittogether.server.dm.domain.dto.MateListDto;
 import com.fittogether.server.dm.domain.entity.Request;
 import com.fittogether.server.dm.domain.repository.RequestRepository;
+import com.fittogether.server.dm.exception.DmCustomException;
+import com.fittogether.server.dm.exception.DmErrorCode;
 import com.fittogether.server.dm.exception.RequestNotFoundException;
 import com.fittogether.server.domain.token.JwtProvider;
 import com.fittogether.server.domain.token.UserVo;
@@ -49,6 +52,14 @@ public class MateService {
 
         notificationService.createNotification(userVo.getNickname(), receiver.getUserId(),
                 NotificationType.MATCHING, "/matching/request");
+
+
+        boolean existingRequest = requestRepository.existsBySenderNicknameAndReceiverNickname(
+                sender.getNickname(), receiver.getNickname());
+
+        if (existingRequest) {
+            throw new DmCustomException(DmErrorCode.DUPLICATE_REQUEST);
+        }
 
         Request request = Request.builder()
                 .senderId(sender)
@@ -98,7 +109,7 @@ public class MateService {
     }
 
 
-    public List<Request> requestLists(String token) {
+    public List<MateListDto> requestLists(String token) {
 
         if (!jwtProvider.validateToken(token)) {
             throw new UserCustomException(UserErrorCode.NOT_FOUND_USER);
@@ -124,8 +135,22 @@ public class MateService {
         mateList.addAll(sentRequests);
         mateList.addAll(receivedRequests);
 
+        // 리스트 sender,receiver 중복 제거 로직
+        List<MateListDto> mateListDto = new ArrayList<>();
+        for (Request request : mateList) {
+            String otherUserNickname = userNickname.getNickname();
+            if (request.getSenderNickname().equals(userNickname.getNickname())) {
+                otherUserNickname = request.getReceiverNickname();
+            } else if (request.getReceiverNickname().equals(userNickname.getNickname())) {
+                otherUserNickname = request.getSenderNickname();
+            }
 
-        return mateList;
+            MateListDto mate = new MateListDto(otherUserNickname, request.isAccepted());
+            mateListDto.add(mate);
+        }
+
+
+        return mateListDto;
     }
 
 
