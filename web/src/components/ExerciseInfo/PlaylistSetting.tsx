@@ -12,7 +12,7 @@ interface Video {
 }
 
 interface Props {
-    video: Video | null;
+    video: Video;
     onClose: () => void;
 }
 
@@ -92,7 +92,7 @@ const PlaylistSetting: React.FC<Props> = ({ video, onClose }) => {
         }
     };
 
-    // 플레이리스트를 수정할 때 사용하는 함수 ✅updatePlaylist
+    // 플레이리스트를 수정하는 함수 ✅updatePlaylist
     const handleEditPlaylist = async (name: string) => {
         if (!editedPlaylist) {
             alert('플레이리스트의 이름을 수정해 주세요.');
@@ -129,7 +129,7 @@ const PlaylistSetting: React.FC<Props> = ({ video, onClose }) => {
         }
     };
 
-    // 플레이리스트를 삭제할 때 사용하는 함수 ✅deletePlaylist
+    // 플레이리스트를 삭제하는 함수 ✅deletePlaylist
     const handleDeletePlaylist = async (name: string) => {
         try {
             const response = await axios.delete(`/api/playlist/${name}`, {
@@ -147,16 +147,10 @@ const PlaylistSetting: React.FC<Props> = ({ video, onClose }) => {
 
     // 비디오를 플레이 리스트에 추가하는 함수 ✅addVideoToPlaylist
     const handleAddVideoToPlaylist = async (name: string) => {
-        if (video === null) {
-            return;
-        }
-        const videoData = {
-            videoId: video.videoId,
-            title: video.title,
-        };
+        const title = video.title;
 
         try {
-            const response = await axios.post(`/api/playlist/${name}`, videoData, {
+            const response = await axios.post(`/api/playlist/${name}`, title, {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-AUTH-TOKEN': token,
@@ -210,7 +204,7 @@ const PlaylistSetting: React.FC<Props> = ({ video, onClose }) => {
                     <InputField>
                         <CreatingPlaylistInput
                             type="text"
-                            placeholder="즐겨찾기 리스트명"
+                            placeholder="즐겨찾기 리스트 이름"
                             value={newPlaylist}
                             onChange={(e) => setNewPlaylist(e.target.value)}
                         />
@@ -302,16 +296,19 @@ const InputField = styled.div`
     position: relative;
 `;
 
-const CreatingPlaylistInput = styled.input``;
+const CreatingPlaylistInput = styled.input`
+    border: 1px solid #d7d7d7;
+    outline: none;
+`;
 
 const CreateButton = styled.button`
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
-    top: -2px;
+    top: 0px;
     right: 4px;
-    height: 30px;
+    height: 28px;
     padding: 0px 5px;
     border-radius: 5px;
     border-style: none;

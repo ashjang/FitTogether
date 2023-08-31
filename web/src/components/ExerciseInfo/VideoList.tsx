@@ -163,17 +163,19 @@ const ErrorMessage = styled.p`
 const VideoItem = styled.div`
     cursor: pointer;
     margin-bottom: 50px;
+    border-radius: 15px;
+    overflow: hidden;
 `;
 
 const VideoTitle = styled.h4`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: #fff;
+    color: #d7d7d7;
     text-align: left;
     text-shadow: 2px 2px 4px #000;
     padding: 5px 15px;
-    background-color: #888;
+    background-color: #444;
 `;
 
 const VideoThumbnail = styled.img`
