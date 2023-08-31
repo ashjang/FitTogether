@@ -55,14 +55,6 @@ function App() {
 
     const EventSource = EventSourcePolyfill;
     const token = sessionStorage.getItem('token');
-    const shouldRefresh = sessionStorage.getItem('shouldRefresh');
-
-    useEffect(() => {
-        if (token && shouldRefresh === 'true') {
-            window.location.reload();
-            sessionStorage.setItem('shouldRefresh', 'false');
-        }
-    }, [shouldRefresh]);
 
     // SSE 구독하기
     useEffect(() => {
@@ -150,7 +142,7 @@ function App() {
         return () => {
             clearTimeout(timer); // 컴포넌트가 언마운트되면 타이머를 해제
         };
-    }, []);
+    }, [notificationEnabled]);
 
     return (
         <QueryClientProvider client={queryClient}>
