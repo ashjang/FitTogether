@@ -1,5 +1,6 @@
 package com.fittogether.server.dm.mate.controller;
 
+import com.fittogether.server.dm.domain.dto.MateListDto;
 import com.fittogether.server.dm.domain.dto.RequestDto;
 import com.fittogether.server.dm.service.MateService;
 import lombok.RequiredArgsConstructor;
@@ -38,10 +39,10 @@ public class MateController {
     }
 
     @GetMapping("/matching/requests/lists")
-    public List<RequestDto> requestLists(
+    public List<MateListDto> requestLists(
             @RequestHeader("X-AUTH-TOKEN") String token
     ){
-        return RequestDto.fromList(mateService.requestLists(token));
+        return MateListDto.from(mateService.requestLists(token));
 
     }
 
