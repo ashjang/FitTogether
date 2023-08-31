@@ -32,6 +32,7 @@ const UserProfile: React.FC<{ selectedUser: User | null }> = (props) => {
             }
         } catch (error) {
             console.error(error);
+            alert('이미 요청한 사용자입니다.');
         }
     };
     return (
