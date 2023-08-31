@@ -19,34 +19,42 @@ interface Video {
     keyword: string;
 }
 
+interface VideoList {
+    values: Video[];
+    hasNext: boolean;
+    lastId: number;
+}
+
 const VideoList: React.FC = () => {
     const isLoggedIn = useRecoilValue(loggedInState);
     const category = useRecoilValue<string>(categoryRecoil);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
     const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
-    const [page, setPage] = useState<number>(1);
 
-    const fetchVideos = async (category: string, page: number = 1): Promise<Video[]> => {
-        // const response = await axios.get<Video>(`/api/video/${category}/${page}`);
-        const response = await axios.get<Video[]>(
-            `http://localhost:4000/video-${category}-${page}`
-        );
-        setPage(page + 1);
+    const fetchVideos = async (category: string, page: number = -1): Promise<VideoList> => {
+        const response = await axios.get<VideoList>(`/api/video/${category}?cursorId=${page}`);
         await new Promise((resolve) => setTimeout(resolve, 1500));
         return response.data;
     };
 
     const { data, isLoading, isError, fetchNextPage, hasNextPage } = useInfiniteQuery<
-        Video[],
+        VideoList,
         Error
-    >('videos', ({ pageParam = page }) => fetchVideos(category, pageParam), {
-        getNextPageParam: () => {
-            return page;
+    >('videos', ({ pageParam = -1 }) => fetchVideos(category, pageParam), {
+        getNextPageParam: (lastPage) => {
+            // 이전 페이지의 lastId를 반환하여 다음 페이지 요청 시 사용
+            if (lastPage.hasNext) {
+                // hasNext가 true인 경우에만 다음 페이지 요청
+                return lastPage.lastId;
+            } else {
+                // 더이상 불러올 데이터가 없는 경우 null 반환하여 페이지 요청 중단
+                return null;
+            }
         },
     });
 
-    const allVideos = data?.pages.flatMap((page) => page);
+    const videoList: Video[] = data?.pages.flatMap((page) => page.values) || [];
 
     // 비디오 팝업을 여는 함수
     const openVideo = useCallback((video: Video) => {
@@ -82,12 +90,12 @@ const VideoList: React.FC = () => {
                     <ErrorMessage>Error</ErrorMessage>
                 ) : (
                     <InfiniteScroll
-                        dataLength={allVideos?.length || 0}
+                        dataLength={videoList?.length || 0}
                         next={fetchNextPage}
                         hasMore={!!hasNextPage}
                         loader={<img src={Spinner} alt="Loading" />}
                     >
-                        {allVideos?.map((video) => (
+                        {videoList?.map((video) => (
                             <VideoItem
                                 key={video.videoId}
                                 onClick={() => {
