@@ -50,8 +50,6 @@ public class MateService {
         User receiver = userRepository.findByNickname(receiverNickname)
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
-        notificationService.createNotification(userVo.getNickname(), receiver.getUserId(),
-                NotificationType.MATCHING, "/matching/request");
 
 
         boolean existingRequest = requestRepository.existsBySenderNicknameAndReceiverNickname(
@@ -72,6 +70,8 @@ public class MateService {
 
         requestRepository.save(request);
 
+        notificationService.createNotification(userVo.getNickname(), receiver.getUserId(),
+                NotificationType.MATCHING, "/matching/request");
 
         return request;
     }
