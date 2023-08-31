@@ -1,15 +1,16 @@
 package com.fittogether.server.video.controller;
 
+import com.fittogether.server.video.domain.dto.CursorResult;
 import com.fittogether.server.video.domain.dto.VideoDto;
 import com.fittogether.server.video.service.CrawlingService;
 import com.fittogether.server.video.service.VideoService;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -21,13 +22,14 @@ public class VideoController {
   private final CrawlingService crawlingService;
 
   @GetMapping("/{keyword}")
-  public ResponseEntity<List<VideoDto>> readYoutubeVideo(
-      @PathVariable(name = "keyword") String keyword
-  ) {
-
-    return ResponseEntity.ok(videoService.getVideoByKeyword(keyword).stream()
-        .map(VideoDto::from)
-        .collect(Collectors.toList()));
+  public ResponseEntity<CursorResult<VideoDto>> getVideos(
+      @PathVariable(name = "keyword") String keyword,
+      @RequestParam(value = "cursorId") Long cursorId,
+      @RequestParam(value = "size", required = false, defaultValue = "5") int size) {
+    if(cursorId == -1){
+      cursorId = null;
+    }
+    return ResponseEntity.ok(videoService.get(keyword, cursorId, PageRequest.of(0, size)));
   }
 
   @GetMapping("/crawl/running")

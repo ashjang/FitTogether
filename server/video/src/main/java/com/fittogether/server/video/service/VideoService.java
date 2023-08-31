@@ -6,6 +6,8 @@ import com.fittogether.server.user.domain.model.User;
 import com.fittogether.server.user.domain.repository.UserRepository;
 import com.fittogether.server.user.exception.UserCustomException;
 import com.fittogether.server.user.exception.UserErrorCode;
+import com.fittogether.server.video.domain.dto.CursorResult;
+import com.fittogether.server.video.domain.dto.VideoDto;
 import com.fittogether.server.video.domain.model.Playlist;
 import com.fittogether.server.video.domain.model.PlaylistVideo;
 import com.fittogether.server.video.domain.model.Video;
@@ -15,7 +17,9 @@ import com.fittogether.server.video.domain.repository.VideoRepository;
 import com.fittogether.server.video.exception.VideoCustomException;
 import com.fittogether.server.video.exception.VideoErrorCode;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +33,31 @@ public class VideoService {
   private final VideoRepository videoRepository;
   private final JwtProvider provider;
 
+  public CursorResult<VideoDto> get(String keyword, Long cursorId, Pageable page) {
+    final List<Video> videos = getVideos(keyword, cursorId, page);
+    final Long lastIdOfList = videos.isEmpty() ? null : videos.get(videos.size() - 1).getId();
+    Long lastId = 0L;
+    if(!videos.isEmpty()){
+      lastId = videos.get(videos.size() - 1).getId();
+    }
+
+    List<VideoDto> videosDto = videos.stream().map(VideoDto::from).collect(Collectors.toList());
+    return new CursorResult<>(videosDto, hasNext(lastIdOfList), lastId);
+  }
+
+  private List<Video> getVideos(String keyword, Long cursorId, Pageable page) {
+    return cursorId == null ?
+        this.videoRepository.findAllByKeywordOrderByIdDesc(keyword, page) :
+        this.videoRepository.findByKeywordAndIdLessThanOrderByIdDesc(keyword, cursorId, page);
+  }
+
+  private Boolean hasNext(Long id) {
+    if (id == null) {
+      return false;
+    }
+    return this.videoRepository.existsByIdLessThan(id);
+  }
+
   public List<PlaylistVideo> getVideoInPlaylist(String token, String targetName) {
     UserVo userVo = provider.getUserVo(token);
 
@@ -39,14 +68,6 @@ public class VideoService {
         targetName).orElseThrow(() -> new VideoCustomException(VideoErrorCode.NOT_FOUND_PLAYLIST));
 
     return playlistVideoRepository.findByPlaylistId(playlist.getPlaylistId());
-  }
-
-  public List<Video> getVideoByKeyword(String keyword){
-    if(videoRepository.findByKeyword(keyword).isEmpty()){
-      throw new VideoCustomException(VideoErrorCode.NOT_FOUND_KEYWORD);
-    }
-
-    return videoRepository.findByKeyword(keyword);
   }
 
   @Transactional
