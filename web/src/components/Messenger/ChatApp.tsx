@@ -1,149 +1,225 @@
-// ChatApp.tsx
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
+import axios from 'axios';
 import ChatList from './ChatList';
 import ChatWindow from './ChatWindow';
-
-import { stompClient } from '../utils/websoket';
+import client from '../utils/websoket';
 
 interface ChatRoom {
-    id: string;
-    name: string;
-    profileImage: string | null;
+    chatRoomId: number;
+    senderId: null;
+    receiverId: null;
+    senderNickname: string;
+    receiverNickname: string;
+    chatRoomDate: string;
 }
 interface UserProfile {
     username: string;
     profileImage: string | null;
 }
-interface ResponseData {
-    usersInfo: UserProfile[];
-}
 interface ChatMessage {
-    roomId: string;
-    message: string;
-    sentAt: Date;
+    chatRoomId: number;
+    contents: string;
+    sendDate: Date;
 }
 
 const ChatApp: React.FC = () => {
-    const [selectedChatRoom, setSelectedChatRoom] = useState<string | null>(null);
+    const [selectedChatRoom, setSelectedChatRoom] = useState<number | null>(null);
     const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
     const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
     const [inputMessage, setInputMessage] = useState('');
     const [username, setUsername] = useState('');
-    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-    // const [isLoading, setIsLoading] = useState(true);
+    const [userProfile] = useState<UserProfile | null>(null);
+    const [mateModalOpen, setMateModalOpen] = useState(false);
+    const params = useParams();
 
     useEffect(() => {
-        setUsername('윤몽진');
+        setMateModalOpen(false);
 
-        const connectWebSocket = async () => {
-            try {
-                await stompClient.connect({}, (frame) => {
-                    console.log('WebSocket connected');
-                    console.log('Connected frame:', frame);
-                });
+        getChatRoomList();
 
-                stompClient.subscribe('/pub/dm/messages', (message) => {
-                    console.log('Received  message:', message);
-                });
+        // 새로고침 시에도 서버에서 메시지 가져오기
+        if (selectedChatRoom) {
+            getChatMessages(selectedChatRoom);
+        }
+    }, [params]);
 
-                const response = await fetch('/api/pub/dm/message');
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+    const getChatMessages = (chatRoomId: number) => {
+        const token: string | null = sessionStorage.getItem('token');
+
+        axios
+            .get(`/api/dm?chatRoomId=${chatRoomId}`, {
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
+            })
+            .then((response) => {
+                if (response.status === 200) {
+                    const chatMessageList = response.data as unknown as ChatMessage[];
+                    console.log('메시지 기록 불러오기:', chatMessageList);
+                    // setChatMessages(chatMessageList);
+                    // 기존 메시지 목록에 덧붙이기
+                    setChatMessages((prevMessages) => {
+                        const updatedMessages = prevMessages.filter(
+                            (message) => message.chatRoomId !== chatRoomId
+                        );
+                        return [...updatedMessages, ...chatMessageList];
+                    });
+                } else {
+                    console.error('API 요청이 실패하였습니다.');
                 }
-                const data = (await response.json()) as ResponseData;
+            })
+            .catch((error) => {
+                console.error('메시지 조회 에러:', error);
+            });
+    };
 
-                const usersInfo: UserProfile[] = data.usersInfo;
-                const chatRoomData = usersInfo.map((user) => ({
-                    id: user.username,
-                    name: user.username,
-                    profileImage: user.profileImage,
-                }));
+    const getChatRoomList = () => {
+        const token: string | null = sessionStorage.getItem('token');
 
-                setChatRooms(chatRoomData);
+        if (token) {
+            axios
+                .get('/api/dm/lists', {
+                    headers: {
+                        'X-AUTH-TOKEN': token,
+                    },
+                })
+                .then((response) => {
+                    if (response.status === 200) {
+                        const chatRoomList = response.data as unknown as ChatRoom[];
+                        console.log('채팅방 리스트 불러오기: ', chatRoomList);
+                        setChatRooms(() => [...chatRoomList]);
 
-                const defaultUserProfile = usersInfo[0];
-                if (defaultUserProfile) {
-                    setUserProfile(defaultUserProfile);
-                    setUsername(defaultUserProfile.username);
-                }
+                        // 각 채팅방에 대해 메시지 가져오기
+                        chatRoomList.forEach((room) => {
+                            getChatMessages(room.chatRoomId);
+                        });
 
-                // setIsLoading(false);
-            } catch (error) {
-                console.error('Error connecting WebSocket or fetching chat rooms:', error);
+                        console.log('params', params);
+                        const paramsNickname: string | undefined = params.nickname
+                            ? params.nickname
+                            : '';
+
+                        if (
+                            chatRoomList.filter((room) => room.receiverNickname === paramsNickname)
+                                .length === 0 &&
+                            paramsNickname !== ''
+                        ) {
+                            createChatRoom();
+                        }
+                    } else {
+                        console.error('API 요청이 실패하였습니다.');
+                        alert('채팅 리스트를 가져오는데 실패했습니다.');
+                    }
+                })
+                .catch((error) => {
+                    console.error('채팅방 리스트 조회 에러:', error);
+                    alert('채팅 리스트를 가져오는데 실패했습니다.');
+                });
+        }
+    };
+
+    const createChatRoom = () => {
+        const token: string | null = sessionStorage.getItem('token');
+        const receiverNickname: string = params.nickname ? params.nickname : '';
+
+        axios
+            .post(`/api/dm/${receiverNickname}`, null, {
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
+            })
+            .then((response) => {
+                const chatRoomId = (response.data as ResponseData).chatRoomId;
+                setSelectedChatRoom(chatRoomId);
+                console.log('채팅방 생성 완료:', response.data);
+                console.log('채팅방 ID:', chatRoomId);
+                console.log('token넘버:', token);
+                console.log('받는사람:', receiverNickname);
+
+                getChatRoomList();
+            })
+            .catch((error) => {
+                console.error('채팅방 생성 에러:', error);
+            });
+    };
+
+    useEffect(() => {
+        if (!selectedChatRoom) return;
+
+        const stompSubscription = client.subscribe(
+            `/sub/dm/room/${selectedChatRoom}`,
+            (message) => {
+                const receivedMessage = JSON.parse(message.body) as ChatMessage;
+                setChatMessages((prevMessages) => [...prevMessages, receivedMessage]);
+                console.log('receivedMessage', receivedMessage);
             }
-        };
-
-        connectWebSocket().catch((error) => {
-            console.error('An error occurred during WebSocket connection:', error);
-        });
+        );
 
         return () => {
-            if (stompClient.connected) {
-                stompClient.disconnect(() => {
-                    console.log('WebSocket disconnected');
-                });
-            }
+            stompSubscription.unsubscribe();
         };
-    }, [selectedChatRoom, username]);
+    }, [selectedChatRoom]);
 
-    const handleChatRoomClick = (chatRoomId: string) => {
+    const handleChatRoomClick = (chatRoomId: number) => {
+        console.log('handleChatRoomCliek', chatRoomId);
+        if (chatRoomId) {
+            client.unsubscribe(`/sub/dm/room/${chatRoomId}`);
+        }
+
         setSelectedChatRoom(chatRoomId);
         setInputMessage('');
+        console.log('선택한 채팅방으로 이동:', chatRoomId);
     };
 
     const handleSendMessage = () => {
-        if (inputMessage.trim() === '' || username.trim() === '') return;
+        console.log('handleSendMessage-inputMessage', inputMessage);
+        console.log('handleSendMessage-username', username);
+        console.log('handleSendMessage-selectedChatRoom', selectedChatRoom);
+        if (inputMessage.trim() === '' || !selectedChatRoom) return;
 
-        const newMessage = `${username}: ${inputMessage}`;
-        const currentTime = new Date();
-
-        // 메시지 객체 생성
-        const messageObject = {
-            roomId: selectedChatRoom!,
-            message: newMessage,
-            sentAt: currentTime,
+        const newMessage = {
+            chatRoomId: selectedChatRoom,
+            contents: inputMessage,
+            token: sessionStorage.getItem('token'),
         };
-
-        // 로컬 상태 업데이트
-        setChatMessages((prevMessages) => [...prevMessages, messageObject]);
-
-        // stompClient를 사용하여 메시지 서버에 전송
-        stompClient.send('/pub/dm/message', {}, JSON.stringify(messageObject));
+        console.log('handleSendMessage02');
+        client.publish({ destination: '/pub/dm/message', body: JSON.stringify(newMessage) });
 
         setInputMessage('');
     };
 
     return (
         <ChatAppWrapper>
-            {/* <ChatListBox>
-                {isLoading ? (
-                    <p>Loading...</p>
-                ) : chatRooms.length > 0 ? (
-                    <ChatList chatRooms={chatRooms} onChatRoomClick={handleChatRoomClick} />
-                ) : (
-                    <p>No chat rooms available.</p>
-                )}
-            </ChatListBox> */}
             <ChatListBox>
-                <ChatList chatRooms={chatRooms} onChatRoomClick={handleChatRoomClick} />
+                <ChatList
+                    chatRooms={chatRooms}
+                    onChatRoomClick={handleChatRoomClick}
+                    mateModalOpen={mateModalOpen}
+                    setMateModalOpen={setMateModalOpen}
+                    createChatRoom={createChatRoom}
+                />
             </ChatListBox>
 
-            <ChatWindow
-                chatRoomId={selectedChatRoom}
-                chatMessages={chatMessages.filter((message) => message.roomId === selectedChatRoom)}
-                onSendMessage={handleSendMessage}
-                inputMessage={inputMessage}
-                onInputChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setInputMessage(e.target.value)
-                }
-                username={username}
-                onUsernameChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setUsername(e.target.value)
-                }
-                chatRoomName={chatRooms.find((room) => room.id === selectedChatRoom)?.name}
-                userProfile={userProfile}
-            />
+            <ChatwindowBox>
+                <ChatWindow
+                    chatRoomId={selectedChatRoom}
+                    chatMessages={chatMessages.filter(
+                        (message) => message.chatRoomId === selectedChatRoom
+                    )}
+                    onSendMessage={handleSendMessage}
+                    inputMessage={inputMessage}
+                    onInputChange={(e) => setInputMessage(e.target.value)}
+                    username={username}
+                    onUsernameChange={(e) => setUsername(e.target.value)}
+                    chatRoomName={
+                        chatRooms.find((room) => room.chatRoomId === selectedChatRoom)
+                            ?.receiverNickname
+                    }
+                    userProfile={userProfile}
+                />
+            </ChatwindowBox>
         </ChatAppWrapper>
     );
 };
@@ -157,12 +233,20 @@ const ChatAppWrapper = styled.div`
 `;
 
 const ChatListBox = styled.div`
-    // position: absolute;
-    // top: 150px;
-    // left: 50px;
-    // width: 320px;
-    // height: 480px;
     overflow-y: auto;
-    // box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 `;
+const ChatwindowBox = styled.div`
+    // position: absolute;
+    // top: 0;
+    // left: 390px;
+    // width: 1000px;
+    // height: 600px;
+    // padding: 20px;
+    // width: 100%;
+    // height: 100%;
+    // box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    // background-color: #d9d9d9;
+    overflow-y: auto;
+`;
+
 export default ChatApp;

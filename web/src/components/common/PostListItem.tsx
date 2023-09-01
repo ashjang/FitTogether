@@ -1,11 +1,19 @@
-import { Link } from 'react-router-dom';
+import React from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { useRecoilValue } from 'recoil';
-import { signInInfo } from '../../recoil/AuthState/atoms';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp } from '@fortawesome/free-regular-svg-icons';
 import { faEye } from '@fortawesome/free-regular-svg-icons';
 import imgSrc from '../../assets/default-user-image.png';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import {
+    postDataRecoil,
+    postContentsDataRecoil,
+    conmentsDataRecoil,
+    isLikedState,
+} from '../../recoil/posts/atoms';
+import { loggedInState } from '../../recoil/AuthState/atoms';
 
 interface Props {
     postId: number;
@@ -34,24 +42,68 @@ const PostListItem: React.FC<Props> = ({
     category,
     hashtags,
     title,
-    // userImage,
+    userImage,
     userNickname,
     likeCount,
     viewCount,
-    accessLevel,
 }) => {
-    const myInfo = useRecoilValue(signInInfo);
+    const token = sessionStorage.getItem('token');
+    const navigate = useNavigate();
+    const setPostData = useSetRecoilState(postDataRecoil);
+    const [postContentsData, setPostContentsData] = useRecoilState(postContentsDataRecoil);
+    const [commentsData, setCommentsData] = useRecoilState(conmentsDataRecoil);
+    const setLikeState = useSetRecoilState(isLikedState);
+    const isLoggedIn = useRecoilValue(loggedInState);
+
+    const getPostData = async () => {
+        try {
+            console.log(token);
+            const response = await axios.get(`/api/posts/${postId}`, {
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                },
+            });
+
+            console.log('response.data: ', response.data);
+            setPostData(response.data);
+
+            setPostContentsData({
+                ...postContentsData,
+                userImage: response.data.userImage,
+                userNickname: response.data.userNickname,
+                createdAt: response.data.createdAt,
+                category: response.data.category,
+                hashtagList: response.data.hashtagList,
+                title: response.data.title,
+                description: response.data.description,
+                likeCount: response.data.likeCount,
+                replyCount: response.data.replyCount,
+                viewCount: response.data.viewCount,
+                like: response.data.like,
+                accessLevel: response.data.accessLevel,
+            });
+            setCommentsData({
+                ...commentsData,
+                replyList: response.data.replyList,
+                childReplyList: response.data.childReplyList,
+            });
+            setLikeState(response.data.like);
+
+            if (response.data.accessLevel === false && isLoggedIn === false) {
+                alert('메이트만 볼 수 있는 게시글입니다.');
+                return;
+            }
+            navigate(`/posts/${postId}`);
+        } catch (error) {
+            console.error(error);
+            navigate(`/posts`);
+            alert('메이트만 볼 수 있는 게시글입니다.');
+        }
+    };
 
     return (
         <PostListItemComponent>
-            <ShowPost
-                to={!accessLevel && myInfo.nickname !== userNickname ? '#' : `/posts/${postId}`}
-                onClick={() => {
-                    if (!accessLevel && myInfo.nickname !== userNickname) {
-                        alert('메이트만 볼 수 있는 게시글입니다.');
-                    }
-                }}
-            >
+            <ShowPost onClick={getPostData}>
                 <PostInfo>
                     <CategoryAndHashtag>
                         <PostCategory>{getCategoryName(category)}</PostCategory>
@@ -73,8 +125,7 @@ const PostListItem: React.FC<Props> = ({
                 </PostInfo>
                 <PosterInfo>
                     <ProfileImageContainer>
-                        {/* <ProfileImage src={userImage} /> */}
-                        <ProfileImage src={imgSrc} />
+                        <ProfileImage src={userImage ? userImage : imgSrc} />
                     </ProfileImageContainer>
                     <PosterNickname>{userNickname}</PosterNickname>
                 </PosterInfo>
@@ -90,7 +141,7 @@ const PostListItemComponent = styled.div`
     border-bottom: 1px solid #d7d7d7;
 `;
 
-const ShowPost = styled(Link)`
+const ShowPost = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;

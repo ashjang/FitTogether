@@ -1,4 +1,5 @@
-// ChatList.tsx
+// import axios from 'axios';
+
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 
@@ -6,27 +7,56 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGroup } from '@fortawesome/free-solid-svg-icons';
 
 import MateList from '../common/MateList';
+import default_user_image from '../../assets/default-user-image.png';
 
 interface ChatRoom {
-    id: string;
-    name: string;
-    profileImage: string | null;
+    chatRoomId: number;
+    senderId: null;
+    receiverId: null;
+    senderNickname: string;
+    receiverNickname: string;
+    chatRoomDate: string;
 }
 
 interface Props {
     chatRooms: ChatRoom[];
-    onChatRoomClick: (chatRoomId: string) => void;
+    onChatRoomClick: (chatRoomId: number) => void;
+    mateModalOpen: boolean;
+    setMateModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    createChatRoom: () => void;
 }
 
-const ChatList: React.FC<Props> = ({ chatRooms, onChatRoomClick }) => {
-    const [isMateListOpen, setIsMateListOpen] = useState(false);
+const ChatList: React.FC<Props> = ({
+    chatRooms,
+    onChatRoomClick,
+    mateModalOpen,
+    setMateModalOpen,
+    createChatRoom,
+}) => {
+    // console.log('Received chatRooms:', chatRooms);
 
-    // 클릭시 운동메이트 리스트 모달창
-    const handleShowMateListClick = () => {
-        setIsMateListOpen(true);
+    // const [isMateListOpen, setIsMateListOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleShowMateListClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation(); // 이벤트 버블링 x
+        console.log('운동메이트 리스트 버튼 클릭 확인', isLoading);
+
+        if (!isLoading) {
+            // setIsLoading(true);
+            setMateModalOpen(true);
+        }
     };
+
     const handleCloseMateList = () => {
-        setIsMateListOpen(false);
+        console.log('====================');
+        setMateModalOpen(false);
+        setIsLoading(false);
+    };
+
+    const handleCreateChatRoom = (chatRoomId: number) => {
+        console.log('chatRoolId 리스트 클릭하기:', chatRoomId);
+        onChatRoomClick(chatRoomId);
     };
 
     return (
@@ -38,19 +68,30 @@ const ChatList: React.FC<Props> = ({ chatRooms, onChatRoomClick }) => {
                     <span className="blind">운동 메이트 리스트 버튼</span>
                     <FontAwesomeIcon icon={faUserGroup} />
                 </MateListButton>
-                {isMateListOpen && <MateList isOpen={true} onClose={handleCloseMateList} />}
+                {mateModalOpen && (
+                    <MateList
+                        isOpen={mateModalOpen}
+                        onClose={handleCloseMateList}
+                        createChatRoom={createChatRoom}
+                    />
+                )}
             </TopArea>
 
             <BottomArea>
                 {chatRooms.length > 0 ? (
                     chatRooms.map((chatRoom) => (
-                        <ListItem key={chatRoom.id} onClick={() => onChatRoomClick(chatRoom.id)}>
-                            <ProfileImageWrapper>
-                                {chatRoom.profileImage && (
-                                    <ProfileImage src={chatRoom.profileImage} alt={chatRoom.name} />
-                                )}
-                            </ProfileImageWrapper>
-                            <UserName>{chatRoom.name}</UserName>
+                        <ListItem
+                            key={chatRoom.chatRoomId}
+                            onClick={() => handleCreateChatRoom(chatRoom.chatRoomId)}
+                        >
+                            <ChatListItem>
+                                <img
+                                    src={default_user_image}
+                                    alt="프로필 이미지"
+                                    style={{ width: '40px', height: '40px', borderRadius: '50%' }}
+                                />
+                                <ChatListItemName>{chatRoom.receiverNickname}</ChatListItemName>
+                            </ChatListItem>
                         </ListItem>
                     ))
                 ) : (
@@ -64,7 +105,7 @@ const ChatList: React.FC<Props> = ({ chatRooms, onChatRoomClick }) => {
         </ChatListBox>
     );
 };
-// emotion css style
+
 const ChatListBox = styled.div`
     position: absolute;
     top: 0px;
@@ -73,8 +114,8 @@ const ChatListBox = styled.div`
     height: 600px;
     overflow-y: auto;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    // z-index: 10;
 `;
+
 const TopArea = styled.div`
     position: relative;
     display: flex;
@@ -82,7 +123,9 @@ const TopArea = styled.div`
     justify-content: center;
     height: 120px;
     background-color: #ffd4d4;
+    z-index: 1;
 `;
+
 const MateListButton = styled.button`
     display: inline-block;
     margin-left: 20px;
@@ -90,20 +133,20 @@ const MateListButton = styled.button`
     border: none;
     background: none;
 
-    & :hover {
+    &:hover {
         color: #7f5539;
         transition: all 0.3s;
     }
 `;
+
 const MateListTitle = styled.h2``;
 
 const BottomArea = styled.ul`
     position: relative;
     top: 0px;
     width: 100%;
-    height: 100%;
-    background-color: lightblue;
 `;
+
 const ListItem = styled.li`
     cursor: pointer;
     display: flex;
@@ -113,29 +156,26 @@ const ListItem = styled.li`
     height: 80px;
     padding-left: 30px;
     border-bottom: 1px solid #fff;
-`;
-const UserName = styled.li`
-    font-size: 18px;
-    font-weight: 700;
-`;
 
-const ProfileImageWrapper = styled.div`
-    margin-right: 10px;
+    &:hover {
+        background-color: lightblue;
+    }
 `;
-
-const ProfileImage = styled.img`
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+const ChatListItem = styled.div`
+    display: flex;
+    align-items: center;
 `;
-
+const ChatListItemName = styled.div`
+    margin-left: 15px;
+`;
 const NoneChat = styled.p`
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 170px;
     transform: translate(-50%, -50%);
     font-size: 20px;
     font-weight: 500;
     text-align: center;
 `;
+
 export default ChatList;
