@@ -1,35 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 // import InfiniteScroll from 'react-infinite-scroll-component';
-import { FaStar } from 'react-icons/fa';
+import { FaTrash } from 'react-icons/fa';
 import axios from 'axios';
 
-const MyVideoList: React.FC = () => {
-    const [showPopup, setShowPopup] = useState(false);
-    const [isStarClicked, setIsStarClicked] = useState(false);
-    const [userData, setUserData] = useState([]);
-    const [videoTitles, setVideoTitles] = useState<string[]>([]);
+interface Videos {
+    playlistName: string; // 필요없음
+    videoTitle: string;
+}
 
+const MyVideoList: React.FC = () => {
     const token = sessionStorage.getItem('token');
 
+    const [showPopup, setShowPopup] = useState(false);
+    const [videos, setVideos] = useState<Videos[] | null>(null);
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const playlistName = urlParams.get('name');
 
     useEffect(() => {
-        if (token) {
-            getUserData(token);
-        }
+        getVideos();
     }, []);
-    const getUserData = async (token) => {
+
+    const getVideos = async () => {
         try {
             const response = await axios.get(`/api/playlist/${playlistName}`, {
                 headers: {
                     'X-AUTH-TOKEN': token,
                 },
             });
-            setUserData(response.data); // 응답값을 userData 상태에 저장
-            setVideoTitles(response.data.map((item) => item.videoTitle));
+            setVideos(response.data); // 응답값을 userData 상태에 저장
             console.log(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -37,42 +37,39 @@ const MyVideoList: React.FC = () => {
         }
     };
 
-    const handleStarClick = () => {
-        setIsStarClicked((prevIsStarClicked) => !prevIsStarClicked);
-        if (!isStarClicked) {
-            setShowPopup(true);
-            setTimeout(() => {
-                setShowPopup(false);
-            }, 1000); // 1초 후 알림 팝업이 사라짐
-        }
+    // 플레이리스트 내 동영상을 삭제하는 함수
+    // ❗ 삭제 요청을 포함한 비동기 함수로 변경해야함
+    const handleVideoDelete = () => {
+        setShowPopup(true);
+        setTimeout(() => {
+            setShowPopup(false);
+        }, 1000);
     };
 
     return (
         <MyVideoListContainer>
-            <VideoListContent>
-                <VideoTitleArea>
-                    <VideoTitle>{videoTitles[0]}</VideoTitle>
-                    <FaStar
-                        onClick={handleStarClick}
-                        style={{
-                            color: isStarClicked ? '#C4C4C4' : '#FF9A62',
-                        }}
-                    />
-                </VideoTitleArea>
-                <img src="http://placehold.it/500x300" alt="예시" />
-                {showPopup && <DeletePopup>즐겨찾기에서 해제되었습니다.</DeletePopup>}
-            </VideoListContent>
+            {videos?.map((video) => {
+                return (
+                    <VideoListItem>
+                        <VideoTitleArea>
+                            <VideoTitle>{video.videoTitle}</VideoTitle>
+                            <FaTrash onClick={() => handleVideoDelete()} />
+                        </VideoTitleArea>
+                        <img src="http://placehold.it/500x300" alt="예시" />
+                    </VideoListItem>
+                );
+            })}
+            {showPopup && <DeletePopup>즐겨찾기에서 해제되었습니다.</DeletePopup>}
         </MyVideoListContainer>
     );
 };
 
 const MyVideoListContainer = styled.div`
     position: relative;
-    margin-bottom: 100px;
 `;
 
-const VideoListContent = styled.div`
-    margin: 15px;
+const VideoListItem = styled.div`
+    margin-bottom: 50px;
 `;
 
 const VideoTitleArea = styled.div`
@@ -97,10 +94,9 @@ const VideoTitle = styled.div`
 `;
 
 const DeletePopup = styled.div`
-    position: absolute;
-    bottom: 0;
-    right: 50px;
-    transform: translate(50%, 50%);
+    position: fixed;
+    top: 50%;
+    left: 44%;
     padding: 10px 20px;
     background-color: white;
     border: 1px solid black;

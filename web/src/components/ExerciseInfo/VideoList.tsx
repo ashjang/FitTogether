@@ -1,214 +1,148 @@
-/** @jsxImportSource @emotion/react */
-// import { css } from '@emotion/react';
-import styled from '@emotion/styled';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
-
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import InfiniteScroll from 'react-infinite-scroll-component';
-
+import axios from 'axios';
+import styled from '@emotion/styled';
 import { useRecoilValue } from 'recoil';
+import { categoryRecoil } from '../../recoil/video/atoms';
 import { loggedInState } from '../../recoil/AuthState/atoms';
-
-import { fetchVideos, resetTotalResults, VideosResponse, Video } from './YoutubeApi';
 import VideoPopup from './VideoPopup';
-import AddToBookmark from './AddToBookmark';
+import PlaylistSetting from './PlaylistSetting';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFolderPlus } from '@fortawesome/free-solid-svg-icons';
+import Spinner from '../../assets/Spinner.svg';
 
-import loadingGif from '../../assets/ball-triangle.svg';
+interface Video {
+    videoId: string;
+    title: string;
+    thumbnail: string;
+    keyword: string;
+}
+
+interface VideoList {
+    values: Video[];
+    hasNext: boolean;
+    lastId: number;
+}
 
 const VideoList: React.FC = () => {
-    const [category, setCategory] = useState<string>('러닝');
-    const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
-    const [favoriteStatus, setFavoriteStatus] = useState<Record<string, boolean>>({});
-
-    const [showModal, setShowModal] = useState(false);
-    const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
-
     const isLoggedIn = useRecoilValue(loggedInState);
+    const category = useRecoilValue<string>(categoryRecoil);
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [clickedVideo, setClidkedVideo] = useState<Video | null>(null);
+    const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
 
-    useEffect(() => {
-        resetTotalResults();
-    }, [category]);
+    const fetchVideos = async (category: string, lastId: number): Promise<VideoList> => {
+        const response = await axios.get<VideoList>(
+            `/api/video/${category}?cursorId=${lastId}&size=5`
+        );
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        console.log(response.data);
+        return response.data;
+    };
 
-    const fetchVideosWrapped = useCallback(
-        async ({ pageParam = null }) => {
-            const response = await fetchVideos(pageParam, category);
-
-            await new Promise((resolve) => setTimeout(resolve, 800));
-            return response;
-        },
-        [category]
-    );
-
-    const { data, isError, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery<
-        VideosResponse,
+    const { data, isLoading, isError, fetchNextPage, hasNextPage } = useInfiniteQuery<
+        VideoList,
         Error
-    >(['videos', category], fetchVideosWrapped, {
-        getNextPageParam: (lastPage) => lastPage.nextPageToken || undefined,
-        keepPreviousData: true,
-        enabled: category !== '',
+    >(['videos', category], ({ pageParam = -1 }) => fetchVideos(category, pageParam), {
+        getNextPageParam: (lastPage) => {
+            // 이전 페이지의 lastId를 반환하여 다음 페이지 요청 시 사용
+            if (lastPage.hasNext) {
+                // hasNext가 true인 경우에만 다음 페이지 요청
+                return lastPage.lastId;
+            } else {
+                // 더이상 불러올 데이터가 없는 경우 null 반환하여 페이지 요청 중단
+                return null;
+            }
+        },
     });
 
-    const handleFetchMore = useCallback(async () => {
-        if (hasNextPage) {
-            try {
-                await fetchNextPage();
-            } catch (error) {
-                console.error('Error fetching next page:', error);
-            }
-        }
-    }, [hasNextPage, fetchNextPage]);
+    let videoList = data?.pages.flatMap((page) => page.values);
 
-    const handleTabClick = useCallback((newCategory: string) => {
-        setCategory('');
-        resetTotalResults();
-        setCategory(newCategory);
-    }, []);
-
-    // 팝업창
+    // 비디오 팝업을 여는 함수
     const openVideo = useCallback((video: Video) => {
-        setSelectedVideo(video);
+        setClidkedVideo(video);
     }, []);
 
+    // 비디오 팝업을 닫는 함수
     const closeVideo = useCallback(() => {
-        setSelectedVideo(null);
+        setClidkedVideo(null);
     }, []);
 
-    //즐겨찾기
-    //즐겨찾기 추가 별모양 토클 버튼
-    const toggleFavoriteStatus = useCallback(
+    // 동영상을 저장하는 함수
+    const handleIconClick = useCallback(
         (video: Video) => {
             if (!isLoggedIn) {
                 alert('로그인 후 이용해주세요.');
                 return;
             }
-
-            setFavoriteStatus((prevStatus) => ({
-                ...prevStatus,
-                [video.id.videoId]: !prevStatus[video.id.videoId],
-            }));
-
-            setCurrentVideo(video);
+            setSelectedVideo(video);
             setShowModal(true);
         },
-        // []
         [isLoggedIn]
     );
 
     return (
-        <VideoListInn>
-            <PageTitle>운동 정보</PageTitle>
-            <BtnTab>
-                <button
-                    className={`category01 ${category === '러닝' ? 'active' : ''}`}
-                    onClick={() => handleTabClick('러닝')}
-                >
-                    러닝
-                </button>
-                <button
-                    className={`category02 ${category === '등산' ? 'active' : ''}`}
-                    onClick={() => handleTabClick('등산')}
-                >
-                    등산
-                </button>
-                <button
-                    className={`category03 ${category === '헬스' ? 'active' : ''}`}
-                    onClick={() => handleTabClick('헬스')}
-                >
-                    헬스
-                </button>
-            </BtnTab>
-            <VideoSection>
-                <VideoGridContainer>
-                    {isLoading ? (
-                        <Loading>
-                            <span className="blind">로딩중입니다...</span>
-                        </Loading>
-                    ) : isError ? (
-                        <ErrorMessage>
-                            일일 요청 횟수를 초과하여 영상을 불러올 수 없습니다.
-                        </ErrorMessage>
-                    ) : (
-                        <InfiniteScroll
-                            dataLength={
-                                data?.pages.reduce((acc, page) => acc + page.items.length, 0) || 0
-                            }
-                            next={handleFetchMore}
-                            hasMore={!!hasNextPage}
-                            // loader={<h4>Loading...</h4>}
-                            loader={<img src={loadingGif} alt="Loading" />}
-                        >
-                            {data?.pages.map((page, i) => (
-                                <React.Fragment key={i}>
-                                    {page.items.map((video: Video) => (
-                                        <VideoThumb
-                                            key={video.id.videoId}
-                                            onClick={() => {
-                                                openVideo(video);
-                                            }}
-                                        >
-                                            <h4>
-                                                {video.snippet.title.length > 25
-                                                    ? `${video.snippet.title.substring(0, 25)}...`
-                                                    : video.snippet.title}
-                                                <FontAwesomeIcon
-                                                    icon={faStar}
-                                                    onClick={(event) => {
-                                                        event.stopPropagation();
-                                                        toggleFavoriteStatus(video);
-                                                    }}
-                                                    className={`star-icon ${
-                                                        favoriteStatus[video.id.videoId]
-                                                            ? 'opened'
-                                                            : ''
-                                                    }`}
-                                                />
-                                            </h4>
-                                            <img
-                                                src={
-                                                    video.snippet.thumbnails.high?.url ||
-                                                    video.snippet.thumbnails.default.url
-                                                }
-                                                alt={video.snippet.title}
-                                            />
-                                        </VideoThumb>
-                                    ))}
-                                </React.Fragment>
-                            ))}
-                        </InfiniteScroll>
-                    )}
-                </VideoGridContainer>
-
-                {selectedVideo && (
-                    <VideoPopup
-                        video={{ id: selectedVideo.id.videoId, title: selectedVideo.snippet.title }}
-                        onClose={closeVideo}
-                    />
+        <VideoListComponent>
+            <VideoContainer>
+                {isLoading ? (
+                    <Loading>
+                        <span className="blind">로딩 중입니다.</span>
+                    </Loading>
+                ) : isError ? (
+                    <ErrorMessage>Error</ErrorMessage>
+                ) : (
+                    <InfiniteScroll
+                        dataLength={videoList?.length || 0}
+                        next={fetchNextPage}
+                        hasMore={!!hasNextPage}
+                        loader={<img src={Spinner} alt="Loading" />}
+                    >
+                        {videoList?.map((video) => (
+                            <VideoItem
+                                key={video.videoId}
+                                onClick={() => {
+                                    openVideo(video);
+                                }}
+                            >
+                                <VideoTitle>
+                                    {video.title.length > 50
+                                        ? `${video.title.substring(0, 50)}...`
+                                        : video.title}
+                                    <FaFolderPlus
+                                        icon={faFolderPlus}
+                                        onClick={(event) => {
+                                            event.stopPropagation();
+                                            handleIconClick(video);
+                                        }}
+                                    />
+                                </VideoTitle>
+                                <VideoThumbnail src={video.thumbnail} alt={video.title} />
+                            </VideoItem>
+                        ))}
+                    </InfiniteScroll>
                 )}
-                {showModal && currentVideo && (
-                    <AddToBookmark video={currentVideo} onClose={() => setShowModal(false)} />
-                )}
-            </VideoSection>
-        </VideoListInn>
+            </VideoContainer>
+            {clickedVideo && (
+                <VideoPopup
+                    video={{ id: clickedVideo.videoId, title: clickedVideo.title }}
+                    onClose={closeVideo}
+                />
+            )}
+            {showModal && selectedVideo && (
+                <PlaylistSetting video={selectedVideo} onClose={() => setShowModal(false)} />
+            )}
+        </VideoListComponent>
     );
 };
 
-const VideoListInn = styled.div`
+const VideoListComponent = styled.div`
     position: relative;
-    max-width: 1440px;
-    min-height: 100vh;
-    height: 100%;
-    margin: 120px auto 0;
     padding: 20px 60px;
     box-sizing: border-box;
-    // background-color: #f8f8f8;
-`;
-const VideoSection = styled.section`
-    position: relative;
 `;
 
-const VideoGridContainer = styled.div`
+const VideoContainer = styled.div`
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     gap: 20px;
@@ -216,85 +150,43 @@ const VideoGridContainer = styled.div`
     max-width: 800px;
     text-align: center;
 `;
-const PageTitle = styled.h2`
-    position: relative;
-
-    &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: -10px;
-        width: 100%;
-        height: 1px;
-        color: #000;
-        background-color: #000;
-    }
-`;
-const BtnTab = styled.div`
-    margin-top: 10px;
-    position: relative;
-    top: 60px;
-    z-index: 10;
-
-    button {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        border-style: none;
-        border-radius: 15px;
-        padding: 3px 10px;
-        background-color: #fff;
-        box-shadow: 2.5px 5px 10px rgba(0, 0, 0, 0.5);
-
-        &.active {
-            background-color: #000;
-            color: #fff;
-        }
-    }
-    .category01 {
-        left: 43.75%;
-        transform: translateX(-40%);
-    }
-    .category03 {
-        left: 56.3%;
-        transform: translateX(-60%);
-    }
-`;
 
 const Loading = styled.p`
-    padding-top: 100px;
-    background: url(${loadingGif}) no-repeat center center;
+    padding-top: 200px;
+    background: url(${Spinner}) no-repeat center center;
 `;
 const ErrorMessage = styled.p`
+    font-size: 40px;
     padding-top: 100px;
 `;
 
-const VideoThumb = styled.div`
+const VideoItem = styled.div`
     cursor: pointer;
     margin-bottom: 50px;
-
-    h4 {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        color: #fff;
-        text-align: left;
-        text-shadow: 2px 2px 4px #000;
-        padding: 8px 15px;
-        background-color: #888;
-    }
-    .star-icon {
-        font-size: 20px;
-        color: #fff;
-        stroke-width: 30px;
-    }
-    .star-icon.opened {
-        color: gold;
-        stroke: gold;
-    }
-    img {
-        width: 100%;
-    }
+    border-radius: 15px;
+    overflow: hidden;
 `;
+
+const VideoTitle = styled.h4`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #d7d7d7;
+    text-align: left;
+    text-shadow: 2px 2px 4px #000;
+    padding: 5px 15px;
+    background-color: #444;
+`;
+
+const VideoThumbnail = styled.img`
+    width: 100%;
+    // height: 500px;
+`;
+
+const FaFolderPlus = styled(FontAwesomeIcon)`
+    font-size: 20px;
+    color: #fff;
+    stroke-width: 30px;
+`;
+
 export default VideoList;
