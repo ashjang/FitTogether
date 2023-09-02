@@ -4,14 +4,19 @@ import styled from '@emotion/styled';
 import { FaEllipsisV } from 'react-icons/fa';
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
-import { playlistsDataRecoil } from '../../recoil/video/atoms';
-// import VideoList from '../ExerciseInfo/VideoList';
+import { playlistsDataRecoil, videoInPlaylistRecoil } from '../../recoil/video/atoms';
 
 import imgSrc from '../../assets/post_image_example.jpg'; // 썸네일 예시
 
 interface Playlist {
     playlistName: string;
     userId: number;
+}
+
+interface VideoInPlaylist {
+    videoId: string;
+    title: string;
+    thumbnail: string;
 }
 
 const BookmarkFolder: React.FC = () => {
@@ -24,20 +29,49 @@ const BookmarkFolder: React.FC = () => {
     const [playlistsData, setPlaylistsData] = useRecoilState<Playlist[] | null>(
         playlistsDataRecoil
     );
+    const [videosInPlaylist, setVideosInPlaylist] = useRecoilState<Record<
+        string,
+        VideoInPlaylist[]
+    > | null>(videoInPlaylistRecoil);
 
-    // 플레이리스트를 반환받는 함수 ✅readPlaylist
-    const getPlayLists = async () => {
+    // 플레이리스트 전체를 반환받는 함수 ✅readPlaylist
+    const getPlaylists = async () => {
         try {
-            const response = await axios.get('/api/playlist', {
+            const responsePlaylist = await axios.get('/api/playlist', {
                 headers: {
                     'X-AUTH-TOKEN': token,
                 },
             });
-            setPlaylistsData(response.data);
-            console.log(response.data);
+            console.log(responsePlaylist.data);
+            setPlaylistsData(responsePlaylist.data);
+
+            responsePlaylist.data.map(async (playlist: Playlist) => {
+                try {
+                    const responseVideo = await axios.get(
+                        `/api/playlist/${playlist.playlistName}`,
+                        {
+                            headers: {
+                                'X-AUTH-TOKEN': token,
+                            },
+                        }
+                    );
+                    console.log(responseVideo.data);
+                    const videosInPlaylistData: Record<string, VideoInPlaylist[]> = {
+                        [responsePlaylist.data.playlistName]: responseVideo.data,
+                    };
+                    console.log(videosInPlaylistData);
+                    setVideosInPlaylist((prevVideosInPlaylist) => ({
+                        ...prevVideosInPlaylist,
+                        ...videosInPlaylistData,
+                    }));
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                    alert('재생목록을 불러오는데 실패했습니다.');
+                }
+            });
         } catch (error) {
             console.error('Error fetching data:', error);
-            alert('회원정보를 받아오는데 실패했습니다.');
+            alert('재생목록을 불러오는데 실패했습니다.');
         }
     };
 
@@ -76,7 +110,7 @@ const BookmarkFolder: React.FC = () => {
             setMenuToggleState(false);
             setMenuIndex(null);
             setEditingPlaylistInputIndex(null);
-            getPlayLists();
+            getPlaylists();
         } catch (error) {
             console.error('There was an error!', error);
         }
@@ -92,7 +126,7 @@ const BookmarkFolder: React.FC = () => {
             });
             setMenuToggleState(false);
             setMenuIndex(null);
-            getPlayLists();
+            getPlaylists();
         } catch (error) {
             console.error('Error deleting playlist:', error);
             alert('재생목록을 삭제하는데 실패했습니다.');
@@ -122,42 +156,44 @@ const BookmarkFolder: React.FC = () => {
 
     useEffect(() => {
         if (token) {
-            getPlayLists();
+            getPlaylists();
         }
     }, []);
 
     return (
         <BookmarkFolderContainer>
-            {playlistsData ? (
+            {videosInPlaylist ? (
                 <FolderListArea>
-                    {playlistsData?.map((playlist, index) => (
+                    {Object.keys(videosInPlaylist).map((key, index) => (
                         <FolderWrapper key={index}>
                             <FolderHeader>
                                 {index === editingPlaylistInputIndex ? (
                                     <InputField>
                                         <InputArea
                                             type="text"
-                                            defaultValue={playlist.playlistName}
+                                            defaultValue={key}
                                             onChange={(e) => setEditedPlaylist(e.target.value)}
                                             maxLength={15}
                                         />
-                                        <SaveButton
-                                            onClick={() =>
-                                                handleEditPlaylist(playlist.playlistName)
-                                            }
-                                        >
+                                        <SaveButton onClick={() => handleEditPlaylist(key)}>
                                             저장
                                         </SaveButton>
+                                        <CancelButton
+                                            onClick={() =>
+                                                editingPlaylistInputIndex !== null &&
+                                                setEditingPlaylistInputIndex(null)
+                                            }
+                                        >
+                                            취소
+                                        </CancelButton>
                                     </InputField>
                                 ) : (
-                                    <PlaylistItem>{playlist.playlistName}</PlaylistItem>
+                                    <PlaylistItem>{key}</PlaylistItem>
                                 )}
-                                <AllVideos
-                                    onClick={() => handlePlaylistClick(playlist.playlistName)}
-                                >
+                                <AllVideos onClick={() => handlePlaylistClick(key)}>
                                     동영상 더보기
                                 </AllVideos>
-                                <MoreIcon onClick={() => handleMenuToggle(index)} />
+                                <EllipsisIcon onClick={() => handleMenuToggle(index)} />
                                 {menuToggleState && menuIndex === index && (
                                     <Menu>
                                         <Overlay onClick={resetMenuIndex} />
@@ -165,11 +201,7 @@ const BookmarkFolder: React.FC = () => {
                                             <EditButton onClick={() => showInputForEdit(index)}>
                                                 수정하기
                                             </EditButton>
-                                            <DeleteButton
-                                                onClick={() =>
-                                                    handleDeletePlaylist(playlist.playlistName)
-                                                }
-                                            >
+                                            <DeleteButton onClick={() => handleDeletePlaylist(key)}>
                                                 삭제하기
                                             </DeleteButton>
                                         </MenuItems>
@@ -178,15 +210,23 @@ const BookmarkFolder: React.FC = () => {
                             </FolderHeader>
                             <FolderItems>
                                 <FolderItem>
-                                    <img src={imgSrc} width="240" height="180" alt="Image" />
+                                    <img src={imgSrc} width="200" height="150" alt="Image" />
                                     <p>동영상 제목 ...</p>
                                 </FolderItem>
                                 <FolderItem>
-                                    <img src={imgSrc} width="240" height="180" alt="Image" />
+                                    <img src={imgSrc} width="200" height="150" alt="Image" />
                                     <p>동영상 제목 ...</p>
                                 </FolderItem>
                                 <FolderItem>
-                                    <img src={imgSrc} width="240" height="180" alt="Image" />
+                                    <img src={imgSrc} width="200" height="150" alt="Image" />
+                                    <p>동영상 제목 ...</p>
+                                </FolderItem>
+                                <FolderItem>
+                                    <img src={imgSrc} width="200" height="150" alt="Image" />
+                                    <p>동영상 제목 ...</p>
+                                </FolderItem>
+                                <FolderItem>
+                                    <img src={imgSrc} width="200" height="150" alt="Image" />
                                     <p>동영상 제목 ...</p>
                                 </FolderItem>
                             </FolderItems>
@@ -231,19 +271,21 @@ const FolderHeader = styled.div`
     padding: 10px;
     display: flex;
     justify-content: space-between;
+    position: relative;
     align-items: center;
     font-size: 16px;
     font-weight: bold;
+    height: 50px;
 `;
 
 const PlaylistItem = styled.p``;
 
 const InputField = styled.div`
     display: flex;
+    width: 300px;
 `;
 
 const InputArea = styled.input`
-    width: 80%;
     padding-left: 10px;
     border: none;
     border-bottom: 1px solid #c9c9c9;
@@ -264,8 +306,24 @@ const SaveButton = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
+    white-space: nowrap;
 `;
 
+const CancelButton = styled.button`
+    position: relative;
+    right: 3px;
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: #c9c9c9;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+`;
 const FolderItems = styled.div`
     display: flex;
     align-items: center;
@@ -278,7 +336,7 @@ const FolderItems = styled.div`
 const FolderItem = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 30px 50px 10px;
+    padding: 30px 10px 10px;
 `;
 const Menu = styled.div`
     position: absolute;
@@ -334,7 +392,9 @@ const AllVideos = styled.button`
     background-color: transparent;
 `;
 
-const MoreIcon = styled(FaEllipsisV)`
+const EllipsisIcon = styled(FaEllipsisV)`
+    position: relative;
+    bottom: 2px;
     cursor: pointer;
 `;
 

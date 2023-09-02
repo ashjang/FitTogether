@@ -125,7 +125,7 @@ const VideoList: React.FC = () => {
             </VideoContainer>
             {clickedVideo && (
                 <VideoPopup
-                    video={{ id: clickedVideo.videoId, title: clickedVideo.title }}
+                    video={{ videoId: clickedVideo.videoId, title: clickedVideo.title }}
                     onClose={closeVideo}
                 />
             )}
