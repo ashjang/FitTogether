@@ -1,13 +1,16 @@
 package com.fittogether.server.video.controller;
 
+import com.fittogether.server.video.domain.dto.CursorResult;
 import com.fittogether.server.video.domain.dto.PlaylistDto;
 import com.fittogether.server.video.domain.dto.PlaylistVideoDto;
 import com.fittogether.server.video.domain.form.PlaylistForm;
+import com.fittogether.server.video.domain.form.VideoForm;
 import com.fittogether.server.video.service.PlaylistService;
 import com.fittogether.server.video.service.VideoService;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -29,24 +33,26 @@ public class PlaylistController {
   private final VideoService videoService;
 
   @GetMapping("/{name}")
-  public ResponseEntity<List<PlaylistVideoDto>> readVideoInPlaylist(
+  public ResponseEntity<CursorResult<PlaylistVideoDto>> readVideoInPlaylist(
       @RequestHeader(name = "X-AUTH-TOKEN") String token,
-      @PathVariable(name = "name") String targetName
-  ) {
+      @PathVariable(name = "name") String targetName,
+      @RequestParam(value = "cursorId") Long cursorId,
+      @RequestParam(value = "size", required = false, defaultValue = "5") int size) {
+    if(cursorId == -1){
+      cursorId = null;
+    }
 
-    // PlaylistVideoDto(playlist 이름과 video 이름) 반환
-    return ResponseEntity.ok(videoService.getVideoInPlaylist(token, targetName).stream()
-        .map(PlaylistVideoDto::from).collect(Collectors.toList()));
+    return ResponseEntity.ok(videoService.getFromPlaylist(token, targetName, cursorId, PageRequest.of(0, size)));
   }
 
   @PostMapping("/{name}")
   public ResponseEntity<?> addVideoToPlaylist(
       @RequestHeader(name = "X-AUTH-TOKEN") String token,
       @PathVariable(name = "name") String targetName,
-      @RequestBody String title) {
+      @RequestBody VideoForm form) {
 
     return ResponseEntity.status(HttpStatus.CREATED).body(
-        PlaylistVideoDto.from(videoService.addVideoToPlaylist(token, targetName, title)));
+        PlaylistVideoDto.from(videoService.addVideoToPlaylist(token, targetName, form)));
   }
 
   @DeleteMapping("/{name}/video/{videoId}")

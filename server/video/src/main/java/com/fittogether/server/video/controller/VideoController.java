@@ -29,7 +29,7 @@ public class VideoController {
     if(cursorId == -1){
       cursorId = null;
     }
-    return ResponseEntity.ok(videoService.get(keyword, cursorId, PageRequest.of(0, size)));
+    return ResponseEntity.ok(videoService.getFromVideos(keyword, cursorId, PageRequest.of(0, size)));
   }
 
   @GetMapping("/crawl/running")
