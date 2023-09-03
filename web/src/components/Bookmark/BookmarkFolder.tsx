@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { FaEllipsisV } from 'react-icons/fa';
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import { playlistsDataRecoil, videoInPlaylistRecoil } from '../../recoil/video/atoms';
+import VideoPopup from '../ExerciseInfo/VideoPopup';
 
 import imgSrc from '../../assets/post_image_example.jpg'; // 썸네일 예시
 
@@ -33,6 +34,7 @@ const BookmarkFolder: React.FC = () => {
         string,
         VideoInPlaylist[]
     > | null>(videoInPlaylistRecoil);
+    const [clickedVideo, setClidkedVideo] = useState<VideoInPlaylist | null>(null);
 
     // 플레이리스트 전체를 반환받는 함수 ✅readPlaylist
     const getPlaylists = async () => {
@@ -48,7 +50,7 @@ const BookmarkFolder: React.FC = () => {
             responsePlaylist.data.map(async (playlist: Playlist) => {
                 try {
                     const responseVideo = await axios.get(
-                        `/api/playlist/${playlist.playlistName}`,
+                        `/api/playlist/${playlist.playlistName}?cursorId=-1&size=5`,
                         {
                             headers: {
                                 'X-AUTH-TOKEN': token,
@@ -110,7 +112,7 @@ const BookmarkFolder: React.FC = () => {
             setMenuToggleState(false);
             setMenuIndex(null);
             setEditingPlaylistInputIndex(null);
-            getPlaylists();
+            setVideosInPlaylist(null);
         } catch (error) {
             console.error('There was an error!', error);
         }
@@ -126,7 +128,7 @@ const BookmarkFolder: React.FC = () => {
             });
             setMenuToggleState(false);
             setMenuIndex(null);
-            getPlaylists();
+            setVideosInPlaylist(null);
         } catch (error) {
             console.error('Error deleting playlist:', error);
             alert('재생목록을 삭제하는데 실패했습니다.');
@@ -137,6 +139,12 @@ const BookmarkFolder: React.FC = () => {
         setMenuToggleState(!menuToggleState);
         setMenuIndex(index);
     };
+
+    useEffect(() => {
+        if (videosInPlaylist === null) {
+            getPlaylists();
+        }
+    }, [videosInPlaylist]);
 
     // 플레이리스트 수정 입력란을 열고 닫기 위한 인덱스를 저장하는 함수
     const showInputForEdit = (index: number) => {
@@ -154,6 +162,16 @@ const BookmarkFolder: React.FC = () => {
         setMenuIndex(null);
     };
 
+    // 비디오 팝업을 여는 함수
+    const openVideo = useCallback((video: VideoInPlaylist) => {
+        setClidkedVideo(video);
+    }, []);
+
+    // 비디오 팝업을 닫는 함수
+    const closeVideo = useCallback(() => {
+        setClidkedVideo(null);
+    }, []);
+
     useEffect(() => {
         if (token) {
             getPlaylists();
@@ -164,7 +182,7 @@ const BookmarkFolder: React.FC = () => {
         <BookmarkFolderContainer>
             {videosInPlaylist ? (
                 <FolderListArea>
-                    {Object.keys(videosInPlaylist).map((key, index) => (
+                    {Object.entries(videosInPlaylist).map(([key, value], index) => (
                         <FolderWrapper key={index}>
                             <FolderHeader>
                                 {index === editingPlaylistInputIndex ? (
@@ -209,6 +227,20 @@ const BookmarkFolder: React.FC = () => {
                                 )}
                             </FolderHeader>
                             <FolderItems>
+                                {value.map((video) => (
+                                    <FolderItem
+                                        key={video.videoId}
+                                        onClick={() => openVideo(video)}
+                                    >
+                                        <img
+                                            src={video.thumbnail}
+                                            width="200"
+                                            height="150"
+                                            alt="Image"
+                                        />
+                                        <p>{video.title}</p>
+                                    </FolderItem>
+                                ))}
                                 <FolderItem>
                                     <img src={imgSrc} width="200" height="150" alt="Image" />
                                     <p>동영상 제목 ...</p>
@@ -236,6 +268,12 @@ const BookmarkFolder: React.FC = () => {
             ) : (
                 <ErrorMessage>생성된 재생목록이 없습니다.</ErrorMessage>
             )}
+            {clickedVideo && (
+                <VideoPopup
+                    video={{ videoId: clickedVideo.videoId, title: clickedVideo.title }}
+                    onClose={closeVideo}
+                />
+            )}
         </BookmarkFolderContainer>
     );
 };
@@ -262,8 +300,10 @@ const FolderWrapper = styled.div`
     position: relative;
     width: 1200px;
     padding: 20px;
-    border: 1px solid #ccc;
+    border-radius: 50px;
+    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.5);
     margin: 30px;
+    background-color: white;
 `;
 
 const FolderHeader = styled.div`
@@ -345,8 +385,6 @@ const Menu = styled.div`
     display: flex;
     flex-direction: column;
     background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 10px;
 `;
 
 const Overlay = styled.div`
@@ -360,6 +398,10 @@ const Overlay = styled.div`
 `;
 
 const MenuItems = styled.div`
+    position: relative;
+    left: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
     z-index: 100;
 `;
 const EditButton = styled.div`

@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import BookmarkFolder from '../components/Bookmark/BookmarkFolder';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { playlistsDataRecoil, videoInPlaylistRecoil } from '../recoil/video/atoms';
 
 interface Playlist {
@@ -26,9 +26,10 @@ const Bookmark: React.FC = () => {
     const [playlistsData, setPlaylistsData] = useRecoilState<Playlist[] | null>(
         playlistsDataRecoil
     );
-    const setVideosInPlaylist = useSetRecoilState<Record<string, VideoInPlaylist[]> | null>(
-        videoInPlaylistRecoil
-    );
+    const [videosInPlaylist, setVideosInPlaylist] = useRecoilState<Record<
+        string,
+        VideoInPlaylist[]
+    > | null>(videoInPlaylistRecoil);
 
     const togglePopup = () => {
         setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
@@ -114,60 +115,62 @@ const Bookmark: React.FC = () => {
                 alert('플레이리스트 생성에 실패했습니다.');
             }
 
+            setVideosInPlaylist(null);
             getPlaylists();
         } catch (error) {
             console.error('There was an error!', error);
         }
     };
 
+    useEffect(() => {
+        if (videosInPlaylist === null) {
+            getPlaylists();
+        }
+    }, [videosInPlaylist]);
+
     return (
         <BookmarkPage>
-            <div css={Container}>
-                <TitleArea>
-                    <p css={centeredTextStyle}>저장된 동영상</p>
-                    {isPopupOpen ? (
-                        <FaMinus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
-                    ) : (
-                        <FaPlus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
-                    )}
-                    {isPopupOpen && (
-                        // <PlaylistSetting video={null} onClose={() => setIsPopupOpen(false)} />
-                        <AddPlaylistContainer>
-                            <AddPlaylistInput
-                                type="text"
-                                placeholder="새 리스트 추가"
-                                value={newPlaylist}
-                                onChange={(e) => setNewPlaylist(e.target.value)}
-                            />
-                            <AddPlaylistSummit onClick={() => handleCreatePlaylist()}>
-                                저장
-                            </AddPlaylistSummit>
-                        </AddPlaylistContainer>
-                    )}
-                </TitleArea>
-            </div>
-            <div css={Container}>
-                <BookmarkFolder />
-            </div>
+            <TitleArea>
+                <p css={centeredTextStyle}>저장된 동영상</p>
+                {isPopupOpen ? (
+                    <FaMinus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
+                ) : (
+                    <FaPlus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
+                )}
+                {isPopupOpen && (
+                    // <PlaylistSetting video={null} onClose={() => setIsPopupOpen(false)} />
+                    <AddPlaylistContainer>
+                        <AddPlaylistInput
+                            type="text"
+                            placeholder="새 리스트 추가"
+                            value={newPlaylist}
+                            onChange={(e) => setNewPlaylist(e.target.value)}
+                        />
+                        <AddPlaylistSummit onClick={() => handleCreatePlaylist()}>
+                            저장
+                        </AddPlaylistSummit>
+                    </AddPlaylistContainer>
+                )}
+            </TitleArea>
+            <BookmarkFolder />
         </BookmarkPage>
     );
 };
 
 const BookmarkPage = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
     margin-top: 150px;
     min-height: calc(100vh - 200px);
-`;
-
-const Container = css`
-    display: flex;
-    align-items: center;
-    justify-content: center;
 `;
 
 const TitleArea = styled.div`
     width: 1200px;
     border-bottom: 1px solid black;
     display: flex;
+    justify-content: center;
     align-items: center;
     justify-content: space-between;
     position: relative;

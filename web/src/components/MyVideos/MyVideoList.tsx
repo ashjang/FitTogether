@@ -12,7 +12,6 @@ interface Video {
     videoId: string;
     title: string;
     thumbnail: string;
-    keyword: string;
 }
 
 interface VideoList {
@@ -104,12 +103,7 @@ const MyVideoList: React.FC = () => {
                         loader={<img src={Spinner} alt="Loading" />}
                     >
                         {videoList?.map((video) => (
-                            <VideoItem
-                                key={video.videoId}
-                                onClick={() => {
-                                    openVideo(video);
-                                }}
-                            >
+                            <VideoItem key={video.videoId} onClick={() => openVideo(video)}>
                                 <VideoTitle>
                                     {video.title.length > 50
                                         ? `${video.title.substring(0, 50)}...`

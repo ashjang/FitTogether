@@ -147,10 +147,12 @@ const PlaylistSetting: React.FC<Props> = ({ video, onClose }) => {
 
     // 비디오를 플레이 리스트에 추가하는 함수 ✅addVideoToPlaylist
     const handleAddVideoToPlaylist = async (name: string) => {
-        const title = video.title;
+        const titleForm = {
+            title: video.title,
+        };
 
         try {
-            const response = await axios.post(`/api/playlist/${name}`, title, {
+            const response = await axios.post(`/api/playlist/${name}`, titleForm, {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-AUTH-TOKEN': token,
