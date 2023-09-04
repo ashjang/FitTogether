@@ -6,7 +6,7 @@ import { css } from '@emotion/react';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import BookmarkFolder from '../components/Bookmark/BookmarkFolder';
 import { useRecoilState } from 'recoil';
-import { playlistsDataRecoil, videoInPlaylistRecoil } from '../recoil/video/atoms';
+import { /* playlistsDataRecoil, */ videoInPlaylistRecoil } from '../recoil/video/atoms';
 
 interface Playlist {
     playlistName: string;
@@ -15,7 +15,7 @@ interface Playlist {
 
 interface VideoInPlaylist {
     videoId: string;
-    title: string;
+    videoTitle: string;
     thumbnail: string;
 }
 
@@ -23,9 +23,9 @@ const Bookmark: React.FC = () => {
     const token = sessionStorage.getItem('token');
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
     const [newPlaylist, setNewPlaylist] = useState<string>('');
-    const [playlistsData, setPlaylistsData] = useRecoilState<Playlist[] | null>(
-        playlistsDataRecoil
-    );
+    // const [playlistsData, setPlaylistsData] = useRecoilState<Playlist[] | null>(
+    //     playlistsDataRecoil
+    // );
     const [videosInPlaylist, setVideosInPlaylist] = useRecoilState<Record<
         string,
         VideoInPlaylist[]
@@ -44,24 +44,24 @@ const Bookmark: React.FC = () => {
                     'X-AUTH-TOKEN': token,
                 },
             });
-            console.log(responsePlaylist.data);
-            setPlaylistsData(responsePlaylist.data);
+            console.log('responsePlaylist.data', responsePlaylist.data);
 
             responsePlaylist.data.map(async (playlist: Playlist) => {
                 try {
                     const responseVideo = await axios.get(
-                        `/api/playlist/${playlist.playlistName}`,
+                        `/api/playlist/${playlist.playlistName}?cursorId=-1&size=5`,
                         {
                             headers: {
                                 'X-AUTH-TOKEN': token,
                             },
                         }
                     );
-                    console.log(responseVideo.data);
+                    console.log('playlist.playlistName', playlist.playlistName);
+                    console.log('responseVideo.data', responseVideo.data);
                     const videosInPlaylistData: Record<string, VideoInPlaylist[]> = {
-                        [responsePlaylist.data.playlistName]: responseVideo.data,
+                        [playlist.playlistName]: responseVideo.data.values,
                     };
-                    console.log(videosInPlaylistData);
+                    console.log('videosInPlaylistData', videosInPlaylistData);
                     setVideosInPlaylist((prevVideosInPlaylist) => ({
                         ...prevVideosInPlaylist,
                         ...videosInPlaylistData,
@@ -85,14 +85,14 @@ const Bookmark: React.FC = () => {
             return;
         }
 
-        // 같은 이름이 있으면 반환
-        const isPlaylistExists = playlistsData?.some((playlist) => {
-            playlist.playlistName === newPlaylist;
-        });
-        if (isPlaylistExists) {
-            alert('이미 같은 이름의 플레이리스트가 존재합니다.');
-            return;
-        }
+        // // 같은 이름이 있으면 반환
+        // const isPlaylistExists = playlistsData?.some((playlist) => {
+        //     playlist.playlistName === newPlaylist;
+        // });
+        // if (isPlaylistExists) {
+        //     alert('이미 같은 이름의 플레이리스트가 존재합니다.');
+        //     return;
+        // }
 
         const newPlaylistForm = {
             playlistName: newPlaylist,
@@ -105,7 +105,6 @@ const Bookmark: React.FC = () => {
                     'X-AUTH-TOKEN': token,
                 },
             });
-            console.log(response.data);
             setNewPlaylist('');
             setIsPopupOpen(false);
 
@@ -114,7 +113,6 @@ const Bookmark: React.FC = () => {
             } else {
                 alert('플레이리스트 생성에 실패했습니다.');
             }
-
             setVideosInPlaylist(null);
             getPlaylists();
         } catch (error) {
@@ -122,10 +120,22 @@ const Bookmark: React.FC = () => {
         }
     };
 
+    // // videosInPlaylist 상태가 null로 바꿔었을 때 다시 받아옴.
+    // useEffect(() => {
+    //     if (videosInPlaylist === null) {
+    //         getPlaylists();
+    //     }
+    // }, [videosInPlaylist]);
+
+    // playlistsData 상태가 바뀌면(이 때 videosInPlaylist가 초기화됨) 다시 받아옴.
     useEffect(() => {
-        if (videosInPlaylist === null) {
-            getPlaylists();
-        }
+        console.log('렌더링!!!');
+        getPlaylists();
+    }, []);
+
+    useEffect(() => {
+        console.log('변경변경!!!');
+        console.log('videosInPlaylist', videosInPlaylist);
     }, [videosInPlaylist]);
 
     return (
@@ -138,7 +148,6 @@ const Bookmark: React.FC = () => {
                     <FaPlus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
                 )}
                 {isPopupOpen && (
-                    // <PlaylistSetting video={null} onClose={() => setIsPopupOpen(false)} />
                     <AddPlaylistContainer>
                         <AddPlaylistInput
                             type="text"

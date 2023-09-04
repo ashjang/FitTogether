@@ -66,8 +66,8 @@ function App() {
         });
 
         eventSource.onopen = (event) => {
-            console.log('connection opened');
-            console.log(event.target.readyState);
+            // console.log('connection opened');
+            // console.log(event.target.readyState);
         };
 
         eventSource.addEventListener('data', (event) => {
@@ -83,9 +83,9 @@ function App() {
         });
 
         eventSource.onerror = (event) => {
-            console.log(event.target.readyState);
+            // console.log(event.target.readyState);
             if (event.target.readyState === EventSource.CONNECTING) {
-                console.log('connecting...');
+                // console.log('connecting...');
 
                 // 연결 끊기
                 eventSource.close();

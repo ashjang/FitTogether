@@ -7,7 +7,7 @@ interface Playlist {
 
 interface VideoInPlaylist {
     videoId: string;
-    title: string;
+    videoTitle: string;
     thumbnail: string;
 }
 

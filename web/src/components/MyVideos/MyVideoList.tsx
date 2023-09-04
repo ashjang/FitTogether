@@ -10,7 +10,7 @@ import Spinner from '../../assets/Spinner.svg';
 
 interface Video {
     videoId: string;
-    title: string;
+    videoTitle: string;
     thumbnail: string;
 }
 
@@ -105,12 +105,12 @@ const MyVideoList: React.FC = () => {
                         {videoList?.map((video) => (
                             <VideoItem key={video.videoId} onClick={() => openVideo(video)}>
                                 <VideoTitle>
-                                    {video.title.length > 50
-                                        ? `${video.title.substring(0, 50)}...`
-                                        : video.title}
+                                    {video.videoTitle.length > 50
+                                        ? `${video.videoTitle.substring(0, 50)}...`
+                                        : video.videoTitle}
                                     <TrashIcon onClick={() => handleVideoDelete(video.videoId)} />
                                 </VideoTitle>
-                                <VideoThumbnail src={video.thumbnail} alt={video.title} />
+                                <VideoThumbnail src={video.thumbnail} alt={video.videoTitle} />
                             </VideoItem>
                         ))}
                     </InfiniteScroll>
@@ -118,7 +118,7 @@ const MyVideoList: React.FC = () => {
             </VideoContainer>
             {clickedVideo && (
                 <VideoPopup
-                    video={{ videoId: clickedVideo.videoId, title: clickedVideo.title }}
+                    video={{ videoId: clickedVideo.videoId, title: clickedVideo.videoTitle }}
                     onClose={closeVideo}
                 />
             )}
@@ -149,7 +149,7 @@ const VideoContainer = styled.div`
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     gap: 20px;
-    margin: 150px auto 0;
+    margin: 0 auto;
     max-width: 800px;
     text-align: center;
 `;
@@ -183,7 +183,6 @@ const VideoTitle = styled.h4`
 
 const VideoThumbnail = styled.img`
     width: 100%;
-    // height: 500px;
 `;
 
 const TrashIcon = styled(FaTrash)`

@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { FaEllipsisV } from 'react-icons/fa';
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
-import { playlistsDataRecoil, videoInPlaylistRecoil } from '../../recoil/video/atoms';
+import { /*playlistsDataRecoil,*/ videoInPlaylistRecoil } from '../../recoil/video/atoms';
 import VideoPopup from '../ExerciseInfo/VideoPopup';
-
-import imgSrc from '../../assets/post_image_example.jpg'; // 썸네일 예시
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 
 interface Playlist {
     playlistName: string;
@@ -16,7 +16,7 @@ interface Playlist {
 
 interface VideoInPlaylist {
     videoId: string;
-    title: string;
+    videoTitle: string;
     thumbnail: string;
 }
 
@@ -27,16 +27,15 @@ const BookmarkFolder: React.FC = () => {
     const [menuIndex, setMenuIndex] = useState<number | null>(null);
     const [editingPlaylistInputIndex, setEditingPlaylistInputIndex] = useState<number | null>(null);
     const [editedPlaylist, setEditedPlaylist] = useState<string>('');
-    const [playlistsData, setPlaylistsData] = useRecoilState<Playlist[] | null>(
-        playlistsDataRecoil
-    );
+    // const [playlistsData, setPlaylistsData] = useRecoilState<Playlist[] | null>(
+    //     playlistsDataRecoil
+    // );
     const [videosInPlaylist, setVideosInPlaylist] = useRecoilState<Record<
         string,
         VideoInPlaylist[]
     > | null>(videoInPlaylistRecoil);
     const [clickedVideo, setClidkedVideo] = useState<VideoInPlaylist | null>(null);
 
-    // 플레이리스트 전체를 반환받는 함수 ✅readPlaylist
     const getPlaylists = async () => {
         try {
             const responsePlaylist = await axios.get('/api/playlist', {
@@ -44,8 +43,7 @@ const BookmarkFolder: React.FC = () => {
                     'X-AUTH-TOKEN': token,
                 },
             });
-            console.log(responsePlaylist.data);
-            setPlaylistsData(responsePlaylist.data);
+            console.log('responsePlaylist.data', responsePlaylist.data);
 
             responsePlaylist.data.map(async (playlist: Playlist) => {
                 try {
@@ -57,11 +55,12 @@ const BookmarkFolder: React.FC = () => {
                             },
                         }
                     );
-                    console.log(responseVideo.data);
+                    console.log('playlist.playlistName', playlist.playlistName);
+                    console.log('responseVideo.data', responseVideo.data);
                     const videosInPlaylistData: Record<string, VideoInPlaylist[]> = {
-                        [responsePlaylist.data.playlistName]: responseVideo.data,
+                        [playlist.playlistName]: responseVideo.data.values,
                     };
-                    console.log(videosInPlaylistData);
+                    console.log('videosInPlaylistData', videosInPlaylistData);
                     setVideosInPlaylist((prevVideosInPlaylist) => ({
                         ...prevVideosInPlaylist,
                         ...videosInPlaylistData,
@@ -85,14 +84,14 @@ const BookmarkFolder: React.FC = () => {
             return;
         }
 
-        // 같은 이름이 있으면 반환
-        const isPlaylistExists = playlistsData?.some((playlist) => {
-            playlist.playlistName === editedPlaylist;
-        });
-        if (isPlaylistExists) {
-            alert('이미 같은 이름의 플레이리스트가 존재합니다.');
-            return;
-        }
+        // // 같은 이름이 있으면 반환
+        // const isPlaylistExists = playlistsData?.some((playlist) => {
+        //     playlist.playlistName === editedPlaylist;
+        // });
+        // if (isPlaylistExists) {
+        //     alert('이미 같은 이름의 플레이리스트가 존재합니다.');
+        //     return;
+        // }
 
         // 백으로 전송할 데이터(= 수정한 이름)
         const editedPlaylistForm = {
@@ -102,17 +101,17 @@ const BookmarkFolder: React.FC = () => {
         console.log(editedPlaylist);
 
         try {
-            const response = await axios.put(`/api/playlist/${name}`, editedPlaylistForm, {
+            await axios.put(`/api/playlist/${name}`, editedPlaylistForm, {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-AUTH-TOKEN': token,
                 },
             });
-            console.log(response.data);
             setMenuToggleState(false);
             setMenuIndex(null);
             setEditingPlaylistInputIndex(null);
             setVideosInPlaylist(null);
+            getPlaylists();
         } catch (error) {
             console.error('There was an error!', error);
         }
@@ -126,9 +125,11 @@ const BookmarkFolder: React.FC = () => {
                     'X-AUTH-TOKEN': token,
                 },
             });
+
             setMenuToggleState(false);
             setMenuIndex(null);
             setVideosInPlaylist(null);
+            getPlaylists();
         } catch (error) {
             console.error('Error deleting playlist:', error);
             alert('재생목록을 삭제하는데 실패했습니다.');
@@ -139,12 +140,6 @@ const BookmarkFolder: React.FC = () => {
         setMenuToggleState(!menuToggleState);
         setMenuIndex(index);
     };
-
-    useEffect(() => {
-        if (videosInPlaylist === null) {
-            getPlaylists();
-        }
-    }, [videosInPlaylist]);
 
     // 플레이리스트 수정 입력란을 열고 닫기 위한 인덱스를 저장하는 함수
     const showInputForEdit = (index: number) => {
@@ -170,12 +165,6 @@ const BookmarkFolder: React.FC = () => {
     // 비디오 팝업을 닫는 함수
     const closeVideo = useCallback(() => {
         setClidkedVideo(null);
-    }, []);
-
-    useEffect(() => {
-        if (token) {
-            getPlaylists();
-        }
     }, []);
 
     return (
@@ -208,9 +197,10 @@ const BookmarkFolder: React.FC = () => {
                                 ) : (
                                     <PlaylistItem>{key}</PlaylistItem>
                                 )}
-                                <AllVideos onClick={() => handlePlaylistClick(key)}>
-                                    동영상 더보기
-                                </AllVideos>
+                                <FaAnglesRight
+                                    icon={faFolderOpen}
+                                    onClick={() => handlePlaylistClick(key)}
+                                />
                                 <EllipsisIcon onClick={() => handleMenuToggle(index)} />
                                 {menuToggleState && menuIndex === index && (
                                     <Menu>
@@ -227,50 +217,38 @@ const BookmarkFolder: React.FC = () => {
                                 )}
                             </FolderHeader>
                             <FolderItems>
-                                {value.map((video) => (
-                                    <FolderItem
-                                        key={video.videoId}
-                                        onClick={() => openVideo(video)}
-                                    >
-                                        <img
-                                            src={video.thumbnail}
-                                            width="200"
-                                            height="150"
-                                            alt="Image"
-                                        />
-                                        <p>{video.title}</p>
-                                    </FolderItem>
-                                ))}
-                                <FolderItem>
-                                    <img src={imgSrc} width="200" height="150" alt="Image" />
-                                    <p>동영상 제목 ...</p>
-                                </FolderItem>
-                                <FolderItem>
-                                    <img src={imgSrc} width="200" height="150" alt="Image" />
-                                    <p>동영상 제목 ...</p>
-                                </FolderItem>
-                                <FolderItem>
-                                    <img src={imgSrc} width="200" height="150" alt="Image" />
-                                    <p>동영상 제목 ...</p>
-                                </FolderItem>
-                                <FolderItem>
-                                    <img src={imgSrc} width="200" height="150" alt="Image" />
-                                    <p>동영상 제목 ...</p>
-                                </FolderItem>
-                                <FolderItem>
-                                    <img src={imgSrc} width="200" height="150" alt="Image" />
-                                    <p>동영상 제목 ...</p>
-                                </FolderItem>
+                                {value.length > 0 ? (
+                                    value.map((video) => (
+                                        <FolderItem
+                                            key={video.videoId}
+                                            onClick={() => openVideo(video)}
+                                        >
+                                            <FolderItemThumbnail
+                                                src={video.thumbnail}
+                                                width="200"
+                                                height="150"
+                                                alt="Image"
+                                            />
+                                            <FolderItemTitle>
+                                                {video.videoTitle.length > 12
+                                                    ? `${video.videoTitle.slice(0, 12)}...`
+                                                    : video.videoTitle}
+                                            </FolderItemTitle>
+                                        </FolderItem>
+                                    ))
+                                ) : (
+                                    <FolderItemText>저장된 동영상이 없습니다 😢</FolderItemText>
+                                )}
                             </FolderItems>
                         </FolderWrapper>
                     ))}
                 </FolderListArea>
             ) : (
-                <ErrorMessage>생성된 재생목록이 없습니다.</ErrorMessage>
+                <ErrorMessage>생성된 재생목록이 없습니다 😢</ErrorMessage>
             )}
             {clickedVideo && (
                 <VideoPopup
-                    video={{ videoId: clickedVideo.videoId, title: clickedVideo.title }}
+                    video={{ videoId: clickedVideo.videoId, title: clickedVideo.videoTitle }}
                     onClose={closeVideo}
                 />
             )}
@@ -318,7 +296,9 @@ const FolderHeader = styled.div`
     height: 50px;
 `;
 
-const PlaylistItem = styled.p``;
+const PlaylistItem = styled.p`
+    font-size: 20px;
+`;
 
 const InputField = styled.div`
     display: flex;
@@ -366,8 +346,9 @@ const CancelButton = styled.button`
 `;
 const FolderItems = styled.div`
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    gap: 35px;
     width: 100%;
     height: 100%;
     margin-bottom: 10px;
@@ -376,15 +357,38 @@ const FolderItems = styled.div`
 const FolderItem = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 30px 10px 10px;
+    margin: 20px 0px 10px;
+    width: 200px;
+    overflow: hidden;
+    background-color: black;
+    border-radius: 15px;
 `;
+
+const FolderItemThumbnail = styled.img``;
+
+const FolderItemTitle = styled.p`
+    height: 30px;
+    background-color: #444;
+    padding: 0px 0px 5px 10px;
+    color: white;
+    overflow: hidden;
+`;
+
+const FolderItemText = styled.p`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(150px + 30px);
+    width: 100%;
+    margin: 20 auto 10;
+`;
+
 const Menu = styled.div`
-    position: absolute;
-    top: 60px;
-    right: 20px;
     display: flex;
     flex-direction: column;
-    background-color: white;
+    position: absolute;
+    top: 40px;
+    right: 10px;
 `;
 
 const Overlay = styled.div`
@@ -398,8 +402,6 @@ const Overlay = styled.div`
 `;
 
 const MenuItems = styled.div`
-    position: relative;
-    left: 10px;
     border: 1px solid #ccc;
     border-radius: 10px;
     z-index: 100;
@@ -424,19 +426,10 @@ const DeleteButton = styled.div`
     }
 `;
 
-const AllVideos = styled.button`
-    position: absolute;
-    right: 75px;
-    font-size: 13px;
-    color: blue;
-    outline: none;
-    border: none;
-    background-color: transparent;
-`;
-
 const EllipsisIcon = styled(FaEllipsisV)`
     position: relative;
     bottom: 2px;
+    font-size: 20px;
     cursor: pointer;
 `;
 
@@ -449,6 +442,15 @@ const ErrorMessage = styled.p`
     font-weight: bold;
     color: #102c57;
     min-height: 100vh;
+`;
+
+const FaAnglesRight = styled(FontAwesomeIcon)`
+    position: absolute;
+    right: 50px;
+    top: 11px;
+    font-size: 25px;
+    color: pink;
+    cursor: pointer;
 `;
 
 export default BookmarkFolder;
