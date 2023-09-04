@@ -7,7 +7,9 @@ import com.fittogether.server.user.domain.repository.UserRepository;
 import com.fittogether.server.user.exception.UserCustomException;
 import com.fittogether.server.user.exception.UserErrorCode;
 import com.fittogether.server.video.domain.dto.CursorResult;
+import com.fittogether.server.video.domain.dto.PlaylistVideoDto;
 import com.fittogether.server.video.domain.dto.VideoDto;
+import com.fittogether.server.video.domain.form.VideoForm;
 import com.fittogether.server.video.domain.model.Playlist;
 import com.fittogether.server.video.domain.model.PlaylistVideo;
 import com.fittogether.server.video.domain.model.Video;
@@ -33,7 +35,7 @@ public class VideoService {
   private final VideoRepository videoRepository;
   private final JwtProvider provider;
 
-  public CursorResult<VideoDto> get(String keyword, Long cursorId, Pageable page) {
+  public CursorResult<VideoDto> getFromVideos(String keyword, Long cursorId, Pageable page) {
     final List<Video> videos = getVideos(keyword, cursorId, page);
     final Long lastIdOfList = videos.isEmpty() ? null : videos.get(videos.size() - 1).getId();
     Long lastId = 0L;
@@ -42,7 +44,7 @@ public class VideoService {
     }
 
     List<VideoDto> videosDto = videos.stream().map(VideoDto::from).collect(Collectors.toList());
-    return new CursorResult<>(videosDto, hasNext(lastIdOfList), lastId);
+    return new CursorResult<>(videosDto, hasNextInVideos(lastIdOfList), lastId);
   }
 
   private List<Video> getVideos(String keyword, Long cursorId, Pageable page) {
@@ -51,14 +53,14 @@ public class VideoService {
         this.videoRepository.findByKeywordAndIdLessThanOrderByIdDesc(keyword, cursorId, page);
   }
 
-  private Boolean hasNext(Long id) {
+  private Boolean hasNextInVideos(Long id) {
     if (id == null) {
       return false;
     }
     return this.videoRepository.existsByIdLessThan(id);
   }
 
-  public List<PlaylistVideo> getVideoInPlaylist(String token, String targetName) {
+  public CursorResult<PlaylistVideoDto> getFromPlaylist(String token, String targetName, Long cursorId, Pageable page) {
     UserVo userVo = provider.getUserVo(token);
 
     User user = userRepository.findById(userVo.getUserId())
@@ -67,11 +69,34 @@ public class VideoService {
     Playlist playlist = playlistRepository.findByUser_UserIdAndPlaylistName(user.getUserId(),
         targetName).orElseThrow(() -> new VideoCustomException(VideoErrorCode.NOT_FOUND_PLAYLIST));
 
-    return playlistVideoRepository.findByPlaylistId(playlist.getPlaylistId());
+    final List<PlaylistVideo> videos = getVideosInPlaylist(playlist.getPlaylistId(), cursorId, page);
+    final Long lastIdOfList = videos.isEmpty() ? null : videos.get(videos.size() - 1).getId();
+    Long lastId = 0L;
+    if(!videos.isEmpty()){
+      lastId = videos.get(videos.size() - 1).getId();
+    }
+
+    List<PlaylistVideoDto> playlistVideos = videos.stream().map(PlaylistVideoDto::from)
+        .collect(Collectors.toList());
+
+    return new CursorResult<>(playlistVideos, hasNextInPlaylist(lastIdOfList), lastId);
+  }
+
+  private List<PlaylistVideo> getVideosInPlaylist(Long playlistId, Long cursorId, Pageable page) {
+    return cursorId == null ?
+        this.playlistVideoRepository.findAllByPlaylist_PlaylistIdOrderByModifiedAtDesc(playlistId, page) :
+        this.playlistVideoRepository.findByPlaylist_PlaylistIdAndIdLessThanOrderByIdDesc(playlistId, cursorId, page);
+  }
+
+  private Boolean hasNextInPlaylist(Long id) {
+    if (id == null) {
+      return false;
+    }
+    return this.playlistVideoRepository.existsByIdLessThan(id);
   }
 
   @Transactional
-  public PlaylistVideo addVideoToPlaylist(String token, String targetName, String title) {
+  public PlaylistVideo addVideoToPlaylist(String token, String targetName, VideoForm form) {
     UserVo userVo = provider.getUserVo(token);
 
     User user = userRepository.findById(userVo.getUserId())
@@ -80,7 +105,7 @@ public class VideoService {
     Playlist playlist = playlistRepository.findByUser_UserIdAndPlaylistName(user.getUserId(),
         targetName).orElseThrow(() -> new VideoCustomException(VideoErrorCode.NOT_FOUND_PLAYLIST));
 
-    Video video = videoRepository.findByTitle(title)
+    Video video = videoRepository.findByTitle(form.getTitle())
         .orElseThrow(() -> new VideoCustomException(VideoErrorCode.NOT_FOUND_VIDEO));
 
     if (playlistVideoRepository.findByPlaylist_PlaylistIdAndVideo_Id(
