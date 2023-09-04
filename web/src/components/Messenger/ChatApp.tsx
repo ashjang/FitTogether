@@ -22,6 +22,7 @@ interface ChatMessage {
     chatRoomId: number;
     contents: string;
     sendDate: Date;
+    senderNickname: string;
 }
 
 const ChatApp: React.FC = () => {
@@ -43,7 +44,7 @@ const ChatApp: React.FC = () => {
         if (selectedChatRoom) {
             getChatMessages(selectedChatRoom);
         }
-    }, [params]);
+    }, [params.nickname]);
 
     const getChatMessages = (chatRoomId: number) => {
         const token: string | null = sessionStorage.getItem('token');
@@ -59,7 +60,7 @@ const ChatApp: React.FC = () => {
                     const chatMessageList = response.data as unknown as ChatMessage[];
                     console.log('메시지 기록 불러오기:', chatMessageList);
                     // setChatMessages(chatMessageList);
-                    // 기존 메시지 목록에 덧붙이기
+                    // 기존 메시지 목록에 최신으로
                     setChatMessages((prevMessages) => {
                         const updatedMessages = prevMessages.filter(
                             (message) => message.chatRoomId !== chatRoomId

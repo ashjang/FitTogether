@@ -11,7 +11,12 @@ interface UserProfile {
 }
 interface Props {
     chatRoomId: number | null;
-    chatMessages: { chatRoomId: number; contents: string; sendDate: Date }[]; // 보낸 시간 정보 추가
+    chatMessages: {
+        chatRoomId: number;
+        contents: string;
+        sendDate: Date;
+        senderNickname: string;
+    }[];
 
     inputMessage: string;
     onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -86,7 +91,9 @@ const ChatWindow: React.FC<Props> = ({
                                             hour12: true,
                                         })}
                                     </MessageTime>{' '}
-                                    <MessageText>{message.contents}</MessageText>
+                                    <MessageText isSentByUser={message.senderNickname === username}>
+                                        {message.contents}
+                                    </MessageText>{' '}
                                 </MessageBox>
                             ))}
                         </MessageArea>
@@ -197,12 +204,13 @@ const MessageBox = styled.div`
     padding: 8px;
     margin-right: 10px;
 `;
-const MessageText = styled.p`
+const MessageText = styled.p<{ isSentByUser: boolean }>`
     position: relative;
     display: block;
     font-size: 18px;
 
-    width: 300px;
+    // width: 300px;
+    max-width: 100%;
     height: 100%;
     word-break: break-all;
     padding: 12px;

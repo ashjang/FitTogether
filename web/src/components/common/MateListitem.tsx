@@ -11,6 +11,7 @@ interface Props {
     senderNickname: string;
     showButton: boolean;
     createChatRoom: (senderNickname: string) => void;
+    onChatRoomClick: (chatRoomId: number) => void;
 }
 
 const MateListItem: React.FC<Props> = ({ senderProfileImage, senderNickname, showButton }) => {
@@ -18,10 +19,10 @@ const MateListItem: React.FC<Props> = ({ senderProfileImage, senderNickname, sho
 
     const handleChatRoomClick = () => {
         if (!chatRoomCreated) {
-            console.log(`Chat room with ${senderNickname} opened.`);
+            console.log(`${senderNickname}님과 채팅방이 열렸습니다.`);
             setChatRoomCreated(true);
         } else {
-            console.log(`Chat room with ${senderNickname} already created.`);
+            console.log(`${senderNickname}님과의 채팅방은 이미 존재합니다.`);
         }
     };
 

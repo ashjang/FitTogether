@@ -10,6 +10,7 @@ interface Props {
     isOpen: boolean;
     onClose: () => void;
     createChatRoom: () => void;
+    onChatRoomClick: (chatRoomId: number) => void;
 }
 
 interface MateDateItem {
