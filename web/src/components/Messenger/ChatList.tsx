@@ -73,6 +73,7 @@ const ChatList: React.FC<Props> = ({
                         isOpen={mateModalOpen}
                         onClose={handleCloseMateList}
                         createChatRoom={createChatRoom}
+                        onChatRoomClick={onChatRoomClick}
                     />
                 )}
             </TopArea>

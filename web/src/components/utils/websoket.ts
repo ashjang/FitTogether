@@ -1,16 +1,4 @@
 // src/utils/websocket.ts
-// import { Client, StompConfig } from '@stomp/stompjs';
-
-// const stompConfig: StompConfig = {
-//     brokerURL: 'ws://localhost:8080/ws',
-//     reconnectDelay: 5000,
-// };
-
-// const stompClient: Client = new Client(stompConfig) as any;
-
-// export default stompClient;
-
-// src/utils/websocket.ts
 import { Client } from '@stomp/stompjs';
 import { WebSocket } from 'ws';
 Object.assign(global, { WebSocket });

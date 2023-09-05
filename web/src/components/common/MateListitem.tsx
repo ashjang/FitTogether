@@ -10,59 +10,21 @@ interface Props {
     senderProfileImage: string;
     senderNickname: string;
     showButton: boolean;
-    // onChatRoomClick: (chatRoomId: number) => void;
     createChatRoom: (senderNickname: string) => void;
+    onChatRoomClick: (chatRoomId: number) => void;
 }
-// interface ResponseData {
-//     chatRoomId: string;
-// }
 
-const MateListItem: React.FC<Props> = ({
-    senderProfileImage,
-    senderNickname,
-    showButton,
-    // onChatRoomClick,
-    //createChatRoom,
-}) => {
+const MateListItem: React.FC<Props> = ({ senderProfileImage, senderNickname, showButton }) => {
     const [chatRoomCreated, setChatRoomCreated] = useState(false);
 
     const handleChatRoomClick = () => {
         if (!chatRoomCreated) {
-            console.log(`Chat room with ${senderNickname} opened.`);
+            console.log(`${senderNickname}님과 채팅방이 열렸습니다.`);
             setChatRoomCreated(true);
-
-            // console.log('createChatRoom', createChatRoom);
-            // ChatApp.createChatRoom(senderNickname);
         } else {
-            console.log(`Chat room with ${senderNickname} already created.`);
+            console.log(`${senderNickname}님과의 채팅방은 이미 존재합니다.`);
         }
     };
-
-    // const token: string | null = sessionStorage.getItem('token');
-
-    // const handleDMIconClick = (event: React.MouseEvent<SVGElement, MouseEvent>) => {
-    //     event.stopPropagation();
-    //     try {
-    //         axios
-    //             .post(`/api/dm/${encodeURIComponent(senderNickname)}`, null, {
-    //                 headers: {
-    //                     'X-AUTH-TOKEN': token,
-    //                 },
-    //             })
-    //             .then((response) => {
-    //                 // 타입 단언을 통해 response.data의 형식을 ResponseData로 강제 변환
-    //                 const chatRoomId = (response.data as ResponseData).chatRoomId;
-    //                 console.log('채팅방 생성 완료:', response.data);
-    //                 console.log('채팅방 ID:', chatRoomId);
-    //                 onChatRoomClick(chatRoomId);
-    //             })
-    //             .catch((error) => {
-    //                 console.error('채팅방 생성 에러:', error);
-    //             });
-    //     } catch (error) {
-    //         console.error('채팅방 생성 에러:', error);
-    //     }
-    // };
 
     return (
         <MateListItemComponent>
@@ -73,11 +35,7 @@ const MateListItem: React.FC<Props> = ({
                 <SenderNickname>{senderNickname}</SenderNickname>
             </MateListItemComponentElement>
             <MateListItemComponentElement>
-                {/* <Link to={`/messenger/${encodeURIComponent(senderNickname)}`}>
-                    <FaMessage icon={paperPlaneRegular} onClick={handleDMIconClick} />
-                </Link>
-                <UnfollowButton>unfollow</UnfollowButton> */}
-                {showButton && ( // 버튼 표시 여부에 따라 조건부 렌더링
+                {showButton && (
                     <>
                         <Link to={`/messenger/${encodeURIComponent(senderNickname)}`}>
                             <FaMessage icon={paperPlaneRegular} onClick={handleChatRoomClick} />
