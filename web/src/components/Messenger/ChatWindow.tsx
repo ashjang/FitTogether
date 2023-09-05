@@ -5,6 +5,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
+import defaultUserImage from '../../assets/default-user-image.png';
+
 interface UserProfile {
     username: string;
     profileImage: string | null;
@@ -81,19 +83,30 @@ const ChatWindow: React.FC<Props> = ({
                         <MessageArea ref={messageAreaRef}>
                             {chatMessages.map((message, index) => (
                                 <MessageBox key={index}>
-                                    <MessageTime>
-                                        {new Date(message.sendDate).toLocaleTimeString([], {
-                                            // year: 'numeric',
-                                            // month: 'short',
-                                            // day: 'numeric',
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                            hour12: true,
-                                        })}
-                                    </MessageTime>{' '}
-                                    <MessageText isSentByUser={message.senderNickname === username}>
-                                        {message.contents}
-                                    </MessageText>{' '}
+                                    <SenderProfile>
+                                        <SenderProfileImage
+                                            src={userProfile?.profileImage || defaultUserImage}
+                                            alt={username}
+                                        />
+                                    </SenderProfile>
+                                    <TextBoxArea>
+                                        <MessageTop>
+                                            <SenderNickname>
+                                                {message.senderNickname}
+                                            </SenderNickname>
+                                            <MessageTime>
+                                                {new Date(message.sendDate).toLocaleTimeString([], {
+                                                    // year: 'numeric',
+                                                    // month: 'short',
+                                                    // day: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                    hour12: true,
+                                                })}
+                                            </MessageTime>{' '}
+                                        </MessageTop>
+                                        <MessageText>{message.contents}</MessageText>
+                                    </TextBoxArea>
                                 </MessageBox>
                             ))}
                         </MessageArea>
@@ -172,12 +185,26 @@ const TextBox = styled.div`
     flex-direction: column;
     margin-top: 10px;
 `;
+
+const SenderProfile = styled.div`
+    margin-right: 10px;
+`;
+const SenderProfileImage = styled.img`
+    width: 70px;
+    height: 70px;
+    border-radius: 4px;
+`;
+const TextBoxArea = styled.div`
+    display: flex;
+    align-items: left;
+    flex-direction: column;
+`;
 const MessageArea = styled.div`
     position: relative;
-    right: 0px;
+    left: 20px;
 
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     flex-direction: column;
 
     width: 100%;
@@ -200,11 +227,21 @@ const MessageArea = styled.div`
 `;
 const MessageBox = styled.div`
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     padding: 8px;
-    margin-right: 10px;
+    margin-left: 10px;
+    margin-top: 20px;
 `;
-const MessageText = styled.p<{ isSentByUser: boolean }>`
+const MessageTop = styled.div`
+    display: flex;
+    align-items: flex-end;
+`;
+const SenderNickname = styled.p`
+    font-size: 22px;
+    font-weight: 700;
+`;
+
+const MessageText = styled.p`
     position: relative;
     display: block;
     font-size: 18px;
@@ -215,30 +252,28 @@ const MessageText = styled.p<{ isSentByUser: boolean }>`
     word-break: break-all;
     padding: 12px;
     border-radius: 10px;
-    background-color: #e7b2b2;
+    // background-color: #e7b2b2;
+    // box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 
-    &::before {
-        content: '';
-        position: absolute;
-        right: 0;
-        top: 50%;
-        width: 0;
-        height: 0;
-        border: 20px solid transparent;
-        border-left-color: #e7b2b2;
-        border-right: 0;
-        border-top: 0;
-        border-radius: 5px;
-
-        margin-top: -10px;
-        margin-right: -15px;
-    }
+    // &::before {
+    //     content: '';
+    //     position: absolute;
+    //     left: 0;
+    //     top: 50%;
+    //     width: 0;
+    //     height: 0;
+    //     border: 20px solid transparent;
+    //     border-right-color: #e7b2b2;
+    //     border-left: 0;
+    //     border-top: 0;
+    //     margin-top: -10px;
+    //     margin-left: -20px;
+    // }
 `;
 const MessageTime = styled.div`
     display: block;
     font-size: 14px;
-    margin-right: 10px;
-    padding-bottom: 8px;
+    margin-left: 10px;
 `;
 
 const SendArea = styled.div`
