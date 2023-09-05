@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { FaEllipsisV } from 'react-icons/fa';
-import axios from 'axios';
 import { useRecoilState } from 'recoil';
-import { /*playlistsDataRecoil,*/ videoInPlaylistRecoil } from '../../recoil/video/atoms';
+import { videoInPlaylistRecoil } from '../../recoil/video/atoms';
 import VideoPopup from '../ExerciseInfo/VideoPopup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
@@ -27,9 +27,6 @@ const BookmarkFolder: React.FC = () => {
     const [menuIndex, setMenuIndex] = useState<number | null>(null);
     const [editingPlaylistInputIndex, setEditingPlaylistInputIndex] = useState<number | null>(null);
     const [editedPlaylist, setEditedPlaylist] = useState<string>('');
-    // const [playlistsData, setPlaylistsData] = useRecoilState<Playlist[] | null>(
-    //     playlistsDataRecoil
-    // );
     const [videosInPlaylist, setVideosInPlaylist] = useRecoilState<Record<
         string,
         VideoInPlaylist[]
@@ -70,7 +67,7 @@ const BookmarkFolder: React.FC = () => {
                     alert('재생목록을 불러오는데 실패했습니다.');
                 }
             });
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error fetching data:', error);
             alert('재생목록을 불러오는데 실패했습니다.');
         }
@@ -83,15 +80,6 @@ const BookmarkFolder: React.FC = () => {
             alert('플레이리스트의 이름을 수정해 주세요.');
             return;
         }
-
-        // // 같은 이름이 있으면 반환
-        // const isPlaylistExists = playlistsData?.some((playlist) => {
-        //     playlist.playlistName === editedPlaylist;
-        // });
-        // if (isPlaylistExists) {
-        //     alert('이미 같은 이름의 플레이리스트가 존재합니다.');
-        //     return;
-        // }
 
         // 백으로 전송할 데이터(= 수정한 이름)
         const editedPlaylistForm = {
@@ -112,8 +100,11 @@ const BookmarkFolder: React.FC = () => {
             setEditingPlaylistInputIndex(null);
             setVideosInPlaylist(null);
             getPlaylists();
-        } catch (error) {
-            console.error('There was an error!', error);
+        } catch (error: any) {
+            if (error.response && error.response.status === 400) {
+                alert('같은 이름의 플레이리스트가 존재합니다.');
+            }
+            console.error(error);
         }
     };
 
@@ -131,8 +122,8 @@ const BookmarkFolder: React.FC = () => {
             setVideosInPlaylist(null);
             getPlaylists();
         } catch (error) {
-            console.error('Error deleting playlist:', error);
-            alert('재생목록을 삭제하는데 실패했습니다.');
+            alert('재생목록 삭제가 실패하였습니다.');
+            console.error(error);
         }
     };
 

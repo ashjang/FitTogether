@@ -58,21 +58,22 @@ const MyVideoList: React.FC = () => {
         return response.data;
     };
 
-    const { data, isLoading, isError, fetchNextPage, hasNextPage } = useInfiniteQuery<
-        VideoList,
-        Error
-    >(['videos', playlistName], ({ pageParam = -1 }) => fetchVideos(playlistName, pageParam), {
-        getNextPageParam: (lastPage) => {
-            // 이전 페이지의 lastId를 반환하여 다음 페이지 요청 시 사용
-            if (lastPage.hasNext) {
-                // hasNext가 true인 경우에만 다음 페이지 요청
-                return lastPage.lastId;
-            } else {
-                // 더이상 불러올 데이터가 없는 경우 null 반환하여 페이지 요청 중단
-                return null;
-            }
-        },
-    });
+    const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery<VideoList, Error>(
+        ['videos', playlistName],
+        ({ pageParam = -1 }) => fetchVideos(playlistName, pageParam),
+        {
+            getNextPageParam: (lastPage) => {
+                // 이전 페이지의 lastId를 반환하여 다음 페이지 요청 시 사용
+                if (lastPage.hasNext) {
+                    // hasNext가 true인 경우에만 다음 페이지 요청
+                    return lastPage.lastId;
+                } else {
+                    // 더이상 불러올 데이터가 없는 경우 null 반환하여 페이지 요청 중단
+                    return null;
+                }
+            },
+        }
+    );
 
     let videoList = data?.pages.flatMap((page) => page.values);
 
@@ -91,10 +92,8 @@ const MyVideoList: React.FC = () => {
             <VideoContainer>
                 {isLoading ? (
                     <Loading>
-                        <span className="blind">로딩 중입니다.</span>
+                        <img src={Spinner} alt="Loading" />
                     </Loading>
-                ) : isError ? (
-                    <ErrorMessage>Error</ErrorMessage>
                 ) : (
                     <InfiniteScroll
                         dataLength={videoList?.length || 0}
@@ -102,17 +101,23 @@ const MyVideoList: React.FC = () => {
                         hasMore={!!hasNextPage}
                         loader={<img src={Spinner} alt="Loading" />}
                     >
-                        {videoList?.map((video) => (
-                            <VideoItem key={video.videoId} onClick={() => openVideo(video)}>
-                                <VideoTitle>
-                                    {video.videoTitle.length > 50
-                                        ? `${video.videoTitle.substring(0, 50)}...`
-                                        : video.videoTitle}
-                                    <TrashIcon onClick={() => handleVideoDelete(video.videoId)} />
-                                </VideoTitle>
-                                <VideoThumbnail src={video.thumbnail} alt={video.videoTitle} />
-                            </VideoItem>
-                        ))}
+                        {videoList && videoList.length > 0 ? (
+                            videoList.map((video) => (
+                                <VideoItem key={video.videoId} onClick={() => openVideo(video)}>
+                                    <VideoTitle>
+                                        {video.videoTitle.length > 50
+                                            ? `${video.videoTitle.substring(0, 50)}...`
+                                            : video.videoTitle}
+                                        <TrashIcon
+                                            onClick={() => handleVideoDelete(video.videoId)}
+                                        />
+                                    </VideoTitle>
+                                    <VideoThumbnail src={video.thumbnail} alt={video.videoTitle} />
+                                </VideoItem>
+                            ))
+                        ) : (
+                            <EmptyText>저장된 동영상이 없습니다 😢</EmptyText>
+                        )}
                     </InfiniteScroll>
                 )}
             </VideoContainer>
@@ -156,11 +161,6 @@ const VideoContainer = styled.div`
 
 const Loading = styled.p`
     padding-top: 200px;
-    background: url(${Spinner}) no-repeat center center;
-`;
-const ErrorMessage = styled.p`
-    font-size: 40px;
-    padding-top: 100px;
 `;
 
 const VideoItem = styled.div`
@@ -191,4 +191,12 @@ const TrashIcon = styled(FaTrash)`
     stroke-width: 30px;
     cursor: pointer;
 `;
+
+const EmptyText = styled.p`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+`;
+
 export default MyVideoList;

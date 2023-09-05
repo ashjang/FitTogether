@@ -87,7 +87,7 @@ const VideoList: React.FC = () => {
             <VideoContainer>
                 {isLoading ? (
                     <Loading>
-                        <span className="blind">로딩 중입니다.</span>
+                        <img src={Spinner} alt="Loading" />
                     </Loading>
                 ) : isError ? (
                     <ErrorMessage>Error</ErrorMessage>
@@ -153,7 +153,6 @@ const VideoContainer = styled.div`
 
 const Loading = styled.p`
     padding-top: 200px;
-    background: url(${Spinner}) no-repeat center center;
 `;
 const ErrorMessage = styled.p`
     font-size: 40px;

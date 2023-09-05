@@ -87,8 +87,11 @@ const PlaylistSetting: React.FC<Props> = ({ video, onClose }) => {
             }
 
             getPlayLists();
-        } catch (error) {
-            console.error('There was an error!', error);
+        } catch (error: any) {
+            if (error.response && error.response.status === 400) {
+                alert('같은 이름의 플레이리스트가 존재합니다.');
+            }
+            console.error(error);
         }
     };
 
@@ -124,8 +127,11 @@ const PlaylistSetting: React.FC<Props> = ({ video, onClose }) => {
             console.log(response.data);
             setEditingPlaylistInputIndex(null);
             getPlayLists();
-        } catch (error) {
-            console.error('There was an error!', error);
+        } catch (error: any) {
+            if (error.response && error.response.status === 400) {
+                alert('같은 이름의 플레이리스트가 존재합니다.');
+            }
+            console.error(error);
         }
     };
 
@@ -140,8 +146,9 @@ const PlaylistSetting: React.FC<Props> = ({ video, onClose }) => {
             });
             console.log(response.data);
             getPlayLists();
-        } catch (error) {
-            console.error('There was an error!', error);
+        } catch (error: any) {
+            alert('재생목록 삭제가 실패하였습니다.');
+            console.error(error);
         }
     };
 
@@ -164,7 +171,8 @@ const PlaylistSetting: React.FC<Props> = ({ video, onClose }) => {
                 alert('영상 저장이 실패하였습니다.');
             }
         } catch (error) {
-            console.error('There was an error!', error);
+            alert('비디오 추가가 실패하였습니다.');
+            console.error(error);
         }
     };
 
