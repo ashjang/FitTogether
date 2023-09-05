@@ -11,6 +11,11 @@ interface Props {
     onClose: () => void;
     createChatRoom: () => void;
     onChatRoomClick: (chatRoomId: number) => void;
+    // showButton: true;
+    // senderProfileImage: string;
+    // senderNickname: string;
+    // nickname: string;
+    // key: string;
 }
 
 interface MateDateItem {
@@ -26,6 +31,7 @@ interface MateData {
 interface UserData {
     senderProfileImage: string;
     senderNickname: string;
+    otherUserNickname: string;
 }
 
 const MateList: React.FC<Props> = ({ isOpen, onClose, createChatRoom }) => {
@@ -44,11 +50,14 @@ const MateList: React.FC<Props> = ({ isOpen, onClose, createChatRoom }) => {
                     if (response.status === 200) {
                         const processedData = processResponseData(response.data);
                         setMateData(processedData);
+
+                        console.log('API 요청이 성공하였습니다.', response.data);
                     } else {
-                        console.error('API 요청이 실패하였습니다.');
+                        console.error('API 요청이 실패하였습니다.', response.status);
                         alert('친구 리스트를 가져오는데 실패했습니다.');
                     }
                 })
+
                 .catch((error) => {
                     console.error('An error occurred:', error);
                     alert('친구 리스트를 가져오는데 실패했습니다.');
@@ -60,15 +69,18 @@ const MateList: React.FC<Props> = ({ isOpen, onClose, createChatRoom }) => {
         const processedData: MateData = {};
 
         responseData.forEach((user) => {
-            if (typeof user.senderNickname === 'string') {
-                processedData[user.senderNickname] = {
+            console.log('Processing user:', user);
+
+            if (typeof user.otherUserNickname === 'string') {
+                processedData[user.otherUserNickname] = {
                     senderProfileImage: user.senderProfileImage || default_user_image,
-                    senderNickname: user.senderNickname,
+                    senderNickname: user.otherUserNickname,
                     nickname: '',
                 };
             }
         });
 
+        console.log('Processed data:', processedData);
         return processedData;
     };
 
@@ -98,20 +110,26 @@ const MateList: React.FC<Props> = ({ isOpen, onClose, createChatRoom }) => {
             <MateListComponent>
                 <Title>운동 메이트 리스트</Title>
                 <MateListItems>
-                    {Object.entries(mateData).map(([key, mate]) => (
-                        <MateListItem
-                            key={key}
-                            {...mate}
-                            onChatRoomClick={(chatRoomId: number) => {
-                                // 채팅방 생성 및 열기 동작 시뮬레이션
-                                console.log(
-                                    `Chat room with ${mate.senderNickname} opened. Room ID: ${chatRoomId}`
-                                );
-                                createChatRoom();
-                            }}
-                            showButton={true}
-                        />
-                    ))}
+                    {Object.entries(mateData).map(([key, mate]) => {
+                        console.log('Mapping mate:', mate);
+                        return (
+                            <MateListItem
+                                key={key}
+                                senderProfileImage={mate.senderProfileImage}
+                                senderNickname={mate.senderNickname}
+                                onChatRoomClick={(chatRoomId: number) => {
+                                    // 채팅방 생성 및 열기 동작
+                                    console.log(
+                                        `Chat room with ${mate.senderNickname} opened. Room ID: ${chatRoomId}`
+                                    );
+
+                                    createChatRoom();
+                                }}
+                                createChatRoom={createChatRoom}
+                                showButton={true}
+                            />
+                        );
+                    })}
                 </MateListItems>
             </MateListComponent>
         </Modal>

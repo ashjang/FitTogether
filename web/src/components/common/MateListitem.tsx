@@ -11,9 +11,9 @@ interface Props {
     senderNickname: string;
     showButton: boolean;
     createChatRoom: (senderNickname: string) => void;
+
     onChatRoomClick: (chatRoomId: number) => void;
 }
-
 const MateListItem: React.FC<Props> = ({ senderProfileImage, senderNickname, showButton }) => {
     const [chatRoomCreated, setChatRoomCreated] = useState(false);
 

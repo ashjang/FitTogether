@@ -25,7 +25,6 @@ interface Props {
     setMateModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
     createChatRoom: () => void;
 }
-
 const ChatList: React.FC<Props> = ({
     chatRooms,
     onChatRoomClick,
@@ -40,7 +39,7 @@ const ChatList: React.FC<Props> = ({
 
     const handleShowMateListClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.stopPropagation(); // 이벤트 버블링 x
-        console.log('운동메이트 리스트 버튼 클릭 확인', isLoading);
+        console.log('운동메이트 리스트 버튼 클릭 열림', isLoading);
 
         if (!isLoading) {
             // setIsLoading(true);
@@ -49,7 +48,7 @@ const ChatList: React.FC<Props> = ({
     };
 
     const handleCloseMateList = () => {
-        console.log('====================');
+        console.log('운동 메이트 리스트 모달창 닫기');
         setMateModalOpen(false);
         setIsLoading(false);
     };
