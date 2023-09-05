@@ -28,7 +28,6 @@ interface Props {
     chatRoomName: string | undefined;
     userProfile: UserProfile | null;
 }
-
 const ChatWindow: React.FC<Props> = ({
     chatRoomId,
     chatMessages,
@@ -84,7 +83,7 @@ const ChatWindow: React.FC<Props> = ({
                             {chatMessages.map((message, index) => (
                                 <MessageBox key={index}>
                                     <SenderProfile>
-                                        <SenderProfileImage
+                                        <SenderImage
                                             src={userProfile?.profileImage || defaultUserImage}
                                             alt={username}
                                         />
@@ -189,7 +188,7 @@ const TextBox = styled.div`
 const SenderProfile = styled.div`
     margin-right: 10px;
 `;
-const SenderProfileImage = styled.img`
+const SenderImage = styled.img`
     width: 70px;
     height: 70px;
     border-radius: 4px;
