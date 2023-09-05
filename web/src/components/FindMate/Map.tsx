@@ -227,19 +227,19 @@ const Map: React.FC = () => {
         <MapContainer>
             <CategoryBtnTab>
                 <CategoryBtn
-                    className={`category01 ${category === 'RUNNING' ? 'active' : ''}`}
+                    className={category === 'RUNNING' ? 'active' : ''}
                     onClick={() => handleCategoryClick('RUNNING')}
                 >
                     러닝
                 </CategoryBtn>
                 <CategoryBtn
-                    className={`category02 ${category === 'HIKING' ? 'active' : ''}`}
+                    className={category === 'HIKING' ? 'active' : ''}
                     onClick={() => handleCategoryClick('HIKING')}
                 >
                     등산
                 </CategoryBtn>
                 <CategoryBtn
-                    className={`category03 ${category === 'WEIGHT' ? 'active' : ''}`}
+                    className={category === 'WEIGHT' ? 'active' : ''}
                     onClick={() => handleCategoryClick('WEIGHT')}
                 >
                     헬스
@@ -258,10 +258,10 @@ const Map: React.FC = () => {
             </LocationSearchBar>
 
             <MapBox ref={kakaoMapRef}>
-                <GoBackButton onClick={createLocationMarker}>
+                <CreateMarkerButton onClick={createLocationMarker}>
                     <span className="blind">위치 설정 버튼</span>
                     <LightIcon icon={faCrosshairs} />
-                </GoBackButton>
+                </CreateMarkerButton>
             </MapBox>
             <Modal
                 isOpen={isModalOpen}
@@ -291,50 +291,42 @@ const Map: React.FC = () => {
 };
 
 const MapContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     position: relative;
-    max-width: 1440px;
     height: 100%;
     margin: 0px auto;
-    padding: 20px 60px;
-    box-sizing: border-box;
-    transition: all 0.3s;
 `;
 
 const CategoryBtnTab = styled.div`
-    position: relative;
-    top: 60px;
-    z-index: 10;
-    button {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        border-style: none;
-        border-radius: 15px;
-        padding: 3px 10px;
-        background-color: #fff;
-        box-shadow: 2.5px 5px 10px rgba(0, 0, 0, 0.5);
-
-        &.active {
-            background-color: #000;
-            color: #fff;
-        }
-    }
-    .category01 {
-        left: 44%;
-        // transform: translateX(-40%);
-    }
-    .category03 {
-        left: 56%;
-        // transform: translateX(-60%);
-    }
+    margin-top: 30px;
 `;
-const CategoryBtn = styled.button``;
+
+const CategoryBtn = styled.button`
+    border-style: none;
+    border-radius: 10px;
+    padding: 3px 10px;
+    margin: 0px 5px;
+    cursor: pointer;
+    background-color: #dddddd;
+    box-shadow: 2.5px 5px 10px rgba(0, 0, 0, 0.5);
+    font-size: 18px;
+    &.active {
+        background-color: #ffc0cb;
+    }
+    &:hover {
+        background-color: #ffd0dd;
+    }
+    font-size: 18px;
+`;
 
 const LocationSearchBar = styled.div`
     position: absolute;
     z-index: 5;
-    top: 160px;
-    left: 155px;
+    top: 130px;
+    left: 75px;
     opacity: 0.9;
     border: 1px solid black;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
@@ -354,27 +346,26 @@ const LocationSearchBtn = styled.button`
 `;
 
 const MapBox = styled.div`
-    position: absolute;
-    top: 150px;
-    left: 10%;
-    width: 80%;
-    height: 70%;
+    position: relative;
+    width: 1200px;
+    height: 700px;
+    margin: 50px 0;
     border-radius: 10px;
-    transition: all 0.3s;
 `;
-const GoBackButton = styled.button`
+
+const CreateMarkerButton = styled.button`
     position: absolute;
     right: 10px;
     bottom: 10px;
     padding: 10px 10px 5px 10px;
     border: none;
     border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(125, 125, 125, 0.2);
+    border: 5px solid black;
     z-index: 10;
 `;
 const LightIcon = styled(FontAwesomeIcon)`
-    font-size: 28px;
-    color: rgb(18, 17, 17);
+    font-size: 30px;
 `;
 
 export default Map;

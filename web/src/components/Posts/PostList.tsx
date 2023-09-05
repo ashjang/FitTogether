@@ -4,6 +4,7 @@ import PostListItem from '../common/PostListItem';
 import { useRecoilValue } from 'recoil';
 import { postListDataState } from '../../recoil/posts/atoms';
 import styled from '@emotion/styled';
+import Spinner from '../../assets/Spinner.svg';
 
 const PostList: React.FC = () => {
     const postListData = useRecoilValue(postListDataState);
@@ -25,7 +26,7 @@ const PostList: React.FC = () => {
                 {postListData ? (
                     postListData.map((post) => <PostListItem key={post.postId} {...post} />)
                 ) : (
-                    <div>Loading...</div>
+                    <LoadingSpinner src={Spinner} alt="Loading" />
                 )}
             </PostListItems>
         </PostListComponent>
@@ -37,6 +38,12 @@ const PostListComponent = styled.div``;
 const PostListItems = styled.div`
     width: 1000px;
     margin: 50px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 `;
+
+const LoadingSpinner = styled.img``;
 
 export default PostList;

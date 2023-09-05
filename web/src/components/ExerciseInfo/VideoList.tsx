@@ -146,8 +146,7 @@ const VideoContainer = styled.div`
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     gap: 20px;
-    margin: 150px auto 0;
-    max-width: 800px;
+    margin: 50px auto 0;
     text-align: center;
 `;
 
@@ -164,6 +163,7 @@ const VideoItem = styled.div`
     margin-bottom: 50px;
     border-radius: 15px;
     overflow: hidden;
+    width: 650px;
 `;
 
 const VideoTitle = styled.h4`
@@ -179,7 +179,6 @@ const VideoTitle = styled.h4`
 
 const VideoThumbnail = styled.img`
     width: 100%;
-    // height: 500px;
 `;
 
 const FaFolderPlus = styled(FontAwesomeIcon)`

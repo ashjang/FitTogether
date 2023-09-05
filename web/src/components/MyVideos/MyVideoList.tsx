@@ -103,7 +103,7 @@ const MyVideoList: React.FC = () => {
                     >
                         {videoList && videoList.length > 0 ? (
                             videoList.map((video) => (
-                                <VideoItem key={video.videoId} onClick={() => openVideo(video)}>
+                                <VideoItem key={video.videoId}>
                                     <VideoTitle>
                                         {video.videoTitle.length > 50
                                             ? `${video.videoTitle.substring(0, 50)}...`
@@ -112,7 +112,11 @@ const MyVideoList: React.FC = () => {
                                             onClick={() => handleVideoDelete(video.videoId)}
                                         />
                                     </VideoTitle>
-                                    <VideoThumbnail src={video.thumbnail} alt={video.videoTitle} />
+                                    <VideoThumbnail
+                                        src={video.thumbnail}
+                                        alt={video.videoTitle}
+                                        onClick={() => openVideo(video)}
+                                    />
                                 </VideoItem>
                             ))
                         ) : (
@@ -168,6 +172,7 @@ const VideoItem = styled.div`
     margin-bottom: 50px;
     border-radius: 15px;
     overflow: hidden;
+    width: 650px;
 `;
 
 const VideoTitle = styled.h4`

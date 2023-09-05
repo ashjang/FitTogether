@@ -1,7 +1,7 @@
-import styled from '@emotion/styled';
 import React from 'react';
-
 import { useState, useEffect } from 'react';
+import styled from '@emotion/styled';
+import Spinner from '../../assets/Spinner.svg';
 
 import Map from './Map';
 
@@ -35,43 +35,9 @@ const KakaoMapScriptLoader: React.FC = () => {
         document.getElementById('root')?.appendChild(script);
     }, []);
 
-    return (
-        <MapInn>
-            <PageTitle>운동 메이트 찾기</PageTitle>
-            <MapLoad>{mapScriptLoaded ? <Map /> : <div>Loading...</div>}</MapLoad>
-        </MapInn>
-    );
+    return <MapLoad>{mapScriptLoaded ? <Map /> : <img src={Spinner} alt="Loading" />}</MapLoad>;
 };
-const MapInn = styled.div`
-    position: relative;
-    max-width: 1440px;
-    min-height: 100vh;
-    margin: 120px auto 0;
-    padding: 20px 60px;
-    box-sizing: border-box;
-`;
-const PageTitle = styled.h2`
-    position: relative;
-    z-index: 1;
-    &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: -10px;
-        width: 100%;
-        height: 1px;
-        color: #000;
-        background-color: #000;
-    }
-`;
 
-// MapLoad
-const MapLoad = styled.div`
-    position: absolute;
-    top: 50px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    height: 100%;
-`;
+const MapLoad = styled.div``;
+
 export default KakaoMapScriptLoader;

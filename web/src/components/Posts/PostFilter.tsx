@@ -228,41 +228,43 @@ const PostFilter: React.FC = () => {
                     </CurrentFilterItem>
                 )}
             </InputField>
-            <ButtonGroup>
-                <PaginationButtonArrow
-                    onClick={() => {
-                        setCurrentPage(currentPage - 1);
-                        navigate(`${location.pathname}?page=${currentPage - 1}`);
-                    }}
-                    disabled={currentPage === 1}
-                >
-                    &lt;
-                </PaginationButtonArrow>
-                {(() => {
-                    const buttons = [];
-                    for (let i = 1; i <= totalPages; i++) {
-                        buttons.push(
-                            <PaginationButtonNumber
-                                key={i}
-                                onClick={() => handlePaginationBtnClick(i)}
-                                css={i === currentPage ? selectedButton : unselectedButton}
-                            >
-                                {i}
-                            </PaginationButtonNumber>
-                        );
-                    }
-                    return buttons;
-                })()}
-                <PaginationButtonArrow
-                    onClick={() => {
-                        setCurrentPage(currentPage + 1);
-                        navigate(`${location.pathname}?page=${currentPage + 1}`);
-                    }}
-                    disabled={currentPage === totalPages}
-                >
-                    &gt;
-                </PaginationButtonArrow>
-            </ButtonGroup>
+            <ButtonContainer>
+                <ButtonGroup>
+                    <PaginationButtonArrow
+                        onClick={() => {
+                            setCurrentPage(currentPage - 1);
+                            navigate(`${location.pathname}?page=${currentPage - 1}`);
+                        }}
+                        disabled={currentPage === 1}
+                    >
+                        &lt;
+                    </PaginationButtonArrow>
+                    {(() => {
+                        const buttons = [];
+                        for (let i = 1; i <= totalPages; i++) {
+                            buttons.push(
+                                <PaginationButtonNumber
+                                    key={i}
+                                    onClick={() => handlePaginationBtnClick(i)}
+                                    css={i === currentPage ? selectedButton : unselectedButton}
+                                >
+                                    {i}
+                                </PaginationButtonNumber>
+                            );
+                        }
+                        return buttons;
+                    })()}
+                    <PaginationButtonArrow
+                        onClick={() => {
+                            setCurrentPage(currentPage + 1);
+                            navigate(`${location.pathname}?page=${currentPage + 1}`);
+                        }}
+                        disabled={currentPage === totalPages}
+                    >
+                        &gt;
+                    </PaginationButtonArrow>
+                </ButtonGroup>
+            </ButtonContainer>
         </PostFilterComponent>
     );
 };
@@ -278,18 +280,17 @@ const PostFilterComponent = styled.div`
 const CategoryField = styled.div``;
 
 const CategoryButton = styled.button<CategoryButtonProps>`
-    border: 2px solid transparent;
-    border-radius: 15px;
-    padding: 0 5px;
-    margin: 5px 10px 5px 0px;
+    border-style: none;
+    border-radius: 10px;
+    padding: 3px 10px;
+    margin: 5px 10px 10px 0px;
     cursor: pointer;
-    background-color: ${(props) => (props.active ? '#888888' : '#bbbbbb')};
-    &:hover {
-        background-color: #888888;
-        color: #ffffff;
-    }
-    color: ${(props) => (props.active ? '#ffffff' : '#000000')};
+    background-color: ${(props) => (props.active ? '#ffc0cb' : '#dddddd')};
+    box-shadow: 2.5px 5px 10px rgba(0, 0, 0, 0.5);
     font-size: 18px;
+    &:hover {
+        background-color: #ffd0dd;
+    }
 `;
 
 const InputField = styled.div`
@@ -351,12 +352,18 @@ const FilterResetButton = styled.button`
     color: red;
 `;
 
-const ButtonGroup = styled.div`
+const ButtonContainer = styled.div`
     position: absolute;
     bottom: 0px;
-    left: 45%;
     width: max-content;
     margin: 0px auto;
+`;
+
+const ButtonGroup = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1000px;
 `;
 
 const PaginationButtonNumber = styled.button`

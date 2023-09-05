@@ -149,13 +149,11 @@ const BookmarkPage = styled.div`
 
 const TitleArea = styled.div`
     width: 1200px;
-    border-bottom: 1px solid black;
     display: flex;
     justify-content: center;
     align-items: center;
     justify-content: space-between;
     position: relative;
-    padding-bottom: 30px;
     margin-bottom: 50px;
     font-weight: bold;
 `;

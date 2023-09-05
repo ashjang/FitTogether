@@ -17,32 +17,36 @@ const ExerciseInfo: React.FC = () => {
     return (
         <ExerciseInfoPage>
             <PageTitle>운동 정보</PageTitle>
-            <BtnTab>
-                <button
-                    className={`category01 ${category === 'running' ? 'active' : ''}`}
+            <CategoryBtnTab>
+                <CategoryBtn
+                    className={category === 'running' ? 'active' : ''}
                     onClick={() => handleTabClick('running')}
                 >
                     러닝
-                </button>
-                <button
-                    className={`category02 ${category === 'hiking' ? 'active' : ''}`}
+                </CategoryBtn>
+                <CategoryBtn
+                    className={category === 'hiking' ? 'active' : ''}
                     onClick={() => handleTabClick('hiking')}
                 >
                     등산
-                </button>
-                <button
-                    className={`category03 ${category === 'health' ? 'active' : ''}`}
+                </CategoryBtn>
+                <CategoryBtn
+                    className={category === 'health' ? 'active' : ''}
                     onClick={() => handleTabClick('health')}
                 >
                     헬스
-                </button>
-            </BtnTab>
+                </CategoryBtn>
+            </CategoryBtnTab>
             <VideoList />
         </ExerciseInfoPage>
     );
 };
 
 const ExerciseInfoPage = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
     width: 1440px;
     min-height: calc(100vh - 200px);
     margin: 120px auto 0;
@@ -50,48 +54,28 @@ const ExerciseInfoPage = styled.div`
 `;
 
 const PageTitle = styled.h2`
-    position: relative;
-
-    &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: -10px;
-        width: 100%;
-        height: 1px;
-        color: #000;
-        background-color: #000;
-    }
+    width: 1440px;
+    padding: 0 60px;
 `;
 
-const BtnTab = styled.div`
-    margin-top: 10px;
-    position: relative;
-    top: 60px;
-    z-index: 10;
+const CategoryBtnTab = styled.div`
+    margin-top: 30px;
+`;
 
-    button {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        border-style: none;
-        border-radius: 15px;
-        padding: 3px 10px;
-        background-color: #fff;
-        box-shadow: 2.5px 5px 10px rgba(0, 0, 0, 0.5);
-
-        &.active {
-            background-color: #000;
-            color: #fff;
-        }
+const CategoryBtn = styled.button`
+    border-style: none;
+    border-radius: 10px;
+    padding: 3px 10px;
+    margin: 0px 5px;
+    cursor: pointer;
+    background-color: #dddddd;
+    box-shadow: 2.5px 5px 10px rgba(0, 0, 0, 0.5);
+    font-size: 18px;
+    &.active {
+        background-color: #ffc0cb;
     }
-    .category01 {
-        left: 43.75%;
-        transform: translateX(-40%);
-    }
-    .category03 {
-        left: 56.3%;
-        transform: translateX(-60%);
+    &:hover {
+        background-color: #ffd0dd;
     }
 `;
 
