@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import PostListItem from '../common/PostListItem';
+import PostListItem from './PostListItem';
 import { useRecoilValue } from 'recoil';
 import { postListDataState } from '../../recoil/posts/atoms';
 import styled from '@emotion/styled';

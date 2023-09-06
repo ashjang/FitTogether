@@ -91,6 +91,7 @@ const UserProfileComponent = styled.div`
     border: 2px solid #444;
     border-radius: 30px;
     box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.75);
+    z-index: 100;
 `;
 
 const UserNickname = styled.h2``;
