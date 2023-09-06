@@ -234,59 +234,63 @@ const MyInformation: React.FC = () => {
             </InputContainer>
             <div css={containerStyles}>
                 <p css={labelStyle}>성별</p>
-                <label css={radioButtonStyles}>
-                    <input
-                        type="radio"
-                        name="gender"
-                        value="남성"
-                        checked={gender === true}
-                        onChange={handleGenderChange}
-                    />
-                    남성
-                </label>
-                <label css={radioButtonStyles}>
-                    <input
-                        type="radio"
-                        name="gender"
-                        value="여성"
-                        checked={gender === false}
-                        onChange={handleGenderChange}
-                    />
-                    여성
-                </label>
+                <RadioButtonContainer>
+                    <label css={radioButtonStyles}>
+                        <input
+                            type="radio"
+                            name="gender"
+                            value="남성"
+                            checked={gender === true}
+                            onChange={handleGenderChange}
+                        />
+                        남성
+                    </label>
+                    <label css={radioButtonStyles}>
+                        <input
+                            type="radio"
+                            name="gender"
+                            value="여성"
+                            checked={gender === false}
+                            onChange={handleGenderChange}
+                        />
+                        여성
+                    </label>
+                </RadioButtonContainer>
             </div>
             <div css={containerStyles}>
                 <p css={labelStyle}>주로 하는 운동</p>
-                <label css={radioButtonStyles}>
-                    <input
-                        type="checkbox"
-                        name="favorite"
-                        value="RUNNING"
-                        checked={favoriteSports.includes('RUNNING')}
-                        onChange={handleFavoriteSportsChange}
-                    />
-                    러닝
-                </label>
-                <label css={radioButtonStyles}>
-                    <input
-                        type="checkbox"
-                        name="favorite"
-                        value="HIKING"
-                        checked={favoriteSports.includes('HIKING')}
-                        onChange={handleFavoriteSportsChange}
-                    />
-                    등산
-                </label>
-                <label>
-                    <input
-                        type="checkbox"
-                        name="favorite"
-                        value="WEIGHT"
-                        checked={favoriteSports.includes('WEIGHT')}
-                        onChange={handleFavoriteSportsChange}
-                    />
-                    헬스
-                </label>
+                <RadioButtonContainer>
+                    <label css={radioButtonStyles}>
+                        <input
+                            type="checkbox"
+                            name="favorite"
+                            value="RUNNING"
+                            checked={favoriteSports.includes('RUNNING')}
+                            onChange={handleFavoriteSportsChange}
+                        />
+                        러닝
+                    </label>
+                    <label css={radioButtonStyles}>
+                        <input
+                            type="checkbox"
+                            name="favorite"
+                            value="HIKING"
+                            checked={favoriteSports.includes('HIKING')}
+                            onChange={handleFavoriteSportsChange}
+                        />
+                        등산
+                    </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="favorite"
+                            value="WEIGHT"
+                            checked={favoriteSports.includes('WEIGHT')}
+                            onChange={handleFavoriteSportsChange}
+                        />
+                        헬스
+                    </label>
+                </RadioButtonContainer>
             </div>
             <InputContainer>
                 <p css={labelStyle}>자기소개</p>
@@ -304,26 +308,28 @@ const MyInformation: React.FC = () => {
             </MessageBox>
             <div css={containerStyles}>
                 <p css={labelStyle}>공개 여부 </p>
-                <label css={radioButtonStyles}>
-                    <input
-                        type="radio"
-                        name="publicStatus"
-                        value="공개"
-                        checked={publicStatus === true}
-                        onChange={handlePublicStatusChange}
-                    />
-                    공개
-                </label>
-                <label css={radioButtonStyles}>
-                    <input
-                        type="radio"
-                        name="publicStatus"
-                        value="비공개"
-                        checked={publicStatus === false}
-                        onChange={handlePublicStatusChange}
-                    />
-                    비공개
-                </label>
+                <RadioButtonContainer>
+                    <label css={radioButtonStyles}>
+                        <input
+                            type="radio"
+                            name="publicStatus"
+                            value="공개"
+                            checked={publicStatus === true}
+                            onChange={handlePublicStatusChange}
+                        />
+                        공개
+                    </label>
+                    <label css={radioButtonStyles}>
+                        <input
+                            type="radio"
+                            name="publicStatus"
+                            value="비공개"
+                            checked={publicStatus === false}
+                            onChange={handlePublicStatusChange}
+                        />
+                        비공개
+                    </label>
+                </RadioButtonContainer>
             </div>
             <div css={formArea}>
                 <input
@@ -340,7 +346,6 @@ const MyInformation: React.FC = () => {
 
 const labelStyle = css`
     width: 108px;
-    margin-right: 10px;
 `;
 
 const inputStyles = css`
@@ -379,11 +384,18 @@ const formArea = css`
 
 const containerStyles = css`
     display: flex;
+    justify-content: flex-start;
     align-items: center;
-    justify-content: space-between;
     margin-bottom: 10px;
     padding-top: 8px;
     padding-bottom: 8px;
+`;
+
+const RadioButtonContainer = styled.div`
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: 50px;
 `;
 
 const InputContainer = styled.div`
@@ -392,33 +404,11 @@ const InputContainer = styled.div`
     margin-bottom: 10px;
 `;
 
-// const AddressPopup = styled.div`
-//     position: fixed;
-//     top: 0;
-//     left: 0;
-//     width: 100%;
-//     height: 100%;
-//     background-color: rgba(0, 0, 0, 0.5);
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-//     z-index: 9999;
-// `;
-
-// const PopupContent = styled.div`
-//     width: 500px;
-//     background-color: white;
-//     padding: 20px;
-
-//     border-radius: 8px;
-//     text-align: right;
-// `;
-
 const MessageBox = styled.div`
     display: flex;
     justify-content: center;
     width: 430px;
-    margin-left: 25px;
+    margin-left: 15px;
     margin-top: -20px;
     margin-bottom: 4px;
 `;

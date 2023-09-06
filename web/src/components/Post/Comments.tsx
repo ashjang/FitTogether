@@ -344,23 +344,22 @@ const TopDiv = styled.div`
 
 const UserId = styled.p`
     margin: 0 10px;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
 `;
 
 const PostTime = styled.p`
-    margin: 5px 0 0 0;
-    font-size: 10px;
+    margin-left: 10px;
+    font-size: 12px;
 `;
 
 const FaTrashCan = styled(FontAwesomeIcon)`
     position: absolute;
-    right: 0;
+    right: 15px;
 `;
 
 const Comment = styled.p`
-    height: 40px;
-    margin: 0;
+    margin: 5px 0 10px;
     font-size: 14px;
     margin-left: 45px;
 `;

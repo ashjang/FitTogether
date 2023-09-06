@@ -46,18 +46,25 @@ const MyPage: React.FC = () => {
 };
 
 const MypageContainer = styled.div`
-    margin-top: 80px;
-    min-height: 100vh;
-    // width: 1040px;
-
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    width: 600px;
+    min-height: calc(100vh - 200px);
+    margin: 120px auto 0;
+    padding: 20px;
+`;
+
+const TabArea = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 600px;
+    margin-bottom: 30px;
 `;
 
 const Title = styled.h2`
-    width: 180px;
     height: 50px;
     font-weight: bold;
     font-size: 22px;
@@ -67,25 +74,14 @@ const Title = styled.h2`
 
 const GoTo = styled.div`
     font-size: 1.3rem;
-    // margin-left: 100px;
-`;
-
-const TabArea = styled.div`
-    width: 80%;
-    display: flex;
-    // justify-content: center;
-    justify-content: space-around;
-    align-items: center;
-    margin-top: 150px;
-    margin-bottom: 70px;
+    color: blue;
 `;
 
 const Content = styled.div`
-    width: 100%;
+    width: 600px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 50px;
 `;
 
 export default MyPage;

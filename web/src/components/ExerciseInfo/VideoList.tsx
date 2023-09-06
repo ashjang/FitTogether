@@ -163,7 +163,7 @@ const VideoItem = styled.div`
     margin-bottom: 50px;
     border-radius: 15px;
     overflow: hidden;
-    width: 650px;
+    width: 700px;
 `;
 
 const VideoTitle = styled.h4`

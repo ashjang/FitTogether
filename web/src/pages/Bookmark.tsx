@@ -178,7 +178,7 @@ const AddPlaylistContainer = styled.div`
     justify-content: center;
     align-items: center;
     position: absolute;
-    top: 55%;
+    top: 80%;
     right: 5px;
 `;
 

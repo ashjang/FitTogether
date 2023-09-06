@@ -40,14 +40,14 @@ const KakaoAuth: React.FC = () => {
     if (error) {
         return (
             <MessageContainer>
-                <LodingMessage>{error}</LodingMessage>
+                <LoadingMessage>{error}</LoadingMessage>
             </MessageContainer>
         );
     }
 
     return (
         <MessageContainer>
-            <LodingMessage>카카오 계정으로 로그인 중...</LodingMessage>
+            <LoadingMessage>카카오 계정으로 로그인 중...</LoadingMessage>
         </MessageContainer>
     );
 };
@@ -61,7 +61,7 @@ const MessageContainer = styled.div`
     justify-content: center;
 `;
 
-const LodingMessage = styled.p`
+const LoadingMessage = styled.p`
     color: #007bff;
     font-weight: bold;
     font-size: 18px;

@@ -39,7 +39,7 @@ const MyVideoList: React.FC = () => {
             console.error(error);
             alert('동영상 삭제 중 오류가 발생하였습니다.');
         }
-
+        refetch();
         setShowPopup(true);
         setTimeout(() => {
             setShowPopup(false);
@@ -58,22 +58,21 @@ const MyVideoList: React.FC = () => {
         return response.data;
     };
 
-    const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery<VideoList, Error>(
-        ['videos', playlistName],
-        ({ pageParam = -1 }) => fetchVideos(playlistName, pageParam),
-        {
-            getNextPageParam: (lastPage) => {
-                // 이전 페이지의 lastId를 반환하여 다음 페이지 요청 시 사용
-                if (lastPage.hasNext) {
-                    // hasNext가 true인 경우에만 다음 페이지 요청
-                    return lastPage.lastId;
-                } else {
-                    // 더이상 불러올 데이터가 없는 경우 null 반환하여 페이지 요청 중단
-                    return null;
-                }
-            },
-        }
-    );
+    const { data, isLoading, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery<
+        VideoList,
+        Error
+    >(['videos', playlistName], ({ pageParam = -1 }) => fetchVideos(playlistName, pageParam), {
+        getNextPageParam: (lastPage) => {
+            // 이전 페이지의 lastId를 반환하여 다음 페이지 요청 시 사용
+            if (lastPage.hasNext) {
+                // hasNext가 true인 경우에만 다음 페이지 요청
+                return lastPage.lastId;
+            } else {
+                // 더이상 불러올 데이터가 없는 경우 null 반환하여 페이지 요청 중단
+                return null;
+            }
+        },
+    });
 
     let videoList = data?.pages.flatMap((page) => page.values);
 
@@ -172,7 +171,7 @@ const VideoItem = styled.div`
     margin-bottom: 50px;
     border-radius: 15px;
     overflow: hidden;
-    width: 650px;
+    width: 700px;
 `;
 
 const VideoTitle = styled.h4`
