@@ -45,6 +45,40 @@ public class DmService {
         User receiver = userRepository.findByNickname(receiverNickname)
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
+        // 두 가지 가능한 조합 모두 확인
+        Optional<ChatRoom> existingRoom1 = Optional.ofNullable(chatRoomRepository.findBySenderNicknameAndReceiverNickname(
+                        sender.getNickname(), receiver.getNickname()))
+                .orElse(Optional.empty());
+
+        Optional<ChatRoom> existingRoom2 = Optional.ofNullable(chatRoomRepository.findBySenderNicknameAndReceiverNickname(
+                        receiver.getNickname(), sender.getNickname()))
+                .orElse(Optional.empty());
+
+        if (existingRoom1.isPresent()) {
+            // 이미 존재하는 방이면 해당 방의 정보 반환
+            ChatRoom chatRoom = ChatRoom.builder()
+                    .chatRoomId(existingRoom1.get().getChatRoomId())
+                    .senderId(sender)
+                    .receiverId(receiver)
+                    .senderNickname(sender.getNickname())
+                    .receiverNickname(receiver.getNickname())
+                    .chatRoomDate(LocalDateTime.now())
+                    .build();
+            return chatRoom;
+        } else if (existingRoom2.isPresent()) {
+            // 이미 존재하는 방이면 해당 방의 정보 반환
+            ChatRoom chatRoom = ChatRoom.builder()
+                    .chatRoomId(existingRoom2.get().getChatRoomId())
+                    .senderId(sender)
+                    .receiverId(receiver)
+                    .senderNickname(sender.getNickname())
+                    .receiverNickname(receiver.getNickname())
+                    .chatRoomDate(LocalDateTime.now())
+                    .build();
+            return chatRoom;
+        }
+
+
         ChatRoom chatRoom = ChatRoom.builder()
                 .senderId(sender)
                 .receiverId(receiver)
