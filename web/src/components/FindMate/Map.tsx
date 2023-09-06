@@ -270,6 +270,7 @@ const Map: React.FC = () => {
                 style={{
                     overlay: {
                         backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        zIndex: 1,
                     },
                     content: {
                         width: 'max-content',
@@ -298,6 +299,7 @@ const MapContainer = styled.div`
     position: relative;
     height: 100%;
     margin: 0px auto;
+    transition: all 0.3s;
 `;
 
 const CategoryBtnTab = styled.div`
@@ -351,6 +353,7 @@ const MapBox = styled.div`
     height: 700px;
     margin: 50px 0;
     border-radius: 10px;
+    z-index: 0px;
 `;
 
 const CreateMarkerButton = styled.button`

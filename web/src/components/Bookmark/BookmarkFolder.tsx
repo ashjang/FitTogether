@@ -440,7 +440,6 @@ const FaAnglesRight = styled(FontAwesomeIcon)`
     right: 50px;
     top: 11px;
     font-size: 25px;
-    color: pink;
     cursor: pointer;
 `;
 
