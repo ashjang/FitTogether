@@ -91,6 +91,11 @@ const ChatList: React.FC<Props> = ({
                                     style={{ width: '40px', height: '40px', borderRadius: '50%' }}
                                 />
                                 <ChatListItemName>{chatRoom.receiverNickname}</ChatListItemName>
+                                {/* <ChatListItemName>
+                                    {chatRoom.receiverNickname === ''
+                                        ? ''
+                                        : chatRoom.receiverNickname}
+                                </ChatListItemName> */}
                             </ChatListItem>
                         </ListItem>
                     ))

@@ -19,7 +19,8 @@ interface UserProfile {
     profileImage: string | null;
 }
 interface ChatMessage {
-    chatRoomId: number;
+    // chatRoomId: number;
+    chatRoomId: number | null;
     contents: string;
     sendDate: Date;
 }
@@ -131,7 +132,7 @@ const ChatApp: React.FC = () => {
                 },
             })
             .then((response) => {
-                const chatRoomId = (response.data as ResponseData).chatRoomId;
+                const chatRoomId = (response.data as { chatRoomId: number }).chatRoomId;
                 setSelectedChatRoom(chatRoomId);
                 console.log('채팅방 생성 완료:', response.data);
                 console.log('채팅방 ID:', chatRoomId);
