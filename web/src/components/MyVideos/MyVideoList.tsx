@@ -1,97 +1,139 @@
-import React, { useEffect, useState } from 'react';
-import styled from '@emotion/styled';
-// import InfiniteScroll from 'react-infinite-scroll-component';
-import { FaTrash } from 'react-icons/fa';
+import React, { useState, useCallback } from 'react';
 import axios from 'axios';
+import { useInfiniteQuery } from 'react-query';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import VideoPopup from '../ExerciseInfo/VideoPopup';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FaTrash } from 'react-icons/fa';
+import styled from '@emotion/styled';
+import Spinner from '../../assets/Spinner.svg';
 
-interface Videos {
-    playlistName: string; // 필요없음
+interface Video {
+    videoId: string;
     videoTitle: string;
+    thumbnail: string;
+}
+
+interface VideoList {
+    values: Video[];
+    hasNext: boolean;
+    lastId: number;
 }
 
 const MyVideoList: React.FC = () => {
     const token = sessionStorage.getItem('token');
-
     const [showPopup, setShowPopup] = useState(false);
-    const [videos, setVideos] = useState<Videos[] | null>(null);
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    const playlistName = urlParams.get('name');
-
-    useEffect(() => {
-        getVideos();
-    }, []);
-
-    const getVideos = async () => {
-        try {
-            const response = await axios.get(`/api/playlist/${playlistName}`, {
-                headers: {
-                    'X-AUTH-TOKEN': token,
-                },
-            });
-            setVideos(response.data); // 응답값을 userData 상태에 저장
-            console.log(response.data);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            alert('재생목록 정보를 받아오는데 실패했습니다.');
-        }
-    };
+    const playlistName: string | null = urlParams.get('name');
+    const [clickedVideo, setClidkedVideo] = useState<Video | null>(null);
 
     // 플레이리스트 내 동영상을 삭제하는 함수
-    // ❗ 삭제 요청을 포함한 비동기 함수로 변경해야함
-    const handleVideoDelete = () => {
+    const handleVideoDelete = async (videoId: string) => {
+        try {
+            const response = await axios.delete(`/api/playlist/${playlistName}/video/${videoId}`, {
+                headers: { 'X-AUTH-TOKEN': token },
+            });
+            console.log(response.data);
+        } catch (error) {
+            console.error(error);
+            alert('동영상 삭제 중 오류가 발생하였습니다.');
+        }
+        refetch();
         setShowPopup(true);
         setTimeout(() => {
             setShowPopup(false);
         }, 1000);
     };
 
+    const fetchVideos = async (playlistName: string | null, lastId: number): Promise<VideoList> => {
+        const response = await axios.get<VideoList>(
+            `/api/playlist/${playlistName}?cursorId=${lastId}&size=5`,
+            {
+                headers: { 'X-AUTH-TOKEN': token },
+            }
+        );
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        console.log(response.data);
+        return response.data;
+    };
+
+    const { data, isLoading, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery<
+        VideoList,
+        Error
+    >(['videos', playlistName], ({ pageParam = -1 }) => fetchVideos(playlistName, pageParam), {
+        getNextPageParam: (lastPage) => {
+            // 이전 페이지의 lastId를 반환하여 다음 페이지 요청 시 사용
+            if (lastPage.hasNext) {
+                // hasNext가 true인 경우에만 다음 페이지 요청
+                return lastPage.lastId;
+            } else {
+                // 더이상 불러올 데이터가 없는 경우 null 반환하여 페이지 요청 중단
+                return null;
+            }
+        },
+    });
+
+    let videoList = data?.pages.flatMap((page) => page.values);
+
+    // 비디오 팝업을 여는 함수
+    const openVideo = useCallback((video: Video) => {
+        setClidkedVideo(video);
+    }, []);
+
+    // 비디오 팝업을 닫는 함수
+    const closeVideo = useCallback(() => {
+        setClidkedVideo(null);
+    }, []);
+
     return (
-        <MyVideoListContainer>
-            {videos?.map((video) => {
-                return (
-                    <VideoListItem>
-                        <VideoTitleArea>
-                            <VideoTitle>{video.videoTitle}</VideoTitle>
-                            <FaTrash onClick={() => handleVideoDelete()} />
-                        </VideoTitleArea>
-                        <img src="http://placehold.it/500x300" alt="예시" />
-                    </VideoListItem>
-                );
-            })}
+        <MyVideoListComponent>
+            <VideoContainer>
+                {isLoading ? (
+                    <Loading>
+                        <img src={Spinner} alt="Loading" />
+                    </Loading>
+                ) : (
+                    <InfiniteScroll
+                        dataLength={videoList?.length || 0}
+                        next={fetchNextPage}
+                        hasMore={!!hasNextPage}
+                        loader={<img src={Spinner} alt="Loading" />}
+                    >
+                        {videoList && videoList.length > 0 ? (
+                            videoList.map((video) => (
+                                <VideoItem key={video.videoId}>
+                                    <VideoTitle>
+                                        {video.videoTitle.length > 50
+                                            ? `${video.videoTitle.substring(0, 50)}...`
+                                            : video.videoTitle}
+                                        <TrashIcon
+                                            onClick={() => handleVideoDelete(video.videoId)}
+                                        />
+                                    </VideoTitle>
+                                    <VideoThumbnail
+                                        src={video.thumbnail}
+                                        alt={video.videoTitle}
+                                        onClick={() => openVideo(video)}
+                                    />
+                                </VideoItem>
+                            ))
+                        ) : (
+                            <EmptyText>저장된 동영상이 없습니다 😢</EmptyText>
+                        )}
+                    </InfiniteScroll>
+                )}
+            </VideoContainer>
+            {clickedVideo && (
+                <VideoPopup
+                    video={{ videoId: clickedVideo.videoId, title: clickedVideo.videoTitle }}
+                    onClose={closeVideo}
+                />
+            )}
             {showPopup && <DeletePopup>즐겨찾기에서 해제되었습니다.</DeletePopup>}
-        </MyVideoListContainer>
+        </MyVideoListComponent>
     );
 };
-
-const MyVideoListContainer = styled.div`
-    position: relative;
-`;
-
-const VideoListItem = styled.div`
-    margin-bottom: 50px;
-`;
-
-const VideoTitleArea = styled.div`
-    width: 500px;
-    padding: 4px 9px;
-    background-color: #888888;
-    color: white;
-    text-shadow: 2px 2px 4px #000;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-`;
-
-const VideoTitle = styled.div`
-    // flex: 1;
-    width: 400px;
-    padding-left: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-`;
 
 const DeletePopup = styled.div`
     position: fixed;
@@ -103,6 +145,62 @@ const DeletePopup = styled.div`
     border-radius: 10px;
     font-weight: bold;
     z-index: 9999;
+`;
+
+const MyVideoListComponent = styled.div`
+    position: relative;
+    padding: 20px 60px;
+    box-sizing: border-box;
+`;
+
+const VideoContainer = styled.div`
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 20px;
+    margin: 0 auto;
+    max-width: 800px;
+    text-align: center;
+`;
+
+const Loading = styled.p`
+    padding-top: 200px;
+`;
+
+const VideoItem = styled.div`
+    cursor: pointer;
+    margin-bottom: 50px;
+    border-radius: 15px;
+    overflow: hidden;
+    width: 700px;
+`;
+
+const VideoTitle = styled.h4`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #d7d7d7;
+    text-align: left;
+    text-shadow: 2px 2px 4px #000;
+    padding: 5px 15px;
+    background-color: #444;
+`;
+
+const VideoThumbnail = styled.img`
+    width: 100%;
+`;
+
+const TrashIcon = styled(FaTrash)`
+    font-size: 20px;
+    color: #fff;
+    stroke-width: 30px;
+    cursor: pointer;
+`;
+
+const EmptyText = styled.p`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 `;
 
 export default MyVideoList;

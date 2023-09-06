@@ -87,7 +87,7 @@ const VideoList: React.FC = () => {
             <VideoContainer>
                 {isLoading ? (
                     <Loading>
-                        <span className="blind">로딩 중입니다.</span>
+                        <img src={Spinner} alt="Loading" />
                     </Loading>
                 ) : isError ? (
                     <ErrorMessage>Error</ErrorMessage>
@@ -125,7 +125,7 @@ const VideoList: React.FC = () => {
             </VideoContainer>
             {clickedVideo && (
                 <VideoPopup
-                    video={{ id: clickedVideo.videoId, title: clickedVideo.title }}
+                    video={{ videoId: clickedVideo.videoId, title: clickedVideo.title }}
                     onClose={closeVideo}
                 />
             )}
@@ -146,14 +146,12 @@ const VideoContainer = styled.div`
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     gap: 20px;
-    margin: 150px auto 0;
-    max-width: 800px;
+    margin: 50px auto 0;
     text-align: center;
 `;
 
 const Loading = styled.p`
     padding-top: 200px;
-    background: url(${Spinner}) no-repeat center center;
 `;
 const ErrorMessage = styled.p`
     font-size: 40px;
@@ -165,6 +163,7 @@ const VideoItem = styled.div`
     margin-bottom: 50px;
     border-radius: 15px;
     overflow: hidden;
+    width: 700px;
 `;
 
 const VideoTitle = styled.h4`
@@ -180,7 +179,6 @@ const VideoTitle = styled.h4`
 
 const VideoThumbnail = styled.img`
     width: 100%;
-    // height: 500px;
 `;
 
 const FaFolderPlus = styled(FontAwesomeIcon)`

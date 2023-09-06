@@ -37,16 +37,6 @@ const Title = styled.h2`
     position: relative;
     width: 1000px;
     margin-bottom: 50px;
-    &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: -10px;
-        width: 100%;
-        height: 1px;
-        color: #000;
-        background-color: #000;
-    }
 `;
 
 const NewPost = styled.button`

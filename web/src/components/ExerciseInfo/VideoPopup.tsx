@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 type VideoPopupProps = {
     video: {
-        id: string;
+        videoId: string;
         title: string;
     };
     onClose: () => void;
@@ -13,7 +13,7 @@ const VideoPopup = ({ video, onClose }: VideoPopupProps) => {
             <iframe
                 width="560"
                 height="315"
-                src={`https://www.youtube.com/embed/${video.id}`}
+                src={`https://www.youtube.com/embed/${video.videoId}`}
                 title={video.title}
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

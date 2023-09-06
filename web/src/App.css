@@ -1,5 +1,5 @@
 .centered-container {
-    position: absolute;
+    position: fixed;
     top: 85%;
     left: 50%;
     transform: translate(-50%, -50%);

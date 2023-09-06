@@ -282,14 +282,14 @@ const ProfileImage = styled.img`
 `;
 
 const ProfileNickname = styled.p`
-    font-size: 16px;
+    font-size: 20px;
     font-weight: bold;
 `;
 
 const CreatedAt = styled.p`
     position: absolute;
     right: 30px;
-    font-size: 10px;
+    font-size: 14px;
 `;
 
 const FaEllipsis = styled(FontAwesomeIcon)`
@@ -323,6 +323,8 @@ const ModalButtonDelete = styled.button`
 
 const Post = styled.div`
     width: 850px;
+    min-height: 150px;
+    margin-bottom: 50px;
 `;
 
 const PostTitle = styled.h1`
@@ -331,9 +333,6 @@ const PostTitle = styled.h1`
 
 const PostDescription = styled.div`
     width: 850px;
-    min-height: 150px;
-
-    // overflow: hidden;
 `;
 
 const PostDetail = styled.div`

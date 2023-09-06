@@ -27,12 +27,12 @@ const UserProfile: React.FC<{ selectedUser: User | null }> = (props) => {
                 }
             );
             console.log(response.data);
-            if (response.status === 200) {
-                alert('운동 메이트 신청 완료 !');
+            alert('운동 메이트 신청 완료 !');
+        } catch (error: any) {
+            if (error.response && error.response.status === 400) {
+                alert('이미 요청한 사용자입니다.');
             }
-        } catch (error) {
             console.error(error);
-            alert('이미 요청한 사용자입니다.');
         }
     };
     return (

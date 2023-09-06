@@ -5,6 +5,12 @@ interface Playlist {
     userId: number;
 }
 
+interface VideoInPlaylist {
+    videoId: string;
+    videoTitle: string;
+    thumbnail: string;
+}
+
 export const playlistsDataRecoil = atom<Playlist[] | null>({
     key: 'playlistsDataRecoil',
     default: null,
@@ -13,4 +19,9 @@ export const playlistsDataRecoil = atom<Playlist[] | null>({
 export const categoryRecoil = atom<string>({
     key: 'categoryRecoil',
     default: 'running',
+});
+
+export const videoInPlaylistRecoil = atom<Record<string, VideoInPlaylist[]> | null>({
+    key: 'videoInPlaylistRecoil',
+    default: null,
 });

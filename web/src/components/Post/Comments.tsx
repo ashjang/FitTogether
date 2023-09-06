@@ -5,18 +5,17 @@ import styled from '@emotion/styled';
 import imgSrc from '../../assets/default-user-image.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
-import { useRecoilValue } from 'recoil';
 import { signInInfo } from '../../recoil/AuthState/atoms';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import {
     postDataRecoil,
     postContentsDataRecoil,
     conmentsDataRecoil,
 } from '../../recoil/posts/atoms';
+import { loggedInState } from '../../recoil/AuthState/atoms';
 
 const formatDateString = (createdAt: string) => {
     const dateObject = new Date(createdAt);
-
     const formattedDate = dateObject.toLocaleString('en-US', {
         year: 'numeric',
         month: '2-digit',
@@ -35,6 +34,7 @@ const formatDateString = (createdAt: string) => {
 
 const Comments: React.FC = () => {
     const token = sessionStorage.getItem('token');
+    const isLoggedIn = useRecoilValue(loggedInState);
 
     const { postId } = useParams<{ postId: string }>();
 
@@ -191,6 +191,21 @@ const Comments: React.FC = () => {
         setShowChildReplyInput((prev) => !prev); // 이전 상태의 반대값으로 토글
     };
 
+    // 댓글 입력란에서 Enter 키 누를 때 호출되는 함수
+    const handleReplyInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            handleSubmitReply();
+        }
+    };
+
+    // 대댓글 입력란에서 Enter 키 누를 때 호출되는 함수
+    const handleChildReplyInputKeyDown =
+        (replyId: number) => (event: React.KeyboardEvent<HTMLInputElement>) => {
+            if (event.key === 'Enter') {
+                handleSubmitChildReply(replyId);
+            }
+        };
+
     return (
         <CommentsComponent>
             {commentsData?.replyList.map((reply) => (
@@ -245,11 +260,13 @@ const Comments: React.FC = () => {
                                 </ChildReplyItem>
                             )
                     )}
-                    <ToggleChildReplyButton
-                        onClick={() => handleToggleChildReplyInput(reply.replyId)}
-                    >
-                        대댓글 입력
-                    </ToggleChildReplyButton>
+                    {isLoggedIn && (
+                        <ToggleChildReplyButton
+                            onClick={() => handleToggleChildReplyInput(reply.replyId)}
+                        >
+                            대댓글 입력
+                        </ToggleChildReplyButton>
+                    )}
                     {showChildReplyInput && currentReplyId === reply.replyId && (
                         <ChildReplyInputContainer>
                             <ChildReplyInput
@@ -257,6 +274,7 @@ const Comments: React.FC = () => {
                                 placeholder="대댓글을 입력하세요 !"
                                 value={childReplyInput}
                                 onChange={handleChildReplyInputChange}
+                                onKeyDown={handleChildReplyInputKeyDown(reply.replyId)}
                             />
                             <ChildReplyButton onClick={() => handleSubmitChildReply(reply.replyId)}>
                                 대댓글 입력
@@ -265,15 +283,18 @@ const Comments: React.FC = () => {
                     )}
                 </ReplyContainer>
             ))}
-            <ReplyInputContainer>
-                <ReplyInput
-                    type="text"
-                    placeholder="댓글을 입력하세요 !"
-                    value={replyInput}
-                    onChange={handleReplyInputChange}
-                />
-                <ReplyButton onClick={handleSubmitReply}>댓글 입력</ReplyButton>
-            </ReplyInputContainer>
+            {isLoggedIn && (
+                <ReplyInputContainer>
+                    <ReplyInput
+                        type="text"
+                        placeholder="댓글을 입력하세요 !"
+                        value={replyInput}
+                        onChange={handleReplyInputChange}
+                        onKeyDown={handleReplyInputKeyDown}
+                    />
+                    <ReplyButton onClick={handleSubmitReply}>댓글 입력</ReplyButton>
+                </ReplyInputContainer>
+            )}
         </CommentsComponent>
     );
 };
@@ -323,23 +344,22 @@ const TopDiv = styled.div`
 
 const UserId = styled.p`
     margin: 0 10px;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
 `;
 
 const PostTime = styled.p`
-    margin: 5px 0 0 0;
-    font-size: 10px;
+    margin-left: 10px;
+    font-size: 12px;
 `;
 
 const FaTrashCan = styled(FontAwesomeIcon)`
     position: absolute;
-    right: 0;
+    right: 15px;
 `;
 
 const Comment = styled.p`
-    height: 40px;
-    margin: 0;
+    margin: 5px 0 10px;
     font-size: 14px;
     margin-left: 45px;
 `;
@@ -357,7 +377,7 @@ const ChildReplyInputContainer = styled.div`
 `;
 
 const ReplyInput = styled.input`
-    width: 400px;
+    width: 1000px;
     padding: 5px;
     margin: 10px 0;
     padding-right: 100px;
@@ -368,7 +388,7 @@ const ReplyInput = styled.input`
     background-color: rgb(222, 222, 222);
 `;
 const ChildReplyInput = styled.input`
-    width: 400px;
+    width: 500px;
     padding: 5px;
     margin-left: 45px;
     padding-right: 100px;
@@ -384,7 +404,7 @@ const ReplyButton = styled.button`
     justify-content: center;
     align-items: center;
     position: absolute;
-    left: 315px;
+    right: 0px;
     height: 27px;
     padding: 3px 10px 0px;
     border: 0;
@@ -399,7 +419,7 @@ const ChildReplyButton = styled.button`
     justify-content: center;
     align-items: center;
     position: absolute;
-    left: 345px;
+    right: 305px;
     height: 27px;
     padding: 3px 10px 0px;
     border: 0;

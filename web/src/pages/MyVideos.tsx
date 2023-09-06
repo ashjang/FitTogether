@@ -43,13 +43,11 @@ const ListTitle = styled.div`
     position: relative;
     width: 1200px;
     padding: 8px;
-    padding-bottom: 30px;
-    border-bottom: 1px solid black;
     margin-top: 70px;
     margin-bottom: 70px;
 `;
 
-const TitleTextStyle = styled.div`
+const TitleTextStyle = styled.h2`
     flex: 25;
     text-align: center;
     font-size: 3rem;
