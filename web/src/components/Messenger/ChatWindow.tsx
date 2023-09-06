@@ -11,15 +11,22 @@ interface UserProfile {
     username: string;
     profileImage: string | null;
 }
+interface ChatMessage {
+    chatRoomId: number | null;
+    contents: string;
+    sendDate: Date;
+    senderNickname?: string;
+}
+
 interface Props {
     chatRoomId: number | null;
-    chatMessages: {
-        chatRoomId: number;
-        contents: string;
-        sendDate: Date;
-        senderNickname: string;
-    }[];
-
+    // chatMessages: {
+    //     chatRoomId: number;
+    //     contents: string;
+    //     sendDate: Date;
+    //     senderNickname: string;
+    // }[];
+    chatMessages: ChatMessage[];
     inputMessage: string;
     onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     onSendMessage: () => void; // 메시지 보내기 핸들러
@@ -95,9 +102,6 @@ const ChatWindow: React.FC<Props> = ({
                                             </SenderNickname>
                                             <MessageTime>
                                                 {new Date(message.sendDate).toLocaleTimeString([], {
-                                                    // year: 'numeric',
-                                                    // month: 'short',
-                                                    // day: 'numeric',
                                                     hour: '2-digit',
                                                     minute: '2-digit',
                                                     hour12: true,
@@ -245,29 +249,11 @@ const MessageText = styled.p`
     display: block;
     font-size: 18px;
 
-    // width: 300px;
     max-width: 100%;
     height: 100%;
     word-break: break-all;
     padding: 12px;
     border-radius: 10px;
-    // background-color: #e7b2b2;
-    // box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-
-    // &::before {
-    //     content: '';
-    //     position: absolute;
-    //     left: 0;
-    //     top: 50%;
-    //     width: 0;
-    //     height: 0;
-    //     border: 20px solid transparent;
-    //     border-right-color: #e7b2b2;
-    //     border-left: 0;
-    //     border-top: 0;
-    //     margin-top: -10px;
-    //     margin-left: -20px;
-    // }
 `;
 const MessageTime = styled.div`
     display: block;
@@ -295,7 +281,7 @@ const SendBtn = styled.button`
     width: 40px;
     height: 40px;
     border: none;
-    // background: none;
+    margin-left: 4px;
 `;
 
 const DefalutWindow = styled.p`
