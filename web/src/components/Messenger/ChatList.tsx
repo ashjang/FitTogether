@@ -32,9 +32,6 @@ const ChatList: React.FC<Props> = ({
     setMateModalOpen,
     createChatRoom,
 }) => {
-    // console.log('Received chatRooms:', chatRooms);
-
-    // const [isMateListOpen, setIsMateListOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleShowMateListClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -42,7 +39,6 @@ const ChatList: React.FC<Props> = ({
         console.log('운동메이트 리스트 버튼 클릭 열림', isLoading);
 
         if (!isLoading) {
-            // setIsLoading(true);
             setMateModalOpen(true);
         }
     };
@@ -91,11 +87,6 @@ const ChatList: React.FC<Props> = ({
                                     style={{ width: '40px', height: '40px', borderRadius: '50%' }}
                                 />
                                 <ChatListItemName>{chatRoom.receiverNickname}</ChatListItemName>
-                                {/* <ChatListItemName>
-                                    {chatRoom.receiverNickname === ''
-                                        ? ''
-                                        : chatRoom.receiverNickname}
-                                </ChatListItemName> */}
                             </ChatListItem>
                         </ListItem>
                     ))

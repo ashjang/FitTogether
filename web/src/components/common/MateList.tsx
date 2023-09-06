@@ -11,11 +11,6 @@ interface Props {
     onClose: () => void;
     createChatRoom: () => void;
     onChatRoomClick: (chatRoomId: number) => void;
-    // showButton: true;
-    // senderProfileImage: string;
-    // senderNickname: string;
-    // nickname: string;
-    // key: string;
 }
 
 interface MateDateItem {

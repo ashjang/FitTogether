@@ -20,12 +20,6 @@ interface ChatMessage {
 
 interface Props {
     chatRoomId: number | null;
-    // chatMessages: {
-    //     chatRoomId: number;
-    //     contents: string;
-    //     sendDate: Date;
-    //     senderNickname: string;
-    // }[];
     chatMessages: ChatMessage[];
     inputMessage: string;
     onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
