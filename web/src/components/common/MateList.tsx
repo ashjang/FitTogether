@@ -70,7 +70,7 @@ const MateList: React.FC<Props> = ({ isOpen, onClose, createChatRoom }) => {
                 processedData[user.otherUserNickname] = {
                     senderProfileImage: user.senderProfileImage || default_user_image,
                     senderNickname: user.otherUserNickname,
-                    nickname: '',
+                    nickname: user.otherUserNickname,
                 };
             }
         });

@@ -13,6 +13,7 @@ interface ChatRoom {
     senderNickname: string;
     receiverNickname: string;
     chatRoomDate: string;
+    otherUserNickname: string;
 }
 interface UserProfile {
     username: string;
@@ -74,6 +75,51 @@ const ChatApp: React.FC = () => {
             });
     };
 
+    // const getChatRoomList = () => {
+    //     const token: string | null = sessionStorage.getItem('token');
+
+    //     if (token) {
+    //         axios
+    //             .get('/api/dm/lists', {
+    //                 headers: {
+    //                     'X-AUTH-TOKEN': token,
+    //                 },
+    //             })
+    //             .then((response) => {
+    //                 if (response.status === 200) {
+    //                     const chatRoomList = response.data as unknown as ChatRoom[];
+    //                     console.log('채팅방 리스트 불러오기: ', chatRoomList);
+    //                     setChatRooms(() => [...chatRoomList]);
+
+    //                     // 각 채팅방에 대해 메시지 가져오기
+    //                     chatRoomList.forEach((room) => {
+    //                         getChatMessages(room.chatRoomId);
+    //                     });
+
+    //                     console.log('params', params);
+    //                     const paramsNickname: string | undefined = params.nickname
+    //                         ? params.nickname
+    //                         : '';
+
+    //                     if (
+    //                         chatRoomList.filter((room) => room.receiverNickname === paramsNickname)
+    //                             .length === 0 &&
+    //                         paramsNickname !== ''
+    //                     ) {
+    //                         createChatRoom();
+    //                     }
+    //                 } else {
+    //                     console.error('API 요청이 실패하였습니다.');
+    //                     alert('채팅 리스트를 가져오는데 실패했습니다.');
+    //                 }
+    //             })
+    //             .catch((error) => {
+    //                 console.error('채팅방 리스트 조회 에러:', error);
+    //                 alert('채팅 리스트를 가져오는데 실패했습니다.');
+    //             });
+    //     }
+    // };
+
     const getChatRoomList = () => {
         const token: string | null = sessionStorage.getItem('token');
 
@@ -88,12 +134,26 @@ const ChatApp: React.FC = () => {
                     if (response.status === 200) {
                         const chatRoomList = response.data as unknown as ChatRoom[];
                         console.log('채팅방 리스트 불러오기: ', chatRoomList);
-                        setChatRooms(() => [...chatRoomList]);
 
                         // 각 채팅방에 대해 메시지 가져오기
                         chatRoomList.forEach((room) => {
                             getChatMessages(room.chatRoomId);
                         });
+
+                        // 현재 사용자의 닉네임을 가져옵니다.
+                        const currentUserNickname = params.nickname ? params.nickname : '';
+
+                        // 각 채팅방의 상대방 닉네임 설정
+                        const updatedChatRooms = chatRoomList.map((room) => {
+                            if (currentUserNickname === room.receiverNickname) {
+                                room.otherUserNickname = room.senderNickname; // 상대방의 닉네임
+                            } else {
+                                room.otherUserNickname = room.receiverNickname; // 상대방의 닉네임
+                            }
+                            return room;
+                        });
+
+                        setChatRooms(() => [...updatedChatRooms]);
 
                         console.log('params', params);
                         const paramsNickname: string | undefined = params.nickname
@@ -101,8 +161,9 @@ const ChatApp: React.FC = () => {
                             : '';
 
                         if (
-                            chatRoomList.filter((room) => room.receiverNickname === paramsNickname)
-                                .length === 0 &&
+                            updatedChatRooms.filter(
+                                (room) => room.receiverNickname === paramsNickname
+                            ).length === 0 &&
                             paramsNickname !== ''
                         ) {
                             createChatRoom();
@@ -198,6 +259,7 @@ const ChatApp: React.FC = () => {
                     mateModalOpen={mateModalOpen}
                     setMateModalOpen={setMateModalOpen}
                     createChatRoom={createChatRoom}
+                    currentUserNickname={username}
                 />
             </ChatListBox>
 

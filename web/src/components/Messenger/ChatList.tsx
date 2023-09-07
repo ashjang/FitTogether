@@ -24,6 +24,7 @@ interface Props {
     mateModalOpen: boolean;
     setMateModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
     createChatRoom: () => void;
+    currentUserNickname: string;
 }
 const ChatList: React.FC<Props> = ({
     chatRooms,
@@ -31,6 +32,7 @@ const ChatList: React.FC<Props> = ({
     mateModalOpen,
     setMateModalOpen,
     createChatRoom,
+    currentUserNickname,
 }) => {
     const [isLoading, setIsLoading] = useState(false);
 
@@ -86,7 +88,14 @@ const ChatList: React.FC<Props> = ({
                                     alt="프로필 이미지"
                                     style={{ width: '40px', height: '40px', borderRadius: '50%' }}
                                 />
-                                <ChatListItemName>{chatRoom.receiverNickname}</ChatListItemName>
+                                {/* <ChatListItemName>{chatRoom.receiverNickname}</ChatListItemName> */}
+                                <ChatListItemName>
+                                    {
+                                        currentUserNickname === chatRoom.receiverNickname
+                                            ? chatRoom.senderNickname // 현재 사용자가 receiver인 경우
+                                            : chatRoom.receiverNickname // 현재 사용자가 sender인 경우
+                                    }
+                                </ChatListItemName>
                             </ChatListItem>
                         </ListItem>
                     ))
