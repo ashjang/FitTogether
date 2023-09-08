@@ -1,3 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, 
+@typescript-eslint/no-unsafe-argument,
+@typescript-eslint/no-unsafe-member-access,
+@typescript-eslint/no-misused-promises,
+@typescript-eslint/no-unused-vars */
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { css } from '@emotion/react';

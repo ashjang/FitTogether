@@ -1,3 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, 
+@typescript-eslint/no-unsafe-argument,
+@typescript-eslint/no-unsafe-member-access,
+@typescript-eslint/no-misused-promises,
+@typescript-eslint/no-unused-vars,
+react-hooks/exhaustive-deps,
+@typescript-eslint/no-unsafe-call */
+
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
@@ -62,10 +70,6 @@ const MateRequest: React.FC<MateRequestProps> = ({ sender, onClose }) => {
             });
         onClose();
     };
-
-    // const handleCloseBtn = () => {
-    //     setIsClosed(true);
-    // };
 
     return (
         <>

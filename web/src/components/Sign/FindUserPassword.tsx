@@ -31,7 +31,6 @@ const FindUserPassword: React.FC = () => {
                         // 일치하는 회원 없음
                         console.log('Error:', responseData.message);
                         setResponseMessage(responseData.message);
-                        // alert(responseData.message); // 유저에게 보여주기
                     } else {
                         // 다른 상태 코드 처리
                         console.log('Unexpected Response:', responseData);

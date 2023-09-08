@@ -4,42 +4,17 @@ import styled from '@emotion/styled';
 
 import MyInformation from '../components/MyPage/MyInformation';
 
-// interface ButtonProps {
-//     isActive: boolean;
-// }
-
 const MyPage: React.FC = () => {
-    // const [activeTab, setActiveTab] = useState('MyInformation');
-    // const isLoggedIn = useRecoilValue(loggedInState);
-    // const navigate = useNavigate();
-
-    // if (!isLoggedIn) {
-    //     navigate('/signin');
-    // }
-
-    // const handleTabClick = (tabName: string) => {
-    //     setActiveTab(tabName);
-    // };
-
     return (
         <MypageContainer>
             <TabArea>
-                <Title
-                // isActive={activeTab === 'MyInformation'}
-                // onClick={() => handleTabClick('MyInformation')}
-                >
-                    {/* <Link to="/mypage/myinformation"> */}
-                    나의 정보
-                    {/* </Link> */}
-                </Title>
+                <Title>나의 정보</Title>
                 <Link to="/mypage/passwordchange">
                     <GoTo>비밀번호 변경하러 가기</GoTo>
                 </Link>
             </TabArea>
             <Content>
                 <MyInformation />
-                {/* {activeTab === 'MyInformation' && <MyInformation />} */}
-                {/* {activeTab === 'PasswordChange' && <PasswordChange />} */}
             </Content>
         </MypageContainer>
     );

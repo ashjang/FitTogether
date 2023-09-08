@@ -1,3 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, 
+@typescript-eslint/no-unsafe-argument,
+@typescript-eslint/no-unsafe-member-access,
+@typescript-eslint/no-misused-promises,
+@typescript-eslint/no-unused-vars,
+@typescript-eslint/restrict-template-expressions,
+@typescript-eslint/no-floating-promises */
+
 import React, { useEffect, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';

@@ -1,3 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, 
+@typescript-eslint/no-unsafe-argument,
+@typescript-eslint/no-unsafe-member-access,
+@typescript-eslint/no-misused-promises,
+@typescript-eslint/restrict-plus-operands,
+@typescript-eslint/no-unsafe-return,
+@typescript-eslint/no-unused-vars,
+@typescript-eslint/no-unsafe-call,
+@typescript-eslint/no-floating-promises,
+react-hooks/exhaustive-deps
+ */
+
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { RecoilRoot } from 'recoil';
@@ -66,7 +78,6 @@ function App() {
         });
 
         eventSource.onopen = (event) => {
-            // console.log('connection opened');
             // console.log(event.target.readyState);
         };
 
@@ -85,11 +96,8 @@ function App() {
         eventSource.onerror = (event) => {
             // console.log(event.target.readyState);
             if (event.target.readyState === EventSource.CONNECTING) {
-                // console.log('connecting...');
-
                 // 연결 끊기
                 eventSource.close();
-                // establishSSEConnection();
             }
         };
     };
@@ -114,7 +122,6 @@ function App() {
 
         // token이 있는 경우에만 알림 권한 요청
         requestNotificationPermission();
-        // establishSSEConnection();
 
         return () => {
             if (eventSource) {

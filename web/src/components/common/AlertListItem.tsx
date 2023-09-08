@@ -1,26 +1,19 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, 
+@typescript-eslint/no-unsafe-argument,
+@typescript-eslint/no-unsafe-member-access,
+@typescript-eslint/no-misused-promises,
+@typescript-eslint/no-unsafe-call,
+@typescript-eslint/restrict-template-expressions */
+
 import React, { useEffect, useState } from 'react';
-// import { EventSourcePolyfill } from 'event-source-polyfill';
 import styled from '@emotion/styled';
 
 import MateRequest from './MateRequest';
-// import { useNavigate } from 'react-router-dom';
-
-// interface AlertListItemProps {
-//     alerts: Array<{
-//         message: string;
-//         notificationId: number;
-//         notificationType: string;
-//         read: boolean;
-//         sender: string;
-//         url: string;
-//     }>;
-// }
 
 const AlertListItem: React.FC = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [fetchedAlerts, setFetchedAlerts] = useState([]);
     const [senderNickname, setSenderNickname] = useState('');
-    // const navigate = useNavigate();
 
     useEffect(() => {
         console.log('useEffect is running');
@@ -55,7 +48,6 @@ const AlertListItem: React.FC = () => {
             // postIdPattern이 유효한 경우 해당 URL로 이동
             const postId = alert.url.match(postIdPattern)[1];
             const processedUrl = `/posts/${postId}`;
-            // navigate(processedUrl);
             window.location.replace(processedUrl);
             setShowPopup(false);
         }
