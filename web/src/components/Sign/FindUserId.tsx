@@ -56,7 +56,6 @@ const FindUserId: React.FC = () => {
                 </InputTextDiv>
                 {foundId !== null && (
                     <MessageBox>
-                        {/* <FoundId>회원님의 ID는 {foundId} 입니다.</FoundId> */}
                         <FoundId>회원님의 ID는 {maskedId} 입니다.</FoundId>
                     </MessageBox>
                 )}

@@ -1,7 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, 
+@typescript-eslint/no-unsafe-argument,
+@typescript-eslint/no-unsafe-member-access,
+@typescript-eslint/no-misused-promises */
+
 import React, { useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { loggedInState, canEditInfo, signInInfo } from '../../recoil/AuthState/atoms';
@@ -11,7 +16,6 @@ const SignInSetting: React.FC = () => {
     const [signInData, setSignInData] = useRecoilState(signInInfo); // 값을 받아와서 변경하고 싶으면 useRecoilState
     const setLoggedIn = useSetRecoilState(loggedInState); // 값을 변경하고 싶으면 useSetRecoilState
     const setCanEditInfo = useSetRecoilState(canEditInfo);
-    // const navigate = useNavigate();
     const location = useLocation();
     const from = location?.state?.redirectedFrom || '/';
 
@@ -32,9 +36,7 @@ const SignInSetting: React.FC = () => {
                 const token = response.data;
                 setLoggedIn(true);
                 setCanEditInfo(true);
-                // window.location.reload();
                 sessionStorage.setItem('token', token);
-                // navigate(from);
                 window.location.replace(from);
             } else if (response.status === 400) {
                 // 에러 메시지 출력
