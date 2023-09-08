@@ -1,19 +1,20 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useInfiniteQuery } from 'react-query';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import VideoPopup from '../ExerciseInfo/VideoPopup';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaTrash } from 'react-icons/fa';
 import styled from '@emotion/styled';
+import VideoPopup from '../ExerciseInfo/VideoPopup';
 import Spinner from '../../assets/Spinner.svg';
 
+// 각 비디오의 데이터 타입
 interface Video {
     videoId: string;
     videoTitle: string;
     thumbnail: string;
 }
 
+// 각 비디오 리스트(5개)의 데이터 타입
 interface VideoList {
     values: Video[];
     hasNext: boolean;
@@ -22,30 +23,13 @@ interface VideoList {
 
 const MyVideoList: React.FC = () => {
     const token = sessionStorage.getItem('token');
-    const [showPopup, setShowPopup] = useState(false);
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    const playlistName: string | null = urlParams.get('name');
+    const playlistName = urlParams.get('name');
+    const [showPopup, setShowPopup] = useState(false);
     const [clickedVideo, setClidkedVideo] = useState<Video | null>(null);
 
-    // 플레이리스트 내 동영상을 삭제하는 함수
-    const handleVideoDelete = async (videoId: string) => {
-        try {
-            const response = await axios.delete(`/api/playlist/${playlistName}/video/${videoId}`, {
-                headers: { 'X-AUTH-TOKEN': token },
-            });
-            console.log(response.data);
-        } catch (error) {
-            console.error(error);
-            alert('동영상 삭제 중 오류가 발생하였습니다.');
-        }
-        refetch();
-        setShowPopup(true);
-        setTimeout(() => {
-            setShowPopup(false);
-        }, 1000);
-    };
-
+    // 플레이리스트에 저장된 비디오리스트를 불러오는 함수 (API: readVideoInPlaylist)
     const fetchVideos = async (playlistName: string | null, lastId: number): Promise<VideoList> => {
         const response = await axios.get<VideoList>(
             `/api/playlist/${playlistName}?cursorId=${lastId}&size=5`,
@@ -53,11 +37,16 @@ const MyVideoList: React.FC = () => {
                 headers: { 'X-AUTH-TOKEN': token },
             }
         );
-        await new Promise((resolve) => setTimeout(resolve, 1500));
         console.log(response.data);
+
+        // 로딩스피너를 적절히 보여주기 위한 의도적 딜레이
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        // useInfiniteQuery 사용하기 위해 응답값 return
         return response.data;
     };
 
+    // useInfiniteQuery를 이용해 무한스크롤 구현
     const { data, isLoading, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery<
         VideoList,
         Error
@@ -74,17 +63,30 @@ const MyVideoList: React.FC = () => {
         },
     });
 
+    // flatMap 메서드를 통해 중첩 배열을 평탄화하여 무한스크롤에 적합한 형식으로 반환
     let videoList = data?.pages.flatMap((page) => page.values);
 
-    // 비디오 팝업을 여는 함수
-    const openVideo = useCallback((video: Video) => {
-        setClidkedVideo(video);
-    }, []);
+    // 플레이리스트 내 동영상을 삭제하는 함수 (API: deleteVideoInPlaylist)
+    const handleVideoDelete = async (videoId: string) => {
+        try {
+            const response = await axios.delete(`/api/playlist/${playlistName}/video/${videoId}`, {
+                headers: { 'X-AUTH-TOKEN': token },
+            });
+            console.log(response.data);
+        } catch (error) {
+            console.error(error);
+            alert('동영상 삭제 중 오류가 발생하였습니다.');
+        }
 
-    // 비디오 팝업을 닫는 함수
-    const closeVideo = useCallback(() => {
-        setClidkedVideo(null);
-    }, []);
+        // 동영상 삭제 후 리패치
+        refetch();
+
+        // 삭제 완료 팝업 1초간 출력
+        setShowPopup(true);
+        setTimeout(() => {
+            setShowPopup(false);
+        }, 1000);
+    };
 
     return (
         <MyVideoListComponent>
@@ -114,7 +116,7 @@ const MyVideoList: React.FC = () => {
                                     <VideoThumbnail
                                         src={video.thumbnail}
                                         alt={video.videoTitle}
-                                        onClick={() => openVideo(video)}
+                                        onClick={() => setClidkedVideo(video)}
                                     />
                                 </VideoItem>
                             ))
@@ -127,10 +129,10 @@ const MyVideoList: React.FC = () => {
             {clickedVideo && (
                 <VideoPopup
                     video={{ videoId: clickedVideo.videoId, title: clickedVideo.videoTitle }}
-                    onClose={closeVideo}
+                    onClose={() => setClidkedVideo(null)}
                 />
             )}
-            {showPopup && <DeletePopup>즐겨찾기에서 해제되었습니다.</DeletePopup>}
+            {showPopup && <DeletePopup>플레이리스트에서 삭제되었습니다 😊</DeletePopup>}
         </MyVideoListComponent>
     );
 };
@@ -140,7 +142,7 @@ const DeletePopup = styled.div`
     top: 50%;
     left: 44%;
     padding: 10px 20px;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.7);
     border: 1px solid black;
     border-radius: 10px;
     font-weight: bold;

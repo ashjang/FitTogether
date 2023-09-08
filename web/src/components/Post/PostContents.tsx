@@ -13,9 +13,11 @@ import Modal from 'react-modal';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { signInInfo } from '../../recoil/AuthState/atoms';
 import { postDataRecoil, postContentsDataRecoil, isLikedState } from '../../recoil/posts/atoms';
+import { getCategoryName } from '../Posts/PostListItem';
 
 const imgSrc: string = default_user_image;
 
+// '게시글 수정' 눌렀을 때 해당 컴포넌트로 전달할 데이터의 타입
 interface DataForEdit {
     savedTitle: string;
     savedDescription: string;
@@ -25,24 +27,8 @@ interface DataForEdit {
     savedAccessLevel: boolean;
 }
 
-interface PostDetailLikeProps {
-    active: boolean;
-}
-
-const getCategoryName = (categoryEng: string) => {
-    switch (categoryEng) {
-        case 'RUNNING':
-            return '러닝';
-        case 'HIKING':
-            return '등산';
-        case 'WEIGHT':
-            return '헬스';
-        default:
-            return '';
-    }
-};
-
-const formatDateString = (createdAt: string) => {
+// Date를 문자열로 변환하는 함수
+export const formatDateString = (createdAt: string) => {
     if (!createdAt) {
         return '';
     }
@@ -67,19 +53,15 @@ const formatDateString = (createdAt: string) => {
 
 const PostContents: React.FC = () => {
     const token = sessionStorage.getItem('token');
+    const { postId } = useParams<{ postId: string }>();
     const navigate = useNavigate();
-
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [postData, setPostData] = useRecoilState(postDataRecoil);
     const [postContentsData, setPostContentsData] = useRecoilState(postContentsDataRecoil);
-    console.log('postContentsData', postContentsData);
     const [likeState, setLikeState] = useRecoilState(isLikedState);
-
     const myInfo = useRecoilValue(signInInfo);
 
-    const { postId } = useParams<{ postId: string }>();
-
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
+    // '게시글 수정' 눌렀을 때 해당 컴포넌트로 전달할 데이터
     const dataForEdit: DataForEdit = {
         savedTitle: postData.title,
         savedDescription: postData.description,
@@ -94,38 +76,36 @@ const PostContents: React.FC = () => {
         setIsModalOpen(!isModalOpen);
     };
 
-    // 전체 게시글을 보여주는 posts 페이지로 이동하는 함수
-    const handleGoBackToPosts = () => {
-        navigate('/posts');
-    };
-
-    // 게시글 삭제 눌렀을 때 실행할 함수
+    // 게시글 삭제 눌렀을 때 실행할 함수 (API: deletePost)
     const handleDeletePost = async () => {
         try {
-            console.log(token);
             const response = await axios.delete(`/api/posts/${postId}`, {
                 headers: {
                     'X-AUTH-TOKEN': token,
                 },
             });
             console.log(response.data);
+
+            // 성공 시 전체 게시글을 보여주는 페이지 렌더링
             if (response.status === 200) {
-                handleGoBackToPosts();
+                navigate('/posts');
             }
         } catch (error) {
             console.error(error);
         }
     };
 
-    // 좋아요 눌렀을 때 실행할 함수
+    // 좋아요 눌렀을 때 실행할 함수 (API: likePost)
     const handleToggleLikeButton = async () => {
         try {
-            console.log(token);
             const response = await axios.post(`/api/posts/${postId}/like`, null, {
                 headers: {
                     'X-AUTH-TOKEN': token,
                 },
             });
+            console.log(response.data);
+
+            // 기존 데이터에서 좋아요 관련 key만 업데이트
             setPostData({
                 ...postData,
                 like: response.data.like,
@@ -136,11 +116,12 @@ const PostContents: React.FC = () => {
                 like: response.data.like,
                 likeCount: response.data.likeCount,
             });
-            console.log(response.data);
-            console.log('postContentsData by like', postContentsData);
+
+            // 좋아요 상태 업데이트
             setLikeState(response.data.like);
         } catch (error) {
             console.error(error);
+            alert('로그인이 필요한 기능입니다.');
         }
     };
 
@@ -150,7 +131,6 @@ const PostContents: React.FC = () => {
                 <PostCategory>{getCategoryName(postContentsData.category)}</PostCategory>
                 {postContentsData.hashtagList &&
                     postContentsData.hashtagList.map((hashtag) => {
-                        console.log('아아아', myInfo.nickname);
                         return <PostHashtag>#{hashtag}</PostHashtag>;
                     })}
             </CategoryAndHashtag>
@@ -175,6 +155,7 @@ const PostContents: React.FC = () => {
                     style={{
                         overlay: {
                             backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            zIndex: 99,
                         },
                         content: {
                             width: 'max-content',
@@ -190,13 +171,14 @@ const PostContents: React.FC = () => {
                     }}
                 >
                     <Link to={`/posts/${postId}/editpost`} state={{ dataForEdit }}>
-                        <ModalButtonEdit>수정</ModalButtonEdit>
+                        <ModalButtonEdit>수정하기</ModalButtonEdit>
                     </Link>
-                    <ModalButtonDelete onClick={handleDeletePost}>삭제</ModalButtonDelete>
+                    <ModalButtonDelete onClick={handleDeletePost}>삭제하기</ModalButtonDelete>
                 </Modal>
             </ProfileContainer>
             <Post>
                 <PostTitle>{postContentsData.title}</PostTitle>
+                {/* dangerouslySetInnerHTML 속성을 통해 HTML 문자열을 렌더링, img 태그는 영역을 벗어나지 않도록 설정 */}
                 <PostDescription
                     dangerouslySetInnerHTML={{
                         __html: postContentsData.description.replace(
@@ -207,7 +189,10 @@ const PostContents: React.FC = () => {
                 />
             </Post>
             <PostDetail>
-                <PostDetailLike active={likeState === true} onClick={handleToggleLikeButton}>
+                <PostDetailLike
+                    className={likeState ? 'active' : ''}
+                    onClick={handleToggleLikeButton}
+                >
                     <FaThumbsUp icon={faThumbsUp} />
                     <LikeCount>{postContentsData.likeCount}</LikeCount>
                 </PostDetailLike>
@@ -238,10 +223,11 @@ const CategoryAndHashtag = styled.div`
 `;
 
 const PostCategory = styled.p`
-    padding: 0 10px;
+    padding: 5px 8px 0px 10px;
     margin-right: 20px;
     border-radius: 15px;
-    background-color: #c7c7c7;
+    font-size: 15px;
+    background-color: #d7d7d7;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
 `;
 
@@ -298,10 +284,13 @@ const FaEllipsis = styled(FontAwesomeIcon)`
 `;
 
 const ModalButtonEdit = styled.button`
+    width: 120px;
+    height: 50px;
     padding: 0 10px;
     border-style: none;
     border-radius: 15px;
     margin: 5px;
+    font-size: 20px;
     background-color: #d7d7d7;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
     &: hover {
@@ -310,10 +299,13 @@ const ModalButtonEdit = styled.button`
 `;
 
 const ModalButtonDelete = styled.button`
+    width: 120px;
+    height: 50px;
     padding: 0 10px;
     border-style: none;
     border-radius: 15px;
     margin: 5px;
+    font-size: 20px;
     background-color: #dc9696;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
     &: hover {
@@ -345,11 +337,15 @@ const PostDetail = styled.div`
     border-bottom: 1px solid #d7d7d7;
 `;
 
-const PostDetailLike = styled.div<PostDetailLikeProps>`
+const PostDetailLike = styled.div`
     margin-right: 10px;
     border-radius: 10px;
-    background-color: ${(props) => (props.active ? '#a1c9e4' : 'transparent')};
-    font-weight: ${(props) => (props.active ? 'bold' : 'regular')};
+    font-weight: regular;
+    background-color: transparent;
+    &.active {
+        font-weight: bold;
+        background-color: #a1c9e4;
+    }
 `;
 
 const FaThumbsUp = styled(FontAwesomeIcon)`

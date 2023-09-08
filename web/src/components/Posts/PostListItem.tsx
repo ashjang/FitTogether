@@ -1,12 +1,11 @@
 import React from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp } from '@fortawesome/free-regular-svg-icons';
 import { faEye } from '@fortawesome/free-regular-svg-icons';
 import imgSrc from '../../assets/default-user-image.png';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import {
     postDataRecoil,
     postContentsDataRecoil,
@@ -15,7 +14,7 @@ import {
 } from '../../recoil/posts/atoms';
 import { loggedInState } from '../../recoil/AuthState/atoms';
 
-interface Props {
+interface PostListItemData {
     postId: number;
     category: string;
     title: string;
@@ -27,7 +26,8 @@ interface Props {
     accessLevel: boolean;
 }
 
-const getCategoryName = (categoryEng: string) => {
+// 서버에서 넘어온 영문 카테고리명을 한글로 변환하는 함수
+export const getCategoryName = (categoryEng: string) => {
     switch (categoryEng) {
         case 'RUNNING':
             return '러닝';
@@ -37,7 +37,8 @@ const getCategoryName = (categoryEng: string) => {
             return '헬스';
     }
 };
-const PostListItem: React.FC<Props> = ({
+
+const PostListItem: React.FC<PostListItemData> = ({
     postId,
     category,
     hashtags,
@@ -46,70 +47,86 @@ const PostListItem: React.FC<Props> = ({
     userNickname,
     likeCount,
     viewCount,
+    accessLevel,
 }) => {
-    const token = sessionStorage.getItem('token');
     const navigate = useNavigate();
-    const setPostData = useSetRecoilState(postDataRecoil);
-    const [postContentsData, setPostContentsData] = useRecoilState(postContentsDataRecoil);
-    const [commentsData, setCommentsData] = useRecoilState(conmentsDataRecoil);
-    const setLikeState = useSetRecoilState(isLikedState);
     const isLoggedIn = useRecoilValue(loggedInState);
+    const setPostData = useSetRecoilState(postDataRecoil);
+    const setPostContentsData = useSetRecoilState(postContentsDataRecoil);
+    const setCommentsData = useSetRecoilState(conmentsDataRecoil);
+    const setLikeState = useSetRecoilState(isLikedState);
 
-    const getPostData = async () => {
+    // 게시글 정보를 가져오는 함수 (API: clickPost)
+    const handlePostClick = async () => {
         try {
-            console.log(token);
-            const response = await axios.get(`/api/posts/${postId}`, {
-                headers: {
-                    'X-AUTH-TOKEN': token,
-                },
-            });
-
-            console.log('response.data: ', response.data);
-            setPostData(response.data);
-
-            setPostContentsData({
-                ...postContentsData,
-                userImage: response.data.userImage,
-                userNickname: response.data.userNickname,
-                createdAt: response.data.createdAt,
-                category: response.data.category,
-                hashtagList: response.data.hashtagList,
-                title: response.data.title,
-                description: response.data.description,
-                likeCount: response.data.likeCount,
-                replyCount: response.data.replyCount,
-                viewCount: response.data.viewCount,
-                like: response.data.like,
-                accessLevel: response.data.accessLevel,
-            });
-            setCommentsData({
-                ...commentsData,
-                replyList: response.data.replyList,
-                childReplyList: response.data.childReplyList,
-            });
-            setLikeState(response.data.like);
-
-            if (response.data.accessLevel === false && isLoggedIn === false) {
-                alert('메이트만 볼 수 있는 게시글입니다.');
+            // accessLevel이 false인 게시글이고 로그인이 안되어있다면 해당 포스트의 정보를 가져오기 전에 반환
+            if (accessLevel === false && isLoggedIn === false) {
+                alert('메이트만 볼 수 있는 게시글입니다. 로그인이 필요합니다');
                 return;
             }
+
+            // 기존에 보던 게시글 데이터를 없애서 부드러운 렌더링을 가능하게 하는 초기화 작업
+            // 포스트 전체 데이터 초기화
+            setPostData({
+                postId: 0,
+                userImage: '',
+                userNickname: '',
+                createdAt: '',
+                category: '',
+                hashtagList: [],
+                title: '',
+                description: '',
+                likeCount: 0,
+                replyCount: 0,
+                viewCount: 0,
+                accessLevel: true,
+                replyList: [],
+                childReplyList: [],
+                images: [],
+                like: false,
+            });
+            // PostContents 컴포넌트에서 사용되는 상태 초기화
+            setPostContentsData({
+                userImage: '',
+                userNickname: '',
+                createdAt: '',
+                category: '',
+                hashtagList: [],
+                title: '',
+                description: '',
+                likeCount: 0,
+                replyCount: 0,
+                viewCount: 0,
+                like: false,
+                accessLevel: true,
+            });
+            // Comments 컴포넌트에서 사용되는 상태 저장
+            setCommentsData({
+                replyList: [],
+                childReplyList: [],
+            });
+            // 좋아요 상태 초기화
+            setLikeState(false);
+
+            // 해당 포스트로 이동
             navigate(`/posts/${postId}`);
         } catch (error) {
             console.error(error);
             navigate(`/posts`);
-            alert('메이트만 볼 수 있는 게시글입니다.');
+            alert('메이트만 볼 수 있는 게시글입니다. 메이트 관계가 아닙니다!');
         }
     };
 
     return (
         <PostListItemComponent>
-            <ShowPost onClick={getPostData}>
+            <ShowPost onClick={handlePostClick}>
                 <PostInfo>
                     <CategoryAndHashtag>
                         <PostCategory>{getCategoryName(category)}</PostCategory>
                         {hashtags?.map((hashtag) => {
                             return <PostHashtag>#{hashtag}</PostHashtag>;
                         })}
+                        {accessLevel === false && <MateMark>mate only</MateMark>}
                     </CategoryAndHashtag>
                     <PostTitle>{title}</PostTitle>
                     <PostDetail>
@@ -139,6 +156,7 @@ const PostListItemComponent = styled.div`
     border-top: 1px solid #d7d7d7;
     padding: 15px 0;
     border-bottom: 1px solid #d7d7d7;
+    cursor: pointer;
 `;
 
 const ShowPost = styled.div`
@@ -160,19 +178,28 @@ const CategoryAndHashtag = styled.div`
 `;
 
 const PostCategory = styled.p`
-    padding: 3px 8px 3px 9px;
+    padding: 5px 8px 0px 10px;
     margin-right: 20px;
     border-radius: 15px;
-    font-size: 14px;
-    background-color: #c7c7c7;
+    font-size: 15px;
+    background-color: #d7d7d7;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
 `;
 
 const PostHashtag = styled.p`
-    padding: 0 7px;
+    padding: 3px 5px 0px;
     margin-right: 15px;
     border-radius: 5px;
     background-color: #a1c9e4;
+    font-size: 13px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+`;
+
+const MateMark = styled.p`
+    padding: 3px 5px 0px;
+    margin-right: 15px;
+    border-radius: 5px;
+    background-color: #ffd0dd;
     font-size: 13px;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
 `;

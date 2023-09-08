@@ -1,18 +1,11 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
 import { useRecoilState } from 'recoil';
 import { categoryRecoil } from '../recoil/video/atoms';
 import VideoList from '../components/ExerciseInfo/VideoList';
-// import { resetTotalResults } from '../components/ExerciseInfo/YoutubeApi';
 
 const ExerciseInfo: React.FC = () => {
     const [category, setCategory] = useRecoilState<string>(categoryRecoil);
-
-    const handleTabClick = useCallback((newCategory: string) => {
-        setCategory('');
-        // resetTotalResults();
-        setCategory(newCategory);
-    }, []);
 
     return (
         <ExerciseInfoPage>
@@ -20,19 +13,19 @@ const ExerciseInfo: React.FC = () => {
             <CategoryBtnTab>
                 <CategoryBtn
                     className={category === 'running' ? 'active' : ''}
-                    onClick={() => handleTabClick('running')}
+                    onClick={() => setCategory('running')}
                 >
                     러닝
                 </CategoryBtn>
                 <CategoryBtn
                     className={category === 'hiking' ? 'active' : ''}
-                    onClick={() => handleTabClick('hiking')}
+                    onClick={() => setCategory('hiking')}
                 >
                     등산
                 </CategoryBtn>
                 <CategoryBtn
                     className={category === 'health' ? 'active' : ''}
-                    onClick={() => handleTabClick('health')}
+                    onClick={() => setCategory('health')}
                 >
                     헬스
                 </CategoryBtn>
