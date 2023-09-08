@@ -8,6 +8,7 @@ import BookmarkFolder from '../components/Bookmark/BookmarkFolder';
 import { useSetRecoilState } from 'recoil';
 import { videoInPlaylistRecoil } from '../recoil/video/atoms';
 
+// 플레이리스트의 각 비디오들의 타입
 interface VideoInPlaylist {
     videoId: string;
     videoTitle: string;
@@ -22,14 +23,16 @@ const Bookmark: React.FC = () => {
         videoInPlaylistRecoil
     );
 
+    // PlaylistSetting 팝업을 열고 닫기위한 함수
     const togglePopup = () => {
         setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
         console.log(isPopupOpen);
     };
 
-    // 플레이리스트 전체를 반환받는 함수 ✅readPlaylist
+    // 플레이리스트 전체와 각 플레이리스트의 최근 5개의 동영상을 반환받는 함수 (API: readPlaylist, readVideoInPlaylist)
     const getPlaylists = async () => {
         try {
+            // 생성한 플레이리스트 목록을 반환받음
             const responsePlaylist = await axios.get('/api/playlist', {
                 headers: {
                     'X-AUTH-TOKEN': token,
@@ -37,6 +40,8 @@ const Bookmark: React.FC = () => {
             });
             console.log('responsePlaylist.data', responsePlaylist.data);
 
+            // 각 플레이리스트를 순회하며 최근 5개의 동영상을 받환받음
+            // 순서를 보장받기 위해 for of문 사용
             for (const playlist of responsePlaylist.data) {
                 try {
                     const responseVideo = await axios.get(
@@ -47,35 +52,39 @@ const Bookmark: React.FC = () => {
                             },
                         }
                     );
-                    console.log('playlist.playlistName', playlist.playlistName);
                     console.log('responseVideo.data', responseVideo.data);
+
+                    // 플레이리스트 이름을 Key로, 최신 5개의 동영상 정보를 Value로 갖는 videosInPlaylistData 객체 생성
                     const videosInPlaylistData: Record<string, VideoInPlaylist[]> = {
                         [playlist.playlistName]: responseVideo.data.values,
                     };
                     console.log('videosInPlaylistData', videosInPlaylistData);
+
+                    // 생성한 videosInPlaylistData 객체를 상태에 추가
                     setVideosInPlaylist((prevVideosInPlaylist) => ({
                         ...prevVideosInPlaylist,
                         ...videosInPlaylistData,
                     }));
                 } catch (error) {
                     console.error('Error fetching data:', error);
-                    alert('재생목록을 불러오는데 실패했습니다.');
+                    alert('동영상 불러오기 실패');
                 }
             }
         } catch (error) {
             console.error('Error fetching data:', error);
-            alert('재생목록을 불러오는데 실패했습니다.');
+            alert('재생목록 불러오기 실패');
         }
     };
 
-    // 새로운 플레이리스트를 생성하는 함수 ✅createPlaylist
+    // 새로운 플레이리스트를 생성하는 함수 (API: createPlaylist)
     const handleCreatePlaylist = async () => {
-        // 이름을 안적었으면 반환
+        // 이름이 없다면 함수 종료
         if (!newPlaylist) {
             alert('플레이리스트의 이름을 작성해 주세요.');
             return;
         }
 
+        // 백엔드로 전달할 데이터 폼
         const newPlaylistForm = {
             playlistName: newPlaylist,
         };
@@ -87,16 +96,20 @@ const Bookmark: React.FC = () => {
                     'X-AUTH-TOKEN': token,
                 },
             });
+
+            // 요청 후 관련 상태 초기화
             setNewPlaylist('');
             setIsPopupOpen(false);
+            setVideosInPlaylist(null);
+
+            // getPlaylists 함수를 통해 추가된 플레이리스트를 포함한 값으로 업데이트
+            getPlaylists();
 
             if (response.data) {
                 alert('플레이리스트가 생성되었습니다.');
             } else {
                 alert('플레이리스트 생성에 실패했습니다.');
             }
-            setVideosInPlaylist(null);
-            getPlaylists();
         } catch (error: any) {
             if (error.response && error.response.status === 400) {
                 alert('같은 이름의 플레이리스트가 존재합니다.');
@@ -105,7 +118,6 @@ const Bookmark: React.FC = () => {
         }
     };
 
-    // playlistsData 상태가 바뀌면(이 때 videosInPlaylist가 초기화됨) 다시 받아옴.
     useEffect(() => {
         getPlaylists();
     }, []);

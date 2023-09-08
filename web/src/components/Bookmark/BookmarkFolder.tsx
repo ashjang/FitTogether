@@ -9,11 +9,7 @@ import VideoPopup from '../ExerciseInfo/VideoPopup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 
-interface Playlist {
-    playlistName: string;
-    userId: number;
-}
-
+// 플레이리스트의 각 비디오들의 타입
 interface VideoInPlaylist {
     videoId: string;
     videoTitle: string;
@@ -33,8 +29,10 @@ const BookmarkFolder: React.FC = () => {
     > | null>(videoInPlaylistRecoil);
     const [clickedVideo, setClidkedVideo] = useState<VideoInPlaylist | null>(null);
 
+    // 플레이리스트 전체와 각 플레이리스트의 최근 5개의 동영상을 반환받는 함수 (API: readPlaylist, readVideoInPlaylist)
     const getPlaylists = async () => {
         try {
+            // 생성한 플레이리스트 목록을 반환받음
             const responsePlaylist = await axios.get('/api/playlist', {
                 headers: {
                     'X-AUTH-TOKEN': token,
@@ -42,7 +40,9 @@ const BookmarkFolder: React.FC = () => {
             });
             console.log('responsePlaylist.data', responsePlaylist.data);
 
-            responsePlaylist.data.map(async (playlist: Playlist) => {
+            // 각 플레이리스트를 순회하며 최근 5개의 동영상을 받환받음
+            // 순서를 보장받기 위해 for of문 사용
+            for (const playlist of responsePlaylist.data) {
                 try {
                     const responseVideo = await axios.get(
                         `/api/playlist/${playlist.playlistName}?cursorId=-1&size=5`,
@@ -52,36 +52,39 @@ const BookmarkFolder: React.FC = () => {
                             },
                         }
                     );
-                    console.log('playlist.playlistName', playlist.playlistName);
                     console.log('responseVideo.data', responseVideo.data);
+
+                    // 플레이리스트 이름을 Key로, 최신 5개의 동영상 정보를 Value로 갖는 videosInPlaylistData 객체 생성
                     const videosInPlaylistData: Record<string, VideoInPlaylist[]> = {
                         [playlist.playlistName]: responseVideo.data.values,
                     };
                     console.log('videosInPlaylistData', videosInPlaylistData);
+
+                    // 생성한 videosInPlaylistData 객체를 상태에 추가
                     setVideosInPlaylist((prevVideosInPlaylist) => ({
                         ...prevVideosInPlaylist,
                         ...videosInPlaylistData,
                     }));
                 } catch (error) {
                     console.error('Error fetching data:', error);
-                    alert('재생목록을 불러오는데 실패했습니다.');
+                    alert('동영상 불러오기 실패');
                 }
-            });
+            }
         } catch (error: any) {
             console.error('Error fetching data:', error);
-            alert('재생목록을 불러오는데 실패했습니다.');
+            alert('재생목록 불러오기 실패');
         }
     };
 
-    // 플레이리스트를 수정할 때 사용하는 함수 ✅updatePlaylist
+    // 플레이리스트를 수정할 때 사용하는 함수 (API: updatePlaylist)
     const handleEditPlaylist = async (name: string) => {
-        // 입력이 없으면 반환
+        // 이름이 없거나 수정 내용이 없다면 함수 종료
         if (!editedPlaylist) {
             alert('플레이리스트의 이름을 수정해 주세요.');
             return;
         }
 
-        // 백으로 전송할 데이터(= 수정한 이름)
+        // 백엔드로 전달할 데이터 폼
         const editedPlaylistForm = {
             playlistName: editedPlaylist,
         };
@@ -95,10 +98,14 @@ const BookmarkFolder: React.FC = () => {
                     'X-AUTH-TOKEN': token,
                 },
             });
+
+            // 요청 후 관련 상태를 초기화
             setMenuToggleState(false);
             setMenuIndex(null);
             setEditingPlaylistInputIndex(null);
             setVideosInPlaylist(null);
+
+            // getPlaylists 함수를 통해 수정된 플레이리스트로 업데이트
             getPlaylists();
         } catch (error: any) {
             if (error.response && error.response.status === 400) {
@@ -108,7 +115,7 @@ const BookmarkFolder: React.FC = () => {
         }
     };
 
-    // 플레이리스트를 삭제할 때 사용하는 함수 ✅deletePlaylist
+    // 플레이리스트를 삭제할 때 사용하는 함수 (API: deletePlaylist)
     const handleDeletePlaylist = async (name: string) => {
         try {
             await axios.delete(`/api/playlist/${name}`, {
@@ -117,9 +124,12 @@ const BookmarkFolder: React.FC = () => {
                 },
             });
 
+            // 요청 후 관련 상태를 초기화
             setMenuToggleState(false);
             setMenuIndex(null);
             setVideosInPlaylist(null);
+
+            // getPlaylists 함수를 통해 삭제된 플레이리스트를 제외한 값으로 업데이트
             getPlaylists();
         } catch (error) {
             alert('재생목록 삭제가 실패하였습니다.');
@@ -127,9 +137,15 @@ const BookmarkFolder: React.FC = () => {
         }
     };
 
+    // '수정하기/삭제하기' 메뉴를 여는 함수
     const handleMenuToggle = (index: number) => {
         setMenuToggleState(!menuToggleState);
         setMenuIndex(index);
+    };
+
+    // '수정하기/삭제하기' 메뉴를 닫는 함수
+    const resetMenuIndex = () => {
+        setMenuIndex(null);
     };
 
     // 플레이리스트 수정 입력란을 열고 닫기 위한 인덱스를 저장하는 함수
@@ -138,14 +154,9 @@ const BookmarkFolder: React.FC = () => {
         setMenuToggleState(!menuToggleState);
     };
 
-    // 해당 재생목록 페이지로 이동
+    // 해당 재생목록 페이지로 이동하는 함수
     const handlePlaylistClick = (name: string) => {
         navigate(`/playlists?name=${name}`);
-    };
-
-    // 메뉴를 닫는 함수
-    const resetMenuIndex = () => {
-        setMenuIndex(null);
     };
 
     // 비디오 팝업을 여는 함수

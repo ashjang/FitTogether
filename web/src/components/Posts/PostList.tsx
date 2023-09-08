@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import PostListItem from './PostListItem';
 import { useRecoilValue } from 'recoil';
 import { postListDataState } from '../../recoil/posts/atoms';
@@ -10,11 +9,9 @@ const PostList: React.FC = () => {
     const postListData = useRecoilValue(postListDataState);
 
     function ScrollToTopOnPageChange() {
-        const { pathname } = useLocation();
-
         useEffect(() => {
             window.scrollTo(0, 0); // Scroll to the top on route change
-        }, [pathname]);
+        }, []);
 
         return null;
     }
