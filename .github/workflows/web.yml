@@ -1,0 +1,14 @@
+name: CI for pr dev
+on:
+  pull_request:
+    branches:
+      - dev
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Environment Variables .env
+        run: |
+          touch ./web/.env
+          echo "${{ secrets.REACT_APP_KAKAO }}" > ./web/.env
+          cat ./web/.env
