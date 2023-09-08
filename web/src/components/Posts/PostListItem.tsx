@@ -27,7 +27,8 @@ interface Props {
     accessLevel: boolean;
 }
 
-const getCategoryName = (categoryEng: string) => {
+// 서버에서 넘어온 영문 카테고리명을 한글로 변환하는 함수
+export const getCategoryName = (categoryEng: string) => {
     switch (categoryEng) {
         case 'RUNNING':
             return '러닝';
@@ -37,6 +38,7 @@ const getCategoryName = (categoryEng: string) => {
             return '헬스';
     }
 };
+
 const PostListItem: React.FC<Props> = ({
     postId,
     category,
@@ -49,12 +51,13 @@ const PostListItem: React.FC<Props> = ({
 }) => {
     const token = sessionStorage.getItem('token');
     const navigate = useNavigate();
+    const isLoggedIn = useRecoilValue(loggedInState);
     const setPostData = useSetRecoilState(postDataRecoil);
     const [postContentsData, setPostContentsData] = useRecoilState(postContentsDataRecoil);
     const [commentsData, setCommentsData] = useRecoilState(conmentsDataRecoil);
     const setLikeState = useSetRecoilState(isLikedState);
-    const isLoggedIn = useRecoilValue(loggedInState);
 
+    // 게시글 정보를 가져오는 함수 (API: clickPost)
     const getPostData = async () => {
         try {
             console.log(token);

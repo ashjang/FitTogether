@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
-import imgSrc from '../../assets/default-user-image.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { signInInfo } from '../../recoil/AuthState/atoms';
@@ -13,55 +12,79 @@ import {
     conmentsDataRecoil,
 } from '../../recoil/posts/atoms';
 import { loggedInState } from '../../recoil/AuthState/atoms';
+import { formatDateString } from './PostContents';
+import imgSrc from '../../assets/default-user-image.png';
 
-const formatDateString = (createdAt: string) => {
-    const dateObject = new Date(createdAt);
-    const formattedDate = dateObject.toLocaleString('en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false, // 24-hour format
-    });
+// // Date를 문자열로 변환하는 함수
+// const formatDateString = (createdAt: string) => {
+//     const dateObject = new Date(createdAt);
 
-    const [date, time] = formattedDate.split(', ');
-    const [month, day, year] = date.split('/');
-    const [hour, minute] = time.split(':');
+//     const formattedDate = dateObject.toLocaleString('en-US', {
+//         year: 'numeric',
+//         month: '2-digit',
+//         day: '2-digit',
+//         hour: '2-digit',
+//         minute: '2-digit',
+//         hour12: false, // 24-hour format
+//     });
 
-    return `${year}/${month}/${day} ${hour}:${minute}`;
-};
+//     const [date, time] = formattedDate.split(', ');
+//     const [month, day, year] = date.split('/');
+//     const [hour, minute] = time.split(':');
+
+//     return `${year}/${month}/${day} ${hour}:${minute}`;
+// };
 
 const Comments: React.FC = () => {
     const token = sessionStorage.getItem('token');
     const isLoggedIn = useRecoilValue(loggedInState);
-
     const { postId } = useParams<{ postId: string }>();
-
-    // const myInfo = useRecoilValue(signInInfo);
     const myInfo = useRecoilValue(signInInfo);
-
     const [postData, setPostData] = useRecoilState(postDataRecoil);
     const [postContentsData, setPostContentsData] = useRecoilState(postContentsDataRecoil);
     const [commentsData, setCommentsData] = useRecoilState(conmentsDataRecoil);
-
     const [replyInput, setReplyInput] = useState<string>('');
     const [childReplyInput, setChildReplyInput] = useState<string>('');
     const [showChildReplyInput, setShowChildReplyInput] = useState<boolean>(false);
     const [currentReplyId, setCurrentReplyId] = useState<number | null>(null);
 
-    // 댓글 입력란에서 입력받을 때 실행할 함수
+    // 대댓글 입력창을 토글하는 함수
+    const handleToggleChildReplyInput = (replyId: number) => {
+        setCurrentReplyId(replyId);
+        setShowChildReplyInput((prev) => !prev); // 이전 상태의 반대값으로 토글
+    };
+
+    // 댓글 입력란에서 Enter 키 누를 때 호출되는 함수
+    const handleReplyInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            handleSubmitReply();
+        }
+    };
+
+    // 대댓글 입력란에서 Enter 키 누를 때 호출되는 함수
+    const handleChildReplyInputKeyDown =
+        (replyId: number) => (event: React.KeyboardEvent<HTMLInputElement>) => {
+            if (event.key === 'Enter') {
+                handleSubmitChildReply(replyId);
+            }
+        };
+
+    // 댓글 입력란에서 입력받을 때 해당 입력을 상태에 저장하는 함수
     const handleReplyInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setReplyInput(event.target.value);
     };
 
-    // "댓글 입력" 버튼 눌렀을 때 실행할 함수
+    // 대댓글 입력란에서 입력받을 때 해당 입력을 상태에 저장하는 함수
+    const handleChildReplyInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChildReplyInput(event.target.value);
+    };
+
+    // 댓글 입력 시 실행할 함수 (API: createReply)
     const handleSubmitReply = async () => {
         const replyForm = {
             comment: replyInput,
         };
         try {
-            console.log(token);
             const response = await axios.post(`/api/posts/${postId}/comment`, replyForm, {
                 headers: {
                     'X-AUTH-TOKEN': token,
@@ -84,7 +107,7 @@ const Comments: React.FC = () => {
         }
     };
 
-    // 댓글 "삭제하기" 버튼 눌렀을 때 실행할 함수
+    // 댓글 삭제 시 실행할 함수 (API: deleteReply)
     const handleDeleteReply = async (replyId: number) => {
         console.log(replyId);
         const confirmDelete = window.confirm('정말로 댓글을 삭제하시겠습니까?');
@@ -113,12 +136,7 @@ const Comments: React.FC = () => {
         }
     };
 
-    // 대댓글 입력란에서 입력받을 때 실행할 함수
-    const handleChildReplyInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setChildReplyInput(event.target.value);
-    };
-
-    // "대댓글 입력" 버튼 눌렀을 때 실행할 함수
+    // 대댓글 입력 시 실행할 함수 (API: createChildReply)
     const handleSubmitChildReply = async (replyId: number) => {
         console.log(replyId);
         const requestData = {
@@ -153,7 +171,7 @@ const Comments: React.FC = () => {
         }
     };
 
-    // 대댓글 "삭제하기" 버튼 눌렀을 때 실행할 함수
+    // 대댓글 삭제 시 실행할 함수 (API: deleteChildReply)
     const handleDeleteChildReply = async (replyId: number, childReplyId: number) => {
         console.log(replyId, childReplyId);
         const confirmDelete = window.confirm('정말로 댓글을 삭제하시겠습니까?');
@@ -184,27 +202,6 @@ const Comments: React.FC = () => {
             }
         }
     };
-
-    // 대댓글 입력창을 토글하는 함수
-    const handleToggleChildReplyInput = (replyId: number) => {
-        setCurrentReplyId(replyId);
-        setShowChildReplyInput((prev) => !prev); // 이전 상태의 반대값으로 토글
-    };
-
-    // 댓글 입력란에서 Enter 키 누를 때 호출되는 함수
-    const handleReplyInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter') {
-            handleSubmitReply();
-        }
-    };
-
-    // 대댓글 입력란에서 Enter 키 누를 때 호출되는 함수
-    const handleChildReplyInputKeyDown =
-        (replyId: number) => (event: React.KeyboardEvent<HTMLInputElement>) => {
-            if (event.key === 'Enter') {
-                handleSubmitChildReply(replyId);
-            }
-        };
 
     return (
         <CommentsComponent>
