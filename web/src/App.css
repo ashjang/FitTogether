@@ -1,0 +1,38 @@
+.centered-container {
+    position: fixed;
+    top: 85%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    /* 추가적인 스타일링 */
+    width: 500px;
+    height: 50px;
+    background-color: rgba(255, 255, 255, 50%);
+    border-radius: 15px;
+    /* color: white; */
+    /* font-weight: bold; */
+    text-align: center;
+    line-height: 5rem;
+    transition: opacity 0.3s ease;
+}
+
+.visible {
+    opacity: 1;
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+@font-face {
+    font-family: 'GmarketSansMedium';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
+        format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    font-family: 'GmarketSansMedium';
+}

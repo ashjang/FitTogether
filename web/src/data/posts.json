@@ -1,0 +1,373 @@
+{
+    "posts": [
+        {
+            "postId": 1,
+            "category": "HIKING",
+            "title": "게시물 제목 1",
+            "userNickname": "ehhdrud ",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 10,
+            "viewCount": 100
+        },
+        {
+            "postId": 2,
+            "category": "RUNNING",
+            "title": "게시물 제목 2",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 20,
+            "viewCount": 50
+        },
+        {
+            "postId": 3,
+            "category": "WEIGHT",
+            "title": "게시물 제목 3",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 30,
+            "viewCount": 70
+        },
+        {
+            "postId": 4,
+            "category": "HIKING",
+            "title": "게시물 제목 4",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 40,
+            "viewCount": 90
+        },
+        {
+            "postId": 5,
+            "category": "RUNNING",
+            "title": "게시물 제목 5",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 50,
+            "viewCount": 120
+        },
+        {
+            "postId": 6,
+            "category": "WEIGHT",
+            "title": "게시물 제목 6",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 60,
+            "viewCount": 80
+        },
+        {
+            "postId": 7,
+            "category": "HIKING",
+            "title": "게시물 제목 7",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 70,
+            "viewCount": 130
+        },
+        {
+            "postId": 8,
+            "category": "RUNNING",
+            "title": "게시물 제목 8",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 80,
+            "viewCount": 110
+        },
+        {
+            "postId": 9,
+            "category": "WEIGHT",
+            "title": "게시물 제목 9",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 90,
+            "viewCount": 60
+        },
+        {
+            "postId": 10,
+            "category": "RUNNING",
+            "title": "게시물 제목 10",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 100,
+            "viewCount": 140
+        },
+        {
+            "postId": 11,
+            "category": "RUNNING",
+            "title": "게시물 제목 11",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 110,
+            "viewCount": 170
+        },
+        {
+            "postId": 12,
+            "category": "WEIGHT",
+            "title": "게시물 제목 12",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 120,
+            "viewCount": 200
+        },
+        {
+            "postId": 13,
+            "category": "RUNNING",
+            "title": "게시물 제목 13",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 130,
+            "viewCount": 180
+        },
+        {
+            "postId": 14,
+            "category": "HIKING",
+            "title": "게시물 제목 14",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 40,
+            "viewCount": 120
+        },
+        {
+            "postId": 15,
+            "category": "WEIGHT",
+            "title": "게시물 제목 15",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 50,
+            "viewCount": 100
+        },
+        {
+            "postId": 16,
+            "category": "HIKING",
+            "title": "게시물 제목 16",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 60,
+            "viewCount": 90
+        },
+        {
+            "postId": 17,
+            "category": "RUNNING",
+            "title": "게시물 제목 17",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 50,
+            "viewCount": 70
+        },
+        {
+            "postId": 18,
+            "category": "HIKING",
+            "title": "게시물 제목 18",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 10,
+            "viewCount": 60
+        },
+        {
+            "postId": 19,
+            "category": "WEIGHT",
+            "title": "게시물 제목 19",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 10,
+            "viewCount": 50
+        },
+        {
+            "postId": 20,
+            "category": "HIKING",
+            "title": "게시물 제목 20",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 20,
+            "viewCount": 40
+        },
+        {
+            "postId": 21,
+            "category": "WEIGHT",
+            "title": "게시물 제목 21",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 10,
+            "viewCount": 30
+        },
+        {
+            "postId": 22,
+            "category": "RUNNING",
+            "title": "게시물 제목 22",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 20,
+            "viewCount": 45
+        },
+        {
+            "postId": 23,
+            "category": "WEIGHT",
+            "title": "게시물 제목 23",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 20,
+            "viewCount": 55
+        },
+        {
+            "postId": 24,
+            "category": "HIKING",
+            "title": "게시물 제목 24",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 20,
+            "viewCount": 65
+        },
+        {
+            "postId": 25,
+            "category": "RUNNING",
+            "title": "게시물 제목 25",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 25,
+            "viewCount": 75
+        },
+        {
+            "postId": 26,
+            "category": "WEIGHT",
+            "title": "게시물 제목 26",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 20,
+            "viewCount": 80
+        },
+        {
+            "postId": 27,
+            "category": "HIKING",
+            "title": "게시물 제목 27",
+            "userNickname": "ehhdrud",
+            "userImage": "../../assets/default-user-image.jpg",
+            "likeCount": 10,
+            "viewCount": 70
+        }
+    ],
+
+    "posts-1": {
+        "postId": 1,
+        "userImage": "../../assets/default-user-image.jpg",
+        "userNickname": "ehhdrud",
+        "createdAt": "2023-07-31T14:49:54.4241304",
+        "category": "HIKING",
+        "hashtag": ["해시태그1", "해시태그2"],
+        "title": "게시물 제목 1",
+        "description": "<p>Lorem ipsum</p><p><br></p><p><strong>Lorem ipsum </strong></p><p><br></p><p><em>Lorem ipsum</em></p>",
+        "likeCount": 10,
+        "replyCount": 20,
+        "viewCount": 100,
+        "accessLevel": true,
+        "replyList": [
+            {
+                "postId": 1,
+                "replyId": 1,
+                "userImage": "../../assets/default-user-image.jpg",
+                "userNickname": "ehhdrud",
+                "createdAt": "2023-07-31T14:49:54.4241304",
+                "comment": "반갑습니다"
+            },
+            {
+                "postId": 1,
+                "replyId": 2,
+                "userImage": "../../assets/default-user-image.jpg",
+                "userNickname": "fittogether",
+                "createdAt": "2023-07-31T14:49:54.4241304",
+                "comment": "안녕"
+            }
+        ],
+        "childReplyList": [
+            {
+                "postId": 1,
+                "replyId": 1,
+                "childReplyId": 1,
+                "userImage": "../../assets/default-user-image.jpg",
+                "userNickname": "fittogether",
+                "createdAt": "2023-07-31T14:49:54.4241304",
+                "comment": "child반갑습니다"
+            },
+            {
+                "postId": 1,
+                "replyId": 1,
+                "childReplyId": 2,
+                "userImage": "../../assets/default-user-image.jpg",
+                "userNickname": "ehhdrud",
+                "createdAt": "2023-07-31T14:49:54.4241304",
+                "comment": "child반갑습니다"
+            },
+            {
+                "postId": 1,
+                "replyId": 2,
+                "childReplyId": 1,
+                "userImage": "../../assets/default-user-image.jpg",
+                "userNickname": "ehhdrud",
+                "createdAt": "2023-07-31T14:49:54.4241304",
+                "comment": "child반갑습니다"
+            }
+        ]
+    },
+    "posts-2": {
+        "postId": 2,
+        "userImage": "../../assets/default-user-image.jpg",
+        "userNickname": "ehhdrud",
+        "createdAt": "2023-07-31T14:49:54.4241304",
+        "category": "RUNNING",
+        "hashtag": ["해시태그1", "해시태그2"],
+        "title": "게시물 제목 2",
+        "description": "<p>Lorem ipsum</p><p><br></p><p><strong>Lorem ipsum </strong></p><p><br></p><p><em>Lorem ipsum</em></p>",
+        "likeCount": 20,
+        "replyCount": 20,
+        "viewCount": 50,
+        "accessLevel": false,
+        "replyList": [],
+        "childReplyList": []
+    },
+    "posts-3": {
+        "postId": 3,
+        "userImage": "../../assets/default-user-image.jpg",
+        "userNickname": "ehhdrud",
+        "createdAt": "2023-07-31T14:49:54.4241304",
+        "category": "WEIGHT",
+        "hashtag": ["해시태그1", "해시태그2"],
+        "title": "게시물 제목 3",
+        "description": "<p>Lorem ipsum</p><p><br></p><p><strong>Lorem ipsum </strong></p><p><br></p><p><em>Lorem ipsum</em></p>",
+        "likeCount": 30,
+        "replyCount": 20,
+        "viewCount": 70,
+        "accessLevel": true,
+        "replyList": [],
+        "childReplyList": []
+    },
+    "posts-4": {
+        "postId": 4,
+        "userImage": "../../assets/default-user-image.jpg",
+        "userNickname": "ehhdrud",
+        "createdAt": "2023-07-31T14:49:54.4241304",
+        "category": "HIKING",
+        "hashtag": ["해시태그1", "해시태그2"],
+        "title": "게시물 제목 4",
+        "description": "<p>Lorem ipsum</p><p><br></p><p><strong>Lorem ipsum </strong></p><p><br></p><p><em>Lorem ipsum</em></p>",
+        "likeCount": 40,
+        "replyCount": 20,
+        "viewCount": 90,
+        "accessLevel": true,
+        "replyList": [],
+        "childReplyList": []
+    },
+    "posts-5": {
+        "postId": 5,
+        "userImage": "../../assets/default-user-image.jpg",
+        "userNickname": "ehhdrud",
+        "createdAt": "2023-07-31T14:49:54.4241304",
+        "category": "RUNNING",
+        "hashtag": ["해시태그1", "해시태그2"],
+        "title": "게시물 제목 5",
+        "description": "<p>Lorem ipsum</p><p><br></p><p><strong>Lorem ipsum </strong></p><p><br></p><p><em>Lorem ipsum</em></p>",
+        "likeCount": 50,
+        "replyCount": 20,
+        "viewCount": 120,
+        "accessLevel": true,
+        "replyList": [],
+        "childReplyList": []
+    }
+}
