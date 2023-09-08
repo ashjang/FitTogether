@@ -1,5 +1,10 @@
 /** @jsxImportSource @emotion/react */
 
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, 
+@typescript-eslint/no-unsafe-argument,
+@typescript-eslint/no-unsafe-member-access,
+@typescript-eslint/no-misused-promises */
+
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { css } from '@emotion/react';

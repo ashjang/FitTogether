@@ -1,5 +1,12 @@
 /** @jsxImportSource @emotion/react */
 
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, 
+@typescript-eslint/no-unsafe-argument,
+@typescript-eslint/no-unsafe-member-access,
+@typescript-eslint/no-misused-promises,
+@typescript-eslint/no-floating-promises,
+react-hooks/exhaustive-deps */
+
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
@@ -11,7 +18,6 @@ const MyInformation: React.FC = () => {
     const [introduction, setIntroduction] = useState<string>(userData.introduction || ''); // 초기 값 설정
     const [gender, setGender] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [pictureURL, setPictureURL] = useState<string | null>(null);
     const [publicStatus, setPublicStatus] = useState(true);
     const [favoriteSports, setFavoriteSports] = useState<string[]>([]);
@@ -26,7 +32,7 @@ const MyInformation: React.FC = () => {
         }
     }, []);
 
-    const getUserData = async (token) => {
+    const getUserData = async (token: string) => {
         try {
             const response = await axios.get('/api/users/my', {
                 headers: {
@@ -95,7 +101,6 @@ const MyInformation: React.FC = () => {
     // 프로필 이미지 업로드
     const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
-        // setSelectedImage(file);
 
         if (file) {
             const reader = new FileReader();
@@ -127,39 +132,8 @@ const MyInformation: React.FC = () => {
         }
     };
 
-    // 프로필 이미지 URL 반환받기
-    // const handlePictureChange = async () => {
-    //     if (!selectedImage) {
-    //         alert('이미지를 선택해주세요');
-    //         return;
-    //     }
-
-    //     const formData = new FormData();
-    //     formData.append('image', selectedImage);
-
-    //     try {
-    //         const response = await axios.post(
-    //             `/api/users/upload?image=${encodeURIComponent(selectedImage.name)}`,
-    //             formData,
-    //             {
-    //                 headers: {
-    //                     'X-AUTH-TOKEN': token,
-    //                     'Content-Type': 'multipart/form-data',
-    //                 },
-    //             }
-    //         );
-    //         const uploadedFileURL = response.data;
-    //         setImagePreview(uploadedFileURL);
-    //         setPictureURL(uploadedFileURL);
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //     }
-    // };
-
     // 프로필 이미지 삭제
     const handlePictureDelete = () => {
-        // setSelectedImage('');
-        // setImagePreview('');
         setPictureURL(null);
     };
 
