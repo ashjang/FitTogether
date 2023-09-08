@@ -5,10 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons';
 import UserMarkerSrc from '../../assets/user_marker.png';
 import MyMarkerSrc from '../../assets/my_marker.png';
-import clickMarkerSrc from '../../assets/click_marker.png';
 import UserProfile from './UserProfile';
 import Modal from 'react-modal';
 
+// 유저 정보 데이터 타입
 interface User {
     userId: number;
     nickname: string;
@@ -30,43 +30,26 @@ const Map: React.FC = () => {
     const [map, setMap] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentMarker, setCurrentMarker] = useState<any>(null);
-    const [clickedMarker, setClickedMarker] = useState<any>(null);
     const [locationKeyword, setLocationKeyword] = useState<string | null>(null);
 
+    // 기본 위도 경도: '서울특별시청'
     const dafaultLatitude = 37.566826;
     const dafaultLongitude = 126.9786567;
 
+    // 카테고리 탭 클릭 시 해당 상태를 저장하는 함수
     const handleCategoryClick = (newCategory: string) => {
         setCategory(newCategory);
         setSelectedUser(null);
     };
 
+    // 지도에서 클릭 이벤트 발생 시 해당 위치의 위도 경도를 상태에 저장하는 함수
     const handleMapClick = (mouseEvent: any) => {
         const clickedLatLng = mouseEvent.latLng;
         setLatitude(clickedLatLng.getLat());
         setLongitude(clickedLatLng.getLng());
-
-        // 클릭 마커 에러 안뜨는데 동작을 안함... 해결 필요
-        // 1. 출력되는 에러 없음
-        // 2. 위치, 이미지 문제 없음
-        // 3. 다른 마커 생성 코드와 동일한 코드 사용
-        if (clickedMarker) {
-            clickedMarker.setMap(null);
-        }
-
-        const clickMarker = new window.kakao.maps.Marker({
-            position: clickedLatLng,
-            image: new window.kakao.maps.MarkerImage(
-                clickMarkerSrc,
-                new window.kakao.maps.Size(30, 30)
-            ),
-        });
-
-        clickMarker.setMap(map);
-        setClickedMarker(clickMarker);
     };
 
-    // 내 위치 업데이트 함수
+    // 내 위치 업데이트 함수 (API: 현재 나의 위치 업데이트)
     const putCurrentLocation = async () => {
         try {
             const response = await axios.put(
@@ -77,20 +60,23 @@ const Map: React.FC = () => {
                 }
             );
             console.log(response.data);
+
+            // 실행 성공 후 곧바로 주변 사용자 조회
             getUsers();
         } catch (error) {
             console.error(error);
         }
     };
 
-    // 3km 이내 사용자 불러오는 함수
+    // 해당 위치 주변의 사용자를 조회하는 함수 (API: 3km 내 사용자 조회)
     const getUsers = async () => {
         try {
-            console.log(token);
             const response = await axios.get('/api/location/map', {
                 headers: { 'X-AUTH-TOKEN': token },
             });
             console.log(response.data);
+
+            // 주변 사용자를 상태에 저장
             setUsers(response.data);
         } catch (error) {
             console.error(error);
@@ -121,29 +107,17 @@ const Map: React.FC = () => {
 
             // 마커 객체를 map에 찍는 메서드
             marker.setMap(map);
+
+            // 다음 마커 등록 시 기존 마커를 삭제하기 위해 상태로 관리
             setCurrentMarker(marker);
         }
+        // 이후 바로 위치 등록
         putCurrentLocation();
     };
 
     // 마운트 시 & 카테고리 변경 시 실행되는 함수
     useEffect(() => {
-        // 현재 위치의 위도, 경도 상태에 저장
-        if ('geolocation' in navigator) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    setLatitude(position.coords.latitude);
-                    setLongitude(position.coords.longitude);
-                },
-                (error) => {
-                    console.error('Error getting geolocation:', error);
-                }
-            );
-        } else {
-            console.error('Geolocation is not supported by your browser.');
-        }
-
-        // 카카오맵 오류시 탈출
+        // 카카오맵 오류시 함수 종료
         if (!kakaoMapRef.current) {
             return;
         }
@@ -158,12 +132,12 @@ const Map: React.FC = () => {
         window.kakao.maps.event.addListener(map, 'click', handleMapClick);
     }, [category]);
 
-    // users가 존재 && users 상태가 업데이트될 때 실행되는 함수
+    // users 상태가 업데이트될 때 실행되는 함수
     useEffect(() => {
         users?.forEach((user) => {
             // 좋아하는 운동에 현재 카테고리의 운동이 있는 user만 추출
             if (user.exerciseChoice.includes(category)) {
-                // 아까처럼 위치 설정해 marker를 찍어서 지도에 출력
+                // 위치 설정 후 marker를 찍어서 지도에 출력
                 const userLatLng = new window.kakao.maps.LatLng(user.latitude, user.longitude);
                 console.log(user.latitude, user.longitude);
                 const marker = new window.kakao.maps.Marker({
@@ -177,7 +151,9 @@ const Map: React.FC = () => {
 
                 // 각 마커에 이벤트 리스너 등록
                 window.kakao.maps.event.addListener(marker, 'click', () => {
+                    // 해당 유저를 상태로 저장
                     setSelectedUser(user);
+                    // 팝업을 열기위한 상태 업데이트
                     setIsModalOpen(true);
                 });
             }
@@ -212,12 +188,13 @@ const Map: React.FC = () => {
         ps.keywordSearch(locationKeyword, placesSearchCB);
     };
 
-    // Enter 눌렀을 때도 handleClickSearchBtn 실행하도록 처리
+    // Enter 키 누를 때도 handleClickSearchBtn 실행하도록 처리
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             handleClickSearchBtn();
         }
     };
+
     // 모달 토글 함수
     const handleToggleModal = () => {
         setIsModalOpen(!isModalOpen);
@@ -270,7 +247,7 @@ const Map: React.FC = () => {
                 style={{
                     overlay: {
                         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        zIndex: 1,
+                        zIndex: 99,
                     },
                     content: {
                         width: 'max-content',
@@ -328,8 +305,8 @@ const LocationSearchBar = styled.div`
     position: absolute;
     z-index: 5;
     top: 130px;
-    left: 75px;
-    opacity: 0.9;
+    left: 15px;
+    opacity: 0.8;
     border: 1px solid black;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
 `;
@@ -363,8 +340,8 @@ const CreateMarkerButton = styled.button`
     padding: 10px 10px 5px 10px;
     border: none;
     border-radius: 50%;
-    background-color: rgba(125, 125, 125, 0.2);
-    border: 5px solid black;
+    background-color: rgba(100, 100, 100, 0.1);
+    border: 4px solid black;
     z-index: 10;
 `;
 const LightIcon = styled(FontAwesomeIcon)`

@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import styled from '@emotion/styled';
 
+// 유저 정보 데이터 타입
 interface User {
     userId: number;
     nickname: string;
@@ -15,6 +16,7 @@ interface User {
 const UserProfile: React.FC<{ selectedUser: User | null }> = (props) => {
     const token = sessionStorage.getItem('token');
 
+    // 운동 메이트 신청하는 함수 (API: mateRequest)
     const postMateRequest = async () => {
         try {
             const response = await axios.post(
@@ -27,6 +29,7 @@ const UserProfile: React.FC<{ selectedUser: User | null }> = (props) => {
                 }
             );
             console.log(response.data);
+
             alert('운동 메이트 신청 완료 !');
         } catch (error: any) {
             if (error.response && error.response.status === 400) {
@@ -57,17 +60,29 @@ const UserProfile: React.FC<{ selectedUser: User | null }> = (props) => {
                     <UserExerciseChoice>좋아하는 운동</UserExerciseChoice>
                     <UserExerciseChoiceItem>
                         <ExerciseChoiceBox
-                            isActive={props.selectedUser?.exerciseChoice.includes('RUNNING')}
+                            className={
+                                props.selectedUser?.exerciseChoice.includes('RUNNING')
+                                    ? 'active'
+                                    : ''
+                            }
                         >
                             러닝
                         </ExerciseChoiceBox>
                         <ExerciseChoiceBox
-                            isActive={props.selectedUser?.exerciseChoice.includes('HIKING')}
+                            className={
+                                props.selectedUser?.exerciseChoice.includes('HIKING')
+                                    ? 'active'
+                                    : ''
+                            }
                         >
                             등산
                         </ExerciseChoiceBox>
                         <ExerciseChoiceBox
-                            isActive={props.selectedUser?.exerciseChoice.includes('WEIGHT')}
+                            className={
+                                props.selectedUser?.exerciseChoice.includes('WEIGHT')
+                                    ? 'active'
+                                    : ''
+                            }
                         >
                             헬스
                         </ExerciseChoiceBox>
@@ -86,7 +101,8 @@ const UserProfileComponent = styled.div`
     align-items: center;
     position: relative;
     width: 200px;
-    height: 300px;
+    min-height: 300px;
+    padding: 0px 15px;
     background-color: white;
     border: 2px solid #444;
     border-radius: 30px;
@@ -157,20 +173,24 @@ const RequestBtn = styled.button`
     border-radius: 10px;
     border: 2px solid #666;
     &:hover {
-        background-color: #ffffe7;
+        background-color: #ffd0dd;
     }
 `;
 
-const ExerciseChoiceBox = styled.div<{ isActive?: boolean }>`
+const ExerciseChoiceBox = styled.div`
     padding: 0px 5px;
     margin: 3px;
-    background-color: ${(props) => (props.isActive ? '#ffffd7' : '#d7d7d7')};
     border: 1px solid #a6a6a6;
     border-radius: 10px;
     font-size: 13px;
-    font-weight: ${(props) => (props.isActive ? 'bold' : 'regular')};
     color: #555;
     cursor: pointer;
+    font-weight: regular;
+    background-color: #d7d7d7;
+    &.active {
+        font-weight: bold;
+        background-color: #ffd0dd;
+    }
 `;
 
 export default UserProfile;

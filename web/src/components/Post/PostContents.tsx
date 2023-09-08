@@ -27,11 +27,6 @@ interface DataForEdit {
     savedAccessLevel: boolean;
 }
 
-// 좋아요가 눌린 상태인지 안눌린 상태인지 판단하기 위한 데이터의 타입
-interface PostDetailLikeProps {
-    active: boolean;
-}
-
 // Date를 문자열로 변환하는 함수
 export const formatDateString = (createdAt: string) => {
     if (!createdAt) {
@@ -160,6 +155,7 @@ const PostContents: React.FC = () => {
                     style={{
                         overlay: {
                             backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            zIndex: 99,
                         },
                         content: {
                             width: 'max-content',
@@ -175,9 +171,9 @@ const PostContents: React.FC = () => {
                     }}
                 >
                     <Link to={`/posts/${postId}/editpost`} state={{ dataForEdit }}>
-                        <ModalButtonEdit>수정</ModalButtonEdit>
+                        <ModalButtonEdit>수정하기</ModalButtonEdit>
                     </Link>
-                    <ModalButtonDelete onClick={handleDeletePost}>삭제</ModalButtonDelete>
+                    <ModalButtonDelete onClick={handleDeletePost}>삭제하기</ModalButtonDelete>
                 </Modal>
             </ProfileContainer>
             <Post>
@@ -193,7 +189,10 @@ const PostContents: React.FC = () => {
                 />
             </Post>
             <PostDetail>
-                <PostDetailLike active={likeState === true} onClick={handleToggleLikeButton}>
+                <PostDetailLike
+                    className={likeState ? 'active' : ''}
+                    onClick={handleToggleLikeButton}
+                >
                     <FaThumbsUp icon={faThumbsUp} />
                     <LikeCount>{postContentsData.likeCount}</LikeCount>
                 </PostDetailLike>
@@ -285,10 +284,13 @@ const FaEllipsis = styled(FontAwesomeIcon)`
 `;
 
 const ModalButtonEdit = styled.button`
+    width: 120px;
+    height: 50px;
     padding: 0 10px;
     border-style: none;
     border-radius: 15px;
     margin: 5px;
+    font-size: 20px;
     background-color: #d7d7d7;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
     &: hover {
@@ -297,10 +299,13 @@ const ModalButtonEdit = styled.button`
 `;
 
 const ModalButtonDelete = styled.button`
+    width: 120px;
+    height: 50px;
     padding: 0 10px;
     border-style: none;
     border-radius: 15px;
     margin: 5px;
+    font-size: 20px;
     background-color: #dc9696;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
     &: hover {
@@ -332,11 +337,15 @@ const PostDetail = styled.div`
     border-bottom: 1px solid #d7d7d7;
 `;
 
-const PostDetailLike = styled.div<PostDetailLikeProps>`
+const PostDetailLike = styled.div`
     margin-right: 10px;
     border-radius: 10px;
-    background-color: ${(props) => (props.active ? '#a1c9e4' : 'transparent')};
-    font-weight: ${(props) => (props.active ? 'bold' : 'regular')};
+    font-weight: regular;
+    background-color: transparent;
+    &.active {
+        font-weight: bold;
+        background-color: #a1c9e4;
+    }
 `;
 
 const FaThumbsUp = styled(FontAwesomeIcon)`

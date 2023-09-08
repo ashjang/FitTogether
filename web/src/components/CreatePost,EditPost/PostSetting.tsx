@@ -10,11 +10,6 @@ interface DataForPostSettingComp {
     savedAccessLevel: boolean;
 }
 
-interface ButtonProps {
-    active: boolean;
-    onClick: () => void;
-}
-
 const PostSetting: React.FC<DataForPostSettingComp | {}> = (props) => {
     const [hashtag, setHashtag] = useState<string>('');
     const [hashtagList, setHashtagList] = useRecoilState(hashtagListState);
@@ -89,7 +84,7 @@ const PostSetting: React.FC<DataForPostSettingComp | {}> = (props) => {
                     {hashtagList &&
                         hashtagList.map((keyword, index) => (
                             <HashtagItem key={index}>
-                                {keyword}
+                                {`#${keyword}`}
                                 <RemoveButton
                                     type="button"
                                     onClick={() => handleRemoveHashtag(index)}
@@ -105,21 +100,21 @@ const PostSetting: React.FC<DataForPostSettingComp | {}> = (props) => {
                 <CategoryTab>
                     <CategoryButton
                         type="button"
-                        active={category === 'RUNNING'}
+                        className={category === 'RUNNING' ? 'active' : ''}
                         onClick={() => handleCategoryClick('RUNNING')}
                     >
                         러닝
                     </CategoryButton>
                     <CategoryButton
                         type="button"
-                        active={category === 'HIKING'}
+                        className={category === 'HIKING' ? 'active' : ''}
                         onClick={() => handleCategoryClick('HIKING')}
                     >
                         등산
                     </CategoryButton>
                     <CategoryButton
                         type="button"
-                        active={category === 'WEIGHT'}
+                        className={category === 'WEIGHT' ? 'active' : ''}
                         onClick={() => handleCategoryClick('WEIGHT')}
                     >
                         헬스
@@ -131,14 +126,14 @@ const PostSetting: React.FC<DataForPostSettingComp | {}> = (props) => {
                 <PublicTab>
                     <PublicButton
                         type="button"
-                        active={accessLevel === true}
+                        className={accessLevel === true ? 'active' : ''}
                         onClick={() => setAccessLevel(true)}
                     >
                         전체
                     </PublicButton>
                     <PublicButton
                         type="button"
-                        active={accessLevel === false}
+                        className={accessLevel === false ? 'active' : ''}
                         onClick={() => setAccessLevel(false)}
                     >
                         메이트
@@ -176,9 +171,9 @@ const HashtagList = styled.div`
 `;
 
 const HashtagItem = styled.span`
-    background-color: #f0f0f0;
+    background-color: #b0e0e6;
     padding: 0 5px;
-    border-radius: 12px;
+    border-radius: 8px;
     margin: 0 10px;
 `;
 
@@ -195,30 +190,36 @@ const CategoryTab = styled.div`
     display: flex;
 `;
 
-const CategoryButton = styled.button<ButtonProps>`
+const CategoryButton = styled.button`
     border: 2px solid transparent;
     border-radius: 12px;
     padding: 0 5px;
     margin: 0px 10px 0px 0px;
+    background-color: #eee;
     &:hover {
         border: 2px dashed #b7b7b7;
     }
-    background-color: ${(props) => (props.active ? '#d7d7d7' : 'white')};
+    &.active {
+        background-color: #b0e0e6;
+    }
 `;
 
 const PublicTab = styled.div`
     display: flex;
 `;
 
-const PublicButton = styled.button<ButtonProps>`
+const PublicButton = styled.button`
     border: 2px solid transparent;
     border-radius: 12px;
     padding: 0 5px;
     margin: 0px 10px 0px 0px;
+    background-color: #eee;
     &:hover {
         border: 2px dashed #b7b7b7;
     }
-    background-color: ${(props) => (props.active ? '#d7d7d7' : 'white')};
+    &.active {
+        background-color: #b0e0e6;
+    }
 `;
 
 export default PostSetting;
