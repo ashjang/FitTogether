@@ -121,7 +121,7 @@ const PostContents: React.FC = () => {
             setLikeState(response.data.like);
         } catch (error) {
             console.error(error);
-            alert('로그인이 필요합니다.');
+            alert('로그인이 필요한 기능입니다.');
         }
     };
 

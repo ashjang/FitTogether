@@ -61,7 +61,7 @@ function Header() {
     const setKeywordFilter = useSetRecoilState<string>(keywordFilterState);
     const setHashtagFilter = useSetRecoilState<string>(hashtagFilterState);
     const setVideoCategory = useSetRecoilState<string>(categoryRecoil);
-  
+
     const setKeywordItem = useSetRecoilState<string>(keywordItemState);
     const setHashtagItem = useSetRecoilState<string>(hashtagItemState);
 

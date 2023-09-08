@@ -13,7 +13,7 @@ const FindMate: React.FC = () => {
 
 const FindMatePage = styled.div`
     width: 1440px;
-    min-height: calc(100vh - 200px);
+    min-height: calc(100vh - 500px);
     margin: 120px auto 0;
     padding: 20px 60px;
 `;

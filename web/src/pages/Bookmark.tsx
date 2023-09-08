@@ -23,12 +23,6 @@ const Bookmark: React.FC = () => {
         videoInPlaylistRecoil
     );
 
-    // PlaylistSetting 팝업을 열고 닫기위한 함수
-    const togglePopup = () => {
-        setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
-        console.log(isPopupOpen);
-    };
-
     // 플레이리스트 전체와 각 플레이리스트의 최근 5개의 동영상을 반환받는 함수 (API: readPlaylist, readVideoInPlaylist)
     const getPlaylists = async () => {
         try {
@@ -127,9 +121,19 @@ const Bookmark: React.FC = () => {
             <TitleArea>
                 <p css={centeredTextStyle}>저장된 동영상</p>
                 {isPopupOpen ? (
-                    <FaMinus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
+                    <FaMinus
+                        css={[rightAlignedStyle, icon]}
+                        onClick={() => {
+                            setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
+                        }}
+                    />
                 ) : (
-                    <FaPlus css={[rightAlignedStyle, icon]} onClick={togglePopup} />
+                    <FaPlus
+                        css={[rightAlignedStyle, icon]}
+                        onClick={() => {
+                            setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
+                        }}
+                    />
                 )}
                 {isPopupOpen && (
                     <AddPlaylistContainer>

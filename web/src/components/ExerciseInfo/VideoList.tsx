@@ -1,17 +1,18 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useInfiniteQuery } from 'react-query';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import axios from 'axios';
 import styled from '@emotion/styled';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFolderPlus } from '@fortawesome/free-solid-svg-icons';
 import { useRecoilValue } from 'recoil';
 import { categoryRecoil } from '../../recoil/video/atoms';
 import { loggedInState } from '../../recoil/AuthState/atoms';
 import VideoPopup from './VideoPopup';
 import PlaylistSetting from './PlaylistSetting';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFolderPlus } from '@fortawesome/free-solid-svg-icons';
 import Spinner from '../../assets/Spinner.svg';
 
+// 각 비디오의 데이터 타입
 interface Video {
     videoId: string;
     title: string;
@@ -19,6 +20,7 @@ interface Video {
     keyword: string;
 }
 
+// 각 비디오 리스트(5개)의 데이터 타입
 interface VideoList {
     values: Video[];
     hasNext: boolean;
@@ -28,19 +30,23 @@ interface VideoList {
 const VideoList: React.FC = () => {
     const isLoggedIn = useRecoilValue(loggedInState);
     const category = useRecoilValue<string>(categoryRecoil);
-    const [showModal, setShowModal] = useState<boolean>(false);
+    const [showSetting, setShowSetting] = useState<boolean>(false);
     const [clickedVideo, setClidkedVideo] = useState<Video | null>(null);
     const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
 
+    // 비디오리스트를 불러오는 함수 (API: getVideos)
     const fetchVideos = async (category: string, lastId: number): Promise<VideoList> => {
-        const response = await axios.get<VideoList>(
-            `/api/video/${category}?cursorId=${lastId}&size=5`
-        );
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        const response = await axios.get(`/api/video/${category}?cursorId=${lastId}&size=5`);
         console.log(response.data);
+
+        // 로딩스피너를 적절히 보여주기 위한 의도적 딜레이
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        // useInfiniteQuery 사용하기 위해 응답값 return
         return response.data;
     };
 
+    // useInfiniteQuery를 이용해 무한스크롤 구현
     const { data, isLoading, isError, fetchNextPage, hasNextPage } = useInfiniteQuery<
         VideoList,
         Error
@@ -57,31 +63,25 @@ const VideoList: React.FC = () => {
         },
     });
 
+    // flatMap 메서드를 통해 중첩 배열을 평탄화하여 무한스크롤에 적합한 형식으로 반환
     let videoList = data?.pages.flatMap((page) => page.values);
 
-    // 비디오 팝업을 여는 함수
-    const openVideo = useCallback((video: Video) => {
-        setClidkedVideo(video);
-    }, []);
-
-    // 비디오 팝업을 닫는 함수
-    const closeVideo = useCallback(() => {
-        setClidkedVideo(null);
-    }, []);
-
     // 동영상을 저장하는 함수
-    const handleIconClick = useCallback(
-        (video: Video) => {
-            if (!isLoggedIn) {
-                alert('로그인 후 이용해주세요.');
-                return;
-            }
-            setSelectedVideo(video);
-            setShowModal(true);
-        },
-        [isLoggedIn]
-    );
+    const handleIconClick = (video: Video) => {
+        if (!isLoggedIn) {
+            alert('로그인이 필요한 기능입니다.');
+            return;
+        }
+        // 동영상을 상태에 저장
+        setSelectedVideo(video);
+        // PlaylistSetting 팝업을 열기 위한 상태 업데이트
+        setShowSetting(true);
+    };
 
+    // 마운트 시 페이지 최상단으로 이동
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
     return (
         <VideoListComponent>
             <VideoContainer>
@@ -90,7 +90,7 @@ const VideoList: React.FC = () => {
                         <img src={Spinner} alt="Loading" />
                     </Loading>
                 ) : isError ? (
-                    <ErrorMessage>Error</ErrorMessage>
+                    <ErrorMessage>동영상을 불러올 수 없습니다 😢</ErrorMessage>
                 ) : (
                     <InfiniteScroll
                         dataLength={videoList?.length || 0}
@@ -102,7 +102,7 @@ const VideoList: React.FC = () => {
                             <VideoItem
                                 key={video.videoId}
                                 onClick={() => {
-                                    openVideo(video);
+                                    setClidkedVideo(video);
                                 }}
                             >
                                 <VideoTitle>
@@ -126,11 +126,11 @@ const VideoList: React.FC = () => {
             {clickedVideo && (
                 <VideoPopup
                     video={{ videoId: clickedVideo.videoId, title: clickedVideo.title }}
-                    onClose={closeVideo}
+                    onClose={() => setClidkedVideo(null)}
                 />
             )}
-            {showModal && selectedVideo && (
-                <PlaylistSetting video={selectedVideo} onClose={() => setShowModal(false)} />
+            {showSetting && selectedVideo && (
+                <PlaylistSetting video={selectedVideo} onClose={() => setShowSetting(false)} />
             )}
         </VideoListComponent>
     );

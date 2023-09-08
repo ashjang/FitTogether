@@ -1,13 +1,13 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { FaEllipsisV } from 'react-icons/fa';
 import { useRecoilState } from 'recoil';
 import { videoInPlaylistRecoil } from '../../recoil/video/atoms';
 import VideoPopup from '../ExerciseInfo/VideoPopup';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 
 // 플레이리스트의 각 비디오들의 타입
 interface VideoInPlaylist {
@@ -159,16 +159,6 @@ const BookmarkFolder: React.FC = () => {
         navigate(`/playlists?name=${name}`);
     };
 
-    // 비디오 팝업을 여는 함수
-    const openVideo = useCallback((video: VideoInPlaylist) => {
-        setClidkedVideo(video);
-    }, []);
-
-    // 비디오 팝업을 닫는 함수
-    const closeVideo = useCallback(() => {
-        setClidkedVideo(null);
-    }, []);
-
     return (
         <BookmarkFolderContainer>
             {videosInPlaylist ? (
@@ -223,7 +213,7 @@ const BookmarkFolder: React.FC = () => {
                                     value.map((video) => (
                                         <FolderItem
                                             key={video.videoId}
-                                            onClick={() => openVideo(video)}
+                                            onClick={() => setClidkedVideo(video)}
                                         >
                                             <FolderItemThumbnail
                                                 src={video.thumbnail}
@@ -251,7 +241,9 @@ const BookmarkFolder: React.FC = () => {
             {clickedVideo && (
                 <VideoPopup
                     video={{ videoId: clickedVideo.videoId, title: clickedVideo.videoTitle }}
-                    onClose={closeVideo}
+                    onClose={() => {
+                        setClidkedVideo(null);
+                    }}
                 />
             )}
         </BookmarkFolderContainer>
@@ -364,6 +356,7 @@ const FolderItem = styled.div`
     overflow: hidden;
     background-color: black;
     border-radius: 15px;
+    cursor: pointer;
 `;
 
 const FolderItemThumbnail = styled.img``;

@@ -156,6 +156,7 @@ const PostListItemComponent = styled.div`
     border-top: 1px solid #d7d7d7;
     padding: 15px 0;
     border-bottom: 1px solid #d7d7d7;
+    cursor: pointer;
 `;
 
 const ShowPost = styled.div`

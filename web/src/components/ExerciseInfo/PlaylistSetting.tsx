@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { useRecoilState } from 'recoil';
 import { playlistsDataRecoil } from '../../recoil/video/atoms';
 
+// 각 비디오의 데이터 타입
 interface Video {
     videoId: string;
     title: string;
@@ -11,16 +12,16 @@ interface Video {
     keyword: string;
 }
 
-interface Props {
-    video: Video;
-    onClose: () => void;
-}
-
+// 각 플레이리스트의 데이터 타입
 interface Playlist {
     playlistName: string;
     userId: number;
 }
 
+interface Props {
+    video: Video;
+    onClose: () => void;
+}
 const PlaylistSetting: React.FC<Props> = ({ video, onClose }) => {
     const token = sessionStorage.getItem('token');
     const modalRef = useRef<HTMLDivElement | null>(null);
@@ -165,14 +166,12 @@ const PlaylistSetting: React.FC<Props> = ({ video, onClose }) => {
                     'X-AUTH-TOKEN': token,
                 },
             });
-            if (response.data) {
-                alert('영상이 저장되었습니다.');
-            } else {
-                alert('영상 저장이 실패하였습니다.');
-            }
+            console.log(response.data);
+
+            alert('동영상이 저장되었습니다.');
         } catch (error) {
-            alert('비디오 추가가 실패하였습니다.');
             console.error(error);
+            alert('이미 저장된 동영상입니다.');
         }
     };
 
