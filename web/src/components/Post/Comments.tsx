@@ -15,26 +15,6 @@ import { loggedInState } from '../../recoil/AuthState/atoms';
 import { formatDateString } from './PostContents';
 import imgSrc from '../../assets/default-user-image.png';
 
-// // Date를 문자열로 변환하는 함수
-// const formatDateString = (createdAt: string) => {
-//     const dateObject = new Date(createdAt);
-
-//     const formattedDate = dateObject.toLocaleString('en-US', {
-//         year: 'numeric',
-//         month: '2-digit',
-//         day: '2-digit',
-//         hour: '2-digit',
-//         minute: '2-digit',
-//         hour12: false, // 24-hour format
-//     });
-
-//     const [date, time] = formattedDate.split(', ');
-//     const [month, day, year] = date.split('/');
-//     const [hour, minute] = time.split(':');
-
-//     return `${year}/${month}/${day} ${hour}:${minute}`;
-// };
-
 const Comments: React.FC = () => {
     const token = sessionStorage.getItem('token');
     const isLoggedIn = useRecoilValue(loggedInState);

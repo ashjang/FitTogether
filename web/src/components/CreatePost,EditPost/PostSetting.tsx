@@ -3,15 +3,16 @@ import styled from '@emotion/styled';
 import { useRecoilState } from 'recoil';
 import { hashtagListState, categoryState, accessLevelState } from '../../recoil/posts/atoms';
 
-interface ButtonProps {
-    active: boolean;
-    onClick: () => void;
-}
-
+// '게시글 수정' 시에만 넘어오는 props의 데이터 타입
 interface DataForPostSettingComp {
     savedHashtagList: string[];
     savedCategory: string;
     savedAccessLevel: boolean;
+}
+
+interface ButtonProps {
+    active: boolean;
+    onClick: () => void;
 }
 
 const PostSetting: React.FC<DataForPostSettingComp | {}> = (props) => {
@@ -20,40 +21,45 @@ const PostSetting: React.FC<DataForPostSettingComp | {}> = (props) => {
     const [category, setCategory] = useRecoilState(categoryState);
     const [accessLevel, setAccessLevel] = useRecoilState(accessLevelState);
 
+    // 해시태그 인풋 value가 변할 때 마다 상태에 저장하는 함수
     const handleHashtagInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        // 해시태그 입력 필드가 변경될 때 호출되는 함수
+        // 공백은 무시
         const hashtags = event.target.value.split(' ');
         const hashtagString = hashtags.join('');
         setHashtag(hashtagString);
     };
 
+    // 해시태그 인풋에서 엔터키를 처리하기 위한 함수
     const handleHashtagInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        // Enter 키 누를 때 호출되는 함수
         if (event.key === 'Enter') {
             event.preventDefault();
+            // 기존 값은 유지하고 새로운 값을 추가
             setHashtagList([...hashtagList, hashtag]);
-            event.currentTarget.value = ''; // 입력 필드를 비웁니다.
+            // 입력 필드 초기화
+            event.currentTarget.value = '';
         }
-        console.log(hashtagList);
     };
 
+    // 해시태그의 'X' 버튼을 누를때 해당 해시태그를 상태에서 지우는 함수
     const handleRemoveHashtag = (index: number) => {
         const updatedHashtagList = [...hashtagList];
-        updatedHashtagList.splice(index, 1);
-        setHashtagList(updatedHashtagList);
+        updatedHashtagList.splice(index, 1); // 해당 index의 요소를 1개 삭제 후 새로운 배열을 반환
+        setHashtagList(updatedHashtagList); // 반환받은 새로운 배열로 상태 업데이트
     };
 
+    // 카테고리를 선택하는 함수
     const handleCategoryClick = (newCategory: string) => {
         // 이전 선택과 다른 카테고리를 선택했을 때만 업데이트
         if (category !== newCategory) {
             setCategory(newCategory);
         } else {
-            // 이미 선택된 카테고리를 다시 클릭했을 때 초기 상태(모든 카테고리)로 돌아오게 처리
+            // 이미 선택된 카테고리를 다시 클릭했을 때 초기 상태로 돌아오게 처리
             setCategory('');
         }
     };
 
     useEffect(() => {
+        // '게시글 수정'인지, '게시글 작성'인지 구별하여 PostSetting 컴포넌트의 초기값 설정
         if (
             'savedHashtagList' in props &&
             'savedCategory' in props &&

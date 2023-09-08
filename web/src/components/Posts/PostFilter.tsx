@@ -37,8 +37,58 @@ const PostFilter: React.FC = () => {
         navigate(`${location.pathname}?page=${i}`);
     };
 
-    // 필터링없는 상태에서 postListData 얻기
+    // 카테고리 탭 클릭 시 value를 저장하는 함수
+    const handleCategoryClick = async (newCategory: string) => {
+        // 다른 필터링 상태들은 초기화
+        setHashtagFilter('');
+        setHashtagItem('');
+        setKeywordFilter('');
+        setKeywordItem('');
+
+        // 새로운 카테고리가 기존 카테고리와 다르다면 카테고리 상태 업데이트
+        if (categoryFilter !== newCategory) {
+            setCategoryFilter(newCategory);
+        }
+        // 기존과 같다면 초기화하여 필터링 없는 상태의 postListData를 불러옴
+        else {
+            setCategoryFilter('');
+        }
+        setCurrentPage(1);
+    };
+
+    // 키워드 인풋 value가 변할 때 마다 상태에 저장하는 함수
+    const handleKeywordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setKeywordFilter(event.target.value);
+    };
+
+    // 해시태그 인풋 value가 변할 때 마다 상태에 저장하는 함수
+    const handleHashtagChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setHashtagFilter(event.target.value);
+    };
+
+    // 키워드 인풋에서 엔터키 입력을 처리하여 필터링 하는 함수
+    const handleEnterPressInKeyword = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            if (keywordFilter !== '') {
+                getFilteredKeyword();
+            }
+        }
+    };
+
+    // 해시태그 인풋에서 엔터키 입력을 처리하여 필터링 하는 함수
+    const handleEnterPressInHashtag = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            if (hashtagFilter !== '') {
+                getFilteredHashtag();
+            }
+        }
+    };
+
+    // 필터링없는 상태의 postListData를 얻는 함수 (API: allPost)
     const getPostListData = async () => {
+        // 필터링 관련 상태는 초기화
         setHashtagFilter('');
         setHashtagItem('');
         setKeywordFilter('');
@@ -53,21 +103,7 @@ const PostFilter: React.FC = () => {
         }
     };
 
-    // 카테고리 탭으로 필터링
-    const handleCategoryClick = async (newCategory: string) => {
-        setHashtagFilter('');
-        setHashtagItem('');
-        setKeywordFilter('');
-        setKeywordItem('');
-        console.log('newCategory', newCategory);
-        if (categoryFilter !== newCategory) {
-            setCategoryFilter(newCategory);
-        } else {
-            setCategoryFilter('');
-        }
-        setCurrentPage(1);
-    };
-
+    // 카테고리로 필터링된 postListData를 얻는 함수 (API: getPostByCategory)
     const getFilteredCategory = async () => {
         try {
             const response = await axios.get(
@@ -85,11 +121,9 @@ const PostFilter: React.FC = () => {
         }
     };
 
-    // 키워드 검색으로 필터링
-    const handleKeywordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setKeywordFilter(event.target.value);
-    };
+    // 키워드로 필터링된 postListData를 얻는 함수 (API: getPostByTitle)
     const getFilteredKeyword = async () => {
+        // 다른 필터링 상태들은 초기화하고 키워드 관련 상태만 업데이트
         setCategoryFilter('');
         setHashtagFilter('');
         setHashtagItem('');
@@ -109,11 +143,9 @@ const PostFilter: React.FC = () => {
         }
     };
 
-    // 해시태그 검색으로 필터링
-    const handleHashtagChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setHashtagFilter(event.target.value);
-    };
+    // 해시태그로 필터링된 postListData를 얻는 함수 (API: getPostByHashtag)
     const getFilteredHashtag = async () => {
+        // 다른 필터링 상태들은 초기화하고 해시태그 관련 상태만 업데이트
         setCategoryFilter('');
         setKeywordFilter('');
         setKeywordItem('');
@@ -136,25 +168,12 @@ const PostFilter: React.FC = () => {
         }
     };
 
-    const handleEnterPressInKeyword = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            if (keywordFilter !== '') {
-                getFilteredKeyword();
-            }
-        }
-    };
-
-    const handleEnterPressInHashtag = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            if (hashtagFilter !== '') {
-                getFilteredHashtag();
-            }
-        }
-    };
-
+    // 페이지네이션 혹은 필터링 관련 상태들이 변경될 때 실행될 함수
     useEffect(() => {
+        // 페이지 최상단으로 이동
+        window.scrollTo(0, 0);
+
+        // 각 필터링 요소의 상태에 따른 호출 함수 정의
         if (categoryFilter === '' && keywordFilter === '' && hashtagFilter === '') {
             getPostListData();
         } else if (categoryFilter !== '') {
@@ -228,6 +247,8 @@ const PostFilter: React.FC = () => {
                     </CurrentFilterItem>
                 )}
             </InputField>
+            {/* 페이지네이션 요소 */}
+            {/* 버튼을 누르면 현재 페이지 상태를 업데이트 */}
             <ButtonContainer>
                 <ButtonGroup>
                     <PaginationButtonArrow
@@ -378,7 +399,7 @@ const PaginationButtonNumber = styled.button`
     &:hover {
         background-color: #a1c9e4;
     }
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* 그림자 추가 */
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 `;
 
 const PaginationButtonArrow = styled.button`

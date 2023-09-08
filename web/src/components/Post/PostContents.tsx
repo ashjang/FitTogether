@@ -34,6 +34,10 @@ interface PostDetailLikeProps {
 
 // Date를 문자열로 변환하는 함수
 export const formatDateString = (createdAt: string) => {
+    if (!createdAt) {
+        return '';
+    }
+
     const dateObject = new Date(createdAt);
 
     const formattedDate = dateObject.toLocaleString('en-US', {
@@ -61,20 +65,6 @@ const PostContents: React.FC = () => {
     const [postContentsData, setPostContentsData] = useRecoilState(postContentsDataRecoil);
     const [likeState, setLikeState] = useRecoilState(isLikedState);
     const myInfo = useRecoilValue(signInInfo);
-
-    // // 서버에서 넘어온 영문 카테고리명을 한글로 변환하는 함수
-    // const getCategoryName = (categoryEng: string) => {
-    //     switch (categoryEng) {
-    //         case 'RUNNING':
-    //             return '러닝';
-    //         case 'HIKING':
-    //             return '등산';
-    //         case 'WEIGHT':
-    //             return '헬스';
-    //         default:
-    //             return '';
-    //     }
-    // };
 
     // '게시글 수정' 눌렀을 때 해당 컴포넌트로 전달할 데이터
     const dataForEdit: DataForEdit = {
@@ -136,6 +126,7 @@ const PostContents: React.FC = () => {
             setLikeState(response.data.like);
         } catch (error) {
             console.error(error);
+            alert('로그인이 필요합니다.');
         }
     };
 
@@ -233,10 +224,11 @@ const CategoryAndHashtag = styled.div`
 `;
 
 const PostCategory = styled.p`
-    padding: 0 10px;
+    padding: 5px 8px 0px 10px;
     margin-right: 20px;
     border-radius: 15px;
-    background-color: #c7c7c7;
+    font-size: 15px;
+    background-color: #d7d7d7;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
 `;
 

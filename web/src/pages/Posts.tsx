@@ -14,7 +14,6 @@ const Posts: React.FC = () => {
             <Title>커뮤니티</Title>
             <PostFilter />
             <PostList />
-            {/* 로그인된 상태여야만 게시글 작성 버튼이 렌더링 */}
             {loggedIn && (
                 <Link to="/posts/createpost">
                     <NewPost>게시글 작성</NewPost>
