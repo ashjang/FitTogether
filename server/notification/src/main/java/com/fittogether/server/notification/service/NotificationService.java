@@ -80,7 +80,7 @@ public class NotificationService {
         User user = userRepository.findById(userVo.getUserId())
                 .orElseThrow(() -> new UserCustomException(UserErrorCode.NOT_FOUND_USER));
 
-        return notificationRepository.findByUserAndReadIsFalseOrderByCreatedAtDesc(user)
+        return notificationRepository.findByUserAndIsReadFalseOrderByCreatedAtDesc(user)
                 .stream().map(NotificationDto::from).collect(Collectors.toList());
     }
 

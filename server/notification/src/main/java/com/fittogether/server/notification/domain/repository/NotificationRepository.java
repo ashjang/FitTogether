@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-    List<Notification> findByUserAndReadIsFalseOrderByCreatedAtDesc(User user);
+    List<Notification> findByUserAndIsReadFalseOrderByCreatedAtDesc(User user);
 
     Notification findByUserAndSenderAndUrl(User user, String sender, String url);
 }
