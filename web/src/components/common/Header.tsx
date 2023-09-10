@@ -2,16 +2,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    // faSun,
-    // faMoon,
-    // faUserGroup,
-    faBell,
-    faComment,
-    faBookmark,
-    faBars,
-    // faSignOutAlt,
-} from '@fortawesome/free-solid-svg-icons';
+import { faBell, faComment, faBookmark, faBars } from '@fortawesome/free-solid-svg-icons';
 import Modal from 'react-modal';
 Modal.setAppElement('#root');
 import { useState, useEffect, useRef } from 'react';
@@ -20,7 +11,6 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { canEditInfo, loggedInState, signInInfo } from '../../recoil/AuthState/atoms';
 
 import AlertList from './AlertList';
-// import MateList from './MateList';
 import LogoImg from './../../assets/logo.png';
 
 import { currentPageState } from '../../recoil/posts/atoms';
@@ -31,21 +21,12 @@ import {
 } from '../../recoil/posts/atoms';
 import axios from 'axios';
 
-// interface Props {}
-// type HeaderProps = {
-//     onToggleDarkMode: () => void;
-// };
-
 // headerMainBar
 function Header() {
-    // function Header({ onToggleDarkMode }: HeaderProps) {
     const loggedIn = useRecoilValue(loggedInState); // loggedInState 상태 가져오기
     const setLoggedIn = useSetRecoilState(loggedInState); // 상태를 업데이트하는 setLoggedIn 함수 가져오기
     const setcanEditInfo = useSetRecoilState(canEditInfo);
     const setSignInInfo = useSetRecoilState(signInInfo);
-
-    // const [isDarkMode, setDarkMode] = useState(false);
-    // const [isMateListOpen, setIsMateListOpen] = useState(false); // 메이트리스트창
 
     const [isPopupOpen, setPopupOpen] = useState(false);
     const bellPopupRef = useRef<HTMLDivElement | null>(null); //알림창
@@ -56,12 +37,6 @@ function Header() {
     const setCategoryFilter = useSetRecoilState<string>(categoryFilterState);
     const setKeywordFilter = useSetRecoilState<string>(keywordFilterState);
     const setHashtagFilter = useSetRecoilState<string>(hashtagFilterState);
-
-    // dark light Mode
-    // const handleToggleDarkMode = () => {
-    //     setDarkMode((prevMode) => !prevMode);
-    //     onToggleDarkMode();
-    // };
 
     // 스크롤 내렸을때 배경색 #fff
     const handleScroll = () => {
@@ -88,17 +63,6 @@ function Header() {
     const handleOpenPopup = () => {
         setPopupOpen(true);
     };
-    // const handleClosePopup = () => {
-    //     setPopupOpen(false);
-    // };
-
-    //운동메이트 리스트
-    // const handleShowMateListClick = () => {
-    //     setIsMateListOpen(true);
-    // };
-    // const handleCloseMateList = () => {
-    //     setIsMateListOpen(false);
-    // };
 
     // 로그아웃일때 로직
     const handleSignOut = async () => {
@@ -157,24 +121,9 @@ function Header() {
                     </Logo>
                     <IconSection>
                         <IconList>
-                            {/* <ThemeLi isDarkMode={isDarkMode}>
-                                <span className="blind">다크 라이트 스위치</span>
-                                <ThemeBtn onClick={handleToggleDarkMode} isDarkMode={isDarkMode}>
-                                    <FontAwesomeIcon icon={isDarkMode ? faSun : faMoon} />
-                                </ThemeBtn>
-                            </ThemeLi> */}
                             {loggedIn ? (
                                 // 로그인 상태일때
                                 <>
-                                    {/* <li>
-                                        <MateBtn onClick={handleShowMateListClick}>
-                                            <span className="blind">운동 메이트 리스트</span>
-                                            <FontAwesomeIcon icon={faUserGroup} />
-                                        </MateBtn>
-                                        {isMateListOpen && (
-                                            <MateList isOpen={true} onClose={handleCloseMateList} />
-                                        )}
-                                    </li> */}
                                     <li>
                                         <span className="blind">알림창</span>
                                         <BellBtn onClick={handleOpenPopup}>
@@ -209,10 +158,6 @@ function Header() {
                         {loggedIn && isPopupOpen && (
                             <BellPop className="popup" ref={bellPopupRef}>
                                 <AlertList />
-                                {/* <BellPopBtn onClick={handleClosePopup}>
-                                    <span className="blind">닫기</span>
-                                    <FontAwesomeIcon icon={faTimes} />
-                                </BellPopBtn> */}
                             </BellPop>
                         )}
                     </IconSection>
@@ -302,10 +247,7 @@ const IconList = styled.ul`
         padding: 0 5px;
     }
 `;
-const MateBtn = styled.button`
-    border: none;
-    background: none;
-`;
+
 const BellBtn = styled.button`
     border: none;
     background: none;
@@ -341,17 +283,6 @@ const BellPop = styled.div`
     right: 100px;
     top: 40px;
 `;
-
-// const BellPopBtn = styled.button`
-//     position: absolute;
-//     top: 16px;
-//     right: -100px;
-//     width: 30px;
-//     height: 30px;
-//     font-size: 20px;
-//     border: none;
-//     background: none;
-// `;
 
 // headerMainBar
 const headerMainBar = css`
@@ -393,30 +324,5 @@ const MenuBtn = styled.button`
     border: 0;
     width: 70px;
 `;
-
-//dark mode
-// const ThemeLi = styled.li<{ isDarkMode: boolean }>`
-//     position: relative;
-//     width: 50px;
-//     margin-right: 10px;
-//     border-radius: 20px;
-//     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-//     background-color: ${(props) => (props.isDarkMode ? '#fff' : '#181f38')};
-// `;
-// const ThemeBtn = styled.button<{ isDarkMode: boolean }>`
-//     position: absolute;
-//     top: 1px;
-//     right: 5px;
-//     text-align: center;
-//     padding: 0 5px;
-//     border: none;
-//     background: none;
-//     transition: transform 0.3s ease;
-
-//     /* 다크모드일 때 버튼 위치 */
-//     transform: ${(props) => (props.isDarkMode ? 'translateX(-18px)' : 'translateX(3px)')};
-//     /* 다크모드일 때 아이콘 색상 변경 */
-//     color: ${(props) => (props.isDarkMode ? '#ffdd55' : '#ffdd55')};
-// `;
 
 export default Header;
