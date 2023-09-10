@@ -158,9 +158,13 @@ function Header() {
                             ) : (
                                 //로그인 전 상태
                                 <div css={signinSection}>
-                                    <SignInLink to="/signin">로그인</SignInLink>
+                                    <SignInLink className="txt" to="/signin">
+                                        로그인
+                                    </SignInLink>
                                     <span>|</span>
-                                    <SignUpLink to="/signup">회원가입</SignUpLink>
+                                    <SignUpLink className="txt" to="/signup">
+                                        회원가입
+                                    </SignUpLink>
                                 </div>
                             )}
                         </IconList>
@@ -186,22 +190,22 @@ function Header() {
                                     to="/exerciseInfo"
                                     onClick={() => setVideoCategory('running')}
                                 >
-                                    <span>운동 정보</span>
+                                    <span className="txt">운동 정보</span>
                                 </Link>
                             </li>
                             <li css={menuLi}>
                                 <Link to="/findMate">
-                                    <span>운동 메이트 찾기</span>
+                                    <span className="txt">운동 메이트 찾기</span>
                                 </Link>
                             </li>
                             <li css={menuLi}>
                                 <Link to="/posts" onClick={() => getInitialPostListData()}>
-                                    <span>커뮤니티</span>
+                                    <span className="txt">커뮤니티</span>
                                 </Link>
                             </li>
                             <li css={menuLi}>
                                 <Link to="/mypage">
-                                    <span>마이 페이지</span>
+                                    <span className="txt">마이 페이지</span>
                                 </Link>
                             </li>
                         </ul>
@@ -221,6 +225,10 @@ const HeaderWrap = styled.div`
     z-index: 30;
     background-color: #ece8e3;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+
+    .txt {
+        white-space: nowrap;
+    }
 `;
 // headerInn
 const headerInn = css`
@@ -229,10 +237,8 @@ const headerInn = css`
     margin: 0 auto;
     padding: 10px 60px;
 `;
-const scrolledHeader = css`
-    // background-color: #ece8e3;
-    // box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-`;
+
+const scrolledHeader = css``;
 
 // topBar
 const topBar = css`
@@ -308,9 +314,6 @@ const Menu = css`
 `;
 const menuLi = css`
     margin-bottom: 15px;
-    &:first-of-type {
-        // padding: 0 30px;
-    }
 
     & a {
         display: inline-block;

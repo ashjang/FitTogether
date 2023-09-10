@@ -6,10 +6,10 @@ Object.assign(global, { WebSocket });
 const client: Client = new Client({
     brokerURL: 'ws://localhost:8080/ws',
     onConnect: () => {
-        console.log('WebSocket연결되었쥬짝짝^^');
+        console.log('WebSocket 연결 성공');
     },
     onStompError: (frame) => {
-        console.error('STOMP 에러입니다ㅜㅜ:', frame);
+        console.error('WebSocket 연결 실패', frame);
     },
 });
 
