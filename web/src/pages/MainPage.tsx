@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-// import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -64,10 +63,6 @@ const MainPage: React.FC = () => {
                                     <br />
                                     플레이 리스트에 담을 수 있어요 😎
                                 </p>
-                                {/* <Link
-                                    to={`/slide${((activeSlide + 1) % totalSlides) + 1}`}
-                                    className="btn btn-more"
-                                > */}{' '}
                                 <Link to="/" className="btn btn-more">
                                     <span>More</span>
                                 </Link>
@@ -81,10 +76,6 @@ const MainPage: React.FC = () => {
                                     <br />
                                     운동메이트를 찾아보세요 🤼‍♂️
                                 </p>
-                                {/* <Link
-                                    to={`/slide${((activeSlide + 2) % totalSlides) + 1}`}
-                                    className="btn btn-more"
-                                > */}
                                 <Link to="/" className="btn btn-more">
                                     <span>More</span>
                                 </Link>
@@ -98,7 +89,6 @@ const MainPage: React.FC = () => {
                                     <br />
                                     채팅을 통해 운동계획을 세워보세요 👩‍💻
                                 </p>
-                                {/* <Link to={`/slide${activeSlide + 1}`} className="btn btn-more"> */}
                                 <Link to="/" className="btn btn-more">
                                     <span>More</span>
                                 </Link>
@@ -173,15 +163,6 @@ const MainPage: React.FC = () => {
                                             </p>
                                         </div>
                                     </li>
-                                    {/* <li>
-                                        <div className="thumb">
-                                            <img src="" alt="이미지" />
-                                        </div>
-                                        <div className="content">
-                                            <h3 className="title">타이틀 넣기</h3>
-                                            <p className="txt">텍스트 넣기</p>
-                                        </div>
-                                    </li> */}
                                 </ul>
                             </TabSectionList>
                         )}
@@ -230,37 +211,11 @@ const MainPage: React.FC = () => {
                                             </p>
                                         </div>
                                     </li>
-                                    {/* <li>
-                                        <div className="thumb">
-                                            <img src="" alt="이미지" />
-                                        </div>
-                                        <div className="content">
-                                            <h3 className="title">타이틀 넣기</h3>
-                                            <p className="txt">텍스트 넣기</p>
-                                        </div>
-                                    </li> */}
                                 </ul>
                             </TabSectionList>
                         )}
                     </dl>
                 </MainTabSection>
-
-                {/* <section className="sectionTwo" css={sectionTwo}>
-                    <h2 className="main-title">섹션 타이틀 넣기</h2>
-                    <div className="content">
-                        <div className="inn">
-                            <h3 className="title">타이틀 내용 넣기</h3>
-                            <p className="txt">
-                                내용 넣기
-                                <br />
-                                내용 미정
-                            </p>
-                            <Link to="/" className="btn btn-more">
-                                <span>More</span>
-                            </Link>
-                        </div>
-                    </div>
-                </section> */}
             </Container>
         </>
     );
@@ -485,17 +440,4 @@ const TabSectionList = styled.dd`
         margin-bottom: 10px;
     }
 `;
-
-// const sectionTwo = css`
-//     position: relative;
-//     max-width: 1440px;
-//     margin: 60px auto 0;
-//     padding: 24px;
-
-//     .main-title {
-//         text-align: center;
-//         margin-bottom: 20px;
-//     }
-//     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-// `;
 export default MainPage;
