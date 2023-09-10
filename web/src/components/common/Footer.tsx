@@ -70,7 +70,7 @@ function Footer() {
                                         <span>|</span>
                                     </li>
                                     <li>
-                                        <p className="txt">Mong All rights reserved.</p>
+                                        <p className="txt">All rights reserved.</p>
                                     </li>
                                 </ul>
                             </li>
@@ -123,6 +123,7 @@ const FooterInfoLeft = styled.div`
     }
     .txt {
         margin-left: 10px;
+        white-space: nowrap;
     }
     .tel ul li.bar span {
         display: inline-block;
@@ -141,8 +142,9 @@ const FooterInfoRight = styled.div`
         display: flex;
         align-items: center;
     }
-    .copyright ul li:first-of-type .txt {
+    .copyright ul .txt {
         margin-left: 10px;
+        white-space: nowrap;
     }
     .copyright ul li.bar span {
         display: inline-block;

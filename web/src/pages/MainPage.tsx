@@ -3,7 +3,6 @@ import styled from '@emotion/styled';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 
 import writing from '../assets/writing 1.png';
 import posts from '../assets/post01 1.png';
@@ -63,9 +62,6 @@ const MainPage: React.FC = () => {
                                     <br />
                                     플레이 리스트에 담을 수 있어요 😎
                                 </p>
-                                <Link to="/" className="btn btn-more">
-                                    <span>More</span>
-                                </Link>
                             </SlideContent>
                         </Slide>
                         <Slide className={`slide ${activeSlide === 1 ? 'active' : ''}`}>
@@ -76,9 +72,6 @@ const MainPage: React.FC = () => {
                                     <br />
                                     운동메이트를 찾아보세요 🤼‍♂️
                                 </p>
-                                <Link to="/" className="btn btn-more">
-                                    <span>More</span>
-                                </Link>
                             </SlideContent>
                         </Slide>
                         <Slide className={`slide ${activeSlide === 2 ? 'active' : ''}`}>
@@ -89,9 +82,6 @@ const MainPage: React.FC = () => {
                                     <br />
                                     채팅을 통해 운동계획을 세워보세요 👩‍💻
                                 </p>
-                                <Link to="/" className="btn btn-more">
-                                    <span>More</span>
-                                </Link>
                             </SlideContent>
                         </Slide>
                     </SlideArea>
@@ -131,12 +121,6 @@ const MainPage: React.FC = () => {
                         </Category01>
                         {activeTab === '커뮤니티' && (
                             <TabSectionList>
-                                <div className="link-move">
-                                    <Link to="/" className="btn btn-more">
-                                        <span>더보기</span>
-                                        <i className="fa-solid fa-arrow-right-long"></i>
-                                    </Link>
-                                </div>
                                 <ul className="section-content one">
                                     <li>
                                         <div className="thumb">
@@ -179,12 +163,6 @@ const MainPage: React.FC = () => {
                         </Category02>
                         {activeTab === '운동 메이트' && (
                             <TabSectionList>
-                                <div className="link-move">
-                                    <Link to="/" className="btn btn-more">
-                                        <span>더보기</span>
-                                        <i className="fa-solid fa-arrow-right-long"></i>
-                                    </Link>
-                                </div>
                                 <ul className="section-content two">
                                     <li>
                                         <div className="thumb">
@@ -225,6 +203,9 @@ const MainPage: React.FC = () => {
 const Container = styled.div`
     position: relative;
     margin-top: 110px;
+    .txt {
+        white-space: nowrap;
+    }
 `;
 
 // 캐러셀 슬라이드
@@ -287,21 +268,6 @@ const SlideContent = styled.div`
         font-size: 32px;
         font-weight: 700;
         line-height: 1.2;
-    }
-    .btn-more {
-        display: inline-block;
-        padding: 8px 20px;
-        margin-top: 20px;
-        color: #000;
-        font-size: 18px;
-        font-weight: 700;
-        border-radius: 7px;
-        background-color: #fff;
-    }
-    .btn-more:hover {
-        color: #fff;
-        background-color: #7f5539;
-        transition: all 0.3s;
     }
 `;
 
@@ -395,16 +361,12 @@ const BtnTab = styled.button<BtnTabProps>`
 const TabSectionList = styled.dd`
     position: relative;
 
-    .link-move {
-        position: absolute;
-        top: -50px;
-        right: 100px;
-    }
     ul.section-content {
         display: flex;
         align-items: center;
         justify-content: center;
         margin-top: 120px;
+        min-width: max-content;
     }
     ul.section-content.one .thumb {
         margin: 0 auto;
