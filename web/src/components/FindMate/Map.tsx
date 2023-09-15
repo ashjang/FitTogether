@@ -117,6 +117,21 @@ const Map: React.FC = () => {
 
     // 마운트 시 & 카테고리 변경 시 실행되는 함수
     useEffect(() => {
+        // 현재 위치의 위도, 경도 상태에 저장
+        if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setLatitude(position.coords.latitude);
+                    setLongitude(position.coords.longitude);
+                },
+                (error) => {
+                    console.error('Error getting geolocation:', error);
+                }
+            );
+        } else {
+            console.error('Geolocation is not supported by your browser.');
+        }
+
         // 카카오맵 오류시 함수 종료
         if (!kakaoMapRef.current) {
             return;
