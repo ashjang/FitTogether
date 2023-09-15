@@ -44,8 +44,6 @@ const modules = {
             ['bold', 'italic', 'underline', 'strike'],
             ['blockquote'],
             [{ list: 'ordered' }, { list: 'bullet' }],
-            [{ color: [] }, { background: [] }],
-            [{ align: [] }],
         ],
     },
 };
