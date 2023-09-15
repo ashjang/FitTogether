@@ -7,7 +7,8 @@
 @typescript-eslint/no-unused-vars,
 @typescript-eslint/no-unsafe-call,
 @typescript-eslint/no-floating-promises,
-react-hooks/exhaustive-deps
+react-hooks/exhaustive-deps,
+@typescript-eslint/no-explicit-any
  */
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';

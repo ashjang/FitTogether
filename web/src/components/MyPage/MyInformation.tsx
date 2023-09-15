@@ -13,8 +13,14 @@ import axios from 'axios';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
+type userDataType = {
+    introduction: string;
+    nickname: string;
+    email: string;
+};
+
 const MyInformation: React.FC = () => {
-    const [userData, setUserData] = useState({});
+    const [userData, setUserData] = useState<userDataType>();
     const [introduction, setIntroduction] = useState<string>(userData.introduction || ''); // 초기 값 설정
     const [gender, setGender] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);

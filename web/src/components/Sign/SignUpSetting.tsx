@@ -20,8 +20,8 @@ const SignUpSetting: React.FC = () => {
     const [isPublic, setIsPublic] = useState<boolean>(true);
     const [isNicknameAvailable, setIsNicknameAvailable] = useState<boolean>(true);
     const [isEmailAvailable, setIsEmailAvailable] = useState<boolean>(true);
-    const [isReadyForSignUp, setIsReadyForSignUp] = useState<boolean>(false);
-    const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
+    const [_isReadyForSignUp, setIsReadyForSignUp] = useState<boolean>(false);
+    const [_isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
 
     const navigate = useNavigate();
 

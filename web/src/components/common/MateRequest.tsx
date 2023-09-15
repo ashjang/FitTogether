@@ -19,7 +19,7 @@ interface MateRequestProps {
 const MateRequest: React.FC<MateRequestProps> = ({ sender, onClose }) => {
     const [activeBtn, setActiveBtn] = useState<number | null>(null);
     const [isRejected, setIsRejected] = useState(false);
-    const [isClosed, setIsClosed] = useState(false);
+    const [_isClosed, setIsClosed] = useState(false);
     const senderNickname = sender;
 
     const token = sessionStorage.getItem('token');
@@ -60,7 +60,7 @@ const MateRequest: React.FC<MateRequestProps> = ({ sender, onClose }) => {
                     'X-AUTH-TOKEN': token,
                 },
             })
-            .then((response) => {
+            .then((_response) => {
                 window.alert('요청을 수락하였습니다.');
                 setIsClosed(true); // axios 요청이 성공하면 창을 닫음
             })

@@ -1,3 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call,
+@typescript-eslint/restrict-plus-operands,
+@typescript-eslint/no-explicit-any,
+@typescript-eslint/no-unsafe-member-access,
+@typescript-eslint/no-unsafe-assignment,
+@typescript-eslint/no-unsafe-argument */
+
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import axios from 'axios';
@@ -10,7 +17,7 @@ const FindUserId: React.FC = () => {
         setEmail(event.target.value);
     };
 
-    const handleFindId = (event) => {
+    const handleFindId = (event: any) => {
         event.preventDefault();
 
         if (email.trim() === '') {

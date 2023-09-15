@@ -3,7 +3,8 @@
 @typescript-eslint/no-unsafe-member-access,
 @typescript-eslint/no-misused-promises,
 @typescript-eslint/no-unsafe-call,
-@typescript-eslint/restrict-template-expressions */
+@typescript-eslint/restrict-template-expressions,
+@typescript-eslint/no-explicit-any */
 
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
@@ -36,7 +37,7 @@ const AlertListItem: React.FC = () => {
         }
     }, []);
 
-    const handleAlertClick = (alert) => {
+    const handleAlertClick = (alert: any) => {
         const postIdPattern = /\/posts\/(\d+)/;
 
         if (alert.notificationType === 'MATCHING') {

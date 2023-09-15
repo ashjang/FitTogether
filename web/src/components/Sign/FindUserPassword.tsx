@@ -1,16 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any,
+@typescript-eslint/no-unsafe-call,
+@typescript-eslint/no-unsafe-assignment,
+@typescript-eslint/no-unsafe-member-access,
+@typescript-eslint/no-unsafe-argument*/
+
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import axios from 'axios';
 
 const FindUserPassword: React.FC = () => {
     const [email, setEmail] = useState<string>('');
-    const [responseMessage, setResponseMessage] = useState(null);
+    const [responseMessage, setResponseMessage] = useState<string>(null);
 
     const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(event.target.value);
     };
 
-    const handleFindPassword = (event) => {
+    const handleFindPassword = (event: any) => {
         event.preventDefault();
 
         if (email.trim() === '') {

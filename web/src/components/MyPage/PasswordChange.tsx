@@ -3,7 +3,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, 
 @typescript-eslint/no-unsafe-argument,
 @typescript-eslint/no-unsafe-member-access,
-@typescript-eslint/no-misused-promises */
+@typescript-eslint/no-misused-promises,
+@typescript-eslint/no-explicit-any */
 
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
@@ -35,14 +36,14 @@ const PasswordChange: React.FC = () => {
         setIsPasswordValid(checkPasswordValidity(newPassword));
     };
 
-    const handlePasswordConfirmChange = (event) => {
+    const handlePasswordConfirmChange = (event: any) => {
         const newConfirmPassword = event.target.value;
         setPasswordConfirm(newConfirmPassword);
         setPasswordsMatch(password === newConfirmPassword);
     };
 
     // 비밀번호 유효성 검사
-    const checkPasswordValidity = (password) => {
+    const checkPasswordValidity = (password: any) => {
         const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,16}$/;
         // const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/;
         return regex.test(password);
