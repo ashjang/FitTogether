@@ -154,8 +154,8 @@ const Loading = styled.p`
     padding-top: 200px;
 `;
 const ErrorMessage = styled.p`
-    font-size: 40px;
     padding-top: 100px;
+    font-size: 2rem;
 `;
 
 const VideoItem = styled.div`

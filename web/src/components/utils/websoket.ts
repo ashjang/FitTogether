@@ -4,7 +4,7 @@ import { WebSocket } from 'ws';
 Object.assign(global, { WebSocket });
 
 const client: Client = new Client({
-    brokerURL: 'ws://localhost:8080/ws',
+    brokerURL: 'ws://43.201.171.7:8080/ws',
     onConnect: () => {
         console.log('WebSocket 연결 성공');
     },

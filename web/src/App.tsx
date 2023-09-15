@@ -50,7 +50,7 @@ import FindUserPassword from './components/Sign/FindUserPassword';
 const queryClient = new QueryClient();
 
 // 토스트 알림 표시
-const showToastNotification = (newAlert) => {
+const showToastNotification = (newAlert: any) => {
     const notification = new Notification('Fit Together 알림 도착', {
         body: newAlert,
     });
@@ -61,14 +61,14 @@ const showToastNotification = (newAlert) => {
 };
 
 function App() {
-    const [alert, setAlert] = useState([]); // SSE로 가져온 alert의 state 변수
+    const [alert, setAlert] = useState<any[]>([]); // SSE로 가져온 alert의 state 변수
 
     const [notificationEnabled, setNotificationEnabled] = useState(''); // 알림 권한 여부
 
     const EventSource = EventSourcePolyfill;
-    const token = sessionStorage.getItem('token');
+    const token: any = sessionStorage.getItem('token');
 
-    let eventSource;
+    let eventSource: any;
 
     const establishSSEConnection = () => {
         eventSource = new EventSource(`/api/notification/subscribe`, {
@@ -77,11 +77,7 @@ function App() {
             },
         });
 
-        eventSource.onopen = (event) => {
-            // console.log(event.target.readyState);
-        };
-
-        eventSource.addEventListener('data', (event) => {
+        eventSource.addEventListener('data', (event: any) => {
             console.log('EVENT : ' + event.data);
             const newAlert = JSON.parse(event.data); // 받은 데이터 추출
             console.log('newAlert : ', newAlert);
@@ -93,7 +89,7 @@ function App() {
             console.log('prevAlert', alert);
         });
 
-        eventSource.onerror = (event) => {
+        eventSource.onerror = (event: any) => {
             // console.log(event.target.readyState);
             if (event.target.readyState === EventSource.CONNECTING) {
                 // 연결 끊기
