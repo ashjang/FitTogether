@@ -40,19 +40,18 @@ const ExerciseInfoPage = styled.div`
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    width: 1440px;
-    min-height: calc(100vh - 200px);
-    margin: 120px auto 0;
-    padding: 20px 60px;
+    max-width: 1040px;
+    min-height: calc(100vh - 160px);
+    margin: 110px auto 0;
+    padding: 20px;
 `;
 
 const PageTitle = styled.h2`
-    width: 1440px;
-    padding: 0 60px;
+    width: 1000px;
 `;
 
 const CategoryBtnTab = styled.div`
-    margin-top: 30px;
+    margin-top: 50px;
 `;
 
 const CategoryBtn = styled.button`

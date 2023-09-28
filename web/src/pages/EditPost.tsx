@@ -99,10 +99,6 @@ const EditPost: React.FC = () => {
     );
 };
 
-const Title = styled.h2`
-    width: 850px;
-`;
-
 const PostDataForm = styled.form`
     display: flex;
     flex-direction: column;
@@ -111,6 +107,11 @@ const PostDataForm = styled.form`
     position: relative;
     margin: 150px auto;
     min-height: calc(100vh - 200px);
+    overflow: hidden;
+`;
+
+const Title = styled.h2`
+    width: 850px;
 `;
 
 const SubmitButton = styled.button`

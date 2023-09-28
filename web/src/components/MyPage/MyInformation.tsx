@@ -13,15 +13,10 @@ import axios from 'axios';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
-type userDataType = {
-    introduction: string;
-    nickname: string;
-    email: string;
-};
-
 const MyInformation: React.FC = () => {
-    const [userData, setUserData] = useState<userDataType>();
-    const [introduction, setIntroduction] = useState<string>(userData.introduction || ''); // 초기 값 설정
+    const [nickname, setNickname] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [introduction, setIntroduction] = useState<string>(''); // 초기 값 설정
     const [gender, setGender] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [pictureURL, setPictureURL] = useState<string | null>(null);
@@ -45,16 +40,13 @@ const MyInformation: React.FC = () => {
                     'X-AUTH-TOKEN': token,
                 },
             });
-            setUserData({
-                ...response.data,
-                gender: response.data.gender === '남성',
-            });
+            setNickname(response.data.nickname);
+            setEmail(response.data.email);
             setIntroduction(response.data.introduction || '');
             setGender(response.data.gender === true);
             setPictureURL(response.data.profilePicture);
             setPublicStatus(response.data.publicInfo === true);
             setFavoriteSports(response.data.exerciseChoice);
-            console.log(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);
             alert('회원정보를 받아오는데 실패했습니다.');
@@ -173,23 +165,11 @@ const MyInformation: React.FC = () => {
         <div>
             <InputContainer>
                 <label css={labelStyle}>아이디</label>
-                <input
-                    type="text"
-                    name="username"
-                    css={inputStyles}
-                    value={userData.nickname}
-                    readOnly
-                />
+                <input type="text" name="username" css={inputStyles} value={nickname} readOnly />
             </InputContainer>
             <InputContainer>
                 <label css={labelStyle}>이메일</label>
-                <input
-                    type="email"
-                    name="email"
-                    css={inputStyles}
-                    value={userData.email}
-                    readOnly
-                />
+                <input type="email" name="email" css={inputStyles} value={email} readOnly />
             </InputContainer>
             <InputContainer>
                 <label css={labelStyle}>프로필 이미지</label>

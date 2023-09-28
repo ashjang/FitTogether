@@ -295,7 +295,7 @@ const PostFilterComponent = styled.div`
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
-    width: 1000px;
+    max-width: 1000px;
 `;
 
 const CategoryField = styled.div``;
@@ -384,7 +384,6 @@ const ButtonGroup = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 1000px;
 `;
 
 const PaginationButtonNumber = styled.button`
@@ -393,7 +392,7 @@ const PaginationButtonNumber = styled.button`
     border: 1px solid treansparent;
     border-style: none;
     border-radius: 5px;
-    margin: 3px;
+    margin: 3px 5px;
     cursor: pointer;
     color: #666666;
     &:hover {

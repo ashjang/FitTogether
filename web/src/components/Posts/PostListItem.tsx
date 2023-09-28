@@ -243,7 +243,7 @@ const ProfileImageContainer = styled.div`
     align-items: center;
     width: 35px;
     height: 35px;
-    border: 1px transparent solid;
+    border: 1px solid transparent;
     border-radius: 50%;
     overflow: hidden;
     margin-right: 10px;

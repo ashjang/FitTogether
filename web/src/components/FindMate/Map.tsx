@@ -295,7 +295,7 @@ const MapContainer = styled.div`
 `;
 
 const CategoryBtnTab = styled.div`
-    margin-top: 30px;
+    margin-top: 50px;
 `;
 
 const CategoryBtn = styled.button`
@@ -319,9 +319,9 @@ const CategoryBtn = styled.button`
 const LocationSearchBar = styled.div`
     position: absolute;
     z-index: 5;
-    top: 130px;
-    left: 15px;
-    opacity: 0.8;
+    top: 115px;
+    left: 5px;
+    opacity: 0.6;
     border: 1px solid black;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
 `;
@@ -341,9 +341,9 @@ const LocationSearchBtn = styled.button`
 
 const MapBox = styled.div`
     position: relative;
-    width: 1200px;
-    height: 700px;
-    margin: 50px 0;
+    width: 1000px;
+    height: 500px;
+    margin-top: 25px;
     border-radius: 10px;
     z-index: 0px;
 `;

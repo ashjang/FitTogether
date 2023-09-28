@@ -291,6 +291,7 @@ const Page = styled.div`
 const Title = styled.h1`
     width: 510px;
     margin-bottom: 50px;
+    font-size: 22px;
 `;
 
 const MessageBox = styled.div`

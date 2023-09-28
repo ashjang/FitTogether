@@ -27,21 +27,22 @@ const Page = styled.div`
     display: flex;
     flex-direction: column;
     position: relative;
-    margin: 120px auto 0;
+    margin: 110px auto 0;
     padding: 20px;
-    width: 1000px;
+    max-width: 1040px;
     min-height: calc(100vh - 200px);
+    overflow: hidden;
 `;
 
 const Title = styled.h2`
     position: relative;
-    width: 1000px;
+    max-width: 1000px;
     margin-bottom: 50px;
 `;
 
 const NewPost = styled.button`
     position: absolute;
-    right: 0px;
+    right: 20px;
     bottom: 0px;
     padding: 0 10px;
     border-style: none;
@@ -49,7 +50,8 @@ const NewPost = styled.button`
     background-color: #d7d7d7;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
     &: hover {
-        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+        background-color: #a1c9e4;
+        box-shadow: 0px 2px 7.5px rgba(0, 0, 0, 0.5);
     }
 `;
 

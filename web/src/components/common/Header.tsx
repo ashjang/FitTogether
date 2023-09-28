@@ -219,17 +219,18 @@ function Header() {
 // emotion css style
 const HeaderWrap = styled.div`
     position: fixed;
+    top: 0;
     left: 0;
     right: 0;
-    top: 0;
     z-index: 30;
-    background-color: #ece8e3;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 
     .txt {
         white-space: nowrap;
     }
 `;
+
 // headerInn
 const headerInn = css`
     max-width: 1440px;
@@ -294,6 +295,7 @@ const SignOutLink = styled.button`
     border: none;
     background: none;
     margin-left: 10px;
+    white-space: nowrap;
 `;
 // bellBtn 클릭 시 팝업
 const BellPop = styled.div`

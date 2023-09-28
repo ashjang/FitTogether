@@ -13,6 +13,7 @@ const SignUp: React.FC = () => {
 const Container = styled.div`
     margin-top: 250px;
     min-height: calc(100vh - 200px);
+    overflow: hidden;
 `;
 
 export default SignUp;

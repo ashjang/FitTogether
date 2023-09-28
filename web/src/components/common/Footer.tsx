@@ -84,15 +84,20 @@ function Footer() {
 
 // footerInn
 const FooterInn = styled.div`
+    position: relative;
+    overflow: hidden;
+    bottom: 0;
+    margin: 0 auto;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     background-color: #263238;
+    overflow: hidden;
+    font-size: 12px;
+    margin-top: 55px;
 `;
 const FooterMainBar = styled.div`
-    position: relative;
-    bottom: 0;
     max-width: 1440px;
-    margin: 100px auto 0;
-    padding: 40px 60px;
+    margin: 0 auto;
+    padding: 20px 60px;
 `;
 const FooterLogo = styled.h1`
     margin-bottom: 10px;
@@ -108,10 +113,10 @@ const FooterInfo = styled.div`
 `;
 const FooterInfoLeft = styled.div`
     margin-right: 150px;
-    color: #fff;
+    color: #aaa;
 
     .address {
-        margin-bottom: 10px;
+        margin-bottom: 5px;
     }
     .address,
     .tel ul,
@@ -132,10 +137,10 @@ const FooterInfoLeft = styled.div`
 `;
 
 const FooterInfoRight = styled.div`
-    color: #fff;
+    color: #aaa;
 
     .company-number {
-        margin-bottom: 10px;
+        margin-bottom: 5px;
     }
     .copyright ul,
     .copyright ul li:first-of-type {

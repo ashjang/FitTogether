@@ -151,15 +151,23 @@ const PostSettingComponent = styled.div`
 
 const SettingItem = styled.div`
     display: flex;
-    margin-bottom: 10px;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 20px;
 `;
 
 const About = styled.p`
     width: 100px;
+    font-weight: bold;
+    margin-top: 5px;
 `;
 
 const HashtagInput = styled.input`
+    width: 175px;
+    padding: 3px 15px;
     border-style: none;
+    border-radius: 15px;
+    background-color: #eee;
     &:focus {
         outline: none;
     }

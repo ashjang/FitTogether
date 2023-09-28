@@ -108,17 +108,30 @@ const MainPage: React.FC = () => {
 
                 <MainTabSection>
                     <h2 className="main-title">다양한 콘텐츠를 즐기세요!</h2>
-                    <dl className="tab-category">
-                        <Category01>
-                            <BtnTab
-                                type="button"
-                                className="btn btn-menu"
-                                isActive={activeTab === '커뮤니티'}
-                                onClick={() => handleTabClick('커뮤니티')}
-                            >
-                                커뮤니티
-                            </BtnTab>
-                        </Category01>
+                    <CategoryContainer>
+                        <CategoryBtnContainer>
+                            <Category01>
+                                <BtnTab
+                                    type="button"
+                                    className="btn btn-menu"
+                                    isActive={activeTab === '커뮤니티'}
+                                    onClick={() => handleTabClick('커뮤니티')}
+                                >
+                                    커뮤니티
+                                </BtnTab>
+                            </Category01>
+                            <Category02>
+                                <BtnTab
+                                    type="button"
+                                    className="btn btn-menu"
+                                    isActive={activeTab === '운동 메이트'}
+                                    onClick={() => handleTabClick('운동 메이트')}
+                                >
+                                    운동 메이트
+                                </BtnTab>
+                            </Category02>
+                        </CategoryBtnContainer>
+
                         {activeTab === '커뮤니티' && (
                             <TabSectionList>
                                 <ul className="section-content one">
@@ -151,16 +164,6 @@ const MainPage: React.FC = () => {
                             </TabSectionList>
                         )}
 
-                        <Category02>
-                            <BtnTab
-                                type="button"
-                                className="btn btn-menu"
-                                isActive={activeTab === '운동 메이트'}
-                                onClick={() => handleTabClick('운동 메이트')}
-                            >
-                                운동 메이트
-                            </BtnTab>
-                        </Category02>
                         {activeTab === '운동 메이트' && (
                             <TabSectionList>
                                 <ul className="section-content two">
@@ -192,7 +195,7 @@ const MainPage: React.FC = () => {
                                 </ul>
                             </TabSectionList>
                         )}
-                    </dl>
+                    </CategoryContainer>
                 </MainTabSection>
             </Container>
         </>
@@ -327,8 +330,9 @@ const BtnCarousel = styled.div`
 const MainTabSection = styled.section`
     position: relative;
     max-width: 1440px;
-    margin: 60px auto 0;
     padding: 24px;
+    margin: 60px auto 0;
+    overflow: hidden;
 
     .main-title {
         text-align: center;
@@ -336,18 +340,24 @@ const MainTabSection = styled.section`
     }
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 `;
-const Category01 = styled.dt`
-    position: absolute;
-    top: 80px;
-    left: 43%;
-    transform: translateX(-43%);
+
+const CategoryContainer = styled.dl`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 `;
-const Category02 = styled.dt`
-    position: absolute;
-    top: 80px;
-    right: 43%;
-    transform: translateX(43%);
+
+const CategoryBtnContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    width: 250px;
+    white-space: nowrap;
 `;
+
+const Category01 = styled.dt``;
+const Category02 = styled.dt``;
+
 const BtnTab = styled.button<BtnTabProps>`
     border: none;
     border-radius: 5px;
@@ -365,7 +375,7 @@ const TabSectionList = styled.dd`
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-top: 120px;
+        margin-top: 25px;
         min-width: max-content;
     }
     ul.section-content.one .thumb {

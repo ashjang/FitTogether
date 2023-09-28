@@ -12,10 +12,11 @@ const FindMate: React.FC = () => {
 };
 
 const FindMatePage = styled.div`
-    width: 1440px;
-    min-height: calc(100vh - 500px);
-    margin: 120px auto 0;
-    padding: 20px 60px;
+    max-width: 1040px;
+    min-height: calc(100vh - 160px);
+    margin: 110px auto 0;
+    padding: 20px;
+    overflow: hidden;
 `;
 const PageTitle = styled.h2``;
 

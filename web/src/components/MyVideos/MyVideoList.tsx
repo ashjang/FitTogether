@@ -137,22 +137,9 @@ const MyVideoList: React.FC = () => {
     );
 };
 
-const DeletePopup = styled.div`
-    position: fixed;
-    top: 50%;
-    left: 44%;
-    padding: 10px 20px;
-    background-color: rgba(255, 255, 255, 0.7);
-    border: 1px solid black;
-    border-radius: 10px;
-    font-weight: bold;
-    z-index: 9999;
-`;
-
 const MyVideoListComponent = styled.div`
     position: relative;
-    padding: 20px 60px;
-    box-sizing: border-box;
+    padding: 20px;
 `;
 
 const VideoContainer = styled.div`
@@ -161,6 +148,7 @@ const VideoContainer = styled.div`
     gap: 20px;
     margin: 0 auto;
     max-width: 800px;
+    overflow: hidden;
     text-align: center;
 `;
 
@@ -203,6 +191,18 @@ const EmptyText = styled.p`
     justify-content: center;
     align-items: center;
     width: 100%;
+`;
+
+const DeletePopup = styled.div`
+    position: fixed;
+    top: 50%;
+    left: 44%;
+    padding: 10px 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid black;
+    border-radius: 10px;
+    font-weight: bold;
+    z-index: 9999;
 `;
 
 export default MyVideoList;

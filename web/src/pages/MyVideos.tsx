@@ -27,13 +27,15 @@ const MyVideos: React.FC = () => {
 
 const MyVideosComponent = styled.div`
     min-height: calc(100vh - 200px);
+
+    overflow: hidden;
 `;
 
 const MyVideosContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 120px;
+    margin-top: 110px;
 `;
 
 const ListTitle = styled.div`

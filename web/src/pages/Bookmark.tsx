@@ -161,6 +161,7 @@ const BookmarkPage = styled.div`
     align-items: center;
     margin-top: 150px;
     min-height: calc(100vh - 200px);
+    overflow: hidden;
 `;
 
 const TitleArea = styled.div`

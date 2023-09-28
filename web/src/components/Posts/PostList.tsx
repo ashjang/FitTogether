@@ -26,12 +26,13 @@ const PostList: React.FC = () => {
 const PostListComponent = styled.div``;
 
 const PostListItems = styled.div`
-    width: 1000px;
     margin: 50px 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+    width: 1000px;
 `;
 
 const LoadingSpinner = styled.img``;

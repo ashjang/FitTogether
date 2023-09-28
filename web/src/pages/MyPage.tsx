@@ -26,8 +26,8 @@ const MypageContainer = styled.div`
     justify-content: center;
     align-items: center;
     width: 600px;
-    min-height: calc(100vh - 200px);
-    margin: 120px auto 0;
+    min-height: calc(100vh - 160px);
+    margin: 110px auto 0;
     padding: 20px;
 `;
 

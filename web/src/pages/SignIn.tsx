@@ -42,6 +42,7 @@ const Container = styled.div`
     align-items: center;
     min-height: calc(100vh - 150px);
     margin-top: 150px;
+    overflow: hidden;
 `;
 
 const Divider = styled.p`

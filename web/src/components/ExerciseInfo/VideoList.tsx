@@ -136,17 +136,10 @@ const VideoList: React.FC = () => {
     );
 };
 
-const VideoListComponent = styled.div`
-    position: relative;
-    padding: 20px 60px;
-    box-sizing: border-box;
-`;
+const VideoListComponent = styled.div``;
 
 const VideoContainer = styled.div`
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 20px;
-    margin: 50px auto 0;
+    margin: 25px auto 0;
     text-align: center;
 `;
 

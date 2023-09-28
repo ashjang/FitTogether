@@ -175,8 +175,8 @@ const PasswordChange: React.FC = () => {
 };
 
 const PasswordBox = styled.div`
-    margin-top: 150px;
-    min-height: calc(100vh - 150px);
+    margin-top: 110px;
+    min-height: calc(100vh - 160px);
     display: flex;
     flex-direction: column;
     align-items: center;
