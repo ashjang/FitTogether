@@ -144,11 +144,11 @@ const VideoContainer = styled.div`
 `;
 
 const Loading = styled.p`
-    margin-top: 200px;
+    margin-top: 145px;
 `;
 const ErrorMessage = styled.p`
-    margin-top: 275px;
-    font-size: 24px;
+    margin-top: 220px;
+    font-size: 18px;
 `;
 
 const VideoItem = styled.div`

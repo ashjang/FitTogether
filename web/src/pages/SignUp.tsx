@@ -11,8 +11,12 @@ const SignUp: React.FC = () => {
 };
 
 const Container = styled.div`
-    margin-top: 250px;
-    min-height: calc(100vh - 200px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 225px);
+    margin-top: 175px;
     overflow: hidden;
 `;
 

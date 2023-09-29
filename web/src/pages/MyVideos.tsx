@@ -12,7 +12,7 @@ const MyVideos: React.FC = () => {
         <MyVideosComponent>
             <MyVideosContainer>
                 <ListTitle>
-                    <TitleTextStyle>{playlistName}</TitleTextStyle>
+                    <TitleText>{playlistName}</TitleText>
                     <Link to="/exerciseInfo">
                         <LinkText>모든 동영상</LinkText>
                     </Link>
@@ -26,8 +26,10 @@ const MyVideos: React.FC = () => {
 };
 
 const MyVideosComponent = styled.div`
-    min-height: calc(100vh - 200px);
-
+    max-width: 840px;
+    min-height: calc(100vh - 165px);
+    margin: 110px auto 0;
+    padding: 20px;
     overflow: hidden;
 `;
 
@@ -35,25 +37,18 @@ const MyVideosContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 110px;
 `;
 
 const ListTitle = styled.div`
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     position: relative;
-    width: 1200px;
-    padding: 8px;
-    margin-top: 70px;
+    width: 800px;
     margin-bottom: 70px;
 `;
 
-const TitleTextStyle = styled.h2`
-    flex: 25;
-    text-align: center;
-    font-size: 3rem;
-`;
+const TitleText = styled.h2``;
 
 const LinkText = styled.p`
     position: absolute;

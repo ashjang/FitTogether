@@ -250,7 +250,7 @@ const PostFilter: React.FC = () => {
             {/* 페이지네이션 요소 */}
             {/* 버튼을 누르면 현재 페이지 상태를 업데이트 */}
             <ButtonContainer>
-                <ButtonGroup>
+                {totalPages > 0 && (
                     <PaginationButtonArrow
                         onClick={() => {
                             setCurrentPage(currentPage - 1);
@@ -260,21 +260,23 @@ const PostFilter: React.FC = () => {
                     >
                         &lt;
                     </PaginationButtonArrow>
-                    {(() => {
-                        const buttons = [];
-                        for (let i = 1; i <= totalPages; i++) {
-                            buttons.push(
-                                <PaginationButtonNumber
-                                    key={i}
-                                    onClick={() => handlePaginationBtnClick(i)}
-                                    css={i === currentPage ? selectedButton : unselectedButton}
-                                >
-                                    {i}
-                                </PaginationButtonNumber>
-                            );
-                        }
-                        return buttons;
-                    })()}
+                )}
+                {(() => {
+                    const buttons = [];
+                    for (let i = 1; i <= totalPages; i++) {
+                        buttons.push(
+                            <PaginationButtonNumber
+                                key={i}
+                                onClick={() => handlePaginationBtnClick(i)}
+                                css={i === currentPage ? selectedButton : unselectedButton}
+                            >
+                                {i}
+                            </PaginationButtonNumber>
+                        );
+                    }
+                    return buttons;
+                })()}
+                {totalPages > 0 && (
                     <PaginationButtonArrow
                         onClick={() => {
                             setCurrentPage(currentPage + 1);
@@ -284,7 +286,7 @@ const PostFilter: React.FC = () => {
                     >
                         &gt;
                     </PaginationButtonArrow>
-                </ButtonGroup>
+                )}
             </ButtonContainer>
         </PostFilterComponent>
     );
@@ -374,16 +376,15 @@ const FilterResetButton = styled.button`
 `;
 
 const ButtonContainer = styled.div`
-    position: absolute;
-    bottom: 0px;
-    width: max-content;
-    margin: 0px auto;
-`;
-
-const ButtonGroup = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    margin: 0px auto;
 `;
 
 const PaginationButtonNumber = styled.button`

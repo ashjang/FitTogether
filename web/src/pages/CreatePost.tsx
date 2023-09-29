@@ -86,7 +86,7 @@ const PostDataForm = styled.form`
     justify-content: center;
     align-items: center;
     position: relative;
-    margin: 150px auto;
+    margin: 150px auto 0;
     min-height: calc(100vh - 200px);
     overflow: hidden;
 `;

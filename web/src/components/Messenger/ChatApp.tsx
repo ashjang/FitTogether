@@ -59,7 +59,7 @@ const ChatApp: React.FC = () => {
                 if (response.status === 200) {
                     const chatMessageList = response.data as unknown as ChatMessage[];
                     console.log('메시지 기록 불러오기:', chatMessageList);
-                    // setChatMessages(chatMessageList);
+
                     // 기존 메시지 목록에 덧붙이기
                     setChatMessages((prevMessages) => {
                         const updatedMessages = prevMessages.filter(

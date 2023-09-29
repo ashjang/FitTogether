@@ -43,7 +43,7 @@ const Title = styled.h2`
 const NewPost = styled.button`
     position: absolute;
     right: 20px;
-    bottom: 0px;
+    bottom: 10px;
     padding: 0 10px;
     border-style: none;
     border-radius: 15px;

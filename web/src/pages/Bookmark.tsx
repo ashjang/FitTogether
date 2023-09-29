@@ -112,6 +112,14 @@ const Bookmark: React.FC = () => {
         }
     };
 
+    // Enter키로 플레이리스트 생성하는 함수
+    const handlePressCreateInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            handleCreatePlaylist();
+        }
+    };
+
     useEffect(() => {
         getPlaylists();
     }, []);
@@ -119,22 +127,14 @@ const Bookmark: React.FC = () => {
     return (
         <BookmarkPage>
             <TitleArea>
-                <p css={centeredTextStyle}>저장된 동영상</p>
-                {isPopupOpen ? (
-                    <FaMinus
-                        css={[rightAlignedStyle, icon]}
-                        onClick={() => {
-                            setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
-                        }}
-                    />
-                ) : (
-                    <FaPlus
-                        css={[rightAlignedStyle, icon]}
-                        onClick={() => {
-                            setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
-                        }}
-                    />
-                )}
+                <Title>저장된 동영상</Title>
+                <IconContainer
+                    onClick={() => {
+                        setIsPopupOpen((prevIsPopupOpen) => !prevIsPopupOpen);
+                    }}
+                >
+                    {isPopupOpen ? <FaMinus css={icon} /> : <FaPlus css={icon} />}
+                </IconContainer>
                 {isPopupOpen && (
                     <AddPlaylistContainer>
                         <AddPlaylistInput
@@ -142,6 +142,7 @@ const Bookmark: React.FC = () => {
                             placeholder="새 리스트 추가"
                             value={newPlaylist}
                             onChange={(e) => setNewPlaylist(e.target.value)}
+                            onKeyDown={handlePressCreateInput}
                         />
                         <AddPlaylistSummit onClick={() => handleCreatePlaylist()}>
                             저장
@@ -159,8 +160,9 @@ const BookmarkPage = styled.div`
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    margin-top: 150px;
-    min-height: calc(100vh - 200px);
+    margin-top: 110px;
+    padding: 20px;
+    min-height: calc(100vh - 165px);
     overflow: hidden;
 `;
 
@@ -175,19 +177,24 @@ const TitleArea = styled.div`
     font-weight: bold;
 `;
 
-const centeredTextStyle = css`
-    flex: 25;
+const Title = styled.h2`
+    flex: 1;
     text-align: center;
-    font-size: 3rem;
 `;
 
-const rightAlignedStyle = css`
-    flex: 1;
-    text-align: right;
+const IconContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
 `;
 
 const icon = css`
-    cursor: pointer;
+    font-size: 20px;
 `;
 
 const AddPlaylistContainer = styled.div`

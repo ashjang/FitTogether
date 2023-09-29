@@ -264,7 +264,9 @@ const MyInformation: React.FC = () => {
                 />
             </InputContainer>
             <MessageBox>
-                <ErrorMessage>입력된 글자 수: {introductionLength} / 100</ErrorMessage>
+                <NotificationMessage>
+                    입력된 글자 수: {introductionLength} / 100
+                </NotificationMessage>
             </MessageBox>
             <div css={containerStyles}>
                 <p css={labelStyle}>공개 여부 </p>
@@ -322,17 +324,18 @@ const inputStyles = css`
 `;
 
 const inputButton = css`
-    border: 0.5px solid #d2d2d2;
+    border: 1px solid #d2d2d2;
     background-color: white;
     text-align: center;
     cursor: pointer;
     margin: 10px;
     margin-left: -100px;
-    padding: 2px 10px;
+    padding: 3px 10px;
     border-radius: 10px;
 
     :hover {
-        background-color: #c7c7c7c7;
+        background-color: #44f;
+        color: white;
     }
 `;
 
@@ -373,9 +376,9 @@ const MessageBox = styled.div`
     margin-bottom: 4px;
 `;
 
-const ErrorMessage = styled.div`
+const NotificationMessage = styled.div`
     font-size: 0.5rem;
-    color: red;
+    color: #888;
 `;
 
 const radioButtonStyles = css`
@@ -409,7 +412,7 @@ const ImagePreviewContainer = styled.div`
 `;
 
 const ImageUploadButton = styled.label`
-    border: 0.5px solid #d2d2d2;
+    border: 1px solid #d2d2d2;
     background-color: white;
     text-align: center;
     cursor: pointer;
@@ -438,7 +441,7 @@ const ImageUploadButton = styled.label`
     }
 
     :hover {
-        background-color: #d2d2d2;
+        background-color: #eee;
     }
 `;
 

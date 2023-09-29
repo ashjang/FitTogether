@@ -36,7 +36,7 @@ const PostListItems = styled.div`
 `;
 
 const LoadingSpinner = styled.img`
-    margin-top: 100px;
+    margin-top: 50px;
 `;
 
 export default PostList;

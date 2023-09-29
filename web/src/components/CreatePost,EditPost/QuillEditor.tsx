@@ -162,8 +162,8 @@ const TitleComponet = styled.input`
 `;
 
 const Quill = styled.div`
-    margin-bottom: 25px;
-    height: 350px;
+    margin-bottom: 20px;
+    height: 300px;
     background-color: white;
 `;
 

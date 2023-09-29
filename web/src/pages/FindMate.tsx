@@ -18,6 +18,7 @@ const FindMatePage = styled.div`
     padding: 20px;
     overflow: hidden;
 `;
+
 const PageTitle = styled.h2``;
 
 export default FindMate;

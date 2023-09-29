@@ -175,6 +175,22 @@ const PlaylistSetting: React.FC<Props> = ({ video, onClose }) => {
         }
     };
 
+    // Enter키로 플레이리스트 생성하는 함수
+    const handlePressCreateInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            handleCreatePlaylist();
+        }
+    };
+
+    // Enter키로 플레이리스트 수정하는 함수
+    const handlePressEditInput = (event: React.KeyboardEvent<HTMLInputElement>, name: string) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            handleEditPlaylist(name);
+        }
+    };
+
     // 플레이리스트 생성 입력란을 열고 닫기 위한 상태를 토글하는 함수
     const handleCreatingPlaylistInput = () => {
         setCreatingPlaylistInput(true);
@@ -216,6 +232,7 @@ const PlaylistSetting: React.FC<Props> = ({ video, onClose }) => {
                             placeholder="즐겨찾기 리스트 이름"
                             value={newPlaylist}
                             onChange={(e) => setNewPlaylist(e.target.value)}
+                            onKeyDown={handlePressCreateInput}
                         />
                         <CreateButton onClick={() => handleCreatePlaylist()}>생성</CreateButton>
                     </InputField>
@@ -231,6 +248,9 @@ const PlaylistSetting: React.FC<Props> = ({ video, onClose }) => {
                                     placeholder={playlist.playlistName}
                                     defaultValue={playlist.playlistName}
                                     onChange={(event) => setEditedPlaylist(event.target.value)}
+                                    onKeyDown={(event) =>
+                                        handlePressEditInput(event, playlist.playlistName)
+                                    }
                                 />
                             ) : (
                                 <PlaylistItem

@@ -44,6 +44,7 @@ const ExerciseInfoPage = styled.div`
     min-height: calc(100vh - 160px);
     margin: 110px auto 0;
     padding: 20px;
+    overflow: hidden;
 `;
 
 const PageTitle = styled.h2`

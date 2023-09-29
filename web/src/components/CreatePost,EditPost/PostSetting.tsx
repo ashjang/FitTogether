@@ -146,6 +146,7 @@ const PostSetting: React.FC<DataForPostSettingComp | {}> = (props) => {
 
 const PostSettingComponent = styled.div`
     position: relative;
+    top: 50px;
     width: 850px;
 `;
 

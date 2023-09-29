@@ -292,6 +292,7 @@ const FolderHeader = styled.div`
 
 const PlaylistItem = styled.p`
     font-size: 20px;
+    font-weight: 500;
 `;
 
 const InputField = styled.div`
@@ -383,7 +384,7 @@ const FolderItemText = styled.p`
     height: calc(150px + 30px);
     width: 100%;
     margin: 20 auto 10;
-    font-size: 20px;
+    font-size: 16px;
 `;
 
 const Menu = styled.div`
@@ -440,11 +441,9 @@ const ErrorMessage = styled.p`
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: -150px;
+    margin-top: 150px;
     font-size: 20px;
     font-weight: bold;
-    color: #102c57;
-    min-height: 100vh;
 `;
 
 const FaAnglesRight = styled(FontAwesomeIcon)`

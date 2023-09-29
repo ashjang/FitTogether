@@ -40,7 +40,7 @@ const Container = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 150px);
+    min-height: calc(100vh - 200px);
     margin-top: 150px;
     overflow: hidden;
 `;

@@ -16,8 +16,8 @@ const Page = styled.div`
     align-items: center;
     position: relative;
     max-width: 1440px;
-    min-height: calc(100vh - 165px);
-    margin: 110px auto 0;
+    min-height: calc(100vh - 200px);
+    margin: 150px auto 0;
     overflow: hidden;
 `;
 

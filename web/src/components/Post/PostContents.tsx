@@ -315,7 +315,7 @@ const ModalButtonDelete = styled.button`
 
 const Post = styled.div`
     width: 850px;
-    min-height: 150px;
+    min-height: 300px;
     margin-bottom: 50px;
 `;
 

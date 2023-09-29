@@ -153,7 +153,7 @@ const VideoContainer = styled.div`
 `;
 
 const Loading = styled.p`
-    padding-top: 200px;
+    margin-top: 100px;
 `;
 
 const VideoItem = styled.div`
@@ -161,7 +161,8 @@ const VideoItem = styled.div`
     margin-bottom: 50px;
     border-radius: 15px;
     overflow: hidden;
-    width: 700px;
+    width: 800px;
+    background-color: black;
 `;
 
 const VideoTitle = styled.h4`
@@ -176,7 +177,7 @@ const VideoTitle = styled.h4`
 `;
 
 const VideoThumbnail = styled.img`
-    width: 100%;
+    width: 80%;
 `;
 
 const TrashIcon = styled(FaTrash)`
@@ -191,6 +192,8 @@ const EmptyText = styled.p`
     justify-content: center;
     align-items: center;
     width: 100%;
+    margin-top: 175px;
+    font-size: 18px;
 `;
 
 const DeletePopup = styled.div`

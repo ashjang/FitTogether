@@ -26,9 +26,8 @@ const MypageContainer = styled.div`
     justify-content: center;
     align-items: center;
     width: 600px;
-    min-height: calc(100vh - 160px);
-    margin: 110px auto 0;
-    padding: 20px;
+    min-height: calc(100vh - 200px);
+    margin: 150px auto 0;
 `;
 
 const TabArea = styled.div`
@@ -42,7 +41,6 @@ const TabArea = styled.div`
 const Title = styled.h2`
     height: 50px;
     font-weight: bold;
-    font-size: 22px;
     white-space: nowrap;
     overflow: hidden;
 `;

@@ -432,8 +432,13 @@ const BtnTab = styled.button<BtnTabProps>`
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
 
     // 탭 클릭 시
-    background-color: ${(props) => (props.isActive ? '#666' : '#fff')};
+    background-color: ${(props) => (props.isActive ? '#666' : '#f4f4f4')};
     color: ${(props) => (props.isActive ? '#fff' : '#000')};
+
+    &:hover {
+        animation: shake 0.3s;
+        animation-iteration-count: 1;
+    }
 `;
 
 const TabSectionList = styled.dd`

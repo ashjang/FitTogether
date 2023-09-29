@@ -288,10 +288,9 @@ const Page = styled.div`
     align-items: center;
 `;
 
-const Title = styled.h1`
+const Title = styled.h2`
     width: 510px;
     margin-bottom: 50px;
-    font-size: 22px;
 `;
 
 const MessageBox = styled.div`
