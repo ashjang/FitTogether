@@ -341,6 +341,7 @@ const PlaylistContainer = styled.div`
     height: 210px;
     overflow-y: auto;
     border: 1px solid #ccc;
+    border-radius: 20px;
     padding: 10px;
 `;
 

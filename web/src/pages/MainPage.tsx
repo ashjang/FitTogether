@@ -4,10 +4,17 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import React, { useState, useEffect } from 'react';
 
-import writing from '../assets/writing 1.png';
-import posts from '../assets/post01 1.png';
-import fineMate from '../assets/fineMate01.png';
+import writing from '../assets/writing.png';
+import posts from '../assets/post.png';
+import fineMate from '../assets/fineMate.png';
 import dmChat from '../assets/dm_chat.png';
+import exerciseInfo from '../assets/exerciseInfo.png';
+import bookmark from '../assets/bookmark.png';
+
+import slideImage01 from '../assets/youtube.jpg';
+import slideImage02 from '../assets/phone.jpg';
+import slideImage03 from '../assets/running.jpg';
+
 type BtnTabProps = {
     isActive: boolean;
 };
@@ -114,13 +121,23 @@ const MainPage: React.FC = () => {
                                 <BtnTab
                                     type="button"
                                     className="btn btn-menu"
+                                    isActive={activeTab === '운동 정보'}
+                                    onClick={() => handleTabClick('운동 정보')}
+                                >
+                                    운동 정보
+                                </BtnTab>
+                            </Category01>
+                            <Category02>
+                                <BtnTab
+                                    type="button"
+                                    className="btn btn-menu"
                                     isActive={activeTab === '커뮤니티'}
                                     onClick={() => handleTabClick('커뮤니티')}
                                 >
                                     커뮤니티
                                 </BtnTab>
-                            </Category01>
-                            <Category02>
+                            </Category02>
+                            <Category03>
                                 <BtnTab
                                     type="button"
                                     className="btn btn-menu"
@@ -129,59 +146,95 @@ const MainPage: React.FC = () => {
                                 >
                                     운동 메이트
                                 </BtnTab>
-                            </Category02>
+                            </Category03>
                         </CategoryBtnContainer>
 
-                        {activeTab === '커뮤니티' && (
+                        {activeTab === '운동 정보' && (
                             <TabSectionList>
                                 <ul className="section-content one">
                                     <li>
                                         <div className="thumb">
-                                            <img src={writing} alt="logo" css={writing} />
+                                            <img
+                                                className="first-img"
+                                                src={exerciseInfo}
+                                                alt="logo"
+                                            />
                                         </div>
                                         <div className="content">
-                                            <h3 className="title">글쓰기</h3>
+                                            <h3 className="title">정보 제공</h3>
                                             <p className="txt">
-                                                러닝, 등산, 헬스 다양한 종목으로 <br />
-                                                운동후기를 남겨보세요!
+                                                관심있는 운동의 정보를
+                                                <br />
+                                                동영상으로 확인하세요!
                                             </p>
                                         </div>
                                     </li>
                                     <li>
                                         <div className="thumb">
-                                            <img src={posts} alt="logo" css={posts} />
+                                            <img className="second-img" src={bookmark} alt="logo" />
                                         </div>
                                         <div className="content">
-                                            <h3 className="title">정보공유</h3>
+                                            <h3 className="title">북마크</h3>
                                             <p className="txt">
-                                                회원들과 다양한
+                                                마음에 드는 동영상을
                                                 <br />
-                                                운동 정보를 공유할 수 있어요
+                                                북마크에 저장할 수 있어요!
                                             </p>
                                         </div>
                                     </li>
                                 </ul>
                             </TabSectionList>
                         )}
-
-                        {activeTab === '운동 메이트' && (
+                        {activeTab === '커뮤니티' && (
                             <TabSectionList>
                                 <ul className="section-content two">
                                     <li>
                                         <div className="thumb">
-                                            <img src={fineMate} alt="logo" css={fineMate} />
+                                            <img className="first-img" src={writing} alt="logo" />
                                         </div>
                                         <div className="content">
-                                            <h3 className="title">운동메이트 찾기</h3>
+                                            <h3 className="title">글쓰기</h3>
                                             <p className="txt">
-                                                지도에서 내 주변 <br />
-                                                운동메이트를 찾아보세요
+                                                러닝, 등산, 헬스 다양한 종목으로
+                                                <br />
+                                                운동후기를 남겨보세요!
                                             </p>
                                         </div>
                                     </li>
                                     <li>
                                         <div className="thumb">
-                                            <img src={dmChat} alt="logo" css={dmChat} />
+                                            <img className="second-img" src={posts} alt="logo" />
+                                        </div>
+                                        <div className="content">
+                                            <h3 className="title">정보공유</h3>
+                                            <p className="txt">
+                                                회원들과 다양한
+                                                <br />
+                                                운동 정보를 공유할 수 있어요!
+                                            </p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </TabSectionList>
+                        )}
+                        {activeTab === '운동 메이트' && (
+                            <TabSectionList>
+                                <ul className="section-content three">
+                                    <li>
+                                        <div className="thumb">
+                                            <img className="first-img" src={fineMate} alt="logo" />
+                                        </div>
+                                        <div className="content">
+                                            <h3 className="title">운동메이트 찾기</h3>
+                                            <p className="txt">
+                                                지도에서 내 주변 <br />
+                                                운동메이트를 찾아보세요!
+                                            </p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div className="thumb">
+                                            <img className="second-img" src={dmChat} alt="logo" />
                                         </div>
                                         <div className="content">
                                             <h3 className="title">채팅</h3>
@@ -221,9 +274,7 @@ const SlideArea = styled.div`
     height: 500px;
     overflow: hidden;
 `;
-import slideImage01 from '../assets/videos01.jpg';
-import slideImage02 from '../assets/mounted01.jpeg';
-import slideImage03 from '../assets/running01.jpeg';
+
 const Slide = styled.div`
     position: absolute;
     width: 100%;
@@ -332,13 +383,15 @@ const MainTabSection = styled.section`
     max-width: 1440px;
     padding: 24px;
     margin: 60px auto 0;
+    background-color: #f1f1f1;
     overflow: hidden;
 
     .main-title {
         text-align: center;
         margin-bottom: 20px;
+        white-space: nowrap;
     }
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 30px 5px rgba(0, 0, 0, 0.3);
 `;
 
 const CategoryContainer = styled.dl`
@@ -351,12 +404,13 @@ const CategoryContainer = styled.dl`
 const CategoryBtnContainer = styled.div`
     display: flex;
     justify-content: space-between;
-    width: 250px;
+    width: 400px;
     white-space: nowrap;
 `;
 
 const Category01 = styled.dt``;
 const Category02 = styled.dt``;
+const Category03 = styled.dt``;
 
 const BtnTab = styled.button<BtnTabProps>`
     border: none;
@@ -368,6 +422,7 @@ const BtnTab = styled.button<BtnTabProps>`
     background-color: ${(props) => (props.isActive ? '#000' : '#fff')};
     color: ${(props) => (props.isActive ? '#fff' : '#000')};
 `;
+
 const TabSectionList = styled.dd`
     position: relative;
 
@@ -378,15 +433,33 @@ const TabSectionList = styled.dd`
         margin-top: 25px;
         min-width: max-content;
     }
-    ul.section-content.one .thumb {
-        margin: 0 auto;
-        text-align: center;
-        overflow: hidden;
-    }
+
     ul.section-content.one .thumb img {
-        width: 70%;
-        height: 150%;
+        width: 80%;
+        height: 80%;
+        margin: 5px;
     }
+
+    ul.section-content.two .thumb .first-img {
+        width: 65%;
+        height: 100%;
+    }
+
+    ul.section-content.two .thumb .second-img {
+        width: 50%;
+        height: 100%;
+    }
+
+    ul.section-content.three .thumb .first-img {
+        width: 90%;
+        height: 100%;
+    }
+
+    ul.section-content.three .thumb .second-img {
+        width: 100%;
+        height: 80%;
+    }
+
     li {
         width: 300px;
         height: 300px;
@@ -396,18 +469,28 @@ const TabSectionList = styled.dd`
         overflow: hidden;
         background-color: #fff;
     }
+
     .thumb {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 300px;
         height: 180px;
+        margin: 0 auto;
+        text-align: center;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
     }
+
     .thumb img {
         width: 100%;
         height: 100%;
     }
+
     .content {
         padding: 12px;
     }
+
     .content .title {
         margin-bottom: 10px;
     }

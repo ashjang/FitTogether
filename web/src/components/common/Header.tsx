@@ -46,7 +46,6 @@ function Header() {
     const setKeywordItem = useSetRecoilState<string>(keywordItemState);
     const setHashtagItem = useSetRecoilState<string>(hashtagItemState);
 
-    // 스크롤 내렸을때 배경색 #fff
     const handleScroll = () => {
         const isHeaderScrolled = window.scrollY > 0;
         setScrolled(isHeaderScrolled);
@@ -223,8 +222,8 @@ const HeaderWrap = styled.div`
     left: 0;
     right: 0;
     z-index: 30;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    background-color: #f7f7f7;
+    box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.2);
 
     .txt {
         white-space: nowrap;

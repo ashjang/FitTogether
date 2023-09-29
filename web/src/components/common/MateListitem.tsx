@@ -40,7 +40,6 @@ const MateListItem: React.FC<Props> = ({ senderProfileImage, senderNickname, sho
                         <Link to={`/messenger/${encodeURIComponent(senderNickname)}`}>
                             <FaMessage icon={paperPlaneRegular} onClick={handleChatRoomClick} />
                         </Link>
-                        <UnfollowButton>unfollow</UnfollowButton>
                     </>
                 )}
             </MateListItemComponentElement>
@@ -86,17 +85,6 @@ const SenderNickname = styled.p`
 const FaMessage = styled(FontAwesomeIcon)`
     margin: 5px;
     cursor: pointer;
-`;
-
-const UnfollowButton = styled.button`
-    padding: 0 10px;
-    border-style: none;
-    border-radius: 15px;
-    margin: 5px;
-    background-color: #b7b7b7;
-    font-size: 12px;
-    font-weight: bold;
-    text-transform: uppercase;
 `;
 
 export default MateListItem;

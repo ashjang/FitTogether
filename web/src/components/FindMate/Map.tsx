@@ -342,7 +342,7 @@ const LocationSearchBtn = styled.button`
 const MapBox = styled.div`
     position: relative;
     width: 1000px;
-    height: 500px;
+    height: 700px;
     margin-top: 25px;
     border-radius: 10px;
     z-index: 0px;
