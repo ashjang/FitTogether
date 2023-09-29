@@ -15,27 +15,28 @@
 - 실시간 알림 기능
 
 ### 프론트엔드 기술 스택
-IDE : VSCode
-개발 환경 설정: Vite
-Library : React
-Language : TypeScript
-Styling: Emotion
-API : KaKao Login, Kakao Map, Geolocation
-State: Recoil, React Query
+- IDE : VSCode
+- 개발 환경 설정: Vite
+- Library : React
+- Language : TypeScript
+- Styling: Emotion
+- Test: JSON Server
+- API : Kakao Login, Kakao Map, Geolocation
+- State: Recoil, React Query
 
 
 ### 백엔드 기술 스택
-IDE : IntelliJ
-Language : Java 11
-Framework : Spring Boot 2.6.3
-Database : MySQL (AWS RDS)
-Build Tool : Gradle
-Test : Junit5, Postman
-API문서화 : Swagger
-Container : Docker
-ORM : JPA
-Caching : AWS Redis
-Auth : jwt
-Real-time : Spring web socket, SSE
+- IDE : IntelliJ
+- Language : Java 11
+- Framework : Spring Boot 2.6.3
+- Database : MySQL (AWS RDS)
+- Build Tool : Gradle
+- Test : Junit5, Postman
+- API 문서화 : Swagger
+- Container : Docker
+- ORM : JPA
+- Caching : AWS Redis
+- Auth : jwt
+- Real-time : Spring web socket, SSE
 
 #### 참고: [fitTogether 노션링크](https://www.notion.so/3-Tech-Travelers-ce4b88ecf73d4f2d8cb2d9dd20c6094c?pvs=4)
