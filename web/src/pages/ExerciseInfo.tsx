@@ -52,7 +52,9 @@ const PageTitle = styled.h2`
 `;
 
 const CategoryBtnTab = styled.div`
+    display: flex;
     margin-top: 50px;
+    white-space: nowrap;
 `;
 
 const CategoryBtn = styled.button`

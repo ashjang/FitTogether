@@ -300,7 +300,10 @@ const PostFilterComponent = styled.div`
     max-width: 1000px;
 `;
 
-const CategoryField = styled.div``;
+const CategoryField = styled.div`
+    display: flex;
+    white-space: nowrap;
+`;
 
 const CategoryButton = styled.button<CategoryButtonProps>`
     border-style: none;

@@ -75,7 +75,7 @@ const MainPage: React.FC = () => {
                             <SlideContent>
                                 <h2 className="title">운동메이트 매칭!</h2>
                                 <p className="txt">
-                                    내 주변에서 함께할
+                                    내 주변에서 함께 할
                                     <br />
                                     운동메이트를 찾아보세요 🤼‍♂️
                                 </p>

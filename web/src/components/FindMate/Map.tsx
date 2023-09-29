@@ -296,7 +296,9 @@ const MapContainer = styled.div`
 `;
 
 const CategoryBtnTab = styled.div`
+    display: flex;
     margin-top: 50px;
+    white-space: nowrap;
 `;
 
 const CategoryBtn = styled.button`
