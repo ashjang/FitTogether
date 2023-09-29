@@ -91,7 +91,6 @@ function App() {
         });
 
         eventSource.onerror = (event: any) => {
-            // console.log(event.target.readyState);
             if (event.target.readyState === EventSource.CONNECTING) {
                 // 연결 끊기
                 eventSource.close();
@@ -144,7 +143,7 @@ function App() {
             <RecoilRoot>
                 <BrowserRouter>
                     <div
-                        className={`centered-container ${
+                        className={`notification-permission-alert ${
                             notificationEnabled ? 'visible' : 'hidden'
                         }`}
                     >
@@ -156,26 +155,22 @@ function App() {
                         <Route path="/signin" element={<SignIn />} />
                         <Route path="/kakao/callback" element={<KakaoAuth />} />
                         <Route path="/signup" element={<SignUp />} />
-                        {/* <Route path="/messenger" element={<Messenger />} /> */}
-                        <Route path="/messenger" element={<Messenger />}>
-                            {/* 여기에 /messenger 경로 아래의 라우트 정의 */}
-                            <Route path=":nickname" element={<Messenger />} />
-                        </Route>
                         <Route path="/finduserid" element={<FindUserId />} />
                         <Route path="/finduserpassword" element={<FindUserPassword />} />
+                        <Route path="/exerciseInfo" element={<ExerciseInfo />} />
+                        <Route path="/posts/" element={<Posts />} />
+                        <Route path="/posts/:postId" element={<Post />} />
+                        {/* 비로그인 상태라면 접근 불가능한 Route */}
                         <Route element={<ProtectedRoute />}>
-                            // 비로그인 상태에서는 접근 불가능한 컴포넌트들 모음
                             <Route path="/mypage" element={<MyPage />} />
                             <Route path="/mypage/passwordchange" element={<PasswordChange />} />
                             <Route path="/bookmark" element={<Bookmark />} />
                             <Route path="/playlists" element={<MyVideos />} />
                             <Route path="/findmate" element={<FindMate />} />
+                            <Route path="/messenger" element={<Messenger />} />
+                            <Route path="/posts/:postId/editpost" element={<EditPost />} />
+                            <Route path="/posts/createpost" element={<CreatePost />} />
                         </Route>
-                        <Route path="/exerciseInfo" element={<ExerciseInfo />} />
-                        <Route path="/posts/" element={<Posts />} />
-                        <Route path="/posts/:postId" element={<Post />} />
-                        <Route path="/posts/:postId/editpost" element={<EditPost />} />
-                        <Route path="/posts/createpost" element={<CreatePost />} />
                     </Routes>
                     <Footer />
                     <ScrollTopButton />

@@ -112,9 +112,7 @@ const ChatList: React.FC<Props> = ({
 };
 
 const ChatListBox = styled.div`
-    position: absolute;
-    top: 0px;
-    left: 50px;
+    position: relative;
     width: 320px;
     height: 600px;
     overflow-y: auto;
@@ -128,8 +126,9 @@ const TopArea = styled.div`
     justify-content: center;
     height: 120px;
     background-color: #ffd4d4;
-    z-index: 1;
 `;
+
+const MateListTitle = styled.h2``;
 
 const MateListButton = styled.button`
     display: inline-block;
@@ -143,8 +142,6 @@ const MateListButton = styled.button`
         transition: all 0.3s;
     }
 `;
-
-const MateListTitle = styled.h2``;
 
 const BottomArea = styled.ul`
     position: relative;
@@ -175,8 +172,8 @@ const ChatListItemName = styled.div`
 `;
 const NoneChat = styled.p`
     position: absolute;
-    left: 50%;
     top: 170px;
+    left: 50%;
     transform: translate(-50%, -50%);
     font-size: 20px;
     font-weight: 500;

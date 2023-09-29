@@ -171,9 +171,12 @@ const RequestBtn = styled.button`
     font-weight: bold;
     border-style: none;
     border-radius: 10px;
-    border: 2px solid #666;
-    &:hover {
+    border: 2px solid #a6a6a6;
+    :hover {
+        animation: shake 0.3s;
+        animation-iteration-count: 1;
         background-color: #ffd0dd;
+        border: 2px solid #cfa0ad;
     }
 `;
 
@@ -190,6 +193,7 @@ const ExerciseChoiceBox = styled.div`
     &.active {
         font-weight: bold;
         background-color: #ffd0dd;
+        border: 1px solid #cfa0ad;
     }
 `;
 

@@ -144,11 +144,11 @@ const VideoContainer = styled.div`
 `;
 
 const Loading = styled.p`
-    padding-top: 200px;
+    margin-top: 200px;
 `;
 const ErrorMessage = styled.p`
-    padding-top: 100px;
-    font-size: 2rem;
+    margin-top: 275px;
+    font-size: 24px;
 `;
 
 const VideoItem = styled.div`
@@ -156,7 +156,8 @@ const VideoItem = styled.div`
     margin-bottom: 50px;
     border-radius: 15px;
     overflow: hidden;
-    width: 700px;
+    width: 800px;
+    background-color: black;
 `;
 
 const VideoTitle = styled.h4`
@@ -171,7 +172,7 @@ const VideoTitle = styled.h4`
 `;
 
 const VideoThumbnail = styled.img`
-    width: 100%;
+    width: 80%;
 `;
 
 const FaFolderPlus = styled(FontAwesomeIcon)`

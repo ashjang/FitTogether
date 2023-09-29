@@ -6,14 +6,14 @@ import React, { useState, useEffect } from 'react';
 
 import writing from '../assets/writing.png';
 import posts from '../assets/post.png';
-import fineMate from '../assets/fineMate.png';
-import dmChat from '../assets/dm_chat.png';
+import findMate from '../assets/findMate.png';
+import chat from '../assets/dm_chat.png';
 import exerciseInfo from '../assets/exerciseInfo.png';
 import bookmark from '../assets/bookmark.png';
 
 import slideImage01 from '../assets/youtube.jpg';
-import slideImage02 from '../assets/phone.jpg';
-import slideImage03 from '../assets/running.jpg';
+import slideImage02 from '../assets/running.jpg';
+import slideImage03 from '../assets/phone.jpg';
 
 type BtnTabProps = {
     isActive: boolean;
@@ -157,7 +157,7 @@ const MainPage: React.FC = () => {
                                             <img
                                                 className="first-img"
                                                 src={exerciseInfo}
-                                                alt="logo"
+                                                alt="exercise info"
                                             />
                                         </div>
                                         <div className="content">
@@ -171,7 +171,11 @@ const MainPage: React.FC = () => {
                                     </li>
                                     <li>
                                         <div className="thumb">
-                                            <img className="second-img" src={bookmark} alt="logo" />
+                                            <img
+                                                className="second-img"
+                                                src={bookmark}
+                                                alt="bookmark"
+                                            />
                                         </div>
                                         <div className="content">
                                             <h3 className="title">북마크</h3>
@@ -190,7 +194,11 @@ const MainPage: React.FC = () => {
                                 <ul className="section-content two">
                                     <li>
                                         <div className="thumb">
-                                            <img className="first-img" src={writing} alt="logo" />
+                                            <img
+                                                className="first-img"
+                                                src={writing}
+                                                alt="writing"
+                                            />
                                         </div>
                                         <div className="content">
                                             <h3 className="title">글쓰기</h3>
@@ -203,7 +211,7 @@ const MainPage: React.FC = () => {
                                     </li>
                                     <li>
                                         <div className="thumb">
-                                            <img className="second-img" src={posts} alt="logo" />
+                                            <img className="second-img" src={posts} alt="posts" />
                                         </div>
                                         <div className="content">
                                             <h3 className="title">정보공유</h3>
@@ -222,7 +230,11 @@ const MainPage: React.FC = () => {
                                 <ul className="section-content three">
                                     <li>
                                         <div className="thumb">
-                                            <img className="first-img" src={fineMate} alt="logo" />
+                                            <img
+                                                className="first-img"
+                                                src={findMate}
+                                                alt="find mate"
+                                            />
                                         </div>
                                         <div className="content">
                                             <h3 className="title">운동메이트 찾기</h3>
@@ -234,7 +246,7 @@ const MainPage: React.FC = () => {
                                     </li>
                                     <li>
                                         <div className="thumb">
-                                            <img className="second-img" src={dmChat} alt="logo" />
+                                            <img className="second-img" src={chat} alt="chat" />
                                         </div>
                                         <div className="content">
                                             <h3 className="title">채팅</h3>
@@ -384,6 +396,8 @@ const MainTabSection = styled.section`
     padding: 24px;
     margin: 60px auto 0;
     background-color: #f1f1f1;
+    // box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
     overflow: hidden;
 
     .main-title {
@@ -391,7 +405,6 @@ const MainTabSection = styled.section`
         margin-bottom: 20px;
         white-space: nowrap;
     }
-    box-shadow: 0 0 30px 5px rgba(0, 0, 0, 0.3);
 `;
 
 const CategoryContainer = styled.dl`
@@ -414,12 +427,12 @@ const Category03 = styled.dt``;
 
 const BtnTab = styled.button<BtnTabProps>`
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     padding: 6px 20px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
 
     // 탭 클릭 시
-    background-color: ${(props) => (props.isActive ? '#000' : '#fff')};
+    background-color: ${(props) => (props.isActive ? '#666' : '#fff')};
     color: ${(props) => (props.isActive ? '#fff' : '#000')};
 `;
 
@@ -464,8 +477,8 @@ const TabSectionList = styled.dd`
         width: 300px;
         height: 300px;
         margin: 0 50px;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-        border-radius: 5px;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+        border-radius: 15px;
         overflow: hidden;
         background-color: #fff;
     }
@@ -478,7 +491,7 @@ const TabSectionList = styled.dd`
         height: 180px;
         margin: 0 auto;
         text-align: center;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
         overflow: hidden;
     }
 

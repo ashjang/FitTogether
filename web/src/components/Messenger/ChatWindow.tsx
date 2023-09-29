@@ -20,16 +20,10 @@ interface ChatMessage {
 
 interface Props {
     chatRoomId: number | null;
-    // chatMessages: {
-    //     chatRoomId: number;
-    //     contents: string;
-    //     sendDate: Date;
-    //     senderNickname: string;
-    // }[];
     chatMessages: ChatMessage[];
     inputMessage: string;
     onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    onSendMessage: () => void; // 메시지 보내기 핸들러
+    onSendMessage: () => void;
     username: string;
     onUsernameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     chatRoomName: string | undefined;
@@ -134,15 +128,13 @@ const ChatWindow: React.FC<Props> = ({
     );
 };
 const ChatWindowBox = styled.div`
-    position: absolute;
-    top: 0;
-    left: 390px;
+    position: relative;
     width: 1000px;
     height: 600px;
-    padding: 20px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     background-color: #d9d9d9;
 `;
+
 const TopArea = styled.div`
     position: relative;
     top: 0;
@@ -150,16 +142,7 @@ const TopArea = styled.div`
     transform: translateX(-50%);
     width: 100%;
     height: 80px;
-
-    ::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: 0px;
-        width: 100%;
-        height: 1px;
-        background-color: rgb(91, 75, 56);
-    }
+    background-color: #aaa;
 `;
 
 const ProfileWrapper = styled.div`
@@ -177,70 +160,71 @@ const ProfileImage = styled.img`
     height: 40px;
     border-radius: 50%;
 `;
+
 const NickNameTitle = styled.strong`
-    font-size: 20px;
-    margin-left: 10px;
+    font-size: 24px;
+    font-weight: bold;
 `;
 
 const TextBox = styled.div`
     display: flex;
     align-items: center;
     flex-direction: column;
-    margin-top: 10px;
 `;
 
-const SenderProfile = styled.div`
-    margin-right: 10px;
-`;
-const SenderImage = styled.img`
-    width: 70px;
-    height: 70px;
-    border-radius: 4px;
-`;
-const TextBoxArea = styled.div`
-    display: flex;
-    align-items: left;
-    flex-direction: column;
-`;
 const MessageArea = styled.div`
     position: relative;
-    left: 20px;
-
     display: flex;
     align-items: flex-start;
     flex-direction: column;
-
     width: 100%;
-    height: 405px;
-    margin-top: 10px;
+    height: 460px;
+    overflow: hidden;
     overflow-y: auto;
     overflow-x: hidden;
+
     ::-webkit-scrollbar {
         width: 10px;
     }
 
     ::-webkit-scrollbar-thumb {
         background-color: rgba(0, 0, 0, 0.2);
-        border-radius: 4px;
+        border-radius: 10px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
         background-color: rgba(0, 0, 0, 0.4);
     }
+
+    padding: 10px 0;
 `;
+
+const SenderProfile = styled.div`
+    margin-right: 10px;
+`;
+const SenderImage = styled.img`
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+`;
+const TextBoxArea = styled.div`
+    display: flex;
+    align-items: left;
+    flex-direction: column;
+`;
+
 const MessageBox = styled.div`
     display: flex;
     align-items: center;
     padding: 8px;
-    margin-left: 10px;
-    margin-top: 20px;
+    width: 100%;
 `;
 const MessageTop = styled.div`
     display: flex;
     align-items: flex-end;
 `;
 const SenderNickname = styled.p`
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
 `;
 
@@ -248,7 +232,6 @@ const MessageText = styled.p`
     position: relative;
     display: block;
     font-size: 18px;
-
     max-width: 100%;
     height: 100%;
     word-break: break-all;
@@ -265,12 +248,13 @@ const SendArea = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 20px;
+    width: 100%;
+    padding: 10px 0;
+    background-color: #bbb;
 
     input {
         width: 800px;
         height: 40px;
-        margin-right: 0px;
         border: 1px solid #fff;
         border-radius: 5px;
         outline: none;

@@ -1,26 +1,5 @@
-.centered-container {
-    position: fixed;
-    top: 85%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999;
-    /* 추가적인 스타일링 */
-    max-width: 500px;
-    height: 50px;
-    background-color: rgba(255, 255, 255, 50%);
-    border-radius: 15px;
-    text-align: center;
-    line-height: 5rem;
-    transition: opacity 0.3s ease;
-}
-
-.visible {
-    opacity: 1;
-}
-
-.hidden {
-    opacity: 0;
-    pointer-events: none;
+* {
+    font-family: 'GmarketSansMedium';
 }
 
 @font-face {
@@ -31,6 +10,46 @@
     font-style: normal;
 }
 
-* {
-    font-family: 'GmarketSansMedium';
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-3px);
+    }
+    75% {
+        transform: translateX(3px);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.notification-permission-alert {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 85%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    width: 500px;
+    height: 50px;
+    padding: 0px 10px;
+    color: white;
+    border: 1px solid #666;
+    border-radius: 15px;
+    background-color: rgba(0, 0, 0, 50%);
+    text-align: center;
+    transition: opacity 0.3s ease;
+}
+
+.visible {
+    opacity: 1;
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
 }

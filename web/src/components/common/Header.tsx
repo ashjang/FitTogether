@@ -222,8 +222,8 @@ const HeaderWrap = styled.div`
     left: 0;
     right: 0;
     z-index: 30;
-    background-color: #f7f7f7;
-    box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.2);
+    background-color: #fff8f8;
+    box-shadow: 0 0 10px rgba(225, 205, 205, 1);
 
     .txt {
         white-space: nowrap;

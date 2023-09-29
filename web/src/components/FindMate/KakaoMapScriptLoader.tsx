@@ -58,9 +58,7 @@ const MapLoad = styled.div`
 `;
 
 const LoadingSpinner = styled.img`
-    width: 300px;
-    height: 300px;
-    margin: auto 0;
+    margin-top: 300px;
 `;
 
 export default KakaoMapScriptLoader;

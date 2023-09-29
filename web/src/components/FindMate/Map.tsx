@@ -162,6 +162,7 @@ const Map: React.FC = () => {
                         new window.kakao.maps.Size(65, 65)
                     ),
                 });
+
                 marker.setMap(map);
 
                 // 각 마커에 이벤트 리스너 등록
@@ -252,7 +253,7 @@ const Map: React.FC = () => {
             <MapBox ref={kakaoMapRef}>
                 <CreateMarkerButton onClick={createLocationMarker}>
                     <span className="blind">위치 설정 버튼</span>
-                    <LightIcon icon={faCrosshairs} />
+                    <CrosshairsIcon icon={faCrosshairs} />
                 </CreateMarkerButton>
             </MapBox>
             <Modal
@@ -319,10 +320,11 @@ const CategoryBtn = styled.button`
 const LocationSearchBar = styled.div`
     position: absolute;
     z-index: 5;
-    top: 115px;
-    left: 5px;
-    opacity: 0.6;
-    border: 1px solid black;
+    top: 120px;
+    left: 10px;
+    opacity: 0.8;
+
+    overflow: hidden;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.5);
 `;
 
@@ -331,6 +333,9 @@ const LocationSearchInput = styled.input`
     min-width: 400px;
     font-size: 20px;
     padding: 0px 10px;
+    border-style: none;
+    border: 1px solid #ccc;
+    border-radius: 10px 0 0 0;
     outline: none;
 `;
 
@@ -344,8 +349,9 @@ const MapBox = styled.div`
     width: 1000px;
     height: 700px;
     margin-top: 25px;
-    border-radius: 10px;
+    border-radius: 20px;
     z-index: 0px;
+    border: 3px solid #ddd;
 `;
 
 const CreateMarkerButton = styled.button`
@@ -355,11 +361,12 @@ const CreateMarkerButton = styled.button`
     padding: 10px 10px 5px 10px;
     border: none;
     border-radius: 50%;
-    background-color: rgba(100, 100, 100, 0.1);
-    border: 4px solid black;
+    background-color: rgba(150, 150, 150, 0.3);
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 1);
+    border-bottom: 3px solid #666;
     z-index: 10;
 `;
-const LightIcon = styled(FontAwesomeIcon)`
+const CrosshairsIcon = styled(FontAwesomeIcon)`
     font-size: 30px;
 `;
 

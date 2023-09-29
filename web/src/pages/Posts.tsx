@@ -30,7 +30,7 @@ const Page = styled.div`
     margin: 110px auto 0;
     padding: 20px;
     max-width: 1040px;
-    min-height: calc(100vh - 200px);
+    min-height: calc(100vh - 165px);
     overflow: hidden;
 `;
 

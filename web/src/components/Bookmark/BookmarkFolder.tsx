@@ -272,10 +272,10 @@ const FolderWrapper = styled.div`
     position: relative;
     width: 1200px;
     padding: 20px;
-    border-radius: 50px;
-    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.5);
-    margin: 30px;
-    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0px 2px 10px rgba(230, 210, 210, 1);
+    margin: 15px;
+    background-color: #fff9f9;
 `;
 
 const FolderHeader = styled.div`
@@ -355,18 +355,25 @@ const FolderItem = styled.div`
     width: 200px;
     overflow: hidden;
     background-color: black;
-    border-radius: 15px;
+    border: 4px solid black;
+    border-radius: 25px;
     cursor: pointer;
+    &:hover {
+        animation: shake 0.3s;
+        animation-iteration-count: 1;
+    }
 `;
 
 const FolderItemThumbnail = styled.img``;
 
 const FolderItemTitle = styled.p`
+    display: flex;
     height: 30px;
-    background-color: #444;
-    padding: 0px 0px 5px 10px;
+    background-color: #333;
+    padding: 5px 0px 0px 10px;
     color: white;
     overflow: hidden;
+    box-shadow: 0px -5px 5px #000;
 `;
 
 const FolderItemText = styled.p`
@@ -376,6 +383,7 @@ const FolderItemText = styled.p`
     height: calc(150px + 30px);
     width: 100%;
     margin: 20 auto 10;
+    font-size: 20px;
 `;
 
 const Menu = styled.div`
@@ -433,7 +441,7 @@ const ErrorMessage = styled.p`
     align-items: center;
     justify-content: center;
     margin-top: -150px;
-    font-size: 2rem;
+    font-size: 20px;
     font-weight: bold;
     color: #102c57;
     min-height: 100vh;
