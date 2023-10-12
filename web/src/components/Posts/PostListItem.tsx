@@ -124,7 +124,7 @@ const PostListItem: React.FC<PostListItemData> = ({
                     <CategoryAndHashtag>
                         <PostCategory>{getCategoryName(category)}</PostCategory>
                         {hashtags?.map((hashtag) => {
-                            return <PostHashtag>#{hashtag}</PostHashtag>;
+                            return <PostHashtag key={hashtag}>#{hashtag}</PostHashtag>;
                         })}
                         {accessLevel === false && <MateMark>mate only</MateMark>}
                     </CategoryAndHashtag>

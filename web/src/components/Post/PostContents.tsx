@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Dompurify from 'dompurify';
 import { useNavigate } from 'react-router-dom';
 import { useParams, Link } from 'react-router-dom';
 import default_user_image from '../../assets/default-user-image.png';
@@ -131,7 +132,7 @@ const PostContents: React.FC = () => {
                 <PostCategory>{getCategoryName(postContentsData.category)}</PostCategory>
                 {postContentsData.hashtagList &&
                     postContentsData.hashtagList.map((hashtag) => {
-                        return <PostHashtag>#{hashtag}</PostHashtag>;
+                        return <PostHashtag key={hashtag}>#{hashtag}</PostHashtag>;
                     })}
             </CategoryAndHashtag>
 
@@ -181,9 +182,11 @@ const PostContents: React.FC = () => {
                 {/* dangerouslySetInnerHTML 속성을 통해 HTML 문자열을 렌더링, img 태그는 영역을 벗어나지 않도록 설정 */}
                 <PostDescription
                     dangerouslySetInnerHTML={{
-                        __html: postContentsData.description.replace(
-                            /<img /g,
-                            '<img style="max-width: 100%; height: auto;" '
+                        __html: Dompurify.sanitize(
+                            postContentsData.description.replace(
+                                /<img /g,
+                                '<img style="max-width: 100%; height: auto;" '
+                            )
                         ),
                     }}
                 />

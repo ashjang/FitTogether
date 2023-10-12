@@ -28,6 +28,12 @@ const PostSetting: React.FC<DataForPostSettingComp | {}> = (props) => {
     const handleHashtagInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             event.preventDefault();
+
+            // 이미 포함되어 있으면 함수 종료
+            if (hashtagList.includes(hashtag)) {
+                return;
+            }
+
             // 기존 값은 유지하고 새로운 값을 추가
             setHashtagList([...hashtagList, hashtag]);
             // 입력 필드 초기화
@@ -83,7 +89,7 @@ const PostSetting: React.FC<DataForPostSettingComp | {}> = (props) => {
                 <HashtagList>
                     {hashtagList &&
                         hashtagList.map((keyword, index) => (
-                            <HashtagItem key={index}>
+                            <HashtagItem key={keyword}>
                                 {`#${keyword}`}
                                 <RemoveButton
                                     type="button"

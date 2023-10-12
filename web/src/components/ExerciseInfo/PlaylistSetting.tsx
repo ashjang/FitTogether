@@ -241,7 +241,7 @@ const PlaylistSetting: React.FC<Props> = ({ video, onClose }) => {
                 )}
                 <PlaylistContainer>
                     {playlistsData?.map((playlist, index) => (
-                        <PlaylistItemWrapper key={index}>
+                        <PlaylistItemWrapper key={playlist.playlistName}>
                             {editingPlaylistInputIndex === index ? (
                                 <EditingPlaylistInput
                                     type="text"
